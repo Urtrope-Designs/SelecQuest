@@ -1,7 +1,10 @@
 import {Component} from '@angular/core';
 import {Platform, ionicBootstrap} from 'ionic-angular';
+import {provideStore} from '@ngrx/store';
 import {StatusBar} from 'ionic-native';
 import {TabsPage} from './pages/tabs/tabs';
+import {CharacterActions} from './actions/character.actions';
+import {CharacterReducer} from './reducers/character.reducer';
 
 
 @Component({
@@ -22,4 +25,4 @@ export class MyApp {
   }
 }
 
-ionicBootstrap(MyApp);
+ionicBootstrap(MyApp, [provideStore({curCharacter: CharacterReducer}), CharacterActions]);
