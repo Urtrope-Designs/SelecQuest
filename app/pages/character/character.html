@@ -1,10 +1,19 @@
 <ion-header>
   <ion-navbar>
     <ion-title>
-      Character
+      Character Details
     </ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding class="character">
+	<div *ngIf="!(character | async)" >
+		<h2>No character created yet!</h2>
+		<button (click)="openCharacterDetails()">Create New Character</button>
+	</div>
+	<div *ngIf="!!(character | async)" >
+		<h2>{{(character | async).name}}</h2>
+		<div *ngFor="let epithet of (character | async).epithets">{{epithet}}</div>
+		<div *ngFor="let ancestor of (character | async).pedigree">{{ancestor}}</div>
+	</div>
 </ion-content>
