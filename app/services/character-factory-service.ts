@@ -1,55 +1,129 @@
 import {Injectable} from '@angular/core';
-import {ICharacter} from '../models/character-types';
+import {ICharacter, IAttribute} from '../models/character-types';
 
 @Injectable()
 export class CharacterFactoryService {
-	public generateNewCharacter(inputCharacter: ICharacter): ICharacter {
-		//TODO: go through each relevant attribute of ICharacter and see if inputCharacter has it; 
-		/// if required and not present, throw an error
-		/// if present, use the one from inputCharacter
-		/// if not present and not required, set to "default"
+	public generateRandomBaseCharacter(): ICharacter {
 		let fullCharacter: ICharacter;
 
-		//required from inputCharacter
-		if (!!inputCharacter.name) {
-			console.error('CharacterFactoryService.generateNewCharacter() error: no character name provided');
-			return null;
-		}
-		fullCharacter.name = inputCharacter.name;
+		fullCharacter.id = Date.now() + '';
 
-		//optional input
-		if (!!inputCharacter.race) {
-			fullCharacter.race = inputCharacter.race;
-		} else {
-			fullCharacter.race = this.getRandomRace();
-		}
+		// randomized
+		fullCharacter.name = this.getRandomName();
+		fullCharacter.race = this.getRandomRace();
+		fullCharacter.class = this.getRandomClass();
+		fullCharacter.attributes = this.getRandomAttributes();
 
-		if (!!inputCharacter.class) {
-			fullCharacter.class = inputCharacter.class;
-		} else {
-			fullCharacter.class = this.getRandomClass();
-		}
-
-		if (!!inputCharacter.attributes) {
-			fullCharacter.attributes = inputCharacter.attributes;
-		} else {
-			fullCharacter.attributes = this.getRandomAttributes();
-		}
-
-		if (!!inputCharacter.pedigree) {
-			fullCharacter.pedigree = inputCharacter.pedigree;
-		} else {
-			fullCharacter.pedigree = [];
-		}
-
-		//defaults - for now ignore input for these
+		// defaults
 		fullCharacter.currentHp = fullCharacter.maxHp = 20;
 		fullCharacter.currentMp = fullCharacter.maxMp = 10;
 		fullCharacter.maxEncumbrance = 30;
 		fullCharacter.level = 1;
 		fullCharacter.xp = fullCharacter.gold = fullCharacter.gossip = 0;
-		fullCharacter.epithets = fullCharacter.taskHistory = fullCharacter.gear = fullCharacter.loot = fullCharacter.spells = fullCharacter.abilities = [];
+		fullCharacter.epithets = fullCharacter.pedigree = fullCharacter.taskHistory = fullCharacter.gear = fullCharacter.loot = fullCharacter.spells = fullCharacter.abilities = [];
 
 		return fullCharacter;
 	}
+
+	public getRandomAttributes(): IAttribute[] {
+		let attributes = ALL_ATTRIBUTES.map((attr) => {
+			let randVal = 8 + Math.floor(Math.random() * 11);
+			let seededAttr = Object.assign({}, attr, {value: randVal});
+			return seededAttr;
+		})
+		
+		return attributes;
+	}
+
+	public getRandomClass(): string {
+		let newClass: string;
+
+		let randIndex = Math.floor(Math.random() * ALL_CLASSES.length);
+		newClass = ALL_CLASSES[randIndex];
+
+		return newClass;
+	}
+
+	public getRandomName(): string {
+		let name: string;
+
+		let randIndex = Math.floor(Math.random() * RANDOM_NAMES.length);
+		name = RANDOM_NAMES[randIndex];
+
+		return name;
+	}
+
+	public getRandomRace(): string {
+		let race: string;
+
+		let randIndex = Math.floor(Math.random() * ALL_RACES.length);
+		race = ALL_RACES[randIndex];
+
+		return race;
+	}
 }
+
+const ALL_ATTRIBUTES: IAttribute[] = [
+	{
+		id: 'attr0',
+		name: 'Brawn',
+		value: -1
+	},
+	{
+		id: 'attr1',
+		name: 'Flexibility',
+		value: -1
+	},
+	{
+		id: 'attr2',
+		name: 'Coordination',
+		value: -1
+	},
+	{
+		id: 'attr3',
+		name: 'Resilience',
+		value: -1
+	},
+	{
+		id: 'attr4',
+		name: 'Wit',
+		value: -1
+	},
+	{
+		id: 'attr5',
+		name: 'Knowledge',
+		value: -1
+	},
+	{
+		id: 'attr6',
+		name: 'Test-taking Skills',
+		value: -1
+	},
+	{
+		id: 'attr7',
+		name: 'People Skills',
+		value: -1
+	}
+];
+
+const ALL_CLASSES = [
+	'Tracker',
+	'Stabber',
+	'Tarp-folder',
+	'Gold-doler'
+];
+
+const ALL_RACES = [
+	'Rockperson',
+	'Delf',
+	'Roost-born',
+	'Irishperson'
+];
+
+const RANDOM_NAMES = [
+	'Slagrom',
+	'Pookie',
+	'Kent',
+	'Chief',
+	'Lillillellan'
+]

@@ -5,7 +5,18 @@ import {StatusBar} from 'ionic-native';
 import {TabsPage} from './pages/tabs/tabs';
 import {CharacterActions} from './actions/character.actions';
 import {CharacterReducer} from './reducers/character.reducer';
+import {CharacterFactoryService} from './services/character-factory-service';
 
+const NGRX_PROVIDERS = [
+  provideStore({curCharacter: CharacterReducer}), 
+  CharacterActions
+];
+
+const SQ_PROVIDERS = [
+  CharacterFactoryService
+]
+
+let sqProviders = [...NGRX_PROVIDERS, ...SQ_PROVIDERS];
 
 @Component({
   template: '<ion-nav [root]="rootPage"></ion-nav>'
@@ -25,4 +36,4 @@ export class MyApp {
   }
 }
 
-ionicBootstrap(MyApp, [provideStore({curCharacter: CharacterReducer}), CharacterActions]);
+ionicBootstrap(MyApp, [sqProviders]);
