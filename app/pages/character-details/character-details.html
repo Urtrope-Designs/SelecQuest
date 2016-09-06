@@ -2,10 +2,10 @@
 
   <ion-navbar>
     <ion-title>character-details</ion-title>
-    <ion-buttons start>
+    <ion-buttons end>
       <button (click)="dismiss()">
         <span primary showWhen="ios">Cancel</span>
-        <ion-icon name="md-close" showWhen="android,windows"></ion-icon>
+        <ion-icon name="md-close" hideWhen="ios"></ion-icon>
       </button>
     </ion-buttons>
   </ion-navbar>
@@ -17,15 +17,16 @@
 	<ion-list>
 		<ion-item>
 	    	<ion-label primary stacked>Name</ion-label>
-	    	<ion-input type="text" [(ngModel)]="character?.name"></ion-input>
+	    	<ion-input type="text" [(ngModel)]="character.name"></ion-input>
 	  	</ion-item>
-		<div>Race: {{character?.race}}</div>
-  		<div>Class: {{character?.class}}</ion-label>
-		<div>Pedigree: {{character?.pedigree.join(', ')}}</div>
+		<div>Race: {{character.race}}</div>
+  		<div>Class: {{character.class}}</div>
+		<div>Pedigree: {{character.pedigree?.join(', ')}}</div>
 	  	<ul>
-	  		<li *ngFor="let attr of character?.attributes">
+	  		<li *ngFor="let attr of character.attributes">
 	  			{{attr.name}}: {{attr.value}}
   			</li>
 		</ul>
+		<button (click)="submit()">Submit</button>
 	</ion-list>
 </ion-content>

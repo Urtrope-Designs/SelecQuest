@@ -4,23 +4,29 @@ import {ICharacter, IAttribute} from '../models/character-types';
 @Injectable()
 export class CharacterFactoryService {
 	public generateRandomBaseCharacter(): ICharacter {
-		let fullCharacter: ICharacter;
-
-		fullCharacter.id = Date.now() + '';
-
-		// randomized
-		fullCharacter.name = this.getRandomName();
-		fullCharacter.race = this.getRandomRace();
-		fullCharacter.class = this.getRandomClass();
-		fullCharacter.attributes = this.getRandomAttributes();
-
-		// defaults
-		fullCharacter.currentHp = fullCharacter.maxHp = 20;
-		fullCharacter.currentMp = fullCharacter.maxMp = 10;
-		fullCharacter.maxEncumbrance = 30;
-		fullCharacter.level = 1;
-		fullCharacter.xp = fullCharacter.gold = fullCharacter.gossip = 0;
-		fullCharacter.epithets = fullCharacter.pedigree = fullCharacter.taskHistory = fullCharacter.gear = fullCharacter.loot = fullCharacter.spells = fullCharacter.abilities = [];
+		let fullCharacter: ICharacter = {
+			id: Date.now() + '',
+			name: this.getRandomName(),
+			epithets: [],
+			pedigree: [],
+			race: this.getRandomRace(),
+			class: this.getRandomClass(),
+			attributes: this.getRandomAttributes(),
+			maxHp: 20,
+			currentHp: 20,
+			maxMp: 10,
+			currentMp: 10,
+			maxEncumbrance: 30,
+			level: 1,
+			xp: 0,
+			gold: 0,
+			gossip: 0,
+			taskHistory: [],
+			gear: [],
+			loot: [],
+			spells: [],
+			abilities: []
+		};
 
 		return fullCharacter;
 	}

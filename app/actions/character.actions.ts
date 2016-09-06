@@ -5,10 +5,10 @@ import {ICharacter} from '../models/character-types';
 
 @Injectable()
 export class CharacterActions {
-	static ADD_CHARACTER = 'ADD_CHARACTER';
-	addCharacter(character: ICharacter): Action {
+	static SET_CHARACTER = 'SET_CHARACTER';
+	setCharacter(character: ICharacter): Action {
 		return {
-			type: CharacterActions.ADD_CHARACTER,
+			type: CharacterActions.SET_CHARACTER,
 			payload: character
 		}
 	}
@@ -21,11 +21,4 @@ export class CharacterActions {
 		}
 	}
 
-	static DELETE_CHARACTER = 'DELETE_CHARACTER';
-	deleteCharacter(character: ICharacter): Action {
-		return {
-			type: CharacterActions.DELETE_CHARACTER,
-			payload: character
-		}
-	}
 }

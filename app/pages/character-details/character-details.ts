@@ -7,17 +7,18 @@ import {ICharacter} from '../../models/character-types';
  	templateUrl: 'build/pages/character-details/character-details.html',
 })
 export class CharacterDetailsPage {
-	private characterId: string;
 	private character: ICharacter;
 
- 	constructor(private viewCtrl: ViewController, private characterFactory: CharacterFactoryService, navParams: NavParams) {
-  		this.characterId = navParams.get('characterId');
+ 	constructor(
+ 		private viewCtrl: ViewController, 
+ 		private characterFactory: CharacterFactoryService, 
+ 		navParams: NavParams
+	) {
+  		this.character = navParams.get('character');
   	}
 
-  	ionViewWillLoad() {
-  		if (!!this.characterId) {
-  			//TODO: load character from store
-  		} else {
+  	ngOnInit() {
+  		if (!this.character) {
   			this.character = this.characterFactory.generateRandomBaseCharacter();
   		}
   	}
@@ -28,7 +29,7 @@ export class CharacterDetailsPage {
   	}
 
   	submit() {
-  		//TODO: save updated character to store
+  		this.viewCtrl.dismiss({character: this.character});
   	}
 
 }
