@@ -1,3 +1,6 @@
+import {ITask} from './task-types';
+import {IGear, ILoot} from './reward-types';
+
 export interface ICharacter {
 	id: string,
 	name: string,
@@ -22,28 +25,10 @@ export interface ICharacter {
 	abilities: IAbility[]
 }
 
-export interface ITask {
-	id: string,
-	name: string
-}
-
 export interface IAttribute {
 	id: string,
 	name: string,
 	value: number
-}
-
-export interface IGear {
-	category: string,
-	id: string,
-	name: string
-}
-
-export interface ILoot {
-	id: string,
-	name: string,
-	baseValue: number,
-	quantity: number
 }
 
 export interface ISpell {
