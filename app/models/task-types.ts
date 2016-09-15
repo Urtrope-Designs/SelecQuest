@@ -5,7 +5,11 @@ export interface ITask {
 	name: string,
 	primaryReward: RewardTypes,
 	secondaryReward: RewardTypes,
-	duration: number
+	startTime: Date,
+	endTime: Date,
+	durationSeconds: number,
+	isComplete: boolean
+
 }
 
 export enum QuestTypes {

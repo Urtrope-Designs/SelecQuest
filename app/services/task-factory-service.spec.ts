@@ -15,8 +15,10 @@ describe('Task Factory Service', () => {
         expect(newTask.name).toBeDefined();
         expect(newTask.primaryReward).toBeDefined();
         expect(newTask.secondaryReward).toBeDefined();
-        expect(newTask.duration).toBeDefined();
- 
+        expect(newTask.durationSeconds).toBeDefined();
+        expect(newTask.startTime).toBeDefined();
+        expect(newTask.endTime).toBeDefined();
+ 		expect(newTask.isComplete).toBeDefined();
     }));
 
     it('should generate a Task with primaryReward of RewardTypes.XP when passed QuestTypes.Gladiating', inject([TaskFactoryService], (taskFactory: TaskFactoryService) => {

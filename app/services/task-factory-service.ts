@@ -34,12 +34,19 @@ export class TaskFactoryService {
 				console.log('taskFactory.generateTask error: should not be able to get to default case');
 		}
 
+		let duration = 6;
+		let startTime = new Date();
+		let endTime = new Date(startTime.getTime() + 1000 * duration);
+
 		newTask = {
 			id: 'task:' + Date.now(),
 			name: this.getRandomName(type),
 			primaryReward: primaryReward,
 			secondaryReward: secondaryReward,
-			duration: 6
+			startTime: startTime,
+			endTime: endTime,
+			durationSeconds: duration,
+			isComplete: false
 		};
 
 		return newTask;
