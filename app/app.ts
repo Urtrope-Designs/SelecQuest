@@ -4,16 +4,22 @@ import {provideStore} from '@ngrx/store';
 import {StatusBar} from 'ionic-native';
 import {TabsPage} from './pages/tabs/tabs';
 import {CharacterActions} from './actions/character-actions';
+import {TaskActions} from './actions/task-actions';
 import {CharacterReducer} from './reducers/character-reducer';
+import {TaskReducer} from './reducers/task-reducer';
 import {CharacterFactoryService} from './services/character-factory-service';
+import {TaskFactoryService} from './services/task-factory-service';
 
 const NGRX_PROVIDERS = [
   provideStore({curCharacter: CharacterReducer}), 
-  CharacterActions
+  CharacterActions,
+  provideStore({activeTasks: TaskReducer}),
+  TaskActions
 ];
 
 const SQ_PROVIDERS = [
-  CharacterFactoryService
+  CharacterFactoryService,
+  TaskFactoryService
 ]
 
 let sqProviders = [...NGRX_PROVIDERS, ...SQ_PROVIDERS];
