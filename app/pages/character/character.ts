@@ -3,7 +3,7 @@ import {NavController, ModalController} from 'ionic-angular';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs/rx.KitchenSink';
 import {AppState} from '../../services/app-state';
-import {CharacterActions} from '../../actions/character.actions';
+import {CharacterActions} from '../../actions/character-actions';
 import {CharacterDetailsPage} from '../../pages/character-details/character-details';
 import {ICharacter} from '../../models/character-types';
 

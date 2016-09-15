@@ -1,5 +1,5 @@
 import {ActionReducer, Action} from '@ngrx/store';
-import {CharacterActions} from '../actions/character.actions';
+import {CharacterActions} from '../actions/character-actions';
 
 let nextId = 0;
 

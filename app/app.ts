@@ -3,8 +3,8 @@ import {Platform, ionicBootstrap} from 'ionic-angular';
 import {provideStore} from '@ngrx/store';
 import {StatusBar} from 'ionic-native';
 import {TabsPage} from './pages/tabs/tabs';
-import {CharacterActions} from './actions/character.actions';
-import {CharacterReducer} from './reducers/character.reducer';
+import {CharacterActions} from './actions/character-actions';
+import {CharacterReducer} from './reducers/character-reducer';
 import {CharacterFactoryService} from './services/character-factory-service';
 
 const NGRX_PROVIDERS = [
