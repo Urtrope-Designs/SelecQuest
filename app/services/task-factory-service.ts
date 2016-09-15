@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ITask, QuestTypes} from '../models/task-types';
 import {RewardTypes} from '../models/reward-types';
+import {ICharacter} from '../models/character-types';
 
 @Injectable()
 export class TaskFactoryService {
@@ -30,14 +31,14 @@ export class TaskFactoryService {
 				secondaryReward = rando < .5 ? RewardTypes.GOLD : RewardTypes.XP;
 				break;
 			default:
-				console.log('taskFactory.generateTask error: should be able to get to default case');
+				console.log('taskFactory.generateTask error: should not be able to get to default case');
 		}
 
 		newTask = {
 			id: 'task:' + Date.now(),
 			name: this.getRandomName(type),
-			primaryReward: RewardTypes.GOLD,
-			secondaryReward: RewardTypes.GOSSIP,
+			primaryReward: primaryReward,
+			secondaryReward: secondaryReward,
 			duration: 6
 		};
 
