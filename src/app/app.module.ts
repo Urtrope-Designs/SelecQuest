@@ -23,8 +23,7 @@ import {TaskFactoryService} from '../services/task-factory-service';
 import {TaskQueueingService} from '../services/task-queueing-service';
 
 const NGRX_IMPORTS = [
-  StoreModule.provideStore({curCharacter: CharacterReducer}), 
-  StoreModule.provideStore({activeTasks: TaskReducer})
+  StoreModule.provideStore({curCharacter: CharacterReducer, activeTasks: TaskReducer}, {curCharacter: undefined, activeTasks: [])
 ]
 
 const NGRX_PROVIDERS = [
@@ -48,8 +47,8 @@ const SQ_PROVIDERS = [
     TabsPage
   ],
   imports: [
-    IonicModule.forRoot(MyApp),
-    NGRX_IMPORTS
+    ...NGRX_IMPORTS,
+    IonicModule.forRoot(MyApp)
   ],
   bootstrap: [IonicApp],
   entryComponents: [

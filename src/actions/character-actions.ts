@@ -7,6 +7,7 @@ import {ICharacter} from '../models/character-types';
 export class CharacterActions {
 	static SET_CHARACTER = 'SET_CHARACTER';
 	setCharacter(character: ICharacter): Action {
+		console.log('setCharacter Action');
 		return {
 			type: CharacterActions.SET_CHARACTER,
 			payload: character

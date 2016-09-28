@@ -12,7 +12,7 @@ import {ICharacter} from '../../models/character-types';
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CharacterPage {
-	public character$: Observable<ICharacter>;
+	public character$: Observable<any>;
 
 	constructor(
 		public navCtrl: NavController,
@@ -23,17 +23,15 @@ export class CharacterPage {
 	}
 
 	ionViewDidLoad() {
-		this.character$ = this.store.select(state => state.curCharacter);
+		this.character$ = this.store.select('curCharacter');
 	}
 
 	showDetail(characterId: string): void {
 		let charModal = this.modalCtrl.create(CharacterDetailsPage, {character: null});
 		charModal.onDidDismiss((data: {character: ICharacter}) => {
-			debugger;
-			console.log('data:');
-			console.dir(data);
 			if (!!data && !!data.character) {
-				this.store.dispatch(this.charActions.setCharacter(data.character));
+				let action = this.charActions.setCharacter(data.character);
+				this.store.dispatch(action);
 			}
 		})
 		charModal.present();

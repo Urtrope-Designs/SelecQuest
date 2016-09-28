@@ -1,9 +1,10 @@
-import {Action} from '@ngrx/store';
+import {ActionReducer, Action} from '@ngrx/store';
 import {CharacterActions} from '../actions/character-actions';
+import {ICharacter} from '../models/character';
 
 let nextId = 0;
 
-export function CharacterReducer(state, action: Action) {
+export const CharacterReducer: ActionReducer<ICharacter> = (state: ICharacter = {}, action: Action) => {
 	switch(action.type) {
 		case CharacterActions.SET_CHARACTER: 
 			let newCharacter = Object.assign({}, action.payload, {id: nextId++});

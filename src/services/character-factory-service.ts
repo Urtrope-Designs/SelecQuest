@@ -131,5 +131,8 @@ const RANDOM_NAMES = [
 	'Pookie',
 	'Kent',
 	'Chief',
-	'Lillillellan'
+	'Lillillellan',
+	'Peg',
+	'Marnf',
+	'Tzleclac'
 ]
