@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Character Details
+    </ion-title>
+    <ion-buttons end>
+      <button ion-button (click)="showDetail()">
+      		<span>New</span>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding class="character">
+<!--	<sq-character [character="character | async"]></sq-character>-->
+	<div *ngIf="!!(character$ | async)">
+		<h2>{{(character$ | async)?.name}}</h2>
+		<div *ngFor="let epithet of (character$ | async)?.epithets">{{epithet}}</div>
+		<div *ngFor="let ancestor of (character$ | async)?.pedigree">{{ancestor}}</div>
+		<div>Race: {{(character$ | async)?.race}}</div>
+		<div>Class: {{(character$ | async)?.class}}</div>
+		<div>Attributes:
+			<ul>
+				<li *ngFor="let attr of (character$ | async)?.attributes">
+					{{attr.name}}: {{attr.value}}
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div *ngIf="!(character$ | async)">
+		<h2>No Character created yet!</h2>
+		<button ion-button (click)="showDetail()">Create One!</button>
+	</div>
+</ion-content>
