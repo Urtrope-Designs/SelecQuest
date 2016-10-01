@@ -23,7 +23,7 @@ import {TaskFactoryService} from '../services/task-factory-service';
 import {TaskQueueingService} from '../services/task-queueing-service';
 
 const NGRX_IMPORTS = [
-  StoreModule.provideStore({curCharacter: CharacterReducer, activeTasks: TaskReducer}, {curCharacter: undefined, activeTasks: [])
+  StoreModule.provideStore({curCharacter: CharacterReducer, activeTasks: TaskReducer}, {curCharacter: undefined, activeTasks: []})
 ]
 
 const NGRX_PROVIDERS = [
