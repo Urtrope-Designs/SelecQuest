@@ -20,7 +20,7 @@ import {TaskActions} from '../actions/task-actions';
 // SQ services
 import {CharacterFactoryService} from '../services/character-factory-service';
 import {TaskFactoryService} from '../services/task-factory-service';
-import {TaskQueueingService} from '../services/task-queueing-service';
+import {TaskManagerService} from '../services/task-manager-service';
 
 const NGRX_IMPORTS = [
   StoreModule.provideStore({curCharacter: CharacterReducer, activeTasks: TaskReducer}, {curCharacter: undefined, activeTasks: []})
@@ -34,7 +34,7 @@ const NGRX_PROVIDERS = [
 const SQ_PROVIDERS = [
   CharacterFactoryService,
   TaskFactoryService,
-  TaskQueueingService
+  TaskManagerService
 ]
 
 @NgModule({

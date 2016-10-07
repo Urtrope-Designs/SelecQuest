@@ -7,7 +7,7 @@ import {TaskFactoryService} from './task-factory-service';
 import {TaskActions} from '../actions/task-actions';
 
 @Injectable()
-export class TaskQueueingService{
+export class TaskManagerService{
     public task$: Observable<any>;
     numActiveTasksAllowed = 1;
     

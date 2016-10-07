@@ -3,11 +3,11 @@ import {provide} from '@angular/core';
 import {beforeEachProviders, it, describe, expect, inject} from '@angular/core/testing';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs/Observable';
-import {TaskQueueingService} from './task-queueing-service';
+import {TaskQueueingService} from './task-manager-service';
 import {TaskActions} from '../actions/task-actions';
 
 
-describe('TaskQueueingService', () => {
+describe('TaskManagerService', () => {
 
 	let selectStub;
 	class StoreMock {

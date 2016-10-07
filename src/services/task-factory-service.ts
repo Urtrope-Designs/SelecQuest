@@ -5,7 +5,7 @@ import {ICharacter} from '../models/character-types';
 
 @Injectable()
 export class TaskFactoryService {
-	public generateTask(type: QuestTypes): ITask {
+	public generateTask(type: QuestTypes, startTime: Date = new Date()): ITask {
 		let newTask: ITask;
 
 		let primaryReward: RewardTypes;
@@ -35,7 +35,6 @@ export class TaskFactoryService {
 		}
 
 		let duration = 6;
-		let startTime = new Date();
 		let endTime = new Date(startTime.getTime() + 1000 * duration);
 
 		newTask = {

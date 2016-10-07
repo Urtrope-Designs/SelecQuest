@@ -3,7 +3,7 @@ import { Platform } from 'ionic-angular';
 // import { StatusBar } from 'ionic-native';
 
 import { TabsPage } from '../pages/tabs/tabs';
-import {TaskQueueingService} from '../services/task-queueing-service';
+import {TaskManagerService} from '../services/task-manager-service';
 
 
 @Component({
@@ -14,7 +14,7 @@ export class MyApp {
 
   constructor(
     platform: Platform,
-    public taskQueueSvc: TaskQueueingService 
+    public taskQueueSvc: TaskManagerService 
   ) {
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
