@@ -8,7 +8,7 @@ import {TaskActions} from '../actions/task-actions';
 
 @Injectable()
 export class TaskManagerService{
-    public task$: Observable<any>;
+    public taskCheck$: Observable<any>;
     numActiveTasksAllowed = 1;
     
     constructor(
@@ -16,8 +16,13 @@ export class TaskManagerService{
         public taskFactory: TaskFactoryService,
         public taskActions: TaskActions
     ) {
-        this.task$ = this.store.select('activeTasks');
-        this.task$.subscribe((tasks: ITask[]) => {
+        let task$ = this.store.select('activeTasks');
+        let newCharacter$ = this.store.select('curCharacter').distinctKey('id');
+        this.taskCheck$ = Observable.combineLatest(newCharacter$, task$);
+        this.task$.subscribe((character: ICharacter, tasks: ITask[]) => {
+            console.log('character:');
+            console.dir(character);
+            console.log('tasks:');
             console.dir(tasks);
             //TODO: get the numActiveTasksAllowed from current character?
             if (tasks.length < this.numActiveTasksAllowed) {
