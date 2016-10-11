@@ -14,7 +14,7 @@ export class MyApp {
 
   constructor(
     platform: Platform,
-    public taskQueueSvc: TaskManagerService 
+    public taskMngrSvc: TaskManagerService 
   ) {
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
