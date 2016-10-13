@@ -4,6 +4,7 @@ import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/distinctKey';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/observable/combineLatest';
+import {Subscription} from 'rxjs/Subscription';
 import {AppState} from './app-state';
 import {ITask} from '../models/task-types';
 import {TaskFactoryService} from './task-factory-service';
@@ -12,7 +13,7 @@ import {ICharacter} from '../models/character-types';
 
 @Injectable()
 export class TaskManagerService{
-    public taskCheck$: Observable<any>;
+    public taskCheckSubscription: Subscription;
     numActiveTasksAllowed = 1;
     
     constructor(
@@ -20,25 +21,32 @@ export class TaskManagerService{
         public taskFactory: TaskFactoryService,
         public taskActions: TaskActions
     ) {
-        let task$ = this.store.select('activeTasks');
+ 
         // let newCharacter$ = 
         this.store.select('curCharacter')
             .filter((character: ICharacter) => {
                 return (!!character);
             })
             .distinctKey('id')
-            .do((character: ICharacter) => {
+            .subscribe((character: ICharacter) => {
                 //dispatch event to clear any reward buffer not for this character's id
                 //dispatch event to clear any task not for this character's id
-            })
-            .subscribe((character: ICharacter) => {
                 //clear out old subscription
+                if (!!this.taskCheckSubscription) {
+                    this.taskCheckSubscription.unsubscribe();    
+                }
+                
                 //subscribe to interval to check on current task
+                let task$ = this.store.select('activeTasks');
+                Observable.interval(1000)
+                    .withLatestFrom(task$, (results: [any, ITask[]]) => {
+                        let tasks = results[1];
+                    })
             })
 
         // this.taskCheck$ = Observable.combineLatest(newCharacter$, task$);
         // this.taskCheck$.subscribe((latest: [ICharacter, ITask[]]) => {
-        //     var [character, tasks] = latest;
+        //     let [character, tasks] = latest;
         //     console.log('character:');
         //     console.dir(character);
         //     console.log('tasks:');
