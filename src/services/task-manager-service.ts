@@ -1,9 +1,12 @@
 import {Injectable} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs/Observable';
+import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/distinctKey';
 import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/withLatestFrom';
 import 'rxjs/add/observable/combineLatest';
+import 'rxjs/add/observable/interval';
 import {Subscription} from 'rxjs/Subscription';
 import {AppState} from './app-state';
 import {ITask} from '../models/task-types';
@@ -29,6 +32,7 @@ export class TaskManagerService{
             })
             .distinctKey('id')
             .subscribe((character: ICharacter) => {
+                console.log('TaskManagerService got a character!');
                 //dispatch event to clear any reward buffer not for this character's id
                 //dispatch event to clear any task not for this character's id
                 //clear out old subscription
@@ -36,12 +40,22 @@ export class TaskManagerService{
                     this.taskCheckSubscription.unsubscribe();    
                 }
                 
-                //subscribe to interval to check on current task
-                let task$ = this.store.select('activeTasks');
-                Observable.interval(1000)
-                    .withLatestFrom(task$, (results: [any, ITask[]]) => {
-                        let tasks = results[1];
-                    })
+                //subscribe to interval to check on task list for current character
+                let characterTask$ = this.store.select('activeTasks')
+                    .map((tasks: ITask[]) => {
+                        return tasks.filter((task: ITask) => {
+                            return task.characterId == character.id;
+                        });
+                    });
+                Observable.interval(100)
+                    .withLatestFrom(characterTask$, (interval: any, tasks: ITask[]) => {
+                        //TODO: get the numActiveTasksAllowed from current character?
+                        if (tasks.length < this.numActiveTasksAllowed) {
+                            //TODO: pull the task type from current character settings
+                            let newTask = this.taskFactory.generateTask(character, null);
+                            this.store.dispatch(this.taskActions.addTask(newTask));
+                        }
+                    }).subscribe();
             })
 
         // this.taskCheck$ = Observable.combineLatest(newCharacter$, task$);
@@ -49,14 +63,7 @@ export class TaskManagerService{
         //     let [character, tasks] = latest;
         //     console.log('character:');
         //     console.dir(character);
-        //     console.log('tasks:');
-        //     console.dir(tasks);
-        //     //TODO: get the numActiveTasksAllowed from current character?
-        //     if (tasks.length < this.numActiveTasksAllowed) {
-        //         //TODO: pull the task type from current character settings
-        //         let newTask = this.taskFactory.generateTask(null);
-        //         this.store.dispatch(this.taskActions.addTask(newTask));
-        //     }
+        //     
         // });
     }
 

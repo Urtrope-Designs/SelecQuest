@@ -8,8 +8,8 @@ export interface ITask {
 	startTime: Date,
 	endTime: Date,
 	durationSeconds: number,
-	isComplete: boolean
-
+	isComplete: boolean,
+	characterId: string
 }
 
 export enum QuestTypes {

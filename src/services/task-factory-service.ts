@@ -5,7 +5,7 @@ import {ICharacter} from '../models/character-types';
 
 @Injectable()
 export class TaskFactoryService {
-	public generateTask(type: QuestTypes, startTime: Date = new Date()): ITask {
+	public generateTask(character: ICharacter, type: QuestTypes, startTime: Date = new Date()): ITask {
 		let newTask: ITask;
 
 		let primaryReward: RewardTypes;
@@ -45,13 +45,31 @@ export class TaskFactoryService {
 			startTime: startTime,
 			endTime: endTime,
 			durationSeconds: duration,
-			isComplete: false
+			isComplete: false,
+			characterId: character.id
 		};
 
 		return newTask;
 	}
 
 	public getRandomName(type: QuestTypes): string {
-		return 'Fix something';
+		let action = actions[Math.floor(Math.random() * actions.length)];
+		let predicate = predicates[Math.floor(Math.random() * predicates.length)];
+		let name = action + ' ' + predicate + '.';
+		return name;
 	}
 }
+
+const actions = [
+	'Fetch',
+	'Find',
+	'Steal',
+	'Fix'
+]
+
+const predicates = [
+	'something',
+	'a toad',
+	'three sisters',
+	'another Mai Tai'
+]

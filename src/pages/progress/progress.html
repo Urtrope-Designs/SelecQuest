@@ -10,8 +10,14 @@
   <ion-list>
     <ion-list-header>Tasks</ion-list-header>
     <ion-item *ngFor="let task of task$ | async">
-      <ion-icon [name]="getTaskIcon(task)" item-left></ion-icon>
-      {{task.name}}
+      <div *ngIf="task.endTime <= curTime">
+        <ion-icon name="checkmark-circle-outline" item-left></ion-icon>
+        {{task.name}} - 100% complete
+      </div>
+      <div *ngIf="task.endTime > curTime">
+        <ion-icon name="code-working" item-left></ion-icon>
+        {{task.name}} - {{((curTime.getTime() - task.startTime.getTime()) / (task.durationSeconds * 1000)) | percent:'1.0-0'}} complete
+      </div>
     </ion-item>
   </ion-list>
 </ion-content>
