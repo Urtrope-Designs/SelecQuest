@@ -24,6 +24,11 @@ export class CharacterPage {
 
 	ionViewDidLoad() {
 		this.character$ = this.store.select('curCharacter');
+		this.character$.subscribe((character: ICharacter) => {
+			if (!character) {
+				this.showDetail(null);
+			}
+		})
 	}
 
 	showDetail(characterId: string): void {
