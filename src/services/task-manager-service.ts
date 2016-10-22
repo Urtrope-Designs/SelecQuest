@@ -9,7 +9,7 @@ import 'rxjs/add/observable/combineLatest';
 import 'rxjs/add/observable/interval';
 import {Subscription} from 'rxjs/Subscription';
 import {AppState} from './app-state';
-import {ITask} from '../models/task-types';
+import {ITask, QuestTypes} from '../models/task-types';
 import {TaskFactoryService} from './task-factory-service';
 import {TaskActions} from '../actions/task-actions';
 import {ICharacter} from '../models/character-types';
@@ -47,24 +47,29 @@ export class TaskManagerService{
                             return task.characterId == character.id;
                         });
                     });
+
                 Observable.interval(100)
-                    .withLatestFrom(characterTask$, (interval: any, tasks: ITask[]) => {
+                    .withLatestFrom(characterTask$, this.store.select('selectedQuestType'), (tick: any, tasks: ITask[], selectedQuestType: QuestTypes) => {
+                        let activeTasks = tasks.filter((task: ITask) => {
+                            return !task.isComplete;
+                        })
                         //TODO: get the numActiveTasksAllowed from current character?
-                        if (tasks.length < this.numActiveTasksAllowed) {
+                        if (activeTasks.length < this.numActiveTasksAllowed) {
                             //TODO: pull the task type from current character settings
-                            let newTask = this.taskFactory.generateTask(character, null);
-                            this.store.dispatch(this.taskActions.addTask(newTask));
+                            this.createAndDispatchNewTask(character, selectedQuestType);
+                        } else {
+                            activeTasks.map((task: ITask) => {
+                                if (task.endTime <= new Date()) {
+                                    this.store.dispatch(this.taskActions.completeTask(task));
+                                }
+                            })
                         }
                     }).subscribe();
-            })
-
-        // this.taskCheck$ = Observable.combineLatest(newCharacter$, task$);
-        // this.taskCheck$.subscribe((latest: [ICharacter, ITask[]]) => {
-        //     let [character, tasks] = latest;
-        //     console.log('character:');
-        //     console.dir(character);
-        //     
-        // });
+            });
     }
 
+    createAndDispatchNewTask(character: ICharacter, taskType: QuestTypes) {
+        let newTask = this.taskFactory.generateTask(character, taskType);
+        this.store.dispatch(this.taskActions.addTask(newTask));
+    }
 }

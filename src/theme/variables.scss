@@ -10,9 +10,31 @@
 // To view all the possible Ionic variables, see:
 // http://ionicframework.com/docs/v2/theming/overriding-ionic-variables/
 
-$text-color:        #000;
-$background-color:  #fff;
+$text-color:        #0f0;
+$background-color:  #222;
 
+$toolbar-background: $background-color;
+$toolbar-md-title-text-color: $text-color;
+$toolbar-ios-title-text-color: $text-color;
+$toolbar-wp-title-text-color: $text-color;
+$toolbar-border-color: $text-color;
+$list-border-color: $text-color;
+$list-md-border-color: $list-border-color;
+$list-md-header-color: $text-color;
+$list-ios-header-color: $text-color;
+$list-wp-header-color: $text-color;
+$label-md-text-color: $text-color;
+$label-ios-text-color: $text-color;
+$label-wp-text-color: $text-color;
+$toolbar-ios-button-color: $text-color;
+$toolbar-wp-button-color: $text-color;
+$toolbar-md-border-color: $text-color;
+
+$button-ios-border-radius: 0;
+$button-md-border-radius: 0;
+
+$font-family-base: "Courier", monospace;
+$font-family-md-base: $font-family-base;
 
 // Named Color Variables
 // --------------------------------------------------
@@ -23,11 +45,11 @@ $background-color:  #fff;
 // The "primary" color is the only required color in the map.
 
 $colors: (
-  primary:    #387ef5,
+  primary:    $text-color,
   secondary:  #32db64,
   danger:     #f53d3d,
-  light:      #f4f4f4,
-  dark:       #222,
+  light:      $background-color,
+  dark:       $text-color,
   favorite:   #69BB7B
 );
 
@@ -39,7 +61,7 @@ $colors: (
 // so that the above variables are used and Ionic's
 // default are overridden.
 
-@import "ionic.theme.default";
+@import "ionic.theme.dark";
 
 
 // Ionicons

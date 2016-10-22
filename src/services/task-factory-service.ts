@@ -16,7 +16,7 @@ export class TaskFactoryService {
 			let rand1to3 = Math.floor(Math.random() * 3) + 1;
 			type = QuestTypes[QuestTypes[rand1to3]];
 		}
-
+		
 		switch(type) {
 			case QuestTypes.GLADIATING:
 				primaryReward = RewardTypes.XP;
@@ -31,7 +31,7 @@ export class TaskFactoryService {
 				secondaryReward = rando < .5 ? RewardTypes.GOLD : RewardTypes.XP;
 				break;
 			default:
-				console.log('taskFactory.generateTask error: should not be able to get to default case');
+				console.log('taskFactory.generateTask error: should not be able to get to default case: ' + type);
 		}
 
 		let duration = 6;
@@ -55,7 +55,7 @@ export class TaskFactoryService {
 	public getRandomName(type: QuestTypes): string {
 		let action = actions[Math.floor(Math.random() * actions.length)];
 		let predicate = predicates[Math.floor(Math.random() * predicates.length)];
-		let name = action + ' ' + predicate + '.';
+		let name = action + ' ' + predicate;
 		return name;
 	}
 }
@@ -70,6 +70,6 @@ const actions = [
 const predicates = [
 	'something',
 	'a toad',
-	'three sisters',
+	'three bundles',
 	'another Mai Tai'
 ]

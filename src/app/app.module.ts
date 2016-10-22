@@ -16,6 +16,9 @@ import {CharacterReducer} from '../reducers/character-reducer';
 import {CharacterActions} from '../actions/character-actions';
 import {TaskReducer} from '../reducers/task-reducer';
 import {TaskActions} from '../actions/task-actions';
+import {SelectedQuestTypeReducer} from '../reducers/selected-quest-type-reducer';
+import {SelectedQuestTypeActions} from '../actions/selected-quest-type-actions';
+import {QuestTypes} from '../models/task-types';
 
 // SQ services
 import {CharacterFactoryService} from '../services/character-factory-service';
@@ -23,12 +26,15 @@ import {TaskFactoryService} from '../services/task-factory-service';
 import {TaskManagerService} from '../services/task-manager-service';
 
 const NGRX_IMPORTS = [
-  StoreModule.provideStore({curCharacter: CharacterReducer, activeTasks: TaskReducer}, {curCharacter: undefined, activeTasks: []})
+  StoreModule.provideStore(
+    {curCharacter: CharacterReducer, activeTasks: TaskReducer, selectedQuestType: SelectedQuestTypeReducer}, 
+    {curCharacter: undefined, activeTasks: [], selectedQuestType: QuestTypes.INVESTIGATING})
 ]
 
 const NGRX_PROVIDERS = [
   CharacterActions,
-  TaskActions
+  TaskActions,
+  SelectedQuestTypeActions
 ];
 
 const SQ_PROVIDERS = [
