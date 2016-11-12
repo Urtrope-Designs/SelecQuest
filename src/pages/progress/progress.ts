@@ -37,7 +37,7 @@ export class ProgressPage {
 
         tasksForCurChar.sort((a: ITask, b: ITask) => {
           return b.endTime.getTime() - a.endTime.getTime();
-        })
+        });
 
         return tasksForCurChar;
       });

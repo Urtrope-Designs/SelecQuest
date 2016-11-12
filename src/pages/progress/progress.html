@@ -19,7 +19,7 @@
 
   <ion-list>
     <ion-list-header>Tasks</ion-list-header>
-    <ion-item *ngFor="let task of task$.take(5) | async | slice:0:5">
+    <ion-item *ngFor="let task of task$ | async | slice:0:5">
       {{RewardTypes[task.primaryReward]}}: {{task.name}}
       <ion-note item-right>
         {{task.isComplete ? '100%' : ((curTime.getTime() - task.startTime.getTime()) / (task.durationSeconds
