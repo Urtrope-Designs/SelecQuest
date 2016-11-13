@@ -1,4 +1,4 @@
-import {Component, ChangeDetectionStrategy} from '@angular/core';
+import {Component/*, ChangeDetectionStrategy*/} from '@angular/core';
 import {NavController, ModalController} from 'ionic-angular';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs/rx';
@@ -8,8 +8,8 @@ import {CharacterDetailsPage} from '../../pages/character-details/character-deta
 import {ICharacter} from '../../models/character-types';
 
 @Component({
-	templateUrl: 'character.html',
-	changeDetection: ChangeDetectionStrategy.OnPush
+	templateUrl: 'character.html'//,
+	//changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CharacterPage {
 	public character$: Observable<any>;
@@ -28,7 +28,7 @@ export class CharacterPage {
 			if (!character) {
 				this.showDetail(null);
 			}
-		})
+		});
 	}
 
 	showDetail(characterId: string): void {
@@ -38,7 +38,7 @@ export class CharacterPage {
 				let action = this.charActions.setCharacter(data.character);
 				this.store.dispatch(action);
 			}
-		})
+		});
 		charModal.present();
 	}
 }
