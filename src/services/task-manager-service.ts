@@ -55,12 +55,11 @@ export class TaskManagerService{
                         })
                         //TODO: get the numActiveTasksAllowed from current character?
                         if (activeTasks.length < this.numActiveTasksAllowed) {
-                            //TODO: pull the task type from current character settings
                             this.createAndDispatchNewTask(character, selectedQuestType);
                         } else {
                             activeTasks.map((task: ITask) => {
                                 if (task.endTime <= new Date()) {
-                                    this.store.dispatch(this.taskActions.completeTask(task));
+                                    this.handleCompletedTask(task, selectedQuestType);
                                 }
                             })
                         }
@@ -72,4 +71,10 @@ export class TaskManagerService{
         let newTask = this.taskFactory.generateTask(character, taskType);
         this.store.dispatch(this.taskActions.addTask(newTask));
     }
+
+    handleCompletedTask(task: ITask, selectedQuestType: QuestTypes) {
+        this.store.dispatch(this.taskActions.completeTask(task));
+        
+    }
 }
+
