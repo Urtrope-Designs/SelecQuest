@@ -28,6 +28,7 @@ export class CharacterFactoryService {
 			abilities: []
 		};
 
+
 		return fullCharacter;
 	}
 
