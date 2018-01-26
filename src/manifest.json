@@ -1,13 +1,13 @@
 {
-  "name": "Ionic",
-  "short_name": "Ionic",
-  "start_url": "index.html",
+  "name": "Ionic PWA Toolkit",
+  "short_name": "Ionic PWA",
+  "start_url": "/",
   "display": "standalone",
   "icons": [{
-    "src": "assets/imgs/logo.png",
+    "src": "assets/icon/icon.png",
     "sizes": "512x512",
     "type": "image/png"
   }],
-  "background_color": "#4e8ef7",
-  "theme_color": "#4e8ef7"
+  "background_color": "#488aff",
+  "theme_color": "#488aff"
 }

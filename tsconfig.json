@@ -1,26 +1,25 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
+    "allowUnreachableCode": false,
     "declaration": false,
-    "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "lib": [
       "dom",
       "es2015"
     ],
-    "module": "es2015",
     "moduleResolution": "node",
-    "sourceMap": true,
-    "target": "es5"
+    "module": "es2015",
+    "target": "es2015",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "jsx": "react",
+    "jsxFactory": "h"
   },
   "include": [
-    "src/**/*.ts"
+    "src"
   ],
   "exclude": [
     "node_modules"
-  ],
-  "compileOnSave": false,
-  "atom": {
-    "rewriteTsconfig": false
-  }
+  ]
 }

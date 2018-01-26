@@ -1,54 +1,52 @@
 {
-  "name": "ionic-hello-world",
-  "author": "Ionic Framework",
-  "homepage": "http://ionicframework.com/",
+  "name": "SelecQuest",
   "private": true,
+  "version": "0.0.1",
+  "description": "SelecQuest",
+  "files": [
+    "dist/"
+  ],
   "scripts": {
-    "ionic:build": "ionic-app-scripts build",
-    "ionic:serve": "ionic-app-scripts serve"
+    "build": "stencil build",
+    "dev": "sd concurrent \"stencil build --dev --watch\" \"stencil-dev-server\" ",
+    "devWithSW": "sd concurrent \"stencil build --dev --service-worker --watch\" \"stencil-dev-server\" ",
+    "serve": "stencil-dev-server",
+    "start": "npm run dev",
+    "test": "jest --no-cache",
+    "test.watch": "jest --watch --no-cache"
   },
   "dependencies": {
-    "@angular/common": "2.2.1",
-    "@angular/compiler": "2.2.1",
-    "@angular/compiler-cli": "2.2.1",
-    "@angular/core": "2.2.1",
-    "@angular/forms": "2.2.1",
-    "@angular/http": "2.2.1",
-    "@angular/platform-browser": "2.2.1",
-    "@angular/platform-browser-dynamic": "2.2.1",
-    "@angular/platform-server": "2.2.1",
-    "@ionic/storage": "1.1.6",
-    "ionic-angular": "2.0.0-rc.4",
-    "ionic-native": "2.2.11",
-    "ionicons": "3.0.0",
-    "rxjs": "5.0.0-beta.12",
-    "zone.js": "0.6.26",
-    "@ngrx/core": "1.2.0",
-    "@ngrx/store": "2.2.1"
+    "@ionic/core": "0.0.2-48",
+    "@stencil/core": "0.2.1",
+    "@stencil/router": "latest"
   },
   "devDependencies": {
-    "@ionic/app-scripts": "^0.0.47",
-    "browserify": "13.0.0",
-    "browserify-istanbul": "2.0.0",
-    "isparta": "4.0.0",
-    "jasmine-core": "^2.4.1",
-    "karma": "^1.3.0",
-    "karma-browserify": "5.0.5",
-    "karma-chrome-launcher": "^2.0.0",
-    "karma-jasmine": "^1.0.2",
-    "run-sequence": "1.1.5",
-    "tsify": "0.16.0",
-    "typescript": "^2.0.9",
-    "watchify": "^3.7.0"
+    "@stencil/dev-server": "latest",
+    "@stencil/utils": "latest",
+    "@types/jest": "^21.1.1",
+    "jest": "^21.2.1"
   },
-  "description": "SelecQuest: ProgressQuest with a choice!",
-  "cordovaPlugins": [
-    "cordova-plugin-device",
-    "cordova-plugin-console",
-    "cordova-plugin-whitelist",
-    "cordova-plugin-splashscreen",
-    "cordova-plugin-statusbar",
-    "ionic-plugin-keyboard"
-  ],
-  "cordovaPlatforms": []
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ionic-team/stencil-app-starter.git"
+  },
+  "author": "Ionic Team",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ionic-team/stencil"
+  },
+  "homepage": "https://github.com/ionic-team/stencil",
+  "jest": {
+    "transform": {
+      "^.+\\.(ts|tsx)$": "<rootDir>/node_modules/@stencil/core/testing/jest.preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(tsx?|jsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "json",
+      "jsx"
+    ]
+  }
 }
