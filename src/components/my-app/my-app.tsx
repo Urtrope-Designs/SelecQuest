@@ -1,6 +1,8 @@
 import { Component, Prop, Listen } from '@stencil/core';
 import { ToastController } from '@ionic/core';
 
+import { TaskManager } from '../../helpers/utils';
+
 @Component({
   tag: 'my-app',
   styleUrl: 'my-app.scss'
@@ -8,6 +10,7 @@ import { ToastController } from '@ionic/core';
 export class MyApp {
 
   @Prop({ connect: 'ion-toast-controller' }) toastCtrl: ToastController;
+  public taskMgr: TaskManager;
 
   componentDidLoad() {
     /*
@@ -28,6 +31,9 @@ export class MyApp {
         toast.present();
       });
     })
+
+    this.taskMgr = new TaskManager();
+    this.taskMgr.init();
   }
 
   @Listen('body:ionToastWillDismiss')

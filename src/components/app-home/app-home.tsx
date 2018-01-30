@@ -12,7 +12,7 @@ export class AppHome {
       <ion-page class='show-page'>
         <ion-header md-height='56px'>
           <ion-toolbar color='primary'>
-            <ion-title>Ionic PWA Toolkit</ion-title>
+            <ion-title>SelecQuest</ion-title>
           </ion-toolbar>
         </ion-header>
 
