@@ -1,13 +1,22 @@
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable } from 'rxjs/Observable';
 
-import { Task } from './models';
+import { Task, AppState } from './models';
+import { ActionManager, SetActiveTask, TaskCompleted } from './actions';
 
 export class TaskManager {
     private curTask: Task;
-    private curTask$: BehaviorSubject<Task>;
+
+    constructor(public stateStore: Observable<AppState>, public actionMgr: ActionManager) {
+        stateStore.subscribe((state: AppState) => {
+            if (!state.hasActiveTask) {
+                let newTask = this.generateRandomTask();
+                newTask.completionTimeoutId = setTimeout(this.taskCompleted.bind(this), newTask.durationMs, newTask);
+                this.actionMgr.emitAction(new SetActiveTask(newTask));
+            }
+        })
+    }
 
     init() {
-        this.curTask$ = new BehaviorSubject<Task>(this.generateRandomTask());
         this.startNewTask();
     }
     
@@ -23,6 +32,6 @@ export class TaskManager {
 
     taskCompleted(completedTask: Task) {
         console.log(`Completed task: ${completedTask.description}.`);
-        this.startNewTask();
+        this.actionMgr.emitAction(new TaskCompleted(completedTask));
     }
 }

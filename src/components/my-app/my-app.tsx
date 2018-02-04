@@ -1,7 +1,11 @@
 import { Component, Prop, Listen } from '@stencil/core';
 import { ToastController } from '@ionic/core';
+import { Observable } from 'rxjs/Observable';
 
 import { TaskManager } from '../../helpers/task-manager';
+import { stateFn } from '../../helpers/state-store';
+import { AppState } from '../../helpers/models';
+import { ActionManager } from '../../helpers/actions';
 
 @Component({
   tag: 'my-app',
@@ -11,6 +15,8 @@ export class MyApp {
 
   @Prop({ connect: 'ion-toast-controller' }) toastCtrl: ToastController;
   public taskMgr: TaskManager;
+  public actionMgr: ActionManager;
+  private state: Observable<AppState>;
 
   componentDidLoad() {
     /*
@@ -32,8 +38,9 @@ export class MyApp {
       });
     })
 
-    this.taskMgr = new TaskManager();
-    this.taskMgr.init();
+    this.actionMgr = new ActionManager();
+    this.state = stateFn({activeTask: null, hasActiveTask: false}, this.actionMgr.getActionManager());
+    this.taskMgr = new TaskManager(this.state, this.actionMgr);
   }
 
   @Listen('body:ionToastWillDismiss')
