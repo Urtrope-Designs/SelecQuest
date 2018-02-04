@@ -4,8 +4,6 @@ import { Task, AppState } from './models';
 import { ActionManager, SetActiveTask, TaskCompleted } from './actions';
 
 export class TaskManager {
-    private curTask: Task;
-
     constructor(public stateStore: Observable<AppState>, public actionMgr: ActionManager) {
         stateStore.subscribe((state: AppState) => {
             if (!state.hasActiveTask) {
@@ -14,15 +12,6 @@ export class TaskManager {
                 this.actionMgr.emitAction(new SetActiveTask(newTask));
             }
         })
-    }
-
-    init() {
-        this.startNewTask();
-    }
-    
-    startNewTask() {
-        this.curTask = this.generateRandomTask();
-        setTimeout(this.taskCompleted.bind(this), this.curTask.durationMs, this.curTask);
     }
 
     generateRandomTask(): Task {
