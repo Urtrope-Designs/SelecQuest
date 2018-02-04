@@ -1,7 +1,7 @@
 import { Component, Prop, Listen } from '@stencil/core';
 import { ToastController } from '@ionic/core';
 
-import { TaskManager } from '../../helpers/utils';
+import { TaskManager } from '../../helpers/task-manager';
 
 @Component({
   tag: 'my-app',
