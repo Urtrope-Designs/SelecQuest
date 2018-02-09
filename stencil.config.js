@@ -5,7 +5,7 @@ exports.config = {
     { components: ['lazy-img'] }
   ],
   collections: [
-    { name: '@stencil/router' },
+    // { name: '@stencil/router' },
     { name: '@ionic/core' }
   ],
   serviceWorker: {

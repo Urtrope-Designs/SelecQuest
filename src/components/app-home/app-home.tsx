@@ -1,36 +1,44 @@
-import { Component } from '@stencil/core';
+import { Component, Prop, State } from '@stencil/core';
+import { Observable } from 'rxjs/Observable';
 
+import { AppState, Character } from '../../helpers/models';
 
 @Component({
-  tag: 'app-home',
-  styleUrl: 'app-home.scss'
+    tag: 'app-home',
+    styleUrl: 'app-home.scss'
 })
 export class AppHome {
+    @Prop() appState: Observable<AppState>;
 
-  render() {
-    return (
-      <ion-page class='show-page'>
-        <ion-header md-height='56px'>
-          <ion-toolbar color='primary'>
-            <ion-title>SelecQuest</ion-title>
-          </ion-toolbar>
-        </ion-header>
+    @State() character: any;
 
-        <ion-content>
-          <p>
-            Welcome to the Ionic PWA Toolkit.
-            You can use this starter to build entire PWAs all with
-            web components using Stencil and ionic/core! Check out the readme for everything that comes in this starter out of the box and
-            Check out our docs on <a href='https://stenciljs.com'>stenciljs.com</a> to get started.
-          </p>
+    componentWillLoad() {
+        this.appState.subscribe((state: AppState) => {
+            this.character = state.character;
+        })
+    }
 
-          <stencil-route-link url='/profile/stencil'>
-            <ion-button>
-              Profile page
+    render() {
+        return (
+            <ion-page class='show-page'>
+                <ion-header md-height='56px'>
+                    <ion-toolbar color='primary'>
+                        <ion-title>SelecQuest</ion-title>
+                    </ion-toolbar>
+                </ion-header>
+
+                <ion-content>
+                    <p>
+                        Character Str = {this.character.str}
+                    </p>
+
+                    <stencil-route-link url='/profile/stencil'>
+                        <ion-button>
+                            Profile page
             </ion-button>
-          </stencil-route-link>
-        </ion-content>
-      </ion-page>
-    );
-  }
+                    </stencil-route-link>
+                </ion-content>
+            </ion-page>
+        );
+    }
 }

@@ -14,12 +14,28 @@ export class TaskManager {
         })
     }
 
-    generateRandomTask(): Task {
-        let newTask = new Task('Do test ' + Math.ceil(Math.random() * 100), Math.ceil(Math.random() * 3 + 2) * 1000);
+    private generateRandomTask(): Task {
+        const results = this.generateResults();
+        const newTask: Task = {
+            description: 'Do test ' + Math.ceil(Math.random() * 100),
+            durationMs: Math.ceil(Math.random() * 3 + 2) * 1000,
+            results: results
+        };
         return newTask;
     } 
 
-    taskCompleted(completedTask: Task) {
+    private generateResults() {
+        const resultOptions = [
+            {'str': 1},
+            {'maxHp': 2},
+            {'spells': {'Tonguehairs': {rank: 1}}},
+        ]
+        let results = resultOptions[Math.floor(Math.random() * 3)];
+
+        return results;
+    }
+
+    private taskCompleted(completedTask: Task) {
         console.log(`Completed task: ${completedTask.description}.`);
         this.actionMgr.emitAction(new TaskCompleted(completedTask));
     }

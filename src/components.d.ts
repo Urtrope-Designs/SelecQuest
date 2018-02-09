@@ -4,10 +4,14 @@
  * and imports for stencil collections that might be configured in your stencil.config.js file
  */
 
-import '@stencil/router';
-
 import '@ionic/core';
 
+import {
+  Observable,
+} from 'rxjs/Observable';
+import {
+  AppState,
+} from './helpers/models';
 import {
   MatchResults,
 } from '@stencil/router';
@@ -36,7 +40,7 @@ declare global {
   }
   namespace JSXElements {
     export interface AppHomeAttributes extends HTMLAttributes {
-      
+      appState?: Observable<AppState>;
     }
   }
 }
