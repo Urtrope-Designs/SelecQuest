@@ -31,12 +31,16 @@ export class AppHome {
                     <p>
                         Character Str = {this.character.str}
                     </p>
-
-                    <stencil-route-link url='/profile/stencil'>
-                        <ion-button>
-                            Profile page
-            </ion-button>
-                    </stencil-route-link>
+                    <p>
+                        Spells:
+                        {
+                            Object.keys(this.character.spells).length == 0 
+                            ? <div>[None]</div>    
+                            : Object.keys(this.character.spells).map((spell) => 
+                                    <div>{spell} {this.character.spells[spell].rank}</div>
+                                )
+                        }
+                    </p>
                 </ion-content>
             </ion-page>
         );
