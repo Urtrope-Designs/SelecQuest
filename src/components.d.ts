@@ -12,9 +12,6 @@ import {
 import {
   AppState,
 } from './helpers/models';
-import {
-  MatchResults,
-} from '@stencil/router';
 
 import {
   AppHome as AppHome
@@ -41,36 +38,6 @@ declare global {
   namespace JSXElements {
     export interface AppHomeAttributes extends HTMLAttributes {
       appState?: Observable<AppState>;
-    }
-  }
-}
-
-
-import {
-  AppProfile as AppProfile
-} from './components/app-profile/app-profile';
-
-declare global {
-  interface HTMLAppProfileElement extends AppProfile, HTMLElement {
-  }
-  var HTMLAppProfileElement: {
-    prototype: HTMLAppProfileElement;
-    new (): HTMLAppProfileElement;
-  };
-  interface HTMLElementTagNameMap {
-    "app-profile": HTMLAppProfileElement;
-  }
-  interface ElementTagNameMap {
-    "app-profile": HTMLAppProfileElement;
-  }
-  namespace JSX {
-    interface IntrinsicElements {
-      "app-profile": JSXElements.AppProfileAttributes;
-    }
-  }
-  namespace JSXElements {
-    export interface AppProfileAttributes extends HTMLAttributes {
-      match?: MatchResults;
     }
   }
 }
