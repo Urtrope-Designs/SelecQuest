@@ -17,6 +17,7 @@ export interface Character {
     spells: {[key: string]: {rank: number}}; 
     maxEncumbrance: number;
     loot: {[key: string]: {quantity: number, value: number}};
+    gold: number;
 }
 
 export interface AppState {

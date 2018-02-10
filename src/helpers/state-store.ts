@@ -11,6 +11,7 @@ function activeTask(initState: Task, actions: Observable<Action>) {
     return actions.pipe(
         scan((state: Task, action: Action) => {
             if (action instanceof SetActiveTask) {
+                console.log('new active task set');
                 return action.newTask;
             }
             else {
@@ -27,6 +28,7 @@ function hasActiveTask(initState: boolean, actions: Observable<Action>): Observa
                 return true;
             }
             else if (action instanceof TaskCompleted) {
+                console.log('hasActiveTask set to false');
                 return false;
             }
             else {
@@ -40,8 +42,9 @@ function character(initState: Character, actions: Observable<Action>): Observabl
     return actions.pipe(
         scan((state: Character, action: Action) => {
             if (action instanceof TaskCompleted) {
+                console.log('results about to be applied to char');
                 const updatedCharacter = applyTaskResult(state, action.completedTask)
-                console.log(updatedCharacter);
+                console.log('results applied to char');
                 return updatedCharacter;
             } else {
                 return state;

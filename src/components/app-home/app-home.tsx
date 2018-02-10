@@ -1,7 +1,7 @@
 import { Component, Prop, State } from '@stencil/core';
 import { Observable } from 'rxjs/Observable';
 
-import { AppState, Character } from '../../helpers/models';
+import { AppState, Character, Task } from '../../helpers/models';
 
 @Component({
     tag: 'app-home',
@@ -10,11 +10,18 @@ import { AppState, Character } from '../../helpers/models';
 export class AppHome {
     @Prop() appState: Observable<AppState>;
 
-    @State() character: any;
+    @State() character: Character;
+    @State() activeTask: Task;
 
     componentWillLoad() {
         this.appState.subscribe((state: AppState) => {
+            console.log('appstate updated in app-home');
+            console.log(state.character.loot);
             this.character = state.character;
+            if (state.hasActiveTask) {
+                console.log(state.activeTask);
+                this.activeTask = state.activeTask;
+            }
         })
     }
 
@@ -40,6 +47,21 @@ export class AppHome {
                                     <div>{spell} {this.character.spells[spell].rank}</div>
                                 )
                         }
+                    </p>
+                    <p>
+                        Loot: {Object.keys(this.character.loot).reduce((prevVal, curVal) => {return prevVal + this.character.loot[curVal].quantity}, 0)}
+                        {
+                            Object.keys(this.character.loot).length == 0
+                            ? <div>[None]</div>
+                            : Object.keys(this.character.loot).map((item) => 
+                                    <div>{item} {this.character.loot[item].quantity}</div>
+                                )
+                        }
+                    </p>
+                    <br/>
+                    <p>
+                        Current Task:
+                        <div>{this.activeTask.description}</div>
                     </p>
                 </ion-content>
             </ion-page>

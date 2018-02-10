@@ -20,3 +20,16 @@ export function wrapIntoBehavior(init, obs) {
     obs.subscribe(s => res.next(s));
     return res;
 }
+
+export function randRange(min: number, max: number): number {
+    if (min == max) return min;
+    if (min > max) {
+        const temp = max;
+        max = min;
+        min = temp;
+    }
+
+    const delta = max - min;
+    const spread = Math.floor(Math.random() * (delta + 1));
+    return spread + min;
+}

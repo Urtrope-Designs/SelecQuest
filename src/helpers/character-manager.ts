@@ -13,6 +13,7 @@ export function createNewCharacter(): Character {
         maxEncumbrance: 15,
         spells: {},
         loot: {},
+        gold: 0,
     }
 
     return newChar;
@@ -32,6 +33,7 @@ export function applyTaskResult(baseChar: Character, task: Task): Character {
             case 'maxHp':
             case 'maxMp':
             case 'maxEncumbrance':
+            case 'gold':
                 newChar[attrib] += task.results[attrib];
                 break;
             case 'spells':
@@ -46,7 +48,10 @@ export function applyTaskResult(baseChar: Character, task: Task): Character {
             case 'loot':
                 for (let item in task.results[attrib]) {
                     if (!!newChar.loot[item]) {
-                        newChar.loot[item].quantity += task.results[attrib].quantity;
+                        newChar.loot[item].quantity += task.results[attrib][item].quantity;
+                        if (newChar.loot[item].quantity < 1) {
+                            delete newChar.loot[item];
+                        }
                     } else {
                         newChar.loot[item] = task.results[attrib][item];
                     }
