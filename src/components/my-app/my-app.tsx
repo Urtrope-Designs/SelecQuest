@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
 import { stateFn } from '../../helpers/state-store';
-import { AppState } from '../../helpers/models';
+import { AppState, TaskType } from '../../helpers/models';
 import { Action } from '../../helpers/actions';
 import { createNewCharacter } from '../../helpers/character-manager';
 
@@ -25,7 +25,7 @@ export class MyApp {
 
     constructor() {
         this.actionSubject = new Subject<Action>();
-        this.state = stateFn({ activeTask: null, hasActiveTask: false, character: createNewCharacter() }, this.actionSubject.asObservable());
+        this.state = stateFn({ activeTask: null, hasActiveTask: false, character: createNewCharacter(), activeTaskType: TaskType.LOOTING }, this.actionSubject.asObservable());
     }
 
     componentDidLoad() {

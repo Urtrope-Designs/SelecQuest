@@ -20,8 +20,15 @@ export interface Character {
     gold: number;
 }
 
+export enum TaskType {
+    LOOTING,
+    GLADIATING,
+    INVESTIGATING,
+}
+
 export interface AppState {
     activeTask: Task;
     hasActiveTask: boolean;
     character: Character;
+    activeTaskType: TaskType
 }

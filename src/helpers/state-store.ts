@@ -2,8 +2,8 @@ import { Observable } from 'rxjs/Observable';
 import { zip } from 'rxjs/observable/zip';
 import { scan } from 'rxjs/operators/scan';
 import { map } from 'rxjs/operators/map';
-import { Action, SetActiveTask, TaskCompleted } from './actions';
-import { Task, AppState, Character } from './models';
+import { Action, SetActiveTask, TaskCompleted, ChangeActiveTaskType } from './actions';
+import { Task, AppState, Character, TaskType } from './models';
 import { applyTaskResult } from './character-manager';
 import { wrapIntoBehavior } from './utils';
 
@@ -49,6 +49,18 @@ function character(initState: Character, actions: Observable<Action>): Observabl
     );
 }
 
+function activeTaskType(initState: TaskType, actions: Observable<Action>): Observable<TaskType> {
+    return actions.pipe(
+        scan((state: TaskType, action: Action) => {
+            if (action instanceof ChangeActiveTaskType) {
+                return action.newTaskType;
+            } else {
+                return state;
+            }
+        }, initState),
+    )
+}
+
 
 
 export function stateFn(initState: AppState, actions: Observable<Action>): Observable<AppState> {
@@ -56,12 +68,14 @@ export function stateFn(initState: AppState, actions: Observable<Action>): Obser
         character: s[0],
         activeTask: s[1],
         hasActiveTask: s[2],
+        activeTaskType: s[3],
     });
     const appStateObs: Observable<AppState> = 
         zip(
             character(initState.character, actions),
             activeTask(initState.activeTask, actions),
             hasActiveTask(initState.hasActiveTask, actions),
+            activeTaskType(initState.activeTaskType, actions),
         ).pipe(
             map(combine),
         );
