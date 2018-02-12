@@ -103,3 +103,33 @@ declare global {
   }
 }
 
+
+import {
+  TaskManager as TaskManager
+} from './helpers/task-manager';
+
+declare global {
+  interface HTMLTaskManagerElement extends TaskManager, HTMLElement {
+  }
+  var HTMLTaskManagerElement: {
+    prototype: HTMLTaskManagerElement;
+    new (): HTMLTaskManagerElement;
+  };
+  interface HTMLElementTagNameMap {
+    "task-manager": HTMLTaskManagerElement;
+  }
+  interface ElementTagNameMap {
+    "task-manager": HTMLTaskManagerElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      "task-manager": JSXElements.TaskManagerAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface TaskManagerAttributes extends HTMLAttributes {
+      stateStore?: Observable<AppState>;
+    }
+  }
+}
+

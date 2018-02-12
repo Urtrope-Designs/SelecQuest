@@ -15,11 +15,10 @@ export class AppHome {
 
     componentWillLoad() {
         this.appState.subscribe((state: AppState) => {
-            console.log('appstate updated in app-home');
-            console.log(state.character.loot);
-            this.character = state.character;
+            if (!!state.character) {
+                this.character = state.character;
+            }
             if (state.hasActiveTask) {
-                console.log(state.activeTask);
                 this.activeTask = state.activeTask;
             }
         })
@@ -61,7 +60,12 @@ export class AppHome {
                     <br/>
                     <p>
                         Current Task:
-                        <div>{this.activeTask.description}</div>
+                        {
+                            !!this.activeTask
+                            ? <div>{this.activeTask.description}</div>
+                            : <div>Loading...</div>
+                        }
+                        
                     </p>
                 </ion-content>
             </ion-page>

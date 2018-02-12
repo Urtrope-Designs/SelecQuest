@@ -1,13 +1,19 @@
+import { Event, EventEmitter, Component, Prop } from '@stencil/core';
 import { Observable } from 'rxjs/Observable';
 
 import { Task, AppState } from './models';
-import { ActionManager, SetActiveTask, TaskCompleted } from './actions';
+import { SetActiveTask, TaskCompleted } from './actions';
 import { randRange } from './utils';
 
+@Component({
+    tag: 'task-manager',
+})
 export class TaskManager {
     private taskGenAlgos: TaskGenerator[];
+    @Prop() stateStore: Observable<AppState>;
+    @Event() taskAction: EventEmitter;
 
-    constructor(public stateStore: Observable<AppState>, public actionMgr: ActionManager) {
+    constructor() {
         this.taskGenAlgos =[
             lootingTaskGenerator,
             selloffTaskGenerator,
@@ -15,44 +21,27 @@ export class TaskManager {
         this.taskGenAlgos.sort((a, b) => {
             return b.priority - a.priority;
         })
-        stateStore.subscribe((state: AppState) => {
+       
+    }
+
+    componentWillLoad() {
+        this.stateStore.subscribe((state: AppState) => {
             if (!state.hasActiveTask) {
-                console.log('selecting task generator');
                 const curAlgo = this.taskGenAlgos.find((algo: TaskGenerator) => {
                     return algo.shouldRun(state);
                 })
                 let newTask = curAlgo.generateTask(state);
         
-                newTask.completionTimeoutId = setTimeout(this.taskCompleted.bind(this), newTask.durationMs, newTask);
-                this.actionMgr.emitAction(new SetActiveTask(newTask));
+                setTimeout(() => {
+                    newTask.completionTimeoutId = setTimeout(this.completeTask.bind(this), newTask.durationMs, newTask);
+                    this.taskAction.emit(new SetActiveTask(newTask));
+                }, 10)
             }
         })
     }
 
-    // private generateRandomTask(): Task {
-    //     const results = this.generateResults();
-    //     const newTask: Task = {
-    //         description: 'Do test ' + randRange(1, 100),
-    //         durationMs: randRange(2, 5) * 1000,
-    //         results: results
-    //     };
-    //     return newTask;
-    // } 
-
-    // private generateResults() {
-    //     const resultOptions = [
-    //         {'str': 1},
-    //         {'maxHp': 2},
-    //         {'spells': {'Tonguehairs': {rank: 1}}},
-    //     ]
-    //     let results = resultOptions[randRange(0, 2)];
-
-    //     return results;
-    // }
-
-    private taskCompleted(completedTask: Task) {
-        console.log(`Completed task: ${completedTask.description}.`);
-        this.actionMgr.emitAction(new TaskCompleted(completedTask));
+    private completeTask(completedTask: Task) {
+        this.taskAction.emit(new TaskCompleted(completedTask));
     }
 }
 

@@ -1,11 +1,11 @@
 import { Component, Prop, Listen } from '@stencil/core';
 import { ToastController } from '@ionic/core';
 import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 
-import { TaskManager } from '../../helpers/task-manager';
 import { stateFn } from '../../helpers/state-store';
 import { AppState } from '../../helpers/models';
-import { ActionManager } from '../../helpers/actions';
+import { Action } from '../../helpers/actions';
 import { createNewCharacter } from '../../helpers/character-manager';
 
 @Component({
@@ -15,14 +15,17 @@ import { createNewCharacter } from '../../helpers/character-manager';
 export class MyApp {
 
     @Prop({ connect: 'ion-toast-controller' }) toastCtrl: ToastController;
-    public taskMgr: TaskManager;
-    public actionMgr: ActionManager;
+    private actionSubject: Subject<Action>;
     private state: Observable<AppState>;
+    
+    @Listen('taskAction')
+    taskActionhandler(event: CustomEvent) {
+        this.actionSubject.next(event.detail);
+    }
 
     constructor() {
-        this.actionMgr = new ActionManager();
-        this.state = stateFn({ activeTask: null, hasActiveTask: false, character: createNewCharacter() }, this.actionMgr.getActionManager());
-        this.taskMgr = new TaskManager(this.state, this.actionMgr);        
+        this.actionSubject = new Subject<Action>();
+        this.state = stateFn({ activeTask: null, hasActiveTask: false, character: createNewCharacter() }, this.actionSubject.asObservable());
     }
 
     componentDidLoad() {
@@ -54,6 +57,7 @@ export class MyApp {
     render() {
         return (
             <ion-app>
+                <task-manager stateStore={this.state}></task-manager>
                 <app-home appState={this.state}>
                 </app-home>
             </ion-app>

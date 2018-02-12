@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs/Observable';
+import { zip } from 'rxjs/observable/zip';
 import { scan } from 'rxjs/operators/scan';
-import { zip } from 'rxjs/operators/zip';
 import { map } from 'rxjs/operators/map';
 import { Action, SetActiveTask, TaskCompleted } from './actions';
 import { Task, AppState, Character } from './models';
@@ -11,7 +11,6 @@ function activeTask(initState: Task, actions: Observable<Action>) {
     return actions.pipe(
         scan((state: Task, action: Action) => {
             if (action instanceof SetActiveTask) {
-                console.log('new active task set');
                 return action.newTask;
             }
             else {
@@ -28,7 +27,6 @@ function hasActiveTask(initState: boolean, actions: Observable<Action>): Observa
                 return true;
             }
             else if (action instanceof TaskCompleted) {
-                console.log('hasActiveTask set to false');
                 return false;
             }
             else {
@@ -42,9 +40,7 @@ function character(initState: Character, actions: Observable<Action>): Observabl
     return actions.pipe(
         scan((state: Character, action: Action) => {
             if (action instanceof TaskCompleted) {
-                console.log('results about to be applied to char');
                 const updatedCharacter = applyTaskResult(state, action.completedTask)
-                console.log('results applied to char');
                 return updatedCharacter;
             } else {
                 return state;
@@ -56,13 +52,17 @@ function character(initState: Character, actions: Observable<Action>): Observabl
 
 
 export function stateFn(initState: AppState, actions: Observable<Action>): Observable<AppState> {
-    const combine = s => ({activeTask: s[0], hasActiveTask: s[1], character: s[2]});
+    const combine = s => ({
+        character: s[0],
+        activeTask: s[1],
+        hasActiveTask: s[2],
+    });
     const appStateObs: Observable<AppState> = 
-        activeTask(initState.activeTask, actions).pipe(
-            zip(
-                hasActiveTask(initState.hasActiveTask, actions),
-                character(initState.character, actions),
-            ),
+        zip(
+            character(initState.character, actions),
+            activeTask(initState.activeTask, actions),
+            hasActiveTask(initState.hasActiveTask, actions),
+        ).pipe(
             map(combine),
         );
     return wrapIntoBehavior(initState, appStateObs);

@@ -1,6 +1,6 @@
 exports.config = {
   bundles: [
-    { components: ['my-app', 'app-home'] },
+    { components: ['my-app', 'app-home', 'task-manager'] },
     { components: ['lazy-img'] }
   ],
   collections: [
