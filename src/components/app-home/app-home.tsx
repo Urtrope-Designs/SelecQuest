@@ -1,7 +1,7 @@
-import { Component, Prop, State } from '@stencil/core';
+import { Component, Prop, State, Event, EventEmitter } from '@stencil/core';
 import { Observable } from 'rxjs/Observable';
 
-import { AppState, Character, Task } from '../../helpers/models';
+import { AppState, Character, Task, TaskType } from '../../helpers/models';
 
 @Component({
     tag: 'app-home',
@@ -12,6 +12,8 @@ export class AppHome {
 
     @State() character: Character;
     @State() activeTask: Task;
+    @Event() taskTypeAction: EventEmitter;
+
 
     componentWillLoad() {
         this.appState.subscribe((state: AppState) => {
@@ -22,6 +24,22 @@ export class AppHome {
                 this.activeTask = state.activeTask;
             }
         })
+    }
+
+    taskTypeButtonClicked(newTaskTypeString: string) {
+        let newTaskType;
+        switch(newTaskTypeString) {
+            case 'LOOTING':
+                newTaskType = TaskType.LOOTING;
+                break;
+            case 'GLADIATING':
+                newTaskType = TaskType.GLADIATING;
+                break;
+            case 'INVESTIGATING':
+                newTaskType = TaskType.INVESTIGATING;
+                break;
+        }
+        this.taskTypeAction.emit(newTaskType)
     }
 
     render() {
@@ -67,6 +85,9 @@ export class AppHome {
                         }
                         
                     </p>
+                    <ion-button onClick={ () => this.taskTypeButtonClicked('LOOTING')}>LOOTING</ion-button>
+                    <ion-button onClick={ () => this.taskTypeButtonClicked('GLADIATING')}>GLADIATING</ion-button>
+                    <ion-button onClick={ () => this.taskTypeButtonClicked('INVESTIGATING')}>INVESTIGATING</ion-button>
                 </ion-content>
             </ion-page>
         );

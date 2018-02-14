@@ -53,6 +53,7 @@ function activeTaskType(initState: TaskType, actions: Observable<Action>): Obser
     return actions.pipe(
         scan((state: TaskType, action: Action) => {
             if (action instanceof ChangeActiveTaskType) {
+                console.log('task type updated: ' + TaskType[action.newTaskType]);
                 return action.newTaskType;
             } else {
                 return state;
