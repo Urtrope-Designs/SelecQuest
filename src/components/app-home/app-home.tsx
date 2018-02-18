@@ -12,6 +12,7 @@ export class AppHome {
 
     @State() character: Character;
     @State() activeTask: Task;
+    @State() activeTaskType: TaskType;
     @Event() taskTypeAction: EventEmitter;
 
 
@@ -19,6 +20,9 @@ export class AppHome {
         this.appState.subscribe((state: AppState) => {
             if (!!state.character) {
                 this.character = state.character;
+            }
+            if (state.activeTaskType != null) {
+                this.activeTaskType = state.activeTaskType;
             }
             if (state.hasActiveTask) {
                 this.activeTask = state.activeTask;
@@ -85,9 +89,9 @@ export class AppHome {
                         }
                         
                     </p>
-                    <ion-button onClick={ () => this.taskTypeButtonClicked('LOOTING')}>LOOTING</ion-button>
-                    <ion-button onClick={ () => this.taskTypeButtonClicked('GLADIATING')}>GLADIATING</ion-button>
-                    <ion-button onClick={ () => this.taskTypeButtonClicked('INVESTIGATING')}>INVESTIGATING</ion-button>
+                    <ion-button {...(this.activeTaskType != TaskType.LOOTING ? {color: 'light'} : {})} onClick={ () => this.taskTypeButtonClicked('LOOTING')}>LOOTING</ion-button>
+                    <ion-button color={this.activeTaskType == TaskType.GLADIATING ? 'default' : 'light'} onClick={ () => this.taskTypeButtonClicked('GLADIATING')}>GLADIATING</ion-button>
+                    <ion-button color={this.activeTaskType == TaskType.INVESTIGATING ? 'default' : 'light'} onClick={ () => this.taskTypeButtonClicked('INVESTIGATING')}>INVESTIGATING</ion-button>
                 </ion-content>
             </ion-page>
         );

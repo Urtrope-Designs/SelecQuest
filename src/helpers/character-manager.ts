@@ -13,6 +13,7 @@ export function createNewCharacter(): Character {
         maxEncumbrance: 15,
         spells: {},
         loot: {},
+        trophies: {},
         gold: 0,
     }
 

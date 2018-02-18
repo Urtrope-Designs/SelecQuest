@@ -1,7 +1,7 @@
 import { Event, EventEmitter, Component, Prop } from '@stencil/core';
 import { Observable } from 'rxjs/Observable';
 
-import { Task, AppState } from './models';
+import { Task, AppState, TaskType } from './models';
 import { SetActiveTask, TaskCompleted } from './actions';
 import { randRange } from './utils';
 
@@ -17,6 +17,7 @@ export class TaskManager {
         this.taskGenAlgos =[
             lootingTaskGenerator,
             selloffTaskGenerator,
+            gladiatingTaskGenerator,
         ];
         this.taskGenAlgos.sort((a, b) => {
             return b.priority - a.priority;
@@ -51,7 +52,8 @@ interface TaskGenerator {
     generateTask: (state: AppState) => Task;
 }
 
-let taskInc = 1;
+let lTaskInc = 1;
+let gTaskInc = 1;
 
 const lootingTaskGenerator: TaskGenerator = {
     priority: 0,
@@ -69,7 +71,7 @@ const lootingTaskGenerator: TaskGenerator = {
             'loot': loot
         }
         const newTask = {
-            description: 'Do loot task ' + taskInc++,
+            description: 'Do loot task ' + lTaskInc++,
             durationMs: randRange(5, 8) * 1000,
             results: results
         };
@@ -78,7 +80,7 @@ const lootingTaskGenerator: TaskGenerator = {
 }
 
 const selloffTaskGenerator: TaskGenerator = {
-    priority: 1,
+    priority: 2,
     shouldRun: (state: AppState) => {
         const currentEncumbrance = Object.keys(state.character.loot).reduce((prevVal, curVal) => {
             return prevVal + state.character.loot[curVal].quantity;
@@ -105,5 +107,30 @@ const selloffTaskGenerator: TaskGenerator = {
             results: results,
         }
         return newTask;
+    }
+}
+
+const gladiatingTaskGenerator: TaskGenerator = {
+    priority: 1,
+    shouldRun: (state: AppState) => {
+        return state.activeTaskType == TaskType.GLADIATING;
+    },
+    generateTask: (state: AppState) => {
+        const trophyName = 'trophy' + randRange(1, 4);
+        let trophy = {};
+        trophy[trophyName] = {
+            quantity: 1,
+            value: 1
+        }
+        const results = {
+            'trophy': trophy
+        }
+        const newTask = {
+            description: 'Do gladiating task ' + gTaskInc++,
+            durationMs: randRange(5, 8) * 1000,
+            results: results
+        };
+        return newTask;
+
     }
 }
