@@ -86,7 +86,6 @@ const selloffTaskGenerator: TaskGenerator = {
     },
     generateTask: (state: AppState) => {
         const sellName = Object.keys(state.character.loot)[0];
-        console.log('sellName: ' + sellName);
         if (!!sellName) {
             const sellQuantity = !!state.character.loot && state.character.loot[sellName].quantity;
             const sellValue = state.character.loot[sellName].value * sellQuantity;
@@ -98,7 +97,7 @@ const selloffTaskGenerator: TaskGenerator = {
             const results = {
                 'loot': loot,
                 'gold': sellValue,
-                'isInLootSelloff': (Object.keys(state.character.loot).length <= 0) ? false : state.character.isInLootSelloff,
+                'isInLootSelloff': (Object.keys(state.character.loot).length <= 1) ? false : state.character.isInLootSelloff,
             }
 
             const newTask = {
