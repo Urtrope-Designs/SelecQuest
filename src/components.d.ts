@@ -4,8 +4,6 @@
  * and imports for stencil collections that might be configured in your stencil.config.js file
  */
 
-import '@ionic/core';
-
 import {
   Observable,
 } from 'rxjs/Observable';
@@ -13,12 +11,21 @@ import {
   AppState,
 } from './helpers/models';
 
+declare global {
+  interface HTMLStencilElement extends HTMLElement {
+    componentOnReady(): Promise<this>;
+    componentOnReady(done: (ele?: this) => void): void;
+  }
+}
+
+
+
 import {
   AppHome as AppHome
 } from './components/app-home/app-home';
 
 declare global {
-  interface HTMLAppHomeElement extends AppHome, HTMLElement {
+  interface HTMLAppHomeElement extends AppHome, HTMLStencilElement {
   }
   var HTMLAppHomeElement: {
     prototype: HTMLAppHomeElement;
@@ -48,7 +55,7 @@ import {
 } from './components/lazy-img/lazy-img';
 
 declare global {
-  interface HTMLLazyImgElement extends LazyImg, HTMLElement {
+  interface HTMLLazyImgElement extends LazyImg, HTMLStencilElement {
   }
   var HTMLLazyImgElement: {
     prototype: HTMLLazyImgElement;
@@ -79,7 +86,7 @@ import {
 } from './components/my-app/my-app';
 
 declare global {
-  interface HTMLMyAppElement extends MyApp, HTMLElement {
+  interface HTMLMyAppElement extends MyApp, HTMLStencilElement {
   }
   var HTMLMyAppElement: {
     prototype: HTMLMyAppElement;
@@ -109,7 +116,7 @@ import {
 } from './helpers/task-manager';
 
 declare global {
-  interface HTMLTaskManagerElement extends TaskManager, HTMLElement {
+  interface HTMLTaskManagerElement extends TaskManager, HTMLStencilElement {
   }
   var HTMLTaskManagerElement: {
     prototype: HTMLTaskManagerElement;
@@ -133,3 +140,4 @@ declare global {
   }
 }
 
+declare global { namespace JSX { interface StencilJSX {} } }

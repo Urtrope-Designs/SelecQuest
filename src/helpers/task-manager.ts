@@ -57,10 +57,10 @@ let gTaskInc = 1;
 
 const lootingTaskGenerator: TaskGenerator = {
     priority: 0,
-    shouldRun: (state: AppState) => {
+    shouldRun: (/*state: AppState*/) => {
         return true;
     },
-    generateTask: (state: AppState) => {
+    generateTask: (/*state: AppState*/) => {
         const lootName = 'loot' + randRange(1, 4);
         let loot = {};
         loot[lootName] = {
@@ -122,7 +122,7 @@ const gladiatingTaskGenerator: TaskGenerator = {
     shouldRun: (state: AppState) => {
         return state.activeTaskMode == TaskMode.GLADIATING;
     },
-    generateTask: (state: AppState) => {
+    generateTask: (/*state: AppState*/) => {
         const trophyName = 'trophy' + randRange(1, 4);
         let trophy = {};
         trophy[trophyName] = {

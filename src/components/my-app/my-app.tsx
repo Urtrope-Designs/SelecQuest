@@ -1,3 +1,5 @@
+import '@ionic/core';
+
 import { Component, Prop, Listen } from '@stencil/core';
 import { ToastController } from '@ionic/core';
 import { Observable } from 'rxjs/Observable';
