@@ -1,7 +1,7 @@
 import { Component, Prop, State, Event, EventEmitter } from '@stencil/core';
 import { Observable } from 'rxjs/Observable';
 
-import { AppState, Character, Task, TaskType } from '../../helpers/models';
+import { AppState, Character, Task, TaskMode } from '../../helpers/models';
 
 @Component({
     tag: 'app-home',
@@ -12,8 +12,8 @@ export class AppHome {
 
     @State() character: Character;
     @State() activeTask: Task;
-    @State() activeTaskType: TaskType;
-    @Event() taskTypeAction: EventEmitter;
+    @State() activeTaskMode: TaskMode;
+    @Event() taskModeAction: EventEmitter;
 
 
     componentWillLoad() {
@@ -21,8 +21,8 @@ export class AppHome {
             if (!!state.character) {
                 this.character = state.character;
             }
-            if (state.activeTaskType != null) {
-                this.activeTaskType = state.activeTaskType;
+            if (state.activeTaskMode != null) {
+                this.activeTaskMode = state.activeTaskMode;
             }
             if (state.hasActiveTask) {
                 this.activeTask = state.activeTask;
@@ -30,20 +30,20 @@ export class AppHome {
         })
     }
 
-    taskTypeButtonClicked(newTaskTypeString: string) {
-        let newTaskType;
-        switch(newTaskTypeString) {
+    taskModeButtonClicked(newTaskModeString: string) {
+        let newTaskMode;
+        switch(newTaskModeString) {
             case 'LOOTING':
-                newTaskType = TaskType.LOOTING;
+                newTaskMode = TaskMode.LOOTING;
                 break;
             case 'GLADIATING':
-                newTaskType = TaskType.GLADIATING;
+                newTaskMode = TaskMode.GLADIATING;
                 break;
             case 'INVESTIGATING':
-                newTaskType = TaskType.INVESTIGATING;
+                newTaskMode = TaskMode.INVESTIGATING;
                 break;
         }
-        this.taskTypeAction.emit(newTaskType)
+        this.taskModeAction.emit(newTaskMode)
     }
 
     render() {
@@ -89,9 +89,9 @@ export class AppHome {
                         }
                         
                     </p>
-                    <ion-button {...(this.activeTaskType != TaskType.LOOTING ? {color: 'light'} : {})} onClick={ () => this.taskTypeButtonClicked('LOOTING')}>LOOTING</ion-button>
-                    <ion-button color={this.activeTaskType == TaskType.GLADIATING ? 'default' : 'light'} onClick={ () => this.taskTypeButtonClicked('GLADIATING')}>GLADIATING</ion-button>
-                    <ion-button color={this.activeTaskType == TaskType.INVESTIGATING ? 'default' : 'light'} onClick={ () => this.taskTypeButtonClicked('INVESTIGATING')}>INVESTIGATING</ion-button>
+                    <ion-button {...(this.activeTaskMode != TaskMode.LOOTING ? {color: 'light'} : {})} onClick={ () => this.taskModeButtonClicked('LOOTING')}>LOOTING</ion-button>
+                    <ion-button color={this.activeTaskMode == TaskMode.GLADIATING ? 'default' : 'light'} onClick={ () => this.taskModeButtonClicked('GLADIATING')}>GLADIATING</ion-button>
+                    <ion-button color={this.activeTaskMode == TaskMode.INVESTIGATING ? 'default' : 'light'} onClick={ () => this.taskModeButtonClicked('INVESTIGATING')}>INVESTIGATING</ion-button>
                 </ion-content>
             </ion-page>
         );

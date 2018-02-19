@@ -2,9 +2,9 @@ import { Observable } from 'rxjs/Observable';
 import { zip } from 'rxjs/observable/zip';
 import { scan } from 'rxjs/operators/scan';
 import { map } from 'rxjs/operators/map';
-import { Action, SetActiveTask, TaskCompleted, ChangeActiveTaskType } from './actions';
-import { Task, AppState, Character, TaskType } from './models';
-import { applyTaskResult } from './character-manager';
+import { Action, SetActiveTask, TaskCompleted, ChangeActiveTaskMode } from './actions';
+import { Task, AppState, Character, TaskMode } from './models';
+import { applyTaskResult, updateCharacterState } from './character-manager';
 import { wrapIntoBehavior } from './utils';
 
 function activeTask(initState: Task, actions: Observable<Action>) {
@@ -40,8 +40,9 @@ function character(initState: Character, actions: Observable<Action>): Observabl
     return actions.pipe(
         scan((state: Character, action: Action) => {
             if (action instanceof TaskCompleted) {
-                const updatedCharacter = applyTaskResult(state, action.completedTask)
-                return updatedCharacter;
+                const updatedCharacter = applyTaskResult(state, action.completedTask);
+                const stateCheckedCharacter = updateCharacterState(updatedCharacter);
+                return stateCheckedCharacter;
             } else {
                 return state;
             }
@@ -49,11 +50,11 @@ function character(initState: Character, actions: Observable<Action>): Observabl
     );
 }
 
-function activeTaskType(initState: TaskType, actions: Observable<Action>): Observable<TaskType> {
+function activeTaskMode(initState: TaskMode, actions: Observable<Action>): Observable<TaskMode> {
     return actions.pipe(
-        scan((state: TaskType, action: Action) => {
-            if (action instanceof ChangeActiveTaskType) {
-                return action.newTaskType;
+        scan((state: TaskMode, action: Action) => {
+            if (action instanceof ChangeActiveTaskMode) {
+                return action.newTaskMode;
             } else {
                 return state;
             }
@@ -68,14 +69,14 @@ export function stateFn(initState: AppState, actions: Observable<Action>): Obser
         character: s[0],
         activeTask: s[1],
         hasActiveTask: s[2],
-        activeTaskType: s[3],
+        activeTaskMode: s[3],
     });
     const appStateObs: Observable<AppState> = 
         zip(
             character(initState.character, actions),
             activeTask(initState.activeTask, actions),
             hasActiveTask(initState.hasActiveTask, actions),
-            activeTaskType(initState.activeTaskType, actions),
+            activeTaskMode(initState.activeTaskMode, actions),
         ).pipe(
             map(combine),
         );

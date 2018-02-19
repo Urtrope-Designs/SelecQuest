@@ -19,9 +19,10 @@ export interface Character {
     loot: {[key: string]: {quantity: number, value: number}};
     trophies: {[key: string]: {quantity: number, value: number}};
     gold: number;
+    isInLootSelloff: boolean;
 }
 
-export enum TaskType {
+export enum TaskMode {
     LOOTING,
     GLADIATING,
     INVESTIGATING,
@@ -31,5 +32,5 @@ export interface AppState {
     activeTask: Task;
     hasActiveTask: boolean;
     character: Character;
-    activeTaskType: TaskType
+    activeTaskMode: TaskMode
 }

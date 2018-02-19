@@ -1,7 +1,7 @@
 import { Event, EventEmitter, Component, Prop } from '@stencil/core';
 import { Observable } from 'rxjs/Observable';
 
-import { Task, AppState, TaskType } from './models';
+import { Task, AppState, TaskMode } from './models';
 import { SetActiveTask, TaskCompleted } from './actions';
 import { randRange } from './utils';
 
@@ -72,7 +72,7 @@ const lootingTaskGenerator: TaskGenerator = {
         }
         const newTask = {
             description: 'Do loot task ' + lTaskInc++,
-            durationMs: randRange(5, 8) * 1000,
+            durationMs: randRange(3, 4) * 1000,
             results: results
         };
         return newTask;
@@ -82,38 +82,46 @@ const lootingTaskGenerator: TaskGenerator = {
 const selloffTaskGenerator: TaskGenerator = {
     priority: 2,
     shouldRun: (state: AppState) => {
-        const currentEncumbrance = Object.keys(state.character.loot).reduce((prevVal, curVal) => {
-            return prevVal + state.character.loot[curVal].quantity;
-        }, 0)
-        
-        return currentEncumbrance >= state.character.maxEncumbrance;
+        return state.activeTaskMode == TaskMode.LOOTING && state.character.isInLootSelloff;
     },
     generateTask: (state: AppState) => {
         const sellName = Object.keys(state.character.loot)[0];
-        const sellQuantity = state.character.loot[sellName].quantity;
-        const sellValue = state.character.loot[sellName].value * sellQuantity;
-        let loot = {};
-        loot[sellName] = {
-            quantity: -1 * sellQuantity,
-            value: 0
-        };
-        const results = {
-            'loot': loot,
-            'gold': sellValue,
+        console.log('sellName: ' + sellName);
+        if (!!sellName) {
+            const sellQuantity = !!state.character.loot && state.character.loot[sellName].quantity;
+            const sellValue = state.character.loot[sellName].value * sellQuantity;
+            let loot = {};
+            loot[sellName] = {
+                quantity: -1 * sellQuantity,
+                value: 0
+            };
+            const results = {
+                'loot': loot,
+                'gold': sellValue,
+                'isInLootSelloff': (Object.keys(state.character.loot).length <= 0) ? false : state.character.isInLootSelloff,
+            }
+
+            const newTask = {
+                description: 'Sell ' + sellName,
+                durationMs: randRange(2,3) * 1000,
+                results: results,
+            }
+            return newTask;
+        } else {
+            const newTask = {
+                description: 'Cleanup',
+                durationMs: 10,
+                results: {'isInLootSelloff': false},
+            }
+            return newTask;
         }
-        const newTask = {
-            description: 'Sell ' + sellName,
-            durationMs: randRange(3,5) * 1000,
-            results: results,
-        }
-        return newTask;
     }
 }
 
 const gladiatingTaskGenerator: TaskGenerator = {
     priority: 1,
     shouldRun: (state: AppState) => {
-        return state.activeTaskType == TaskType.GLADIATING;
+        return state.activeTaskMode == TaskMode.GLADIATING;
     },
     generateTask: (state: AppState) => {
         const trophyName = 'trophy' + randRange(1, 4);

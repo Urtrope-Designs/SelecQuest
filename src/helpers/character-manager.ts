@@ -10,11 +10,12 @@ export function createNewCharacter(): Character {
         cha: 10,
         maxHp: 10,
         maxMp: 0,
-        maxEncumbrance: 15,
+        maxEncumbrance: 10,
         spells: {},
         loot: {},
         trophies: {},
         gold: 0,
+        isInLootSelloff: false,
     }
 
     return newChar;
@@ -37,6 +38,9 @@ export function applyTaskResult(baseChar: Character, task: Task): Character {
             case 'gold':
                 newChar[attrib] += task.results[attrib];
                 break;
+            case 'isInLootSelloff':
+                newChar[attrib] = task.results[attrib];
+                break;
             case 'spells':
                 for (let spell in task.results[attrib]) {
                     if (!!newChar.spells[spell]) {
@@ -47,18 +51,33 @@ export function applyTaskResult(baseChar: Character, task: Task): Character {
                 }
                 break;
             case 'loot':
+            case 'trophies':
                 for (let item in task.results[attrib]) {
-                    if (!!newChar.loot[item]) {
-                        newChar.loot[item].quantity += task.results[attrib][item].quantity;
-                        if (newChar.loot[item].quantity < 1) {
-                            delete newChar.loot[item];
+                    if (!!newChar[attrib][item]) {
+                        newChar[attrib][item].quantity += task.results[attrib][item].quantity;
+                        if (newChar[attrib][item].quantity < 1) {
+                            delete newChar[attrib][item];
                         }
                     } else {
-                        newChar.loot[item] = task.results[attrib][item];
+                        newChar[attrib][item] = task.results[attrib][item];
                     }
                 }
                 break;
         }
+    }
+
+    return newChar;
+}
+
+export function updateCharacterState(character: Character): Character {
+    let newChar = Object.assign({}, character);
+
+    const currentEncumbrance = Object.keys(character.loot).reduce((prevVal, curVal) => {
+        return prevVal + character.loot[curVal].quantity;
+    }, 0)
+    
+    if (currentEncumbrance >= character.maxEncumbrance) {
+        newChar.isInLootSelloff = true;
     }
 
     return newChar;
