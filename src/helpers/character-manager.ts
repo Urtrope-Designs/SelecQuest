@@ -16,6 +16,8 @@ export function createNewCharacter(): Character {
         trophies: {},
         gold: 0,
         isInLootSelloff: false,
+        marketSaturation: 0,
+        maxMarketSaturation: 23,
     }
 
     return newChar;
@@ -36,6 +38,8 @@ export function applyTaskResult(baseChar: Character, task: Task): Character {
             case 'maxMp':
             case 'maxEncumbrance':
             case 'gold':
+            case 'marketSaturation':
+            case 'maxMarketSaturation':
                 newChar[attrib] += task.results[attrib];
                 break;
             case 'isInLootSelloff':
@@ -78,6 +82,10 @@ export function updateCharacterState(character: Character): Character {
     
     if (currentEncumbrance >= character.maxEncumbrance) {
         newChar.isInLootSelloff = true;
+    }
+
+    if (character.marketSaturation > character.maxMarketSaturation) {
+        newChar.marketSaturation = character.maxMarketSaturation;
     }
 
     return newChar;

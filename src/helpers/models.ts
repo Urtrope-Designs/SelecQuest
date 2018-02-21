@@ -20,6 +20,8 @@ export interface Character {
     trophies: {[key: string]: {quantity: number, value: number}};
     gold: number;
     isInLootSelloff: boolean;
+    marketSaturation: number;
+    maxMarketSaturation: number;
 }
 
 export enum TaskMode {

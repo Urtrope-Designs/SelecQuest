@@ -65,7 +65,7 @@ const lootingTaskGenerator: TaskGenerator = {
         let loot = {};
         loot[lootName] = {
             quantity: 1,
-            value: 1
+            value: 2
         }
         const results = {
             'loot': loot
@@ -87,8 +87,9 @@ const selloffTaskGenerator: TaskGenerator = {
     generateTask: (state: AppState) => {
         const sellName = Object.keys(state.character.loot)[0];
         if (!!sellName) {
+            const isMarketSaturated = state.character.marketSaturation >= state.character.maxMarketSaturation;
             const sellQuantity = !!state.character.loot && state.character.loot[sellName].quantity;
-            const sellValue = state.character.loot[sellName].value * sellQuantity;
+            const sellValue = Math.ceil(sellQuantity * (state.character.loot[sellName].value / (isMarketSaturated ? 2 : 1)));
             let loot = {};
             loot[sellName] = {
                 quantity: -1 * sellQuantity,
@@ -97,6 +98,7 @@ const selloffTaskGenerator: TaskGenerator = {
             const results = {
                 'loot': loot,
                 'gold': sellValue,
+                'marketSaturation': isMarketSaturated ? 0 : sellValue,
                 'isInLootSelloff': (Object.keys(state.character.loot).length <= 1) ? false : state.character.isInLootSelloff,
             }
 
@@ -130,7 +132,8 @@ const gladiatingTaskGenerator: TaskGenerator = {
             value: 1
         }
         const results = {
-            'trophy': trophy
+            'trophy': trophy,
+            'marketSaturation': -2,
         }
         const newTask = {
             description: 'Do gladiating task ' + gTaskInc++,

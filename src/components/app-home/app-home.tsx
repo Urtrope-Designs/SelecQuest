@@ -60,6 +60,17 @@ export class AppHome {
                         Character Str = {this.character.str}
                     </p>
                     <p>
+                        Character Gold = {this.character.gold}
+                    </p>
+                    <p>
+                        Market Saturation = {this.character.marketSaturation} / {this.character.maxMarketSaturation}
+                        {
+                            this.character.marketSaturation == this.character.maxMarketSaturation
+                            ? <div><b>MARKET SATURATED</b></div>
+                            : <br/>
+                        }
+                    </p>
+                    <p>
                         Spells:
                         {
                             Object.keys(this.character.spells).length == 0 
