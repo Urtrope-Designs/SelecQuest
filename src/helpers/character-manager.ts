@@ -2,6 +2,10 @@ import { Character, Task } from './models';
 
 export function createNewCharacter(): Character {
     const newChar: Character = {
+        name: 'Garg',
+        race: 'Fartling',
+        class: 'Meter Beater',
+        level: 1,
         str: 10,
         dex: 10,
         con: 10,
@@ -10,14 +14,33 @@ export function createNewCharacter(): Character {
         cha: 10,
         maxHp: 10,
         maxMp: 0,
+        currentXp: 0,
+        spells: [],
+        abilities: [],
+        equipment: [],
+        accolades: [],
+        affiliations: [],
         maxEncumbrance: 10,
-        spells: {},
-        loot: {},
-        trophies: {},
+        maxEquipmentIntegrity: 10,
+        maxQuestLogSize: 10,
         gold: 0,
-        isInLootSelloff: false,
+        renown: 0,
+        reputation: 0,
+        spentReputation: 0,
+        loot: [],
+        trophies: [],
+        leads: [],
+        isInLootSelloffMode: false,
+        isInTrophyBoastingMode: false,
+        isInLeadFollowingMode: false,
         marketSaturation: 0,
-        maxMarketSaturation: 23,
+        maxMarketSaturation: 35,
+        staminaSpent: 0,
+        maxStamina: 35,
+        socialExposure: 0,
+        maxSocialCapital: 35,
+        completedAdventures: [],
+        adventureProgress: 0,
     }
 
     return newChar;
@@ -42,28 +65,35 @@ export function applyTaskResult(baseChar: Character, task: Task): Character {
             case 'maxMarketSaturation':
                 newChar[attrib] += task.results[attrib];
                 break;
-            case 'isInLootSelloff':
+            case 'isInLootSelloffMode':
                 newChar[attrib] = task.results[attrib];
                 break;
             case 'spells':
-                for (let spell in task.results[attrib]) {
-                    if (!!newChar.spells[spell]) {
-                        newChar.spells[spell].rank += task.results[attrib][spell].rank;
+                for (let item of task.results[attrib]) {
+                    let existingItem = newChar[attrib].find((i) => {
+                        return item.name == i.name;
+                    });
+                    if (!!existingItem) {
+                        existingItem.rank += item.rank;
                     } else {
-                        newChar.spells[spell] = task.results[attrib][spell];
+                        newChar[attrib].push(item);
                     }
                 }
                 break;
             case 'loot':
             case 'trophies':
-                for (let item in task.results[attrib]) {
-                    if (!!newChar[attrib][item]) {
-                        newChar[attrib][item].quantity += task.results[attrib][item].quantity;
-                        if (newChar[attrib][item].quantity < 1) {
-                            delete newChar[attrib][item];
+                for (let item of task.results[attrib]) {
+                    let existingItem = newChar[attrib].find((i) => {
+                        return item.name == i.name;
+                    })
+                    if (!!existingItem) {
+                        existingItem.quantity += item.quantity;
+                        if (existingItem.quantity < 1) {
+                            const existingItemIndex = newChar[attrib].indexOf(existingItem)
+                            newChar[attrib].splice(existingItemIndex, 1);
                         }
                     } else {
-                        newChar[attrib][item] = task.results[attrib][item];
+                        newChar[attrib].push(item);
                     }
                 }
                 break;
@@ -76,17 +106,19 @@ export function applyTaskResult(baseChar: Character, task: Task): Character {
 export function updateCharacterState(character: Character): Character {
     let newChar = Object.assign({}, character);
 
-    const currentEncumbrance = Object.keys(character.loot).reduce((prevVal, curVal) => {
-        return prevVal + character.loot[curVal].quantity;
+    const currentEncumbrance = character.loot.reduce((prevVal, curVal) => {
+        return prevVal + curVal.quantity;
     }, 0)
     
     if (currentEncumbrance >= character.maxEncumbrance) {
-        newChar.isInLootSelloff = true;
+        newChar.isInLootSelloffMode = true;
+    }
+    if (currentEncumbrance === 0) {
+        newChar.isInLootSelloffMode = false;
     }
 
-    if (character.marketSaturation > character.maxMarketSaturation) {
-        newChar.marketSaturation = character.maxMarketSaturation;
-    }
+    newChar.marketSaturation = Math.min(newChar.marketSaturation, newChar.maxMarketSaturation);
+    newChar.marketSaturation = Math.max(newChar.marketSaturation, 0);
 
     return newChar;
 }

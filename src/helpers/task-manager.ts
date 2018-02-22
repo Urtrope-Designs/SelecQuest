@@ -62,11 +62,13 @@ const lootingTaskGenerator: TaskGenerator = {
     },
     generateTask: (/*state: AppState*/) => {
         const lootName = 'loot' + randRange(1, 4);
-        let loot = {};
-        loot[lootName] = {
-            quantity: 1,
-            value: 2
-        }
+        let loot = [
+            {
+                name: lootName,
+                quantity: 1,
+                value: 2
+            }
+        ]
         const results = {
             'loot': loot
         }
@@ -82,28 +84,29 @@ const lootingTaskGenerator: TaskGenerator = {
 const selloffTaskGenerator: TaskGenerator = {
     priority: 2,
     shouldRun: (state: AppState) => {
-        return state.activeTaskMode == TaskMode.LOOTING && state.character.isInLootSelloff;
+        return state.activeTaskMode == TaskMode.LOOTING && state.character.isInLootSelloffMode;
     },
     generateTask: (state: AppState) => {
-        const sellName = Object.keys(state.character.loot)[0];
-        if (!!sellName) {
+        const sellItem = state.character.loot[0];
+        if (!!sellItem) {
             const isMarketSaturated = state.character.marketSaturation >= state.character.maxMarketSaturation;
-            const sellQuantity = !!state.character.loot && state.character.loot[sellName].quantity;
-            const sellValue = Math.ceil(sellQuantity * (state.character.loot[sellName].value / (isMarketSaturated ? 2 : 1)));
-            let loot = {};
-            loot[sellName] = {
-                quantity: -1 * sellQuantity,
-                value: 0
-            };
+            const sellQuantity = sellItem.quantity;
+            const sellValue = (sellQuantity * Math.ceil(sellItem.value / (isMarketSaturated ? 2 : 1)));
+            let loot = [
+                {
+                    name: sellItem.name,
+                    quantity: -1 * sellQuantity,
+                    value: 0
+                }
+            ];
             const results = {
                 'loot': loot,
                 'gold': sellValue,
-                'marketSaturation': isMarketSaturated ? 0 : sellValue,
-                'isInLootSelloff': (Object.keys(state.character.loot).length <= 1) ? false : state.character.isInLootSelloff,
+                'marketSaturation': sellValue,
             }
 
             const newTask = {
-                description: 'Sell ' + sellName,
+                description: 'Sell ' + sellItem.name,
                 durationMs: randRange(2,3) * 1000,
                 results: results,
             }
@@ -112,7 +115,7 @@ const selloffTaskGenerator: TaskGenerator = {
             const newTask = {
                 description: 'Cleanup',
                 durationMs: 10,
-                results: {'isInLootSelloff': false},
+                results: {'isInLootSelloffMode': false},
             }
             return newTask;
         }
@@ -126,11 +129,13 @@ const gladiatingTaskGenerator: TaskGenerator = {
     },
     generateTask: (/*state: AppState*/) => {
         const trophyName = 'trophy' + randRange(1, 4);
-        let trophy = {};
-        trophy[trophyName] = {
-            quantity: 1,
-            value: 1
-        }
+        let trophy = [
+            {
+                name: trophyName,
+                quantity: 1,
+                value: 1
+            }
+        ];
         const results = {
             'trophy': trophy,
             'marketSaturation': -2,

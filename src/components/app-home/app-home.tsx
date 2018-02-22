@@ -65,7 +65,7 @@ export class AppHome {
                     <p>
                         Market Saturation = {this.character.marketSaturation} / {this.character.maxMarketSaturation}
                         {
-                            this.character.marketSaturation == this.character.maxMarketSaturation
+                            this.character.marketSaturation >= this.character.maxMarketSaturation
                             ? <div><b>MARKET SATURATED</b></div>
                             : <br/>
                         }
@@ -73,20 +73,20 @@ export class AppHome {
                     <p>
                         Spells:
                         {
-                            Object.keys(this.character.spells).length == 0 
+                            this.character.spells.length == 0 
                             ? <div>[None]</div>    
-                            : Object.keys(this.character.spells).map((spell) => 
-                                    <div>{spell} {this.character.spells[spell].rank}</div>
+                            : this.character.spells.map((spell) => 
+                                    <div>{spell.name} {spell.rank}</div>
                                 )
                         }
                     </p>
                     <p>
-                        Loot: {Object.keys(this.character.loot).reduce((prevVal, curVal) => {return prevVal + this.character.loot[curVal].quantity}, 0)}
+                        Loot: {this.character.loot.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}
                         {
-                            Object.keys(this.character.loot).length == 0
+                            this.character.loot.length == 0
                             ? <div>[None]</div>
-                            : Object.keys(this.character.loot).map((item) => 
-                                    <div>{item} {this.character.loot[item].quantity}</div>
+                            : this.character.loot.map((item) => 
+                                    <div>{item.name} {item.quantity}</div>
                                 )
                         }
                     </p>
