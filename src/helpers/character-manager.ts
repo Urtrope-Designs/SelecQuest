@@ -61,11 +61,17 @@ export function applyTaskResult(baseChar: Character, task: Task): Character {
             case 'maxMp':
             case 'maxEncumbrance':
             case 'gold':
+            case 'renown':
+            case 'reputation':
             case 'marketSaturation':
             case 'maxMarketSaturation':
+            case 'staminaSpent':
+            case 'socialExposure':
                 newChar[attrib] += task.results[attrib];
                 break;
             case 'isInLootSelloffMode':
+            case 'isInTrophyBoastingMode':
+            case 'isInLeadFollowingMode':
                 newChar[attrib] = task.results[attrib];
                 break;
             case 'spells':
@@ -97,6 +103,9 @@ export function applyTaskResult(baseChar: Character, task: Task): Character {
                     }
                 }
                 break;
+            case 'leads':
+                newChar[attrib].concat(task.results[attrib]);
+                break;
         }
     }
 
@@ -108,17 +117,37 @@ export function updateCharacterState(character: Character): Character {
 
     const currentEncumbrance = character.loot.reduce((prevVal, curVal) => {
         return prevVal + curVal.quantity;
-    }, 0)
-    
+    }, 0);
     if (currentEncumbrance >= character.maxEncumbrance) {
         newChar.isInLootSelloffMode = true;
     }
     if (currentEncumbrance === 0) {
         newChar.isInLootSelloffMode = false;
     }
+    
+    const currentEquipmentIntegrity = character.trophies.reduce((prevVal, curVal) => {
+        return prevVal + curVal.quantity;
+    }, 0);
+    if (currentEquipmentIntegrity >= character.maxEquipmentIntegrity) {
+        newChar.isInTrophyBoastingMode = true;
+    }
+    if (currentEquipmentIntegrity === 0) {
+        newChar.isInTrophyBoastingMode = false;
+    }
+
+    if (character.leads.length >= character.maxQuestLogSize) {
+        newChar.isInLeadFollowingMode = true;
+    }
+    if (character.leads.length === 0) {
+        newChar.isInLeadFollowingMode = false;
+    }
 
     newChar.marketSaturation = Math.min(newChar.marketSaturation, newChar.maxMarketSaturation);
     newChar.marketSaturation = Math.max(newChar.marketSaturation, 0);
+    newChar.staminaSpent = Math.min(newChar.staminaSpent, newChar.maxStamina);
+    newChar.staminaSpent = Math.max(newChar.staminaSpent, 0);
+    newChar.socialExposure = Math.min(newChar.socialExposure, newChar.maxSocialCapital);
+    newChar.socialExposure = Math.max(newChar.socialExposure, 0);
 
     return newChar;
 }

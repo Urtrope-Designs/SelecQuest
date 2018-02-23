@@ -63,10 +63,21 @@ export class AppHome {
                         Character Gold = {this.character.gold}
                     </p>
                     <p>
+                        Character Renown = {this.character.renown}
+                    </p>
+                    <p>
                         Market Saturation = {this.character.marketSaturation} / {this.character.maxMarketSaturation}
                         {
                             this.character.marketSaturation >= this.character.maxMarketSaturation
                             ? <div><b>MARKET SATURATED</b></div>
+                            : <br/>
+                        }
+                    </p>
+                    <p>
+                        Stamina = {this.character.maxStamina - this.character.staminaSpent} / {this.character.maxStamina}
+                        {
+                            this.character.staminaSpent >= this.character.maxStamina
+                            ? <div><b>FATIGUED</b></div>
                             : <br/>
                         }
                     </p>
@@ -86,6 +97,16 @@ export class AppHome {
                             this.character.loot.length == 0
                             ? <div>[None]</div>
                             : this.character.loot.map((item) => 
+                                    <div>{item.name} {item.quantity}</div>
+                                )
+                        }
+                    </p>
+                    <p>
+                        Trophies: {this.character.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}
+                        {
+                            this.character.trophies.length == 0
+                            ? <div>[None]</div>
+                            : this.character.trophies.map((item) => 
                                     <div>{item.name} {item.quantity}</div>
                                 )
                         }
