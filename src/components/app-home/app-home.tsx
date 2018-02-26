@@ -60,27 +60,37 @@ export class AppHome {
                         Character Str = {this.character.str}
                     </p>
                     <p>
-                        Character Gold = {this.character.gold}
+                        <div>Character Gold = {this.character.gold}</div>
+                        <div>Character Renown = {this.character.renown}</div>
+                        <div>Character Reputation = {this.character.reputation}</div>
                     </p>
                     <p>
-                        Character Renown = {this.character.renown}
+                        <div>
+                            Market Saturation = {this.character.marketSaturation} / {this.character.maxMarketSaturation}
+                            {
+                                this.character.marketSaturation >= this.character.maxMarketSaturation
+                                ? <div><b>MARKET SATURATED</b></div>
+                                : <br/>
+                            }
+                        </div>
+                        <div>
+                            Stamina = {this.character.maxStamina - this.character.staminaSpent} / {this.character.maxStamina}
+                            {
+                                this.character.staminaSpent >= this.character.maxStamina
+                                ? <div><b>FATIGUED</b></div>
+                                : <br/>
+                            }
+                        </div>
+                        <div>
+                            Social Exposure = {this.character.socialExposure} / {this.character.maxSocialCapital}
+                            {
+                                this.character.socialExposure >= this.character.maxSocialCapital
+                                ? <div><b>OVEREXPOSED</b></div>
+                                : <br/>
+                            }
+                        </div>
                     </p>
-                    <p>
-                        Market Saturation = {this.character.marketSaturation} / {this.character.maxMarketSaturation}
-                        {
-                            this.character.marketSaturation >= this.character.maxMarketSaturation
-                            ? <div><b>MARKET SATURATED</b></div>
-                            : <br/>
-                        }
-                    </p>
-                    <p>
-                        Stamina = {this.character.maxStamina - this.character.staminaSpent} / {this.character.maxStamina}
-                        {
-                            this.character.staminaSpent >= this.character.maxStamina
-                            ? <div><b>FATIGUED</b></div>
-                            : <br/>
-                        }
-                    </p>
+
                     <p>
                         Spells:
                         {
@@ -92,7 +102,7 @@ export class AppHome {
                         }
                     </p>
                     <p>
-                        Loot: {this.character.loot.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}
+                        Encumbrance: {this.character.loot.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)} / {this.character.maxEncumbrance}
                         {
                             this.character.loot.length == 0
                             ? <div>[None]</div>
@@ -102,12 +112,22 @@ export class AppHome {
                         }
                     </p>
                     <p>
-                        Trophies: {this.character.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}
+                        Equipment Integrity: {this.character.maxEquipmentIntegrity - this.character.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)} / {this.character.maxEquipmentIntegrity}
                         {
                             this.character.trophies.length == 0
                             ? <div>[None]</div>
                             : this.character.trophies.map((item) => 
                                     <div>{item.name} {item.quantity}</div>
+                                )
+                        }
+                    </p>
+                    <p>
+                        Questlog: {this.character.leads.length} / {this.character.maxQuestLogSize}
+                        {
+                            this.character.leads.length == 0
+                            ? <div>[None]</div>
+                            : this.character.leads.map((item) => 
+                                    <div>{item.name}</div>
                                 )
                         }
                     </p>

@@ -51,6 +51,7 @@ export function applyTaskResult(baseChar: Character, task: Task): Character {
 
     for (let attrib in task.results) {
         switch (attrib) {
+            case 'level':
             case 'str':
             case 'dex':
             case 'con':
@@ -59,19 +60,26 @@ export function applyTaskResult(baseChar: Character, task: Task): Character {
             case 'cha':
             case 'maxHp':
             case 'maxMp':
+            case 'currentXp':
             case 'maxEncumbrance':
+            case 'maxEquipmentIntegrity':
+            case 'maxQuestLogSize':
             case 'gold':
             case 'renown':
             case 'reputation':
             case 'marketSaturation':
             case 'maxMarketSaturation':
             case 'staminaSpent':
+            case 'maxStamina':
             case 'socialExposure':
+            case 'maxSocialCapital':
+            case 'adventureProgress':
                 newChar[attrib] += task.results[attrib];
                 break;
             case 'isInLootSelloffMode':
             case 'isInTrophyBoastingMode':
             case 'isInLeadFollowingMode':
+            case 'spentReputation':
                 newChar[attrib] = task.results[attrib];
                 break;
             case 'spells':
@@ -104,7 +112,10 @@ export function applyTaskResult(baseChar: Character, task: Task): Character {
                 }
                 break;
             case 'leads':
-                newChar[attrib].concat(task.results[attrib]);
+            case 'completedAdventures':
+                const oldStuff: any[] = newChar[attrib];
+                const newStuff: any[] = task.results[attrib]
+                newChar[attrib] = oldStuff.concat(newStuff);
                 break;
         }
     }

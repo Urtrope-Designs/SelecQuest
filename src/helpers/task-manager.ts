@@ -1,7 +1,7 @@
 import { Event, EventEmitter, Component, Prop } from '@stencil/core';
 import { Observable } from 'rxjs/Observable';
 
-import { Task, AppState, TaskMode } from './models';
+import { Task, TaskResult, TaskResultType, AppState, TaskMode } from './models';
 import { SetActiveTask, TaskCompleted } from './actions';
 import { randRange } from './utils';
 
@@ -19,6 +19,8 @@ export class TaskManager {
             selloffTaskGenerator,
             gladiatingTaskGenerator,
             boastingTaskGenerator,
+            investigatingTaskGenerator,
+            leadFollowingTaskGenerator,
         ];
         this.taskGenAlgos.sort((a, b) => {
             return b.priority - a.priority;
@@ -55,6 +57,7 @@ interface TaskGenerator {
 
 let lTaskInc = 1;
 let gTaskInc = 1;
+let iTaskInc = 1;
 
 const lootingTaskGenerator: TaskGenerator = {
     priority: 0,
@@ -63,18 +66,30 @@ const lootingTaskGenerator: TaskGenerator = {
     },
     generateTask: (/*state: AppState*/) => {
         const lootName = 'loot' + randRange(1, 4);
-        let loot = [
+        let lootData = [
             {
                 name: lootName,
                 quantity: 1,
                 value: 2
             }
         ]
-        const results = {
-            'loot': loot,
-            'staminaSpent': -2,
-            'socialExposure': -2,
-        }
+        const results: TaskResult[] = [
+            {
+                type: TaskResultType.ADD_QUANTITY,
+                attributeName: 'loot',
+                data: lootData,
+            },
+            {
+                type: TaskResultType.DECREASE,
+                attributeName: 'staminaSpent',
+                data: -2,
+            },
+            {
+                type: TaskResultType.DECREASE,
+                attributeName: 'socialExposure',
+                data: -2,
+            },
+        ]
         const newTask = {
             description: 'Do loot task ' + lTaskInc++,
             durationMs: randRange(3, 4) * 1000,
@@ -95,18 +110,30 @@ const selloffTaskGenerator: TaskGenerator = {
             const isMarketSaturated = state.character.marketSaturation >= state.character.maxMarketSaturation;
             const sellQuantity = sellItem.quantity;
             const sellValue = (sellQuantity * Math.ceil(sellItem.value / (isMarketSaturated ? 2 : 1)));
-            let loot = [
+            let lootData = [
                 {
                     name: sellItem.name,
                     quantity: -1 * sellQuantity,
                     value: 0
                 }
             ];
-            const results = {
-                'loot': loot,
-                'gold': sellValue,
-                'marketSaturation': sellValue,
-            }
+            const results: TaskResult[] = [
+                {
+                    type: TaskResultType.REMOVE,
+                    attributeName: 'loot',
+                    data: lootData,
+                },
+                {
+                    type: TaskResultType.INCREASE,
+                    attributeName: 'gold',
+                    data: sellValue,
+                },
+                {
+                    type: TaskResultType.INCREASE,
+                    attributeName: 'marketSaturation',
+                    data: sellValue,
+                },
+            ]
 
             const newTask = {
                 description: 'Sell ' + sellItem.name,
@@ -118,7 +145,13 @@ const selloffTaskGenerator: TaskGenerator = {
             const newTask = {
                 description: 'Cleanup',
                 durationMs: 10,
-                results: {'isInLootSelloffMode': false},
+                results: [
+                    {
+                        type: TaskResultType.SET,
+                        attributeName: 'isInLootSelloffMode',
+                        data: false,
+                    }
+                ],
             }
             return newTask;
         }
@@ -139,11 +172,24 @@ const gladiatingTaskGenerator: TaskGenerator = {
                 value: 2
             }
         ];
-        const results = {
-            'trophies': trophy,
-            'marketSaturation': -2,
-            'socialExposure': -2,
-        }
+        const results: TaskResult[] = [
+            {
+                type: TaskResultType.ADD_QUANTITY,
+                attributeName: 'trophies',
+                data: trophy,
+            },
+            {
+                type: TaskResultType.DECREASE,
+                attributeName: 'marketSaturation',
+                data: -2,
+            },
+            {
+                type: TaskResultType.DECREASE,
+                attributeName: 'socialExposure',
+                data: -2,
+            },
+        ]
+
         const newTask = {
             description: 'Do gladiating task ' + gTaskInc++,
             durationMs: randRange(5, 8) * 1000,
@@ -171,12 +217,24 @@ const boastingTaskGenerator: TaskGenerator = {
                     value: 0
                 }
             ];
-            const results = {
-                'trophies': trophies,
-                'renown': renownValue,
-                'staminaSpent': renownValue,
-            }
-
+            const results: TaskResult[] = [
+                {
+                    type: TaskResultType.REMOVE,
+                    attributeName: 'trophies',
+                    data: trophies,
+                },
+                {
+                    type: TaskResultType.INCREASE,
+                    attributeName: 'renown',
+                    data: renownValue,
+                },
+                {
+                    type: TaskResultType.INCREASE,
+                    attributeName: 'staminaSpent',
+                    data: renownValue,
+                },
+            ]
+            
             const newTask = {
                 description: 'Boast of ' + boastItem.name,
                 durationMs: randRange(2,3) * 1000,
@@ -187,7 +245,110 @@ const boastingTaskGenerator: TaskGenerator = {
             const newTask = {
                 description: 'Cleanup',
                 durationMs: 10,
-                results: {'isInTrophyBoastingMode': false},
+                results: [
+                    {
+                        type: TaskResultType.SET,
+                        attributeName: 'isInTrophyBoastingMode',
+                        data: false,
+                    },
+                ],
+            }
+            return newTask;
+        }
+    }
+}
+
+const investigatingTaskGenerator: TaskGenerator = {
+    priority: 1,
+    shouldRun: (state: AppState) => {
+        return state.activeTaskMode == TaskMode.INVESTIGATING;
+    },
+    generateTask: (/*state: AppState*/) => {
+        const leadName = 'lead' + randRange(1, 100);
+        let lead = [
+            {
+                name: leadName,
+                value: 2
+            }
+        ];
+        const results: TaskResult[] = [
+            {
+                type: TaskResultType.ADD_QUANTITY,
+                attributeName: 'leads',
+                data: lead,
+            },
+            {
+                type: TaskResultType.DECREASE,
+                attributeName: 'marketSaturation',
+                data: -2,
+            },
+            {
+                type: TaskResultType.DECREASE,
+                attributeName: 'staminaSpent',
+                data: -2,
+            },
+        ]
+        
+        const newTask = {
+            description: 'Do investigating task ' + iTaskInc++,
+            durationMs: randRange(5, 8) * 1000,
+            results: results
+        };
+        return newTask;
+    }
+}
+
+const leadFollowingTaskGenerator: TaskGenerator = {
+    priority: 2,
+    shouldRun: (state: AppState) => {
+        return state.activeTaskMode === TaskMode.INVESTIGATING && state.character.isInLeadFollowingMode;
+    },
+    generateTask: (state: AppState) => {
+        const leadToFollow = state.character.leads[0];
+        if (!!leadToFollow) {
+            const isOverexposed = state.character.socialExposure >= state.character.maxSocialCapital;
+            const reputationValue = (Math.ceil(leadToFollow.value / (isOverexposed ? 2 : 1)));
+            let leads = [
+                {
+                    name: leadToFollow.name,
+                    value: 0
+                }
+            ];
+            const results: TaskResult[] = [
+                {
+                    type: TaskResultType.REMOVE,
+                    attributeName: 'leads',
+                    data: leads,
+                },
+                {
+                    type: TaskResultType.INCREASE,
+                    attributeName: 'reputation',
+                    data: reputationValue,
+                },
+                {
+                    type: TaskResultType.INCREASE,
+                    attributeName: 'socialExposure',
+                    data: reputationValue,
+                },
+            ]
+            
+            const newTask = {
+                description: 'Follow ' + leadToFollow.name,
+                durationMs: randRange(2,3) * 1000,
+                results: results,
+            }
+            return newTask;
+        } else {
+            const newTask = {
+                description: 'Cleanup',
+                durationMs: 10,
+                results: [
+                    {
+                        type: TaskResultType.SET,
+                        attributeName: 'isInLeadFollowingMode',
+                        data: false,
+                    },
+                ],
             }
             return newTask;
         }

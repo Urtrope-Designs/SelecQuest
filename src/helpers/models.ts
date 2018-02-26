@@ -2,8 +2,27 @@ export interface Task {
     completionTimeoutId?: any;
     description: string;
     durationMs: number;
-    results: {};
+    results: TaskResult[];
 }
+
+export interface TaskResult {
+    type: TaskResultType,
+    attributeName: string,
+    data: any,
+    // data: string | number | {name: string, rank: number}[] | {type: string, description: string, rating: number}[] | {type: AccoladeType, received: string[]}[] | {type: AffiliationType, received: string[]}[] | {name: string, quantity: number, value: number} | {name: string, value: string} | string[],
+}
+
+export enum TaskResultType {
+    INCREASE,
+    DECREASE,
+    SET,
+    ADD,
+    ADD_QUANTITY,
+    ADD_RANK,
+    REMOVE,
+    REMOVE_QUANTITY,
+}
+
 
 export interface Character {
     name: string;
