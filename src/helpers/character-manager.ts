@@ -1,4 +1,4 @@
-import { Character, Task } from './models';
+import { Character, Task, TaskResultType } from './models';
 
 export function createNewCharacter(): Character {
     const newChar: Character = {
@@ -49,73 +49,55 @@ export function createNewCharacter(): Character {
 export function applyTaskResult(baseChar: Character, task: Task): Character {
     let newChar = Object.assign({}, baseChar);
 
-    for (let attrib in task.results) {
-        switch (attrib) {
-            case 'level':
-            case 'str':
-            case 'dex':
-            case 'con':
-            case 'int':
-            case 'wis':
-            case 'cha':
-            case 'maxHp':
-            case 'maxMp':
-            case 'currentXp':
-            case 'maxEncumbrance':
-            case 'maxEquipmentIntegrity':
-            case 'maxQuestLogSize':
-            case 'gold':
-            case 'renown':
-            case 'reputation':
-            case 'marketSaturation':
-            case 'maxMarketSaturation':
-            case 'staminaSpent':
-            case 'maxStamina':
-            case 'socialExposure':
-            case 'maxSocialCapital':
-            case 'adventureProgress':
-                newChar[attrib] += task.results[attrib];
+    for (let result of task.results) {
+        switch(result.type) {
+            case TaskResultType.INCREASE:
+            case TaskResultType.DECREASE:
+                newChar[result.attributeName] += result.data;
                 break;
-            case 'isInLootSelloffMode':
-            case 'isInTrophyBoastingMode':
-            case 'isInLeadFollowingMode':
-            case 'spentReputation':
-                newChar[attrib] = task.results[attrib];
+            case TaskResultType.SET:
+                newChar[result.attributeName] = result.data;
                 break;
-            case 'spells':
-                for (let item of task.results[attrib]) {
-                    let existingItem = newChar[attrib].find((i) => {
+            case TaskResultType.ADD_RANK:
+                for (let item of result.data) {
+                    let existingItem = newChar[result.attributeName].find((i) => {
                         return item.name == i.name;
                     });
                     if (!!existingItem) {
                         existingItem.rank += item.rank;
                     } else {
-                        newChar[attrib].push(item);
+                        newChar[result.attributeName].push(item);
                     }
                 }
                 break;
-            case 'loot':
-            case 'trophies':
-                for (let item of task.results[attrib]) {
-                    let existingItem = newChar[attrib].find((i) => {
+            case TaskResultType.ADD_QUANTITY:
+                for (let item of result.data) {
+                    let existingItem = newChar[result.attributeName].find((i) => {
                         return item.name == i.name;
-                    })
+                    });
                     if (!!existingItem) {
                         existingItem.quantity += item.quantity;
                         if (existingItem.quantity < 1) {
-                            const existingItemIndex = newChar[attrib].indexOf(existingItem)
-                            newChar[attrib].splice(existingItemIndex, 1);
+                            const existingItemIndex = newChar[result.attributeName].indexOf(existingItem)
+                            newChar[result.attributeName].splice(existingItemIndex, 1);
                         }
                     } else {
-                        newChar[attrib].push(item);
+                        newChar[result.attributeName].push(item);
                     }
                 }
                 break;
-            case 'leads':
-            case 'completedAdventures':
-                const oldStuff: any[] = newChar[attrib];
-                const newStuff: any[] = task.results[attrib]
-                newChar[attrib] = oldStuff.concat(newStuff);
+            case TaskResultType.REMOVE_QUANTITY:
+            case TaskResultType.REMOVE:
+                for (let item of result.data) {
+                    let existingItemIndex = newChar[result.attributeName].findIndex((i) => {
+                        return item.name == i.name;
+                    });
+                    if (existingItemIndex != -1) {
+                        newChar[result.attributeName].splice(existingItemIndex, 1);
+                    }
+                }
+            case TaskResultType.ADD:
+                newChar[result.attributeName] = newChar[result.attributeName].concat(result.data);
                 break;
         }
     }

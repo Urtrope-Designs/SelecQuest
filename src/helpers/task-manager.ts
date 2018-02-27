@@ -273,7 +273,7 @@ const investigatingTaskGenerator: TaskGenerator = {
         ];
         const results: TaskResult[] = [
             {
-                type: TaskResultType.ADD_QUANTITY,
+                type: TaskResultType.ADD,
                 attributeName: 'leads',
                 data: lead,
             },
