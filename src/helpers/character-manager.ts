@@ -35,8 +35,8 @@ export function createNewCharacter(): Character {
         isInLeadFollowingMode: false,
         marketSaturation: 0,
         maxMarketSaturation: 35,
-        staminaSpent: 0,
-        maxStamina: 35,
+        fatigue: 0,
+        maxFatigue: 35,
         socialExposure: 0,
         maxSocialCapital: 35,
         completedAdventures: [],
@@ -96,6 +96,7 @@ export function applyTaskResult(baseChar: Character, task: Task): Character {
                         newChar[result.attributeName].splice(existingItemIndex, 1);
                     }
                 }
+                break;
             case TaskResultType.ADD:
                 newChar[result.attributeName] = newChar[result.attributeName].concat(result.data);
                 break;
@@ -137,8 +138,8 @@ export function updateCharacterState(character: Character): Character {
 
     newChar.marketSaturation = Math.min(newChar.marketSaturation, newChar.maxMarketSaturation);
     newChar.marketSaturation = Math.max(newChar.marketSaturation, 0);
-    newChar.staminaSpent = Math.min(newChar.staminaSpent, newChar.maxStamina);
-    newChar.staminaSpent = Math.max(newChar.staminaSpent, 0);
+    newChar.fatigue = Math.min(newChar.fatigue, newChar.maxFatigue);
+    newChar.fatigue = Math.max(newChar.fatigue, 0);
     newChar.socialExposure = Math.min(newChar.socialExposure, newChar.maxSocialCapital);
     newChar.socialExposure = Math.max(newChar.socialExposure, 0);
 

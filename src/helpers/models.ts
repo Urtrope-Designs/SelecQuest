@@ -60,8 +60,8 @@ export interface Character {
     isInLeadFollowingMode: boolean;
     marketSaturation: number;
     maxMarketSaturation: number;
-    staminaSpent: number;
-    maxStamina: number;
+    fatigue: number;
+    maxFatigue: number;
     socialExposure: number;
     maxSocialCapital: number;
     completedAdventures: string[];

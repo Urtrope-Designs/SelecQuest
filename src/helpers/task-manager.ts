@@ -81,7 +81,7 @@ const lootingTaskGenerator: TaskGenerator = {
             },
             {
                 type: TaskResultType.DECREASE,
-                attributeName: 'staminaSpent',
+                attributeName: 'fatigue',
                 data: -2,
             },
             {
@@ -105,6 +105,7 @@ const selloffTaskGenerator: TaskGenerator = {
         return state.activeTaskMode == TaskMode.LOOTING && state.character.isInLootSelloffMode;
     },
     generateTask: (state: AppState) => {
+        console.log('loot selloff');
         const sellItem = state.character.loot[0];
         if (!!sellItem) {
             const isMarketSaturated = state.character.marketSaturation >= state.character.maxMarketSaturation;
@@ -207,7 +208,7 @@ const boastingTaskGenerator: TaskGenerator = {
     generateTask: (state: AppState) => {
         const boastItem = state.character.trophies[0];
         if (!!boastItem) {
-            const isFatigued = state.character.staminaSpent >= state.character.maxStamina;
+            const isFatigued = state.character.fatigue >= state.character.maxFatigue;
             const boastQuantity = boastItem.quantity;
             const renownValue = (boastQuantity * Math.ceil(boastItem.value / (isFatigued ? 2 : 1)));
             let trophies = [
@@ -230,7 +231,7 @@ const boastingTaskGenerator: TaskGenerator = {
                 },
                 {
                     type: TaskResultType.INCREASE,
-                    attributeName: 'staminaSpent',
+                    attributeName: 'fatigue',
                     data: renownValue,
                 },
             ]
@@ -284,7 +285,7 @@ const investigatingTaskGenerator: TaskGenerator = {
             },
             {
                 type: TaskResultType.DECREASE,
-                attributeName: 'staminaSpent',
+                attributeName: 'fatigue',
                 data: -2,
             },
         ]

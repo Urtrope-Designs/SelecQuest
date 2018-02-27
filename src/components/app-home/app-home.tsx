@@ -74,9 +74,9 @@ export class AppHome {
                             }
                         </div>
                         <div>
-                            Stamina = {this.character.maxStamina - this.character.staminaSpent} / {this.character.maxStamina}
+                            Fatigue = {this.character.fatigue} / {this.character.maxFatigue}
                             {
-                                this.character.staminaSpent >= this.character.maxStamina
+                                this.character.fatigue >= this.character.maxFatigue
                                 ? <div><b>FATIGUED</b></div>
                                 : <br/>
                             }
