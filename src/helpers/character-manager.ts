@@ -109,33 +109,6 @@ export function applyTaskResult(baseChar: Character, task: Task): Character {
 export function updateCharacterState(character: Character): Character {
     let newChar = Object.assign({}, character);
 
-    const currentEncumbrance = character.loot.reduce((prevVal, curVal) => {
-        return prevVal + curVal.quantity;
-    }, 0);
-    if (currentEncumbrance >= character.maxEncumbrance) {
-        newChar.isInLootSelloffMode = true;
-    }
-    if (currentEncumbrance === 0) {
-        newChar.isInLootSelloffMode = false;
-    }
-    
-    const currentEquipmentIntegrity = character.trophies.reduce((prevVal, curVal) => {
-        return prevVal + curVal.quantity;
-    }, 0);
-    if (currentEquipmentIntegrity >= character.maxEquipmentIntegrity) {
-        newChar.isInTrophyBoastingMode = true;
-    }
-    if (currentEquipmentIntegrity === 0) {
-        newChar.isInTrophyBoastingMode = false;
-    }
-
-    if (character.leads.length >= character.maxQuestLogSize) {
-        newChar.isInLeadFollowingMode = true;
-    }
-    if (character.leads.length === 0) {
-        newChar.isInLeadFollowingMode = false;
-    }
-
     newChar.marketSaturation = Math.min(newChar.marketSaturation, newChar.maxMarketSaturation);
     newChar.marketSaturation = Math.max(newChar.marketSaturation, 0);
     newChar.fatigue = Math.min(newChar.fatigue, newChar.maxFatigue);

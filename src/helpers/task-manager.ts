@@ -15,12 +15,18 @@ export class TaskManager {
 
     constructor() {
         this.taskGenAlgos =[
-            lootingTaskGenerator,
-            selloffTaskGenerator,
-            gladiatingTaskGenerator,
-            boastingTaskGenerator,
-            investigatingTaskGenerator,
-            leadFollowingTaskGenerator,
+            lootingTaskGen,
+            triggerSelloffTaskGen,
+            selloffTaskGen,
+            endSelloffTaskGen,
+            gladiatingTaskGen,
+            triggerBoastingTaskGen,
+            boastingTaskGen,
+            endBoastingTaskGen,
+            investigatingTaskGen,
+            triggerLeadFollowingTaskGen,
+            leadFollowingTaskGen,
+            endLeadFollowingTaskGen,
         ];
         this.taskGenAlgos.sort((a, b) => {
             return b.priority - a.priority;
@@ -59,7 +65,7 @@ let lTaskInc = 1;
 let gTaskInc = 1;
 let iTaskInc = 1;
 
-const lootingTaskGenerator: TaskGenerator = {
+const lootingTaskGen: TaskGenerator = {
     priority: 0,
     shouldRun: (/*state: AppState*/) => {
         return true;
@@ -99,8 +105,37 @@ const lootingTaskGenerator: TaskGenerator = {
     },
 }
 
-const selloffTaskGenerator: TaskGenerator = {
+const triggerSelloffTaskGen: TaskGenerator = {
     priority: 2,
+    shouldRun: (state: AppState) => {
+        if (state.activeTaskMode !== TaskMode.LOOTING) {
+            return false;
+        }
+
+        const currentEncumbrance = state.character.loot.reduce((prevVal, curVal) => {
+            return prevVal + curVal.quantity;
+        }, 0);
+        return currentEncumbrance >= state.character.maxEncumbrance;
+    },
+    generateTask: (/*state: AppState*/) => {
+        const newTask: Task = {
+            description: 'Heading to market to pawn your loot',
+            durationMs: randRange(2,3) * 1000,
+            results: [
+                {
+                    type: TaskResultType.SET,
+                    attributeName: 'isInLootSelloffMode',
+                    data: true,
+                }
+            ]
+        }
+
+        return newTask;
+    }
+};
+
+const selloffTaskGen: TaskGenerator = {
+    priority: 3,
     shouldRun: (state: AppState) => {
         return state.activeTaskMode == TaskMode.LOOTING && state.character.isInLootSelloffMode;
     },
@@ -159,7 +194,36 @@ const selloffTaskGenerator: TaskGenerator = {
     }
 }
 
-const gladiatingTaskGenerator: TaskGenerator = {
+const endSelloffTaskGen: TaskGenerator = {
+    priority: 4,
+    shouldRun: (state: AppState) => {
+        if (state.activeTaskMode !== TaskMode.LOOTING || !state.character.isInLootSelloffMode) {
+            return false;
+        }
+
+        const currentEncumbrance = state.character.loot.reduce((prevVal, curVal) => {
+            return prevVal + curVal.quantity;
+        }, 0);
+        return currentEncumbrance <= 0;
+    },
+    generateTask: (/*state: AppState*/) => {
+        const newTask: Task = {
+            description: 'Heading out to the nearest cave',
+            durationMs: randRange(2,3) * 1000,
+            results: [
+                {
+                    type: TaskResultType.SET,
+                    attributeName: 'isInLootSelloffMode',
+                    data: false,
+                }
+            ]
+        }
+
+        return newTask;
+    }
+};
+
+const gladiatingTaskGen: TaskGenerator = {
     priority: 1,
     shouldRun: (state: AppState) => {
         return state.activeTaskMode == TaskMode.GLADIATING;
@@ -198,10 +262,39 @@ const gladiatingTaskGenerator: TaskGenerator = {
         };
         return newTask;
     }
-}
+};
 
-const boastingTaskGenerator: TaskGenerator = {
+const triggerBoastingTaskGen: TaskGenerator = {
     priority: 2,
+    shouldRun: (state: AppState) => {
+        if (state.activeTaskMode !== TaskMode.GLADIATING) {
+            return false;
+        }
+
+        const currentEquipmentIntegrity = state.character.trophies.reduce((prevVal, curVal) => {
+            return prevVal + curVal.quantity;
+        }, 0);
+        return currentEquipmentIntegrity >= state.character.maxEquipmentIntegrity;
+    },
+    generateTask: (/*state: AppState*/) => {
+        const newTask: Task = {
+            description: 'Heading to the nearest inn to boast of your recent deeds while your armor is repaired',
+            durationMs: randRange(2,3) * 1000,
+            results: [
+                {
+                    type: TaskResultType.SET,
+                    attributeName: 'isInTrophyBoastingMode',
+                    data: true,
+                }
+            ]
+        }
+
+        return newTask;
+    }
+};
+
+const boastingTaskGen: TaskGenerator = {
+    priority: 3,
     shouldRun: (state: AppState) => {
         return state.activeTaskMode === TaskMode.GLADIATING && state.character.isInTrophyBoastingMode;
     },
@@ -257,9 +350,38 @@ const boastingTaskGenerator: TaskGenerator = {
             return newTask;
         }
     }
-}
+};
 
-const investigatingTaskGenerator: TaskGenerator = {
+const endBoastingTaskGen: TaskGenerator = {
+    priority: 4,
+    shouldRun: (state: AppState) => {
+        if (state.activeTaskMode !== TaskMode.GLADIATING || !state.character.isInTrophyBoastingMode) {
+            return false;
+        }
+
+        const currentEquipmentIntegrity = state.character.trophies.reduce((prevVal, curVal) => {
+            return prevVal + curVal.quantity;
+        }, 0);
+        return currentEquipmentIntegrity <= 0;
+    },
+    generateTask: (/*state: AppState*/) => {
+        const newTask: Task = {
+            description: 'Heading to the arena',
+            durationMs: randRange(2,3) * 1000,
+            results: [
+                {
+                    type: TaskResultType.SET,
+                    attributeName: 'isInTrophyBoastingMode',
+                    data: false,
+                }
+            ]
+        }
+
+        return newTask;
+    }
+};
+
+const investigatingTaskGen: TaskGenerator = {
     priority: 1,
     shouldRun: (state: AppState) => {
         return state.activeTaskMode == TaskMode.INVESTIGATING;
@@ -297,10 +419,36 @@ const investigatingTaskGenerator: TaskGenerator = {
         };
         return newTask;
     }
-}
+};
 
-const leadFollowingTaskGenerator: TaskGenerator = {
+const triggerLeadFollowingTaskGen: TaskGenerator = {
     priority: 2,
+    shouldRun: (state: AppState) => {
+        if (state.activeTaskMode !== TaskMode.INVESTIGATING) {
+            return false;
+        }
+
+        return state.character.leads.length >= state.character.maxQuestLogSize;
+    },
+    generateTask: (/*state: AppState*/) => {
+        const newTask: Task = {
+            description: 'Heading out to follow up on your leads',
+            durationMs: randRange(2,3) * 1000,
+            results: [
+                {
+                    type: TaskResultType.SET,
+                    attributeName: 'isInLeadFollowingMode',
+                    data: true,
+                }
+            ]
+        }
+
+        return newTask;
+    }
+};
+
+const leadFollowingTaskGen: TaskGenerator = {
+    priority: 3,
     shouldRun: (state: AppState) => {
         return state.activeTaskMode === TaskMode.INVESTIGATING && state.character.isInLeadFollowingMode;
     },
@@ -354,4 +502,30 @@ const leadFollowingTaskGenerator: TaskGenerator = {
             return newTask;
         }
     }
-}
+};
+
+const endLeadFollowingTaskGen: TaskGenerator = {
+    priority: 4,
+    shouldRun: (state: AppState) => {
+        if (state.activeTaskMode !== TaskMode.INVESTIGATING || !state.character.isInLeadFollowingMode) {
+            return false;
+        }
+
+        return state.character.leads.length <= 0;
+    },
+    generateTask: (/*state: AppState*/) => {
+        const newTask: Task = {
+            description: 'Heading to the inn to imbibe a mug o\' scuttlebutt',
+            durationMs: randRange(2,3) * 1000,
+            results: [
+                {
+                    type: TaskResultType.SET,
+                    attributeName: 'isInLeadFollowingMode',
+                    data: false,
+                }
+            ]
+        }
+
+        return newTask;
+    }
+};

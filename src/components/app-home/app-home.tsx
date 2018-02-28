@@ -57,12 +57,17 @@ export class AppHome {
 
                 <ion-content>
                     <p>
-                        Character Str = {this.character.str}
+                        <div>Str: {this.character.str}</div>
+                        <div>Dex: {this.character.dex}</div>
+                        <div>Con: {this.character.con}</div>
+                        <div>Wis: {this.character.wis}</div>
+                        <div>Int: {this.character.int}</div>
+                        <div>Cha: {this.character.cha}</div>
                     </p>
                     <p>
-                        <div>Character Gold = {this.character.gold}</div>
-                        <div>Character Renown = {this.character.renown}</div>
-                        <div>Character Reputation = {this.character.reputation}</div>
+                        <div>Gold = {this.character.gold}</div>
+                        <div>Renown = {this.character.renown}</div>
+                        <div>Reputation = {this.character.reputation}</div>
                     </p>
                     <p>
                         <div>
