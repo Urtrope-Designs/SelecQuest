@@ -1,7 +1,7 @@
 import { Component, Prop, State, Event, EventEmitter } from '@stencil/core';
 import { Observable } from 'rxjs/Observable';
 
-import { AppState, Character, Task, TaskMode } from '../../helpers/models';
+import { AppState, Character, Task, TaskMode, AccoladeType } from '../../helpers/models';
 
 @Component({
     tag: 'app-home',
@@ -136,7 +136,37 @@ export class AppHome {
                                 )
                         }
                     </p>
-                    <br/>
+                    <p>
+                        Equipment:
+                        {
+                            this.character.equipment.map(equip => 
+                                <div>
+                                    {equip.type}:&nbsp;
+                                    {
+                                        !!equip.description
+                                        ? <span>{equip.description}</span>
+                                        : <span>[None]</span>
+                                    }
+                                </div>
+                            )
+                        }
+                    </p>
+                    <p>
+                        Accolades:
+                        {
+                            this.character.accolades.map(accolade =>
+                                <div>
+                                    {AccoladeType[accolade.type]}:&nbsp;
+                                    {
+                                        accolade.received.length <= 0
+                                        ? <span>[None]</span>
+                                        : <span>{accolade.received.join(', ')}</span>
+                                    }
+                                </div>
+                            )
+                        }
+                    </p>
+
                     <p>
                         Current Task:
                         {

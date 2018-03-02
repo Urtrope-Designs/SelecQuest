@@ -1,4 +1,4 @@
-import { Character, Task, TaskResultType } from './models';
+import { Character, Task, TaskResultType, AccoladeType } from './models';
 
 export function createNewCharacter(): Character {
     const newChar: Character = {
@@ -17,8 +17,25 @@ export function createNewCharacter(): Character {
         currentXp: 0,
         spells: [],
         abilities: [],
-        equipment: [],
-        accolades: [],
+        equipment: [
+            {type: 'Weapon', description: ''},
+            {type: 'Shield', description: ''},
+            {type: 'Helm', description: ''},
+            {type: 'Hauberk', description: ''},
+            {type: 'Brassairts', description: ''},
+            {type: 'Vambraces', description: ''},
+            {type: 'Gauntlets', description: ''},
+            {type: 'Gambeson', description: ''},
+            {type: 'Cuisses', description: ''},
+            {type: 'Greaves', description: ''},
+            {type: 'Sollerets', description: ''},
+        ],
+        accolades: [
+            {type: AccoladeType.Epithets, received: []},
+            {type: AccoladeType.Honorifics, received: []},
+            {type: AccoladeType.Sobriquets, received: []},
+            {type: AccoladeType.Titles, received: []},
+        ],
         affiliations: [],
         maxEncumbrance: 10,
         maxEquipmentIntegrity: 10,
@@ -57,6 +74,14 @@ export function applyTaskResult(baseChar: Character, task: Task): Character {
                 break;
             case TaskResultType.SET:
                 newChar[result.attributeName] = result.data;
+                break;
+            case TaskResultType.SET_EQUIPMENT:
+                result.data.map((equip: {type: string, description: string}) => {
+                    const existingEquipType = newChar[result.attributeName].find(e => {
+                        return e.type == equip.type;
+                    })
+                    existingEquipType.description = equip.description;
+                })
                 break;
             case TaskResultType.ADD_RANK:
                 for (let item of result.data) {
@@ -99,6 +124,18 @@ export function applyTaskResult(baseChar: Character, task: Task): Character {
                 break;
             case TaskResultType.ADD:
                 newChar[result.attributeName] = newChar[result.attributeName].concat(result.data);
+                break;
+            case TaskResultType.ADD_ACCOLADE:
+            case TaskResultType.ADD_AFFILIATION:
+                result.data.map((newA: {type: string, received: string[]}) => {
+                    const existingA: {type: string, received: string[]} = newChar[result.attributeName].find(a => {
+                        return a.type == newA.type;
+                    })
+                    existingA.received.concat(newA.received);
+                    if (existingA.received.length > 3) {
+                        existingA.received.splice(0, existingA.received.length - 3);
+                    }
+                })
                 break;
         }
     }

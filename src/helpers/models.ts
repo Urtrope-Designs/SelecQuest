@@ -16,9 +16,12 @@ export enum TaskResultType {
     INCREASE,
     DECREASE,
     SET,
+    SET_EQUIPMENT,
     ADD,
     ADD_QUANTITY,
     ADD_RANK,
+    ADD_ACCOLADE,
+    ADD_AFFILIATION,
     REMOVE,
     REMOVE_QUANTITY,
 }
@@ -42,7 +45,7 @@ export interface Character {
     currentXp: number;
     spells: {name: string, rank: number}[]; 
     abilities: {name: string, rank: number}[]; 
-    equipment: {type: string, description: string, rating: number}[];
+    equipment: {type: string, description: string}[];
     accolades: {type: AccoladeType, received: string[]}[];
     affiliations: {type: AffiliationType, received: string[]}[];
     maxEncumbrance: number;

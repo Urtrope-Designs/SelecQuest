@@ -1,7 +1,7 @@
 import { Event, EventEmitter, Component, Prop } from '@stencil/core';
 import { Observable } from 'rxjs/Observable';
 
-import { Task, TaskResult, TaskResultType, AppState, TaskMode } from './models';
+import { Task, TaskResult, TaskResultType, AppState, TaskMode, AccoladeType } from './models';
 import { SetActiveTask, TaskCompleted } from './actions';
 import { randRange } from './utils';
 
@@ -19,10 +19,12 @@ export class TaskManager {
             triggerSelloffTaskGen,
             selloffTaskGen,
             endSelloffTaskGen,
+            purchaseEquipmentTaskGen,
             gladiatingTaskGen,
             triggerBoastingTaskGen,
             boastingTaskGen,
             endBoastingTaskGen,
+            earnAccoladeTaskGen,
             investigatingTaskGen,
             triggerLeadFollowingTaskGen,
             leadFollowingTaskGen,
@@ -220,7 +222,45 @@ const endSelloffTaskGen: TaskGenerator = {
         }
 
         return newTask;
-    }
+    },
+};
+
+const purchaseEquipmentTaskGen: TaskGenerator = {
+    priority: 5,
+    shouldRun: (state: AppState) => {
+        if (state.activeTaskMode !== TaskMode.LOOTING || !state.character.isInLootSelloffMode) {
+            return false;
+        }
+
+        const currentEncumbrance = state.character.loot.reduce((prevVal, curVal) => {
+            return prevVal + curVal.quantity;
+        }, 0);
+        return currentEncumbrance <= 0 && state.character.gold >= 100;
+    },
+    generateTask: (/*state: AppState*/) => {
+        const newTask: Task = {
+            description: 'Negotiating the purchase of better equipment...',
+            durationMs: randRange(4, 6) * 1000,
+            results: [
+                {
+                    type: TaskResultType.SET_EQUIPMENT,
+                    attributeName: 'equipment',
+                    data: [
+                        {
+                            type: 'Vambraces',
+                            description: 'Bungled Mixolydian Power Glove \u2122'
+                        }
+                    ]
+                },
+                {
+                    type: TaskResultType.DECREASE,
+                    attributeName: 'gold',
+                    data: -100,
+                },
+            ]
+        }
+        return newTask;
+    },
 };
 
 const gladiatingTaskGen: TaskGenerator = {
@@ -379,6 +419,44 @@ const endBoastingTaskGen: TaskGenerator = {
 
         return newTask;
     }
+};
+
+const earnAccoladeTaskGen: TaskGenerator = {
+    priority: 5,
+    shouldRun: (state: AppState) => {
+        if (state.activeTaskMode !== TaskMode.GLADIATING || !state.character.isInTrophyBoastingMode) {
+            return false;
+        }
+
+        const currentEquipmentIntegrity = state.character.trophies.reduce((prevVal, curVal) => {
+            return prevVal + curVal.quantity;
+        }, 0);
+        return currentEquipmentIntegrity <= 0 && state.character.renown >= 50;
+    },
+    generateTask: (/*state: AppState*/) => {
+        const newTask: Task = {
+            description: 'Being honored for your glorious achievements...',
+            durationMs: randRange(4, 6) * 1000,
+            results: [
+                {
+                    type: TaskResultType.ADD_ACCOLADE,
+                    attributeName: 'accolades',
+                    data: [
+                        {
+                            type: AccoladeType.Sobriquets,
+                            description: 'Soultugger'
+                        }
+                    ]
+                },
+                {
+                    type: TaskResultType.DECREASE,
+                    attributeName: 'renown',
+                    data: -50,
+                },
+            ]
+        }
+        return newTask;
+    },
 };
 
 const investigatingTaskGen: TaskGenerator = {
