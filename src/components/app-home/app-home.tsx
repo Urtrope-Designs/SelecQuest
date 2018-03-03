@@ -1,7 +1,7 @@
 import { Component, Prop, State, Event, EventEmitter } from '@stencil/core';
 import { Observable } from 'rxjs/Observable';
 
-import { AppState, Character, Task, TaskMode, AccoladeType } from '../../helpers/models';
+import { AppState, Character, Task, TaskMode, AccoladeType, AffiliationType } from '../../helpers/models';
 
 @Component({
     tag: 'app-home',
@@ -117,7 +117,7 @@ export class AppHome {
                         }
                     </p>
                     <p>
-                        Equipment Integrity: {this.character.maxEquipmentIntegrity - this.character.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)} / {this.character.maxEquipmentIntegrity}
+                        Equipment Wear: {this.character.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)} / {this.character.maxEquipmentIntegrity}
                         {
                             this.character.trophies.length == 0
                             ? <div>[None]</div>
@@ -161,6 +161,21 @@ export class AppHome {
                                         accolade.received.length <= 0
                                         ? <span>[None]</span>
                                         : <span>{accolade.received.join(', ')}</span>
+                                    }
+                                </div>
+                            )
+                        }
+                    </p>
+                    <p>
+                        Affiliations:
+                        {
+                            this.character.affiliations.map(affiliation =>
+                                <div>
+                                    {AffiliationType[affiliation.type]}:&nbsp;
+                                    {
+                                        affiliation.received.length <= 0
+                                        ? <span>[None]</span>
+                                        : <span>{affiliation.received.join(', ')}</span>
                                     }
                                 </div>
                             )

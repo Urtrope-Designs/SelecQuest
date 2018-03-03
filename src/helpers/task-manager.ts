@@ -1,7 +1,7 @@
 import { Event, EventEmitter, Component, Prop } from '@stencil/core';
 import { Observable } from 'rxjs/Observable';
 
-import { Task, TaskResult, TaskResultType, AppState, TaskMode, AccoladeType } from './models';
+import { Task, TaskResult, TaskResultType, AppState, TaskMode, AccoladeType, AffiliationType } from './models';
 import { SetActiveTask, TaskCompleted } from './actions';
 import { randRange } from './utils';
 
@@ -29,6 +29,7 @@ export class TaskManager {
             triggerLeadFollowingTaskGen,
             leadFollowingTaskGen,
             endLeadFollowingTaskGen,
+            gainAffiliationTaskGen,
         ];
         this.taskGenAlgos.sort((a, b) => {
             return b.priority - a.priority;
@@ -99,13 +100,13 @@ const lootingTaskGen: TaskGenerator = {
             },
         ]
         const newTask = {
-            description: 'Do loot task ' + lTaskInc++,
+            description: 'Do loot task ' + lTaskInc++ + '...',
             durationMs: randRange(3, 4) * 1000,
             results: results
         };
         return newTask;
     },
-}
+};
 
 const triggerSelloffTaskGen: TaskGenerator = {
     priority: 2,
@@ -121,7 +122,7 @@ const triggerSelloffTaskGen: TaskGenerator = {
     },
     generateTask: (/*state: AppState*/) => {
         const newTask: Task = {
-            description: 'Heading to market to pawn your loot',
+            description: 'Heading to market to pawn your loot...',
             durationMs: randRange(2,3) * 1000,
             results: [
                 {
@@ -174,7 +175,7 @@ const selloffTaskGen: TaskGenerator = {
             ]
 
             const newTask = {
-                description: 'Sell ' + sellItem.name,
+                description: 'Sell ' + sellItem.name + '...',
                 durationMs: randRange(2,3) * 1000,
                 results: results,
             }
@@ -194,7 +195,7 @@ const selloffTaskGen: TaskGenerator = {
             return newTask;
         }
     }
-}
+};
 
 const endSelloffTaskGen: TaskGenerator = {
     priority: 4,
@@ -210,7 +211,7 @@ const endSelloffTaskGen: TaskGenerator = {
     },
     generateTask: (/*state: AppState*/) => {
         const newTask: Task = {
-            description: 'Heading out to the nearest cave',
+            description: 'Heading out to the nearest cave...',
             durationMs: randRange(2,3) * 1000,
             results: [
                 {
@@ -248,7 +249,7 @@ const purchaseEquipmentTaskGen: TaskGenerator = {
                     data: [
                         {
                             type: 'Vambraces',
-                            description: 'Bungled Mixolydian Power Glove \u2122'
+                            description: 'Bungled Mixolydian Power Glove\u2122'
                         }
                     ]
                 },
@@ -296,7 +297,7 @@ const gladiatingTaskGen: TaskGenerator = {
         ]
 
         const newTask = {
-            description: 'Do gladiating task ' + gTaskInc++,
+            description: 'Do gladiating task ' + gTaskInc++ + '...',
             durationMs: randRange(5, 8) * 1000,
             results: results
         };
@@ -318,7 +319,7 @@ const triggerBoastingTaskGen: TaskGenerator = {
     },
     generateTask: (/*state: AppState*/) => {
         const newTask: Task = {
-            description: 'Heading to the nearest inn to boast of your recent deeds while your armor is repaired',
+            description: 'Heading to the nearest inn to boast of your recent deeds while your armor is repaired...',
             durationMs: randRange(2,3) * 1000,
             results: [
                 {
@@ -370,8 +371,8 @@ const boastingTaskGen: TaskGenerator = {
             ]
             
             const newTask = {
-                description: 'Boast of ' + boastItem.name,
-                durationMs: randRange(2,3) * 1000,
+                description: 'Boast of ' + boastItem.name + '...',
+                durationMs: randRange(2,3) * 300,
                 results: results,
             }
             return newTask;
@@ -406,7 +407,7 @@ const endBoastingTaskGen: TaskGenerator = {
     },
     generateTask: (/*state: AppState*/) => {
         const newTask: Task = {
-            description: 'Heading to the arena',
+            description: 'Heading to the arena...',
             durationMs: randRange(2,3) * 1000,
             results: [
                 {
@@ -444,7 +445,7 @@ const earnAccoladeTaskGen: TaskGenerator = {
                     data: [
                         {
                             type: AccoladeType.Sobriquets,
-                            description: 'Soultugger'
+                            received: ['Soultugger']
                         }
                     ]
                 },
@@ -491,7 +492,7 @@ const investigatingTaskGen: TaskGenerator = {
         ]
         
         const newTask = {
-            description: 'Do investigating task ' + iTaskInc++,
+            description: 'Do investigating task ' + iTaskInc++ + '...',
             durationMs: randRange(5, 8) * 1000,
             results: results
         };
@@ -510,7 +511,7 @@ const triggerLeadFollowingTaskGen: TaskGenerator = {
     },
     generateTask: (/*state: AppState*/) => {
         const newTask: Task = {
-            description: 'Heading out to follow up on your leads',
+            description: 'Organizing your Questlog...',
             durationMs: randRange(2,3) * 1000,
             results: [
                 {
@@ -560,7 +561,7 @@ const leadFollowingTaskGen: TaskGenerator = {
             ]
             
             const newTask = {
-                description: 'Follow ' + leadToFollow.name,
+                description: 'Follow ' + leadToFollow.name + '...',
                 durationMs: randRange(2,3) * 1000,
                 results: results,
             }
@@ -593,7 +594,7 @@ const endLeadFollowingTaskGen: TaskGenerator = {
     },
     generateTask: (/*state: AppState*/) => {
         const newTask: Task = {
-            description: 'Heading to the inn to imbibe a mug o\' scuttlebutt',
+            description: 'Heading to the inn to imbibe a mug o\' scuttlebutt...',
             durationMs: randRange(2,3) * 1000,
             results: [
                 {
@@ -606,4 +607,39 @@ const endLeadFollowingTaskGen: TaskGenerator = {
 
         return newTask;
     }
+};
+
+const gainAffiliationTaskGen: TaskGenerator = {
+    priority: 5,
+    shouldRun: (state: AppState) => {
+        if (state.activeTaskMode !== TaskMode.INVESTIGATING || !state.character.isInLeadFollowingMode) {
+            return false;
+        }
+
+        return state.character.leads.length <= 0 && state.character.reputation >= 50;
+    },
+    generateTask: (/*state: AppState*/) => {
+        const newTask: Task = {
+            description: 'Solidifying a new connection...',
+            durationMs: randRange(4, 6) * 1000,
+            results: [
+                {
+                    type: TaskResultType.ADD_AFFILIATION,
+                    attributeName: 'affiliations',
+                    data: [
+                        {
+                            type: AffiliationType.Offices,
+                            received: ['Vice-corporal of Funk']
+                        }
+                    ]
+                },
+                {
+                    type: TaskResultType.DECREASE,
+                    attributeName: 'reputation',
+                    data: -50,
+                },
+            ]
+        }
+        return newTask;
+    },
 };

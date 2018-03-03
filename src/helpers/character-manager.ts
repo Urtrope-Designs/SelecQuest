@@ -1,4 +1,4 @@
-import { Character, Task, TaskResultType, AccoladeType } from './models';
+import { Character, Task, TaskResultType, AccoladeType, AffiliationType } from './models';
 
 export function createNewCharacter(): Character {
     const newChar: Character = {
@@ -36,7 +36,11 @@ export function createNewCharacter(): Character {
             {type: AccoladeType.Sobriquets, received: []},
             {type: AccoladeType.Titles, received: []},
         ],
-        affiliations: [],
+        affiliations: [
+            {type: AffiliationType.Affiliations, received: []},
+            {type: AffiliationType.Connections, received: []},
+            {type: AffiliationType.Offices, received: []},
+        ],
         maxEncumbrance: 10,
         maxEquipmentIntegrity: 10,
         maxQuestLogSize: 10,
@@ -131,7 +135,7 @@ export function applyTaskResult(baseChar: Character, task: Task): Character {
                     const existingA: {type: string, received: string[]} = newChar[result.attributeName].find(a => {
                         return a.type == newA.type;
                     })
-                    existingA.received.concat(newA.received);
+                    existingA.received = existingA.received.concat(newA.received);
                     if (existingA.received.length > 3) {
                         existingA.received.splice(0, existingA.received.length - 3);
                     }
