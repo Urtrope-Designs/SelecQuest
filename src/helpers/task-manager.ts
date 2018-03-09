@@ -73,8 +73,10 @@ const lootingTaskGen: TaskGenerator = {
     shouldRun: (/*state: AppState*/) => {
         return true;
     },
-    generateTask: (/*state: AppState*/) => {
+    generateTask: (state: AppState) => {
         const lootName = 'loot' + randRange(1, 4);
+        const durationSeconds = randRange(5, 8);        
+        const isMarketSaturated = state.character.marketSaturation >= state.character.maxMarketSaturation;
         let lootData = [
             {
                 name: lootName,
@@ -98,10 +100,15 @@ const lootingTaskGen: TaskGenerator = {
                 attributeName: 'socialExposure',
                 data: -2,
             },
+            {
+                type: TaskResultType.INCREASE,
+                attributeName: 'currentXp',
+                data: (Math.ceil(durationSeconds / (isMarketSaturated ? 2 : 1))),
+            },
         ]
         const newTask = {
             description: 'Do loot task ' + lTaskInc++ + '...',
-            durationMs: randRange(3, 4) * 1000,
+            durationMs: durationSeconds * 1000,
             results: results
         };
         return newTask;
@@ -269,8 +276,10 @@ const gladiatingTaskGen: TaskGenerator = {
     shouldRun: (state: AppState) => {
         return state.activeTaskMode == TaskMode.GLADIATING;
     },
-    generateTask: (/*state: AppState*/) => {
+    generateTask: (state: AppState) => {
         const trophyName = 'trophy' + randRange(1, 4);
+        const durationSeconds = randRange(5, 8);
+        const isFatigued = state.character.fatigue >= state.character.maxFatigue;
         let trophy = [
             {
                 name: trophyName,
@@ -294,11 +303,16 @@ const gladiatingTaskGen: TaskGenerator = {
                 attributeName: 'socialExposure',
                 data: -2,
             },
+            {
+                type: TaskResultType.INCREASE,
+                attributeName: 'currentXp',
+                data: (Math.ceil(durationSeconds / (isFatigued ? 2 : 1))),
+            },
         ]
 
         const newTask = {
             description: 'Do gladiating task ' + gTaskInc++ + '...',
-            durationMs: randRange(5, 8) * 1000,
+            durationMs: durationSeconds * 1000,
             results: results
         };
         return newTask;
@@ -465,8 +479,10 @@ const investigatingTaskGen: TaskGenerator = {
     shouldRun: (state: AppState) => {
         return state.activeTaskMode == TaskMode.INVESTIGATING;
     },
-    generateTask: (/*state: AppState*/) => {
+    generateTask: (state: AppState) => {
         const leadName = 'lead' + randRange(1, 100);
+        const durationSeconds = randRange(5, 8);
+        const isOverexposed = state.character.socialExposure >= state.character.maxSocialCapital;        
         let lead = [
             {
                 name: leadName,
@@ -489,11 +505,16 @@ const investigatingTaskGen: TaskGenerator = {
                 attributeName: 'fatigue',
                 data: -2,
             },
+            {
+                type: TaskResultType.INCREASE,
+                attributeName: 'currentXp',
+                data: (Math.ceil(durationSeconds / (isOverexposed ? 2 : 1))),
+            },
         ]
         
         const newTask = {
             description: 'Do investigating task ' + iTaskInc++ + '...',
-            durationMs: randRange(5, 8) * 1000,
+            durationMs: durationSeconds * 1000,
             results: results
         };
         return newTask;

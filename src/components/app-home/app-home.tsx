@@ -65,9 +65,12 @@ export class AppHome {
                         <div>Cha: {this.character.cha}</div>
                     </p>
                     <p>
-                        <div>Gold = {this.character.gold}</div>
-                        <div>Renown = {this.character.renown}</div>
-                        <div>Reputation = {this.character.reputation}</div>
+                        Experience: {this.character.currentXp}
+                    </p>
+                    <p>
+                        <div>Gold: {this.character.gold}</div>
+                        <div>Renown: {this.character.renown}</div>
+                        <div>Reputation: {this.character.reputation}</div>
                     </p>
                     <p>
                         <div>
