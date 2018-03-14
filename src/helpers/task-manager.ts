@@ -1,7 +1,7 @@
 import { Event, EventEmitter, Component, Prop } from '@stencil/core';
 import { Observable } from 'rxjs/Observable';
 
-import { Task, TaskResult, TaskResultType, AppState, TaskMode, AccoladeType, AffiliationType } from './models';
+import { Task, CharacterModification, CharacterModificationType, AppState, TaskMode, AccoladeType, AffiliationType } from './models';
 import { SetActiveTask, TaskCompleted } from './actions';
 import { randRange } from './utils';
 
@@ -84,24 +84,24 @@ const lootingTaskGen: TaskGenerator = {
                 value: 2
             }
         ]
-        const results: TaskResult[] = [
+        const results: CharacterModification[] = [
             {
-                type: TaskResultType.ADD_QUANTITY,
+                type: CharacterModificationType.ADD_QUANTITY,
                 attributeName: 'loot',
                 data: lootData,
             },
             {
-                type: TaskResultType.DECREASE,
+                type: CharacterModificationType.DECREASE,
                 attributeName: 'fatigue',
                 data: -2,
             },
             {
-                type: TaskResultType.DECREASE,
+                type: CharacterModificationType.DECREASE,
                 attributeName: 'socialExposure',
                 data: -2,
             },
             {
-                type: TaskResultType.INCREASE,
+                type: CharacterModificationType.INCREASE,
                 attributeName: 'currentXp',
                 data: (Math.ceil(durationSeconds / (isMarketSaturated ? 2 : 1))),
             },
@@ -133,7 +133,7 @@ const triggerSelloffTaskGen: TaskGenerator = {
             durationMs: randRange(2,3) * 1000,
             results: [
                 {
-                    type: TaskResultType.SET,
+                    type: CharacterModificationType.SET,
                     attributeName: 'isInLootSelloffMode',
                     data: true,
                 }
@@ -163,19 +163,19 @@ const selloffTaskGen: TaskGenerator = {
                     value: 0
                 }
             ];
-            const results: TaskResult[] = [
+            const results: CharacterModification[] = [
                 {
-                    type: TaskResultType.REMOVE,
+                    type: CharacterModificationType.REMOVE,
                     attributeName: 'loot',
                     data: lootData,
                 },
                 {
-                    type: TaskResultType.INCREASE,
+                    type: CharacterModificationType.INCREASE,
                     attributeName: 'gold',
                     data: sellValue,
                 },
                 {
-                    type: TaskResultType.INCREASE,
+                    type: CharacterModificationType.INCREASE,
                     attributeName: 'marketSaturation',
                     data: sellValue,
                 },
@@ -193,7 +193,7 @@ const selloffTaskGen: TaskGenerator = {
                 durationMs: 10,
                 results: [
                     {
-                        type: TaskResultType.SET,
+                        type: CharacterModificationType.SET,
                         attributeName: 'isInLootSelloffMode',
                         data: false,
                     }
@@ -222,7 +222,7 @@ const endSelloffTaskGen: TaskGenerator = {
             durationMs: randRange(2,3) * 1000,
             results: [
                 {
-                    type: TaskResultType.SET,
+                    type: CharacterModificationType.SET,
                     attributeName: 'isInLootSelloffMode',
                     data: false,
                 }
@@ -251,7 +251,7 @@ const purchaseEquipmentTaskGen: TaskGenerator = {
             durationMs: randRange(4, 6) * 1000,
             results: [
                 {
-                    type: TaskResultType.SET_EQUIPMENT,
+                    type: CharacterModificationType.SET_EQUIPMENT,
                     attributeName: 'equipment',
                     data: [
                         {
@@ -261,7 +261,7 @@ const purchaseEquipmentTaskGen: TaskGenerator = {
                     ]
                 },
                 {
-                    type: TaskResultType.DECREASE,
+                    type: CharacterModificationType.DECREASE,
                     attributeName: 'gold',
                     data: -100,
                 },
@@ -287,24 +287,24 @@ const gladiatingTaskGen: TaskGenerator = {
                 value: 2
             }
         ];
-        const results: TaskResult[] = [
+        const results: CharacterModification[] = [
             {
-                type: TaskResultType.ADD_QUANTITY,
+                type: CharacterModificationType.ADD_QUANTITY,
                 attributeName: 'trophies',
                 data: trophy,
             },
             {
-                type: TaskResultType.DECREASE,
+                type: CharacterModificationType.DECREASE,
                 attributeName: 'marketSaturation',
                 data: -2,
             },
             {
-                type: TaskResultType.DECREASE,
+                type: CharacterModificationType.DECREASE,
                 attributeName: 'socialExposure',
                 data: -2,
             },
             {
-                type: TaskResultType.INCREASE,
+                type: CharacterModificationType.INCREASE,
                 attributeName: 'currentXp',
                 data: (Math.ceil(durationSeconds / (isFatigued ? 2 : 1))),
             },
@@ -337,7 +337,7 @@ const triggerBoastingTaskGen: TaskGenerator = {
             durationMs: randRange(2,3) * 1000,
             results: [
                 {
-                    type: TaskResultType.SET,
+                    type: CharacterModificationType.SET,
                     attributeName: 'isInTrophyBoastingMode',
                     data: true,
                 }
@@ -366,19 +366,19 @@ const boastingTaskGen: TaskGenerator = {
                     value: 0
                 }
             ];
-            const results: TaskResult[] = [
+            const results: CharacterModification[] = [
                 {
-                    type: TaskResultType.REMOVE,
+                    type: CharacterModificationType.REMOVE,
                     attributeName: 'trophies',
                     data: trophies,
                 },
                 {
-                    type: TaskResultType.INCREASE,
+                    type: CharacterModificationType.INCREASE,
                     attributeName: 'renown',
                     data: renownValue,
                 },
                 {
-                    type: TaskResultType.INCREASE,
+                    type: CharacterModificationType.INCREASE,
                     attributeName: 'fatigue',
                     data: renownValue,
                 },
@@ -396,7 +396,7 @@ const boastingTaskGen: TaskGenerator = {
                 durationMs: 10,
                 results: [
                     {
-                        type: TaskResultType.SET,
+                        type: CharacterModificationType.SET,
                         attributeName: 'isInTrophyBoastingMode',
                         data: false,
                     },
@@ -425,7 +425,7 @@ const endBoastingTaskGen: TaskGenerator = {
             durationMs: randRange(2,3) * 1000,
             results: [
                 {
-                    type: TaskResultType.SET,
+                    type: CharacterModificationType.SET,
                     attributeName: 'isInTrophyBoastingMode',
                     data: false,
                 }
@@ -446,7 +446,7 @@ const earnAccoladeTaskGen: TaskGenerator = {
         const currentEquipmentIntegrity = state.character.trophies.reduce((prevVal, curVal) => {
             return prevVal + curVal.quantity;
         }, 0);
-        return currentEquipmentIntegrity <= 0 && state.character.renown >= 50;
+        return currentEquipmentIntegrity <= 0 && (state.character.renown - state.character.spentRenown) >= 50;
     },
     generateTask: (/*state: AppState*/) => {
         const newTask: Task = {
@@ -454,7 +454,7 @@ const earnAccoladeTaskGen: TaskGenerator = {
             durationMs: randRange(4, 6) * 1000,
             results: [
                 {
-                    type: TaskResultType.ADD_ACCOLADE,
+                    type: CharacterModificationType.ADD_ACCOLADE,
                     attributeName: 'accolades',
                     data: [
                         {
@@ -464,9 +464,9 @@ const earnAccoladeTaskGen: TaskGenerator = {
                     ]
                 },
                 {
-                    type: TaskResultType.DECREASE,
-                    attributeName: 'renown',
-                    data: -50,
+                    type: CharacterModificationType.INCREASE,
+                    attributeName: 'spentRenown',
+                    data: 50,
                 },
             ]
         }
@@ -489,24 +489,24 @@ const investigatingTaskGen: TaskGenerator = {
                 value: 2
             }
         ];
-        const results: TaskResult[] = [
+        const results: CharacterModification[] = [
             {
-                type: TaskResultType.ADD,
+                type: CharacterModificationType.ADD,
                 attributeName: 'leads',
                 data: lead,
             },
             {
-                type: TaskResultType.DECREASE,
+                type: CharacterModificationType.DECREASE,
                 attributeName: 'marketSaturation',
                 data: -2,
             },
             {
-                type: TaskResultType.DECREASE,
+                type: CharacterModificationType.DECREASE,
                 attributeName: 'fatigue',
                 data: -2,
             },
             {
-                type: TaskResultType.INCREASE,
+                type: CharacterModificationType.INCREASE,
                 attributeName: 'currentXp',
                 data: (Math.ceil(durationSeconds / (isOverexposed ? 2 : 1))),
             },
@@ -536,7 +536,7 @@ const triggerLeadFollowingTaskGen: TaskGenerator = {
             durationMs: randRange(2,3) * 1000,
             results: [
                 {
-                    type: TaskResultType.SET,
+                    type: CharacterModificationType.SET,
                     attributeName: 'isInLeadFollowingMode',
                     data: true,
                 }
@@ -563,19 +563,19 @@ const leadFollowingTaskGen: TaskGenerator = {
                     value: 0
                 }
             ];
-            const results: TaskResult[] = [
+            const results: CharacterModification[] = [
                 {
-                    type: TaskResultType.REMOVE,
+                    type: CharacterModificationType.REMOVE,
                     attributeName: 'leads',
                     data: leads,
                 },
                 {
-                    type: TaskResultType.INCREASE,
+                    type: CharacterModificationType.INCREASE,
                     attributeName: 'reputation',
                     data: reputationValue,
                 },
                 {
-                    type: TaskResultType.INCREASE,
+                    type: CharacterModificationType.INCREASE,
                     attributeName: 'socialExposure',
                     data: reputationValue,
                 },
@@ -593,7 +593,7 @@ const leadFollowingTaskGen: TaskGenerator = {
                 durationMs: 10,
                 results: [
                     {
-                        type: TaskResultType.SET,
+                        type: CharacterModificationType.SET,
                         attributeName: 'isInLeadFollowingMode',
                         data: false,
                     },
@@ -619,7 +619,7 @@ const endLeadFollowingTaskGen: TaskGenerator = {
             durationMs: randRange(2,3) * 1000,
             results: [
                 {
-                    type: TaskResultType.SET,
+                    type: CharacterModificationType.SET,
                     attributeName: 'isInLeadFollowingMode',
                     data: false,
                 }
@@ -637,7 +637,7 @@ const gainAffiliationTaskGen: TaskGenerator = {
             return false;
         }
 
-        return state.character.leads.length <= 0 && state.character.reputation >= 50;
+        return state.character.leads.length <= 0 && (state.character.reputation - state.character.spentReputation) >= 50;
     },
     generateTask: (/*state: AppState*/) => {
         const newTask: Task = {
@@ -645,7 +645,7 @@ const gainAffiliationTaskGen: TaskGenerator = {
             durationMs: randRange(4, 6) * 1000,
             results: [
                 {
-                    type: TaskResultType.ADD_AFFILIATION,
+                    type: CharacterModificationType.ADD_AFFILIATION,
                     attributeName: 'affiliations',
                     data: [
                         {
@@ -655,9 +655,9 @@ const gainAffiliationTaskGen: TaskGenerator = {
                     ]
                 },
                 {
-                    type: TaskResultType.DECREASE,
-                    attributeName: 'reputation',
-                    data: -50,
+                    type: CharacterModificationType.INCREASE,
+                    attributeName: 'spentReputation',
+                    data: 50,
                 },
             ]
         }

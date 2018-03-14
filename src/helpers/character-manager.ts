@@ -1,4 +1,4 @@
-import { Character, Task, TaskResultType, AccoladeType, AffiliationType } from './models';
+import { Character, CharacterModificationType, AccoladeType, AffiliationType, CharacterModification } from './models';
 
 export function createNewCharacter(): Character {
     const newChar: Character = {
@@ -46,6 +46,7 @@ export function createNewCharacter(): Character {
         maxQuestLogSize: 10,
         gold: 0,
         renown: 0,
+        spentRenown: 0,
         reputation: 0,
         spentReputation: 0,
         loot: [],
@@ -67,19 +68,19 @@ export function createNewCharacter(): Character {
     return newChar;
 }
     
-export function applyTaskResult(baseChar: Character, task: Task): Character {
+export function applyCharacterModifications(baseChar: Character, characterMods: CharacterModification[]): Character {
     let newChar = Object.assign({}, baseChar);
 
-    for (let result of task.results) {
+    for (let result of characterMods) {
         switch(result.type) {
-            case TaskResultType.INCREASE:
-            case TaskResultType.DECREASE:
+            case CharacterModificationType.INCREASE:
+            case CharacterModificationType.DECREASE:
                 newChar[result.attributeName] += result.data;
                 break;
-            case TaskResultType.SET:
+            case CharacterModificationType.SET:
                 newChar[result.attributeName] = result.data;
                 break;
-            case TaskResultType.SET_EQUIPMENT:
+            case CharacterModificationType.SET_EQUIPMENT:
                 result.data.map((equip: {type: string, description: string}) => {
                     const existingEquipType = newChar[result.attributeName].find(e => {
                         return e.type == equip.type;
@@ -87,7 +88,7 @@ export function applyTaskResult(baseChar: Character, task: Task): Character {
                     existingEquipType.description = equip.description;
                 })
                 break;
-            case TaskResultType.ADD_RANK:
+            case CharacterModificationType.ADD_RANK:
                 for (let item of result.data) {
                     let existingItem = newChar[result.attributeName].find((i) => {
                         return item.name == i.name;
@@ -99,7 +100,7 @@ export function applyTaskResult(baseChar: Character, task: Task): Character {
                     }
                 }
                 break;
-            case TaskResultType.ADD_QUANTITY:
+            case CharacterModificationType.ADD_QUANTITY:
                 for (let item of result.data) {
                     let existingItem = newChar[result.attributeName].find((i) => {
                         return item.name == i.name;
@@ -115,8 +116,8 @@ export function applyTaskResult(baseChar: Character, task: Task): Character {
                     }
                 }
                 break;
-            case TaskResultType.REMOVE_QUANTITY:
-            case TaskResultType.REMOVE:
+            case CharacterModificationType.REMOVE_QUANTITY:
+            case CharacterModificationType.REMOVE:
                 for (let item of result.data) {
                     let existingItemIndex = newChar[result.attributeName].findIndex((i) => {
                         return item.name == i.name;
@@ -126,11 +127,11 @@ export function applyTaskResult(baseChar: Character, task: Task): Character {
                     }
                 }
                 break;
-            case TaskResultType.ADD:
+            case CharacterModificationType.ADD:
                 newChar[result.attributeName] = newChar[result.attributeName].concat(result.data);
                 break;
-            case TaskResultType.ADD_ACCOLADE:
-            case TaskResultType.ADD_AFFILIATION:
+            case CharacterModificationType.ADD_ACCOLADE:
+            case CharacterModificationType.ADD_AFFILIATION:
                 result.data.map((newA: {type: string, received: string[]}) => {
                     const existingA: {type: string, received: string[]} = newChar[result.attributeName].find(a => {
                         return a.type == newA.type;
@@ -159,3 +160,30 @@ export function updateCharacterState(character: Character): Character {
 
     return newChar;
 }
+
+export function getXpRequiredForNextLevel(curLevel: number): number {
+    let xpRequired = 0;
+    if (curLevel < XP_REQUIRED_FOR_NEXT_LEVEL.length) {
+        xpRequired = XP_REQUIRED_FOR_NEXT_LEVEL[curLevel];
+    } else {
+        xpRequired = 36000 * (curLevel - 2);
+    }
+    return xpRequired;
+}
+
+export function hasCharacterReachedNextLevel(character: Character): boolean {
+    if (character.currentXp >= getXpRequiredForNextLevel(character.level)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+export function getLevelUpModifications()
+
+const XP_REQUIRED_FOR_NEXT_LEVEL = [
+    0,
+    3000,
+    12000,
+    36000,
+]

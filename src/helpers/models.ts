@@ -2,17 +2,17 @@ export interface Task {
     completionTimeoutId?: any;
     description: string;
     durationMs: number;
-    results: TaskResult[];
+    results: CharacterModification[];
 }
 
-export interface TaskResult {
-    type: TaskResultType,
+export interface CharacterModification {
+    type: CharacterModificationType,
     attributeName: string,
     data: any,
     // data: string | number | {name: string, rank: number}[] | {type: string, description: string, rating: number}[] | {type: AccoladeType, received: string[]}[] | {type: AffiliationType, received: string[]}[] | {name: string, quantity: number, value: number} | {name: string, value: string} | string[],
 }
 
-export enum TaskResultType {
+export enum CharacterModificationType {
     INCREASE,
     DECREASE,
     SET,
@@ -53,6 +53,7 @@ export interface Character {
     maxQuestLogSize: number;
     gold: number;
     renown: number;
+    spentRenown: number;
     reputation: number;
     spentReputation: number;
     loot: {name: string, quantity: number, value: number}[];
