@@ -21,6 +21,7 @@ export function wrapIntoBehavior(init, obs) {
     return res;
 }
 
+/** return a random integer between min (inclusive) and max (inclusive) */
 export function randRange(min: number, max: number): number {
     if (min == max) return min;
     if (min > max) {

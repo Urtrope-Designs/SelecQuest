@@ -57,6 +57,9 @@ export class AppHome {
 
                 <ion-content>
                     <p>
+                        Level: {this.character.level}
+                    </p>
+                    <p>
                         <div>Str: {this.character.str}</div>
                         <div>Dex: {this.character.dex}</div>
                         <div>Con: {this.character.con}</div>

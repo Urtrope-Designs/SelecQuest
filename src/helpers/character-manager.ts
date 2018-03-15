@@ -1,4 +1,5 @@
 import { Character, CharacterModificationType, AccoladeType, AffiliationType, CharacterModification } from './models';
+import { randRange } from './utils';
 
 export function createNewCharacter(): Character {
     const newChar: Character = {
@@ -179,11 +180,69 @@ export function hasCharacterReachedNextLevel(character: Character): boolean {
     }
 }
 
-export function getLevelUpModifications()
+export function getLevelUpModifications(): CharacterModification[] {
+    let levelMods = [];
+
+    levelMods.push({
+        type: CharacterModificationType.INCREASE,
+        attributeName: 'level',
+        data: 1,
+    });
+    levelMods.push({
+        type: CharacterModificationType.INCREASE,
+        attributeName: 'maxHp',
+        data: randRange(1, 4),
+    });
+    levelMods.push({
+        type: CharacterModificationType.INCREASE,
+        attributeName: 'maxMp',
+        data: randRange(0, 2),
+    })
+
+    levelMods.push(LEVEL_UP_BONUSES[randRange(0, LEVEL_UP_BONUSES.length-1)]);
+    if (!randRange(0, 3)) {
+        levelMods.push(LEVEL_UP_BONUSES[randRange(0, LEVEL_UP_BONUSES.length-1)]);
+    }
+
+    return levelMods;
+}
 
 const XP_REQUIRED_FOR_NEXT_LEVEL = [
     0,
-    3000,
+    30,
     12000,
     36000,
+]
+
+const LEVEL_UP_BONUSES = [
+    {
+        type: CharacterModificationType.INCREASE,
+        attributeName: 'str',
+        data: 1,
+    },
+    {
+        type: CharacterModificationType.INCREASE,
+        attributeName: 'dex',
+        data: 1,
+    },
+    {
+        type: CharacterModificationType.INCREASE,
+        attributeName: 'con',
+        data: 1,
+    },
+    {
+        type: CharacterModificationType.INCREASE,
+        attributeName: 'int',
+        data: 1,
+    },
+    {
+        type: CharacterModificationType.INCREASE,
+        attributeName: 'wis',
+        data: 1,
+    },
+    {
+        type: CharacterModificationType.INCREASE,
+        attributeName: 'cha',
+        data: 1,
+    },
 ]
