@@ -2,6 +2,7 @@ import { Component, Prop, State, Event, EventEmitter } from '@stencil/core';
 import { Observable } from 'rxjs/Observable';
 
 import { AppState, Character, Task, TaskMode, AccoladeType, AffiliationType } from '../../helpers/models';
+import {getXpRequiredForNextLevel} from '../../helpers/character-manager';
 
 @Component({
     tag: 'app-home',
@@ -68,7 +69,7 @@ export class AppHome {
                         <div>Cha: {this.character.cha}</div>
                     </p>
                     <p>
-                        Experience: {this.character.currentXp}
+                        XP Needed for next level: {getXpRequiredForNextLevel(this.character.level) - this.character.currentXp}
                     </p>
                     <p>
                         <div>Gold: {this.character.gold}</div>
