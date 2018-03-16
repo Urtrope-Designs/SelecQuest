@@ -4,7 +4,7 @@ import { scan } from 'rxjs/operators/scan';
 import { map } from 'rxjs/operators/map';
 import { Action, SetActiveTask, TaskCompleted, ChangeActiveTaskMode } from './actions';
 import { Task, AppState, Character, TaskMode } from './models';
-import { applyCharacterModifications, updateCharacterState, hasCharacterReachedNextLevel, getLevelUpModifications } from './character-manager';
+import { applyCharacterModifications, updateCharacterState, hasCharacterReachedNextLevel, getLevelUpModifications, getAdventureCompletedModifications } from './character-manager';
 import { wrapIntoBehavior } from './utils';
 
 function activeTask(initState: Task, actions: Observable<Action>) {
@@ -42,13 +42,13 @@ function character(initState: Character, actions: Observable<Action>): Observabl
             if (action instanceof TaskCompleted) {
                 const updatedCharacter = applyCharacterModifications(state, action.completedTask.results);
                 const stateCheckedCharacter = updateCharacterState(updatedCharacter);
-                if (hasCharacterReachedNextLevel(stateCheckedCharacter)) {
-                    const levelModifications = getLevelUpModifications();
-                    const leveledCharacter = applyCharacterModifications(stateCheckedCharacter, levelModifications);
-                    return leveledCharacter;
-                } else {
-                    return stateCheckedCharacter;
-                }
+                const levelCheckedCharacter = hasCharacterReachedNextLevel(stateCheckedCharacter)
+                    ? applyCharacterModifications(stateCheckedCharacter, getLevelUpModifications())
+                    : stateCheckedCharacter;
+                const adventureCheckedCharacter = levelCheckedCharacter.adventureProgress >= levelCheckedCharacter.currentAdventure.progressRequired
+                    ? applyCharacterModifications(levelCheckedCharacter, getAdventureCompletedModifications(levelCheckedCharacter))
+                    : levelCheckedCharacter;
+                return adventureCheckedCharacter;
             } else {
                 return state;
             }

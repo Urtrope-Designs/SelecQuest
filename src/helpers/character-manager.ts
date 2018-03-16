@@ -62,6 +62,7 @@ export function createNewCharacter(): Character {
         maxFatigue: 35,
         socialExposure: 0,
         maxSocialCapital: 35,
+        currentAdventure: null,
         completedAdventures: [],
         adventureProgress: 0,
     }
@@ -205,6 +206,36 @@ export function getLevelUpModifications(): CharacterModification[] {
     }
 
     return levelMods;
+}
+
+export function getAdventureCompletedModifications(character: Character): CharacterModification[] {
+    let adventureMods = [];
+
+    const newAdventure = generateNewAdventure();
+    adventureMods.concat([
+        {
+            type: CharacterModificationType.SET,
+            attributeName: 'currentAdventure',
+            data: newAdventure,
+        },
+        {
+            type: CharacterModificationType.ADD,
+            attributeName: 'completedAdventures',
+            data: [character.currentAdventure.name],
+        },
+        {
+            type: CharacterModificationType.ADD_RANK,
+            attributeName: 'abilities',
+            data: [{name: 'Tonguehairs', rank: 1}],
+        },
+    ]);
+
+    return adventureMods;
+}
+
+let chapterInc = 1;
+export function generateNewAdventure(): {name: string, progressRequired: number} {
+    return {name: `Chapter ${chapterInc++}`, progressRequired: 30};
 }
 
 const XP_REQUIRED_FOR_NEXT_LEVEL = [

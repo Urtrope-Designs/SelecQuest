@@ -105,6 +105,11 @@ const lootingTaskGen: TaskGenerator = {
                 attributeName: 'currentXp',
                 data: (Math.ceil(durationSeconds / (isMarketSaturated ? 2 : 1))),
             },
+            {
+                type: CharacterModificationType.INCREASE,
+                attributeName: 'adventureProgress',
+                data: (Math.ceil(durationSeconds / (isMarketSaturated ? 2 : 1))),
+            },
         ]
         const newTask = {
             description: 'Do loot task ' + lTaskInc++ + '...',
@@ -308,6 +313,11 @@ const gladiatingTaskGen: TaskGenerator = {
                 attributeName: 'currentXp',
                 data: (Math.ceil(durationSeconds / (isFatigued ? 2 : 1))),
             },
+            {
+                type: CharacterModificationType.INCREASE,
+                attributeName: 'adventureProgress',
+                data: (Math.ceil(durationSeconds / (isFatigued ? 2 : 1))),
+            },
         ]
 
         const newTask = {
@@ -508,6 +518,11 @@ const investigatingTaskGen: TaskGenerator = {
             {
                 type: CharacterModificationType.INCREASE,
                 attributeName: 'currentXp',
+                data: (Math.ceil(durationSeconds / (isOverexposed ? 2 : 1))),
+            },
+            {
+                type: CharacterModificationType.INCREASE,
+                attributeName: 'adventureProgress',
                 data: (Math.ceil(durationSeconds / (isOverexposed ? 2 : 1))),
             },
         ]

@@ -68,6 +68,7 @@ export interface Character {
     maxFatigue: number;
     socialExposure: number;
     maxSocialCapital: number;
+    currentAdventure: {name: string, progressRequired: number};
     completedAdventures: string[];
     adventureProgress: number;
 }
