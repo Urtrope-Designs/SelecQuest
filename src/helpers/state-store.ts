@@ -42,12 +42,12 @@ function character(initState: Character, actions: Observable<Action>): Observabl
             if (action instanceof TaskCompleted) {
                 const updatedCharacter = applyCharacterModifications(state, action.completedTask.results);
                 const stateCheckedCharacter = updateCharacterState(updatedCharacter);
-                const levelCheckedCharacter = hasCharacterReachedNextLevel(stateCheckedCharacter)
+                const levelCheckedCharacter = (hasCharacterReachedNextLevel(stateCheckedCharacter)
                     ? applyCharacterModifications(stateCheckedCharacter, getLevelUpModifications())
-                    : stateCheckedCharacter;
-                const adventureCheckedCharacter = levelCheckedCharacter.adventureProgress >= levelCheckedCharacter.currentAdventure.progressRequired
+                    : stateCheckedCharacter);
+                const adventureCheckedCharacter = ((levelCheckedCharacter.adventureProgress >= levelCheckedCharacter.currentAdventure.progressRequired)
                     ? applyCharacterModifications(levelCheckedCharacter, getAdventureCompletedModifications(levelCheckedCharacter))
-                    : levelCheckedCharacter;
+                    : levelCheckedCharacter);
                 return adventureCheckedCharacter;
             } else {
                 return state;

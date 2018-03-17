@@ -155,7 +155,6 @@ const selloffTaskGen: TaskGenerator = {
         return state.activeTaskMode == TaskMode.LOOTING && state.character.isInLootSelloffMode;
     },
     generateTask: (state: AppState) => {
-        console.log('loot selloff');
         const sellItem = state.character.loot[0];
         if (!!sellItem) {
             const isMarketSaturated = state.character.marketSaturation >= state.character.maxMarketSaturation;

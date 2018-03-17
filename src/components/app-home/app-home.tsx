@@ -188,7 +188,10 @@ export class AppHome {
                             )
                         }
                     </p>
-
+                    <p>
+                        <div>Current Adventure: {this.character.currentAdventure.name}</div>
+                        <div>Adventure Progress: {this.character.adventureProgress} / {this.character.currentAdventure.progressRequired}</div>
+                    </p>
                     <p>
                         Current Task:
                         {
