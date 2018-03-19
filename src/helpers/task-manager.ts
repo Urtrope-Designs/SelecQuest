@@ -113,7 +113,7 @@ const lootingTaskGen: TaskGenerator = {
             },
         ]
         const newTask = {
-            description: 'Do loot task ' + lTaskInc++ + '...',
+            description: 'Do loot task ' + lTaskInc++,
             durationMs: durationSeconds * 1000,
             results: results
         };
@@ -135,7 +135,7 @@ const triggerSelloffTaskGen: TaskGenerator = {
     },
     generateTask: (/*state: AppState*/) => {
         const newTask: Task = {
-            description: 'Heading to market to pawn your loot...',
+            description: 'Heading to market to pawn your loot',
             durationMs: randRange(2,3) * 1000,
             results: [
                 {
@@ -187,7 +187,7 @@ const selloffTaskGen: TaskGenerator = {
             ]
 
             const newTask = {
-                description: 'Sell ' + sellItem.name + '...',
+                description: 'Sell ' + sellItem.name,
                 durationMs: randRange(2,3) * 1000,
                 results: results,
             }
@@ -223,7 +223,7 @@ const endSelloffTaskGen: TaskGenerator = {
     },
     generateTask: (/*state: AppState*/) => {
         const newTask: Task = {
-            description: 'Heading out to the nearest cave...',
+            description: 'Heading out to the nearest cave',
             durationMs: randRange(2,3) * 1000,
             results: [
                 {
@@ -252,7 +252,7 @@ const purchaseEquipmentTaskGen: TaskGenerator = {
     },
     generateTask: (/*state: AppState*/) => {
         const newTask: Task = {
-            description: 'Negotiating the purchase of better equipment...',
+            description: 'Negotiating the purchase of better equipment',
             durationMs: randRange(4, 6) * 1000,
             results: [
                 {
@@ -321,7 +321,7 @@ const gladiatingTaskGen: TaskGenerator = {
         ]
 
         const newTask = {
-            description: 'Do gladiating task ' + gTaskInc++ + '...',
+            description: 'Do gladiating task ' + gTaskInc++,
             durationMs: durationSeconds * 1000,
             results: results
         };
@@ -343,7 +343,7 @@ const triggerBoastingTaskGen: TaskGenerator = {
     },
     generateTask: (/*state: AppState*/) => {
         const newTask: Task = {
-            description: 'Heading to the nearest inn to boast of your recent deeds while your armor is repaired...',
+            description: 'Heading to the nearest inn to boast of your recent deeds while your armor is repaired',
             durationMs: randRange(2,3) * 1000,
             results: [
                 {
@@ -395,7 +395,7 @@ const boastingTaskGen: TaskGenerator = {
             ]
             
             const newTask = {
-                description: 'Boast of ' + boastItem.name + '...',
+                description: 'Boast of ' + boastItem.name,
                 durationMs: randRange(2,3) * 300,
                 results: results,
             }
@@ -431,7 +431,7 @@ const endBoastingTaskGen: TaskGenerator = {
     },
     generateTask: (/*state: AppState*/) => {
         const newTask: Task = {
-            description: 'Heading to the arena...',
+            description: 'Heading to the arena',
             durationMs: randRange(2,3) * 1000,
             results: [
                 {
@@ -460,7 +460,7 @@ const earnAccoladeTaskGen: TaskGenerator = {
     },
     generateTask: (/*state: AppState*/) => {
         const newTask: Task = {
-            description: 'Being honored for your glorious achievements...',
+            description: 'Being honored for your glorious achievements',
             durationMs: randRange(4, 6) * 1000,
             results: [
                 {
@@ -528,7 +528,7 @@ const investigatingTaskGen: TaskGenerator = {
         ]
         
         const newTask = {
-            description: 'Do investigating task ' + iTaskInc++ + '...',
+            description: 'Do investigating task ' + iTaskInc++,
             durationMs: durationSeconds * 1000,
             results: results
         };
@@ -547,7 +547,7 @@ const triggerLeadFollowingTaskGen: TaskGenerator = {
     },
     generateTask: (/*state: AppState*/) => {
         const newTask: Task = {
-            description: 'Organizing your Questlog...',
+            description: 'Organizing your Questlog',
             durationMs: randRange(2,3) * 1000,
             results: [
                 {
@@ -597,7 +597,7 @@ const leadFollowingTaskGen: TaskGenerator = {
             ]
             
             const newTask = {
-                description: 'Follow ' + leadToFollow.name + '...',
+                description: 'Follow ' + leadToFollow.name,
                 durationMs: randRange(2,3) * 1000,
                 results: results,
             }
@@ -630,7 +630,7 @@ const endLeadFollowingTaskGen: TaskGenerator = {
     },
     generateTask: (/*state: AppState*/) => {
         const newTask: Task = {
-            description: 'Heading to the inn to imbibe a mug o\' scuttlebutt...',
+            description: 'Heading to the inn to imbibe a mug o\' scuttlebutt',
             durationMs: randRange(2,3) * 1000,
             results: [
                 {
@@ -656,7 +656,7 @@ const gainAffiliationTaskGen: TaskGenerator = {
     },
     generateTask: (/*state: AppState*/) => {
         const newTask: Task = {
-            description: 'Solidifying a new connection...',
+            description: 'Solidifying a new connection',
             durationMs: randRange(4, 6) * 1000,
             results: [
                 {

@@ -196,7 +196,7 @@ export class AppHome {
                         Current Task:
                         {
                             !!this.activeTask
-                            ? <div>{this.activeTask.description}</div>
+                            ? <div>{this.activeTask.description}...</div>
                             : <div>Loading...</div>
                         }
                         

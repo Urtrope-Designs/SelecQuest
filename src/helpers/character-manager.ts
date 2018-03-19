@@ -53,7 +53,7 @@ export function createNewCharacter(): Character {
         loot: [],
         trophies: [],
         leads: [],
-        isInLootSelloffMode: false,
+        isInLootSelloffMode: true,
         isInTrophyBoastingMode: false,
         isInLeadFollowingMode: false,
         marketSaturation: 0,
