@@ -30,6 +30,7 @@ export class TaskManager {
             leadFollowingTaskGen,
             endLeadFollowingTaskGen,
             gainAffiliationTaskGen,
+            storylineTaskGen,
         ];
         this.taskGenAlgos.sort((a, b) => {
             return b.priority - a.priority;
@@ -678,3 +679,35 @@ const gainAffiliationTaskGen: TaskGenerator = {
         return newTask;
     },
 };
+
+let prologueInc = 0;
+const storylineTaskGen: TaskGenerator = {
+    priority: 6,
+    shouldRun: (state: AppState) => {
+        return (state.character.currentAdventure.name == 'Prologue' || state.character.adventureProgress <= 0);
+    },
+    generateTask: (/*state: AppState*/) => {
+        const curTask = PROLOGUE_TASKS[prologueInc < PROLOGUE_TASKS.length ? prologueInc : randRange(0, PROLOGUE_TASKS.length-2)];
+        prologueInc += 1;
+        const newTask: Task = {
+            description: curTask.taskDescription,
+            durationMs: curTask.durationSeconds * 1000,
+            results: [
+                {
+                    type: CharacterModificationType.INCREASE,
+                    attributeName: 'adventureProgress',
+                    data: curTask.durationSeconds,
+                },
+            ],
+        };
+        return newTask;
+    },
+}
+
+const PROLOGUE_TASKS = [
+    {taskDescription: 'Experiencing an enigmatic and foreboding night vision', durationSeconds: 10},
+    {taskDescription: 'Much is revealed about that wise old bastard you\'d underestimated', durationSeconds: 6},
+    {taskDescription: 'A shocking series of events leaves you alone and bewildered, but resolute', durationSeconds: 6},
+    {taskDescription: 'Drawing upon an unrealized reserve of determination, you set out on a long and dangerous journey', durationSeconds: 4},
+    {taskDescription: 'Loading', durationSeconds: 2},
+]

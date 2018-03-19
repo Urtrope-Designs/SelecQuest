@@ -62,7 +62,7 @@ export function createNewCharacter(): Character {
         maxFatigue: 35,
         socialExposure: 0,
         maxSocialCapital: 35,
-        currentAdventure: {name: 'Prologue', progressRequired: 40},
+        currentAdventure: {name: 'Prologue', progressRequired: 28},
         completedAdventures: [],
         adventureProgress: 0,
     }
