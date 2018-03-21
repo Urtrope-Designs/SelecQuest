@@ -4,7 +4,7 @@ import { scan } from 'rxjs/operators/scan';
 import { map } from 'rxjs/operators/map';
 import { Action, SetActiveTask, TaskCompleted, ChangeActiveTaskMode } from './actions';
 import { Task, AppState, Character, TaskMode } from './models';
-import { applyCharacterModifications, updateCharacterState, hasCharacterReachedNextLevel, getLevelUpModifications, getAdventureCompletedModifications } from './character-manager';
+import { applyCharacterModifications, updateCharacterState, hasCharacterReachedNextLevel, getLevelUpModifications } from './character-manager';
 import { wrapIntoBehavior } from './utils';
 
 function activeTask(initState: Task, actions: Observable<Action>) {
@@ -45,10 +45,7 @@ function character(initState: Character, actions: Observable<Action>): Observabl
                 const levelCheckedCharacter = (hasCharacterReachedNextLevel(stateCheckedCharacter)
                     ? applyCharacterModifications(stateCheckedCharacter, getLevelUpModifications())
                     : stateCheckedCharacter);
-                const adventureCheckedCharacter = ((levelCheckedCharacter.adventureProgress >= levelCheckedCharacter.currentAdventure.progressRequired)
-                    ? applyCharacterModifications(levelCheckedCharacter, getAdventureCompletedModifications(levelCheckedCharacter))
-                    : levelCheckedCharacter);
-                return adventureCheckedCharacter;
+                return levelCheckedCharacter;
             } else {
                 return state;
             }

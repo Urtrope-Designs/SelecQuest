@@ -1,5 +1,6 @@
 import { Character, CharacterModificationType, AccoladeType, AffiliationType, CharacterModification } from './models';
 import { randRange } from './utils';
+import { PROLOGUE_ADVENTURE_NAME } from './storyline-helpers';
 
 export function createNewCharacter(): Character {
     const newChar: Character = {
@@ -62,7 +63,7 @@ export function createNewCharacter(): Character {
         maxFatigue: 35,
         socialExposure: 0,
         maxSocialCapital: 35,
-        currentAdventure: {name: 'Prologue', progressRequired: 28},
+        currentAdventure: {name: PROLOGUE_ADVENTURE_NAME, progressRequired: 28},
         completedAdventures: [],
         adventureProgress: 0,
     }
@@ -159,6 +160,8 @@ export function updateCharacterState(character: Character): Character {
     newChar.fatigue = Math.max(newChar.fatigue, 0);
     newChar.socialExposure = Math.min(newChar.socialExposure, newChar.maxSocialCapital);
     newChar.socialExposure = Math.max(newChar.socialExposure, 0);
+    newChar.adventureProgress = Math.min(newChar.adventureProgress, newChar.currentAdventure.progressRequired);
+    newChar.adventureProgress = Math.max(newChar.adventureProgress, 0);
 
     return newChar;
 }
@@ -206,40 +209,6 @@ export function getLevelUpModifications(): CharacterModification[] {
     }
 
     return levelMods;
-}
-
-export function getAdventureCompletedModifications(character: Character): CharacterModification[] {
-
-    const newAdventure = generateNewAdventure();
-    const adventureMods = [
-        {
-            type: CharacterModificationType.SET,
-            attributeName: 'currentAdventure',
-            data: newAdventure,
-        },
-        {
-            type: CharacterModificationType.SET,
-            attributeName: 'adventureProgress',
-            data: 0,
-        },
-        {
-            type: CharacterModificationType.ADD,
-            attributeName: 'completedAdventures',
-            data: [character.currentAdventure.name],
-        },
-        {
-            type: CharacterModificationType.ADD_RANK,
-            attributeName: 'spells',
-            data: [{name: 'Tonguehairs', rank: 1}],
-        },
-    ];
-
-    return adventureMods;
-}
-
-let chapterInc = 1;
-export function generateNewAdventure(): {name: string, progressRequired: number} {
-    return {name: `Chapter ${chapterInc++}`, progressRequired: 60};
 }
 
 const XP_REQUIRED_FOR_NEXT_LEVEL = [

@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { Task, CharacterModification, CharacterModificationType, AppState, TaskMode, AccoladeType, AffiliationType } from './models';
 import { SetActiveTask, TaskCompleted } from './actions';
 import { randRange } from './utils';
+import { PROLOGUE_TASKS, PROLOGUE_ADVENTURE_NAME, generateNextAdventureName } from './storyline-helpers';
 
 @Component({
     tag: 'task-manager',
@@ -30,7 +31,9 @@ export class TaskManager {
             leadFollowingTaskGen,
             endLeadFollowingTaskGen,
             gainAffiliationTaskGen,
-            storylineTaskGen,
+            prologueTaskGen,
+            prologueTransitionTaskGen,
+            adventureTransitionTaskGen,
         ];
         this.taskGenAlgos.sort((a, b) => {
             return b.priority - a.priority;
@@ -681,22 +684,23 @@ const gainAffiliationTaskGen: TaskGenerator = {
 };
 
 let prologueInc = 0;
-const storylineTaskGen: TaskGenerator = {
+const prologueTaskGen: TaskGenerator = {
     priority: 6,
     shouldRun: (state: AppState) => {
-        return (state.character.currentAdventure.name == 'Prologue' || state.character.adventureProgress <= 0);
+        return state.character.currentAdventure.name == PROLOGUE_ADVENTURE_NAME;
     },
     generateTask: (/*state: AppState*/) => {
-        const curTask = PROLOGUE_TASKS[prologueInc < PROLOGUE_TASKS.length ? prologueInc : randRange(0, PROLOGUE_TASKS.length-2)];
+        const curPrologueTask = PROLOGUE_TASKS[prologueInc];
         prologueInc += 1;
+        prologueInc = Math.min(prologueInc, PROLOGUE_TASKS.length-1);
         const newTask: Task = {
-            description: curTask.taskDescription,
-            durationMs: curTask.durationSeconds * 1000,
+            description: curPrologueTask.taskDescription,
+            durationMs: curPrologueTask.durationSeconds * 1000,
             results: [
                 {
                     type: CharacterModificationType.INCREASE,
                     attributeName: 'adventureProgress',
-                    data: curTask.durationSeconds,
+                    data: curPrologueTask.durationSeconds,
                 },
             ],
         };
@@ -704,10 +708,74 @@ const storylineTaskGen: TaskGenerator = {
     },
 }
 
-const PROLOGUE_TASKS = [
-    {taskDescription: 'Experiencing an enigmatic and foreboding night vision', durationSeconds: 10},
-    {taskDescription: 'Much is revealed about that wise old bastard you\'d underestimated', durationSeconds: 6},
-    {taskDescription: 'A shocking series of events leaves you alone and bewildered, but resolute', durationSeconds: 6},
-    {taskDescription: 'Drawing upon an unrealized reserve of determination, you set out on a long and dangerous journey', durationSeconds: 4},
-    {taskDescription: 'Loading', durationSeconds: 2},
-]
+const prologueTransitionTaskGen: TaskGenerator = {
+    priority: 7,
+    shouldRun: (state: AppState) => {
+        return (state.character.currentAdventure.name == PROLOGUE_ADVENTURE_NAME && state.character.adventureProgress >= state.character.currentAdventure.progressRequired);
+    },
+    generateTask: (/*state: AppState*/) => {
+        const newTask: Task = {
+            description: 'Loading',
+            durationMs: 20,
+            results: [
+                {
+                    type: CharacterModificationType.SET,
+                    attributeName: 'currentAdventure',
+                    data: {
+                        name: 'Chapter 1',
+                        progressRequired: 40,
+                    },
+                },
+                {
+                    type: CharacterModificationType.SET,
+                    attributeName: 'adventureProgress',
+                    data: 0,
+                },
+                {
+                    type: CharacterModificationType.ADD,
+                    attributeName: 'completedAdventures',
+                    data: [PROLOGUE_ADVENTURE_NAME],
+                },
+            ],
+        };
+        return newTask;
+    }
+}
+
+
+const adventureTransitionTaskGen: TaskGenerator = {
+    priority: 6,
+    shouldRun: (state: AppState) => {
+        return (state.character.adventureProgress >= state.character.currentAdventure.progressRequired);
+    },
+    generateTask: (state: AppState) => {
+        const newAdventure = generateNextAdventureName(state.character.currentAdventure);
+        const newTask: Task = {
+            description: 'Experiencing an enigmatic and foreboding night vision',
+            durationMs: randRange(4, 6) * 1000,
+            results: [
+                {
+                    type: CharacterModificationType.SET,
+                    attributeName: 'currentAdventure',
+                    data: newAdventure,
+                },
+                {
+                    type: CharacterModificationType.SET,
+                    attributeName: 'adventureProgress',
+                    data: 0,
+                },
+                {
+                    type: CharacterModificationType.ADD,
+                    attributeName: 'completedAdventures',
+                    data: [state.character.currentAdventure.name],
+                },
+                {
+                    type: CharacterModificationType.ADD_RANK,
+                    attributeName: 'spells',
+                    data: [{name: 'Tonguehairs', rank: 1}],
+                },
+            ],
+        };
+        return newTask;
+    }
+};
