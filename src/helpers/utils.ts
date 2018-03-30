@@ -34,3 +34,12 @@ export function randRange(min: number, max: number): number {
     const spread = Math.floor(Math.random() * (delta + 1));
     return spread + min;
 }
+
+export function randSign(): number {
+    return (randRange(0, 1) * 2) - 1;
+}
+
+export function randFromList<T>(list: T[]): T {
+    const index = randRange(0, list.length - 1);
+    return list[index];
+}

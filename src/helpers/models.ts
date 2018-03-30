@@ -1,3 +1,5 @@
+import { Adventure } from "./storyline-helpers";
+
 export interface Task {
     completionTimeoutId?: any;
     description: string;
@@ -43,11 +45,11 @@ export interface Character {
     maxHp: number;
     maxMp: number;
     currentXp: number;
-    spells: {name: string, rank: number}[]; 
-    abilities: {name: string, rank: number}[]; 
-    equipment: {type: string, description: string}[];
-    accolades: {type: AccoladeType, received: string[]}[];
-    affiliations: {type: AffiliationType, received: string[]}[];
+    spells: CharSpell[]; 
+    abilities: CharAbility[]; 
+    equipment: CharEquipment[];
+    accolades: CharAccolade[];
+    affiliations: CharAffilitation[];
     maxEncumbrance: number;
     maxEquipmentIntegrity: number;
     maxQuestLogSize: number;
@@ -56,9 +58,9 @@ export interface Character {
     spentRenown: number;
     reputation: number;
     spentReputation: number;
-    loot: {name: string, quantity: number, value: number}[];
-    trophies: {name: string, quantity: number, value: number}[];
-    leads: {name: string, value: number}[];
+    loot: CharLoot[];
+    trophies: CharTrophy[];
+    leads: CharLead[];
     isInLootSelloffMode: boolean;
     isInTrophyBoastingMode: boolean;
     isInLeadFollowingMode: boolean;
@@ -68,10 +70,52 @@ export interface Character {
     maxFatigue: number;
     socialExposure: number;
     maxSocialCapital: number;
-    currentAdventure: {name: string, progressRequired: number};
+    currentAdventure: Adventure;
     completedAdventures: string[];
     adventureProgress: number;
 }
+
+export interface CharSpell {
+    name: string,
+    rank: number,
+};
+
+export interface CharAbility {
+    name: string,
+    rank: number,
+};
+
+export interface CharEquipment {
+    type: string,
+    description: string,
+};
+
+export interface CharAccolade {
+    type: AccoladeType,
+    received: string[],
+};
+
+export interface CharAffilitation {
+    type: AffiliationType,
+    received: string[],
+};
+
+export interface CharLoot {
+    name: string,
+    quantity: number,
+    value: number,
+};
+
+export interface CharTrophy {
+    name: string,
+    quantity: number,
+    value: number,
+};
+
+export interface CharLead {
+    name: string,
+    value: number,
+};
 
 export enum AccoladeType {
     Epithets,

@@ -78,6 +78,7 @@ const lootingTaskGen: TaskGenerator = {
         return true;
     },
     generateTask: (state: AppState) => {
+        const newTask = 
         const lootName = 'loot' + randRange(1, 4);
         const durationSeconds = randRange(5, 8);        
         const isMarketSaturated = state.character.marketSaturation >= state.character.maxMarketSaturation;

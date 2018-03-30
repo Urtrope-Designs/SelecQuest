@@ -8,12 +8,12 @@ export const PROLOGUE_TASKS = [
 
 export const PROLOGUE_ADVENTURE_NAME = 'Prologue'
 
-export function generateNextAdventureName(completedAdventure: IAdventure): IAdventure {
+export function generateNextAdventureName(completedAdventure: Adventure): Adventure {
     const oldChapNum = +completedAdventure.name.match(/\d+$/)[0] || 0;
     return {name: `Chapter ${oldChapNum + 1}`, progressRequired: 60};
 }
 
-export interface IAdventure {
+export interface Adventure {
     name: string,
     progressRequired: number,
 }
