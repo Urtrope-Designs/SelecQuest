@@ -1,10 +1,91 @@
 import { CharLoot } from "./models";
-import { randRange, randSign, randFromList } from "./utils";
+import { randRange, randSign, randFromList, makeStringIndefinite } from "./utils";
+
+export enum LootingTargetType {
+    LOCATION,
+    MONSTER,
+};
+
+export interface LootingTarget {
+    type: LootingTargetType,
+    name: string,
+    level: number,
+    reward: string,
+};
+
+export let LOOTING_PARTICIPALS = [];
+LOOTING_PARTICIPALS[LootingTargetType.LOCATION] = 'Ransacking';
+LOOTING_PARTICIPALS[LootingTargetType.MONSTER] = 'Executing';
+
+export let LOOTING_PREFIX_BAD_FIRST = []
+LOOTING_PREFIX_BAD_FIRST[LootingTargetType.LOCATION] = [
+    'dank',
+    'desolate',
+    'vandalized',
+    'cobwebby',
+    'dreary',
+];
+LOOTING_PREFIX_BAD_FIRST[LootingTargetType.MONSTER] =[
+    'dead',
+    'comatose',
+    'crippled',
+    'sick',
+    'undernourished',
+];
+
+export let LOOTING_PREFIX_BAD_SECOND = [];
+LOOTING_PREFIX_BAD_SECOND[LootingTargetType.LOCATION] = [
+    'abandoned',
+    'underwhelming',
+    'uninviting',
+    'crumbling',
+    'ramshackle',
+];
+LOOTING_PREFIX_BAD_SECOND[LootingTargetType.MONSTER] = [
+    'foetal',
+    'baby',
+    'preadolescent',
+    'teenage',
+    'underage',
+];
+
+export let LOOTING_PREFIX_GOOD_FIRST = [];
+LOOTING_PREFIX_GOOD_FIRST[LootingTargetType.LOCATION] = [
+    'posh',
+    'thriving',
+    'sturdy',
+    'fortified',
+    'sinister',
+    'sprawling',
+];
+LOOTING_PREFIX_GOOD_FIRST[LootingTargetType.MONSTER] = [
+    'greater',
+    'massive',
+    'enormous',
+    'giant',
+    'titanic',
+];
+
+export let LOOTING_PREFIX_GOOD_SECOND = [];
+LOOTING_PREFIX_GOOD_SECOND[LootingTargetType.LOCATION] = [
+    'booby-trapped',
+    'ominous',
+    'creepy',
+    'newly renovated',
+    'massive',
+];
+LOOTING_PREFIX_GOOD_SECOND[LootingTargetType.MONSTER] = [
+    'veteran',
+    'cursed',
+    'warrior',
+    'undead',
+    'demon',
+];
 
 //logic stolen pretty much directly from PQ
 export function generateLootingTaskContentsFromLevel(level: number): {taskName: string, lootData: CharLoot[]} {
     let taskName = '';
-    let lootData = [];
+    let lootData: CharLoot[] = [];
 
     // randomize desired level
     for (let i = level; i >= 1; --i) {
@@ -33,66 +114,64 @@ export function generateLootingTaskContentsFromLevel(level: number): {taskName: 
         level = Math.floor(level / qty);
     }
   
+    taskName = lootTarget.name;
+
     if ((level - lootTarget.level) <= -10) {
-        result = 'imaginary ' + result;
+        taskName = 'imaginary ' + taskName;
     } else if ((level - lootTarget.level) < -5) {
-        i = 10 + (level - lootTarget.level);
-        i = 5 - Random(i+1);
-        result = Sick(i,Young((lootTarget.level-level)-i,result));
-    } else if (((level-lootTarget.level) < 0) && (Random(2) == 1)) {
-        result = Sick(level-lootTarget.level,result);
+        const firstPrefix = randFromList(LOOTING_PREFIX_BAD_FIRST[lootTarget.type]);
+        const secondPrefix = randFromList(LOOTING_PREFIX_BAD_SECOND[lootTarget.type]);
+        taskName = firstPrefix + ' ' + secondPrefix + ' ' + taskName;
+    } else if (((level-lootTarget.level) < 0) && (randRange(0, 1))) {
+        taskName = randFromList(LOOTING_PREFIX_BAD_FIRST[lootTarget.type]) + ' ' + taskName;
     } else if (((level-lootTarget.level) < 0)) {
-        result = Young(level-lootTarget.level,result);
+        taskName = randFromList(LOOTING_PREFIX_BAD_SECOND[lootTarget.type]) + ' ' + taskName;
     } else if ((level-lootTarget.level) >= 10) {
-        result = 'messianic ' + result;
+        taskName = 'messianic ' + taskName;
     } else if ((level-lootTarget.level) > 5) {
-        i = 10-(level-lootTarget.level);
-        i = 5-Random(i+1);
-        result = Big(i,Special((level-lootTarget.level)-i,result));
-    } else if (((level-lootTarget.level) > 0) && (Random(2) == 1)) {
-        result = Big(level-lootTarget.level,result);
+        const firstPrefix = randFromList(LOOTING_PREFIX_GOOD_FIRST[lootTarget.type]);
+        const secondPrefix = randFromList(LOOTING_PREFIX_GOOD_SECOND[lootTarget.type]);
+        taskName = firstPrefix + ' ' + secondPrefix + ' ' + taskName;
+    } else if (((level-lootTarget.level) > 0) && (randRange(0, 1))) {
+        taskName = randFromList(LOOTING_PREFIX_GOOD_FIRST[lootTarget.type]) + ' ' + taskName;
     } else if (((level-lootTarget.level) > 0)) {
-        result = Special(level-lootTarget.level,result);
+        taskName = randFromList(LOOTING_PREFIX_GOOD_SECOND[lootTarget.type]) + ' ' + taskName;
     }
+
+    taskName = LOOTING_PARTICIPALS[lootTarget.type] + ' ' + makeStringIndefinite(taskName, qty);
+
+    lootData.push({
+        name: lootTarget.reward,
+        quantity: 1,
+        value: 1,
+    });
 
     return {taskName: taskName, lootData: lootData};
 }
-
-export enum LootingTargetType {
-    LOCATION,
-    MONSTER,
-}
-
-export interface LootingTarget {
-    type: LootingTargetType,
-    name: string,
-    level: number,
-    reward: string,
-};
 
 export const STANDARD_LOOTING_TARGETS: LootingTarget[] = [
     {
         type: LootingTargetType.LOCATION,
         name: 'Temple of Scutabrix',
         level: 1,
-        reward: 'Smug Idol of Scutabrix',
+        reward: 'smug Scutabrix idol',
     },
     {
         type: LootingTargetType.LOCATION,
         name: 'Barber Shop',
         level: 1,
-        reward: 'Barber\'s Pole',
+        reward: 'barber\'s pole',
     },
     {
         type: LootingTargetType.MONSTER,
         name: 'Orkey',
         level: 1,
-        reward: 'giblet',
+        reward: 'orkey giblet',
     },
     {
         type: LootingTargetType.MONSTER,
         name: 'Frankenstork',
         level: 1,
-        reward: 'beak',
+        reward: 'frankenstork beak',
     },
 ]

@@ -3,8 +3,9 @@ import { Observable } from 'rxjs/Observable';
 
 import { Task, CharacterModification, CharacterModificationType, AppState, TaskMode, AccoladeType, AffiliationType } from './models';
 import { SetActiveTask, TaskCompleted } from './actions';
-import { randRange } from './utils';
+import { randRange, makeStringPlural } from './utils';
 import { PROLOGUE_TASKS, PROLOGUE_ADVENTURE_NAME, generateNextAdventureName } from './storyline-helpers';
+import { generateLootingTaskContentsFromLevel } from './task-helper';
 
 @Component({
     tag: 'task-manager',
@@ -68,7 +69,6 @@ interface TaskGenerator {
     generateTask: (state: AppState) => Task;
 }
 
-let lTaskInc = 1;
 let gTaskInc = 1;
 let iTaskInc = 1;
 
@@ -78,17 +78,9 @@ const lootingTaskGen: TaskGenerator = {
         return true;
     },
     generateTask: (state: AppState) => {
-        const newTask = 
-        const lootName = 'loot' + randRange(1, 4);
+        const {taskName, lootData} = generateLootingTaskContentsFromLevel(state.character.level);
         const durationSeconds = randRange(5, 8);        
         const isMarketSaturated = state.character.marketSaturation >= state.character.maxMarketSaturation;
-        let lootData = [
-            {
-                name: lootName,
-                quantity: 1,
-                value: 2
-            }
-        ]
         const results: CharacterModification[] = [
             {
                 type: CharacterModificationType.ADD_QUANTITY,
@@ -117,7 +109,7 @@ const lootingTaskGen: TaskGenerator = {
             },
         ]
         const newTask = {
-            description: 'Do loot task ' + lTaskInc++,
+            description: taskName,
             durationMs: durationSeconds * 1000,
             results: results
         };
@@ -191,7 +183,7 @@ const selloffTaskGen: TaskGenerator = {
             ]
 
             const newTask = {
-                description: 'Sell ' + sellItem.name,
+                description: 'Selling ' + sellItem.quantity + ' ' + (sellItem.quantity > 1 ? makeStringPlural(sellItem.name) : sellItem.name),
                 durationMs: randRange(2,3) * 1000,
                 results: results,
             }

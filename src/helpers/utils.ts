@@ -43,3 +43,39 @@ export function randFromList<T>(list: T[]): T {
     const index = randRange(0, list.length - 1);
     return list[index];
 }
+
+export function makeStringIndefinite(baseString: string, quantity: number): string {
+    if (quantity === 1) {
+        if ('AEIOUaeiou'.indexOf(baseString.charAt(0)) > -1)
+          return 'an ' + baseString;
+        else
+          return 'a ' + baseString;
+    } else {
+        return quantity + ' ' + makeStringPlural(baseString);
+    }
+}
+
+export function makeStringPlural(baseString: string): string {
+    if (doesEndWith(baseString, 'y')) {
+        return baseString.slice(0, baseString.length - 1) + 'ies';
+    }
+    else if (doesEndWith(baseString, 'us')) {
+        return baseString.slice(0, baseString.length - 2) + 'i';
+    }
+    else if (doesEndWith(baseString, 'ch') || doesEndWith(baseString, 'x') || doesEndWith(baseString, 's') || doesEndWith(baseString, 'sh')) {
+        return baseString + 'es';
+    }
+    else if (doesEndWith(baseString, 'f')) {
+        return baseString.slice(0, baseString.length - 1) + 'ves';
+    }
+    else if (doesEndWith(baseString, 'man') || doesEndWith(baseString, 'Man')) {
+        return baseString.slice(0, baseString.length - 2) + 'en';
+    }
+    else {
+        return baseString + 's';
+    }
+}
+
+export function doesEndWith(baseString: string, ending: string): boolean {
+    return baseString.slice(baseString.length - ending.length, baseString.length) == ending;
+}
