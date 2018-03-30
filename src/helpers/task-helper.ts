@@ -163,6 +163,12 @@ export const STANDARD_LOOTING_TARGETS: LootingTarget[] = [
         reward: 'barber\'s pole',
     },
     {
+        type: LootingTargetType.LOCATION,
+        name: 'NagaMart',
+        level: 2,
+        reward: 'nagamart loyalty card',
+    },
+    {
         type: LootingTargetType.MONSTER,
         name: 'Orkey',
         level: 1,
@@ -173,5 +179,17 @@ export const STANDARD_LOOTING_TARGETS: LootingTarget[] = [
         name: 'Frankenstork',
         level: 1,
         reward: 'frankenstork beak',
+    },
+    {
+        type: LootingTargetType.MONSTER,
+        name: 'Bison',
+        level: 1,
+        reward: 'bison beard',
+    },
+    {
+        type: LootingTargetType.MONSTER,
+        name: 'Mecha-marzipan',
+        level: 1,
+        reward: 'mecha-marzipan crumb',
     },
 ]

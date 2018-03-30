@@ -156,7 +156,7 @@ const selloffTaskGen: TaskGenerator = {
         if (!!sellItem) {
             const isMarketSaturated = state.character.marketSaturation >= state.character.maxMarketSaturation;
             const sellQuantity = sellItem.quantity;
-            const sellValue = (sellQuantity * Math.ceil(sellItem.value / (isMarketSaturated ? 2 : 1)));
+            const sellValue = Math.ceil((sellQuantity * sellItem.value) / (isMarketSaturated ? 2 : 1));
             let lootData = [
                 {
                     name: sellItem.name,
