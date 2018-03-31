@@ -1,6 +1,9 @@
 import { CharLoot } from "./models";
 import { randRange, randSign, randFromList, makeStringIndefinite } from "./utils";
 
+/**
+ * LOOTING
+ */
 export enum LootingTargetType {
     LOCATION,
     MONSTER,
@@ -17,7 +20,11 @@ export let LOOTING_PARTICIPALS = [];
 LOOTING_PARTICIPALS[LootingTargetType.LOCATION] = 'Ransacking';
 LOOTING_PARTICIPALS[LootingTargetType.MONSTER] = 'Executing';
 
-export let LOOTING_PREFIX_BAD_FIRST = []
+export let LOOTING_PREFIX_MINIMAL = [];
+LOOTING_PREFIX_MINIMAL[LootingTargetType.LOCATION] = 'imaginary';
+LOOTING_PREFIX_MINIMAL[LootingTargetType.MONSTER] = 'imaginary';
+
+export let LOOTING_PREFIX_BAD_FIRST = [];
 LOOTING_PREFIX_BAD_FIRST[LootingTargetType.LOCATION] = [
     'dank',
     'desolate',
@@ -48,6 +55,10 @@ LOOTING_PREFIX_BAD_SECOND[LootingTargetType.MONSTER] = [
     'teenage',
     'underage',
 ];
+
+export let LOOTING_PREFIX_MAXIMAL = [];
+LOOTING_PREFIX_MAXIMAL[LootingTargetType.LOCATION] = 'messianic';
+LOOTING_PREFIX_MAXIMAL[LootingTargetType.MONSTER] = 'messianic';
 
 export let LOOTING_PREFIX_GOOD_FIRST = [];
 LOOTING_PREFIX_GOOD_FIRST[LootingTargetType.LOCATION] = [
@@ -82,6 +93,47 @@ LOOTING_PREFIX_GOOD_SECOND[LootingTargetType.MONSTER] = [
     'demon',
 ];
 
+function determineTaskQuantity(targetLevel: number, taskLevel: number) {
+    let quantity = 1;
+    if (targetLevel - taskLevel > 10) {
+        // target level is too low. multiply...
+        quantity = Math.floor((targetLevel + randRange(0, taskLevel - 1)) / Math.max(taskLevel, 1));
+        if (quantity < 1) {
+            quantity = 1;
+        }
+
+    }
+    return quantity
+}
+
+function applyTaskNameModifiers(targetLevel: number, taskTarget: LootingTarget): string {
+    let taskName = taskTarget.name;
+
+    if ((targetLevel - taskTarget.level) <= -10) {
+        taskName = LOOTING_PREFIX_MINIMAL[taskTarget.type] + ' ' + taskName;
+    } else if ((targetLevel - taskTarget.level) < -5) {
+        const firstPrefix = randFromList(LOOTING_PREFIX_BAD_FIRST[taskTarget.type]);
+        const secondPrefix = randFromList(LOOTING_PREFIX_BAD_SECOND[taskTarget.type]);
+        taskName = firstPrefix + ' ' + secondPrefix + ' ' + taskName;
+    } else if (((targetLevel - taskTarget.level) < 0) && (randRange(0, 1))) {
+        taskName = randFromList(LOOTING_PREFIX_BAD_FIRST[taskTarget.type]) + ' ' + taskName;
+    } else if (((targetLevel - taskTarget.level) < 0)) {
+        taskName = randFromList(LOOTING_PREFIX_BAD_SECOND[taskTarget.type]) + ' ' + taskName;
+    } else if ((targetLevel - taskTarget.level) >= 10) {
+        taskName = LOOTING_PREFIX_MAXIMAL[taskTarget.type] + ' ' + taskName;
+    } else if ((targetLevel - taskTarget.level) > 5) {
+        const firstPrefix = randFromList(LOOTING_PREFIX_GOOD_FIRST[taskTarget.type]);
+        const secondPrefix = randFromList(LOOTING_PREFIX_GOOD_SECOND[taskTarget.type]);
+        taskName = firstPrefix + ' ' + secondPrefix + ' ' + taskName;
+    } else if (((targetLevel - taskTarget.level) > 0) && (randRange(0, 1))) {
+        taskName = randFromList(LOOTING_PREFIX_GOOD_FIRST[taskTarget.type]) + ' ' + taskName;
+    } else if (((targetLevel - taskTarget.level) > 0)) {
+        taskName = randFromList(LOOTING_PREFIX_GOOD_SECOND[taskTarget.type]) + ' ' + taskName;
+    }
+
+    return taskName;
+}
+
 //logic stolen pretty much directly from PQ
 export function generateLootingTaskContentsFromLevel(level: number): {taskName: string, lootData: CharLoot[]} {
     let taskName = '';
@@ -104,41 +156,13 @@ export function generateLootingTaskContentsFromLevel(level: number): {taskName: 
     }
 
     // determine quantity
-    let qty = 1;
-    if (level - lootTarget.level > 10) {
-        // target level is too low. multiply...
-        qty = Math.floor((level + randRange(0, lootTarget.level - 1)) / Math.max(lootTarget.level, 1));
-        if (qty < 1) {
-            qty = 1;
-        }
-        level = Math.floor(level / qty);
-    }
+    let quantity = determineTaskQuantity(level, lootTarget.level);
+
+    level = Math.floor(level / quantity);
   
-    taskName = lootTarget.name;
+    taskName = applyTaskNameModifiers(level, lootTarget);
 
-    if ((level - lootTarget.level) <= -10) {
-        taskName = 'imaginary ' + taskName;
-    } else if ((level - lootTarget.level) < -5) {
-        const firstPrefix = randFromList(LOOTING_PREFIX_BAD_FIRST[lootTarget.type]);
-        const secondPrefix = randFromList(LOOTING_PREFIX_BAD_SECOND[lootTarget.type]);
-        taskName = firstPrefix + ' ' + secondPrefix + ' ' + taskName;
-    } else if (((level-lootTarget.level) < 0) && (randRange(0, 1))) {
-        taskName = randFromList(LOOTING_PREFIX_BAD_FIRST[lootTarget.type]) + ' ' + taskName;
-    } else if (((level-lootTarget.level) < 0)) {
-        taskName = randFromList(LOOTING_PREFIX_BAD_SECOND[lootTarget.type]) + ' ' + taskName;
-    } else if ((level-lootTarget.level) >= 10) {
-        taskName = 'messianic ' + taskName;
-    } else if ((level-lootTarget.level) > 5) {
-        const firstPrefix = randFromList(LOOTING_PREFIX_GOOD_FIRST[lootTarget.type]);
-        const secondPrefix = randFromList(LOOTING_PREFIX_GOOD_SECOND[lootTarget.type]);
-        taskName = firstPrefix + ' ' + secondPrefix + ' ' + taskName;
-    } else if (((level-lootTarget.level) > 0) && (randRange(0, 1))) {
-        taskName = randFromList(LOOTING_PREFIX_GOOD_FIRST[lootTarget.type]) + ' ' + taskName;
-    } else if (((level-lootTarget.level) > 0)) {
-        taskName = randFromList(LOOTING_PREFIX_GOOD_SECOND[lootTarget.type]) + ' ' + taskName;
-    }
-
-    taskName = LOOTING_PARTICIPALS[lootTarget.type] + ' ' + makeStringIndefinite(taskName, qty);
+    taskName = LOOTING_PARTICIPALS[lootTarget.type] + ' ' + makeStringIndefinite(taskName, quantity);
 
     lootData.push({
         name: lootTarget.reward,
@@ -188,8 +212,16 @@ export const STANDARD_LOOTING_TARGETS: LootingTarget[] = [
     },
     {
         type: LootingTargetType.MONSTER,
-        name: 'Mecha-marzipan',
+        name: 'Mechanical marzipan',
         level: 1,
-        reward: 'mecha-marzipan crumb',
+        reward: 'mechanical marzipan crumb',
     },
 ]
+
+/** 
+ * END LOOTING
+ */
+
+ /** 
+  * GLADIATING
+  */

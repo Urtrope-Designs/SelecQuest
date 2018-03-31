@@ -219,7 +219,7 @@ const endSelloffTaskGen: TaskGenerator = {
     },
     generateTask: (/*state: AppState*/) => {
         const newTask: Task = {
-            description: 'Heading out to the nearest cave',
+            description: 'Heading out to find some swag',
             durationMs: randRange(2,3) * 1000,
             results: [
                 {
