@@ -3,7 +3,7 @@ import { Observable } from 'rxjs/Observable';
 
 import { Task, CharacterModification, CharacterModificationType, AppState, TaskMode, AccoladeType, AffiliationType } from './models';
 import { SetActiveTask, TaskCompleted } from './actions';
-import { randRange, makeStringPlural } from './utils';
+import { randRange, makeStringIndefinite } from './utils';
 import { PROLOGUE_TASKS, PROLOGUE_ADVENTURE_NAME, generateNextAdventureName } from './storyline-helpers';
 import { generateLootingTaskContentsFromLevel } from './task-helper';
 
@@ -183,7 +183,7 @@ const selloffTaskGen: TaskGenerator = {
             ]
 
             const newTask = {
-                description: 'Selling ' + sellItem.quantity + ' ' + (sellItem.quantity > 1 ? makeStringPlural(sellItem.name) : sellItem.name),
+                description: 'Selling ' + makeStringIndefinite(sellItem.name, sellItem.quantity),
                 durationMs: randRange(2,3) * 1000,
                 results: results,
             }
@@ -220,7 +220,7 @@ const endSelloffTaskGen: TaskGenerator = {
     generateTask: (/*state: AppState*/) => {
         const newTask: Task = {
             description: 'Heading out to find some swag',
-            durationMs: randRange(2,3) * 1000,
+            durationMs: randRange(2, 3) * 1000,
             results: [
                 {
                     type: CharacterModificationType.SET,

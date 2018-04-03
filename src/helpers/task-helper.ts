@@ -1,97 +1,23 @@
-import { CharLoot } from "./models";
+import { CharLoot, CharTrophy } from "./models";
 import { randRange, randSign, randFromList, makeStringIndefinite } from "./utils";
 
 /**
- * LOOTING
+ * GENERIC
  */
-export enum LootingTargetType {
+export enum TaskTargetType {
     LOCATION,
     MONSTER,
+    DUEL,
+    TRIAL,
+    INTERROGATION,
+    INVESTIGATION,
 };
 
-export interface LootingTarget {
-    type: LootingTargetType,
-    name: string,
-    level: number,
-    reward: string,
-};
-
-export let LOOTING_PARTICIPALS = [];
-LOOTING_PARTICIPALS[LootingTargetType.LOCATION] = 'Ransacking';
-LOOTING_PARTICIPALS[LootingTargetType.MONSTER] = 'Executing';
-
-export let LOOTING_PREFIX_MINIMAL = [];
-LOOTING_PREFIX_MINIMAL[LootingTargetType.LOCATION] = 'imaginary';
-LOOTING_PREFIX_MINIMAL[LootingTargetType.MONSTER] = 'imaginary';
-
-export let LOOTING_PREFIX_BAD_FIRST = [];
-LOOTING_PREFIX_BAD_FIRST[LootingTargetType.LOCATION] = [
-    'dank',
-    'desolate',
-    'vandalized',
-    'cobwebby',
-    'dreary',
-];
-LOOTING_PREFIX_BAD_FIRST[LootingTargetType.MONSTER] =[
-    'dead',
-    'comatose',
-    'crippled',
-    'sick',
-    'undernourished',
-];
-
-export let LOOTING_PREFIX_BAD_SECOND = [];
-LOOTING_PREFIX_BAD_SECOND[LootingTargetType.LOCATION] = [
-    'abandoned',
-    'underwhelming',
-    'uninviting',
-    'crumbling',
-    'ramshackle',
-];
-LOOTING_PREFIX_BAD_SECOND[LootingTargetType.MONSTER] = [
-    'foetal',
-    'baby',
-    'preadolescent',
-    'teenage',
-    'underage',
-];
-
-export let LOOTING_PREFIX_MAXIMAL = [];
-LOOTING_PREFIX_MAXIMAL[LootingTargetType.LOCATION] = 'messianic';
-LOOTING_PREFIX_MAXIMAL[LootingTargetType.MONSTER] = 'messianic';
-
-export let LOOTING_PREFIX_GOOD_FIRST = [];
-LOOTING_PREFIX_GOOD_FIRST[LootingTargetType.LOCATION] = [
-    'posh',
-    'thriving',
-    'sturdy',
-    'fortified',
-    'sinister',
-    'sprawling',
-];
-LOOTING_PREFIX_GOOD_FIRST[LootingTargetType.MONSTER] = [
-    'greater',
-    'massive',
-    'enormous',
-    'giant',
-    'titanic',
-];
-
-export let LOOTING_PREFIX_GOOD_SECOND = [];
-LOOTING_PREFIX_GOOD_SECOND[LootingTargetType.LOCATION] = [
-    'booby-trapped',
-    'ominous',
-    'creepy',
-    'newly renovated',
-    'massive',
-];
-LOOTING_PREFIX_GOOD_SECOND[LootingTargetType.MONSTER] = [
-    'veteran',
-    'cursed',
-    'warrior',
-    'undead',
-    'demon',
-];
+export let TASK_PARTICIPALS = [];
+TASK_PARTICIPALS[TaskTargetType.LOCATION] = 'Ransacking';
+TASK_PARTICIPALS[TaskTargetType.MONSTER] = 'Executing';
+TASK_PARTICIPALS[TaskTargetType.DUEL] = 'Dueling';
+TASK_PARTICIPALS[TaskTargetType.TRIAL] = 'Undertaking';
 
 function determineTaskQuantity(targetLevel: number, taskLevel: number) {
     let quantity = 1;
@@ -101,7 +27,6 @@ function determineTaskQuantity(targetLevel: number, taskLevel: number) {
         if (quantity < 1) {
             quantity = 1;
         }
-
     }
     return quantity
 }
@@ -134,35 +59,137 @@ function applyTaskNameModifiers(targetLevel: number, taskTarget: LootingTarget):
     return taskName;
 }
 
+function randomizeTargetLevel(charLevel: number): number {
+    let targetLevel = charLevel;
+    for (let i = charLevel; i >= 1; --i) {
+        if (randRange(1, 5) <= 2)
+            targetLevel += randSign();
+        }
+    if (targetLevel < 1) {
+        targetLevel = 1;
+    } 
+
+    return targetLevel;
+}
+
+/** select target with level closest to the targetLevel out of random selection of targets */
+function randomizeTargetFromList(targetLevel: number, targetOptions: LootingTarget[] | GladiatingTarget[], numIterations: number = 6): LootingTarget | GladiatingTarget {
+    if (numIterations < 1) {
+        numIterations = 1;
+    }
+    let target = randFromList(targetOptions);
+    for (let i = 0; i < numIterations - 1; i++) {
+        let newTarget = randFromList(targetOptions);
+        if (Math.abs(targetLevel - target.level) < Math.abs(targetLevel - newTarget.level)) {
+            target = newTarget;
+        }
+    }
+
+    return target;
+}
+
+/** END GENERIC */
+
+/** 
+ * LOOTING
+ */
+
+export interface LootingTarget {
+    type: TaskTargetType,
+    name: string,
+    level: number,
+    reward: string,
+};
+
+export let LOOTING_PREFIX_MINIMAL = [];
+LOOTING_PREFIX_MINIMAL[TaskTargetType.LOCATION] = 'imaginary';
+LOOTING_PREFIX_MINIMAL[TaskTargetType.MONSTER] = 'imaginary';
+
+export let LOOTING_PREFIX_BAD_FIRST = [];
+LOOTING_PREFIX_BAD_FIRST[TaskTargetType.LOCATION] = [
+    'dank',
+    'desolate',
+    'vandalized',
+    'cobwebby',
+    'dreary',
+];
+LOOTING_PREFIX_BAD_FIRST[TaskTargetType.MONSTER] =[
+    'dead',
+    'comatose',
+    'crippled',
+    'sick',
+    'undernourished',
+];
+
+export let LOOTING_PREFIX_BAD_SECOND = [];
+LOOTING_PREFIX_BAD_SECOND[TaskTargetType.LOCATION] = [
+    'abandoned',
+    'underwhelming',
+    'uninviting',
+    'crumbling',
+    'ramshackle',
+];
+LOOTING_PREFIX_BAD_SECOND[TaskTargetType.MONSTER] = [
+    'foetal',
+    'baby',
+    'preadolescent',
+    'teenage',
+    'underage',
+];
+
+export let LOOTING_PREFIX_MAXIMAL = [];
+LOOTING_PREFIX_MAXIMAL[TaskTargetType.LOCATION] = 'messianic';
+LOOTING_PREFIX_MAXIMAL[TaskTargetType.MONSTER] = 'messianic';
+
+export let LOOTING_PREFIX_GOOD_FIRST = [];
+LOOTING_PREFIX_GOOD_FIRST[TaskTargetType.LOCATION] = [
+    'posh',
+    'thriving',
+    'sturdy',
+    'fortified',
+    'sinister',
+    'sprawling',
+];
+LOOTING_PREFIX_GOOD_FIRST[TaskTargetType.MONSTER] = [
+    'greater',
+    'massive',
+    'enormous',
+    'giant',
+    'titanic',
+];
+
+export let LOOTING_PREFIX_GOOD_SECOND = [];
+LOOTING_PREFIX_GOOD_SECOND[TaskTargetType.LOCATION] = [
+    'booby-trapped',
+    'ominous',
+    'creepy',
+    'newly renovated',
+    'massive',
+];
+LOOTING_PREFIX_GOOD_SECOND[TaskTargetType.MONSTER] = [
+    'veteran',
+    'cursed',
+    'warrior',
+    'undead',
+    'demon',
+];
+
 //logic stolen pretty much directly from PQ
 export function generateLootingTaskContentsFromLevel(level: number): {taskName: string, lootData: CharLoot[]} {
     let taskName = '';
     let lootData: CharLoot[] = [];
 
-    // randomize desired level
-    for (let i = level; i >= 1; --i) {
-        if (randRange(1,5) <= 2)
-            level += randSign();
-        }
-    if (level < 1) level = 1;
+    let targetLevel = randomizeTargetLevel(level);
 
-    // select target with level closest to the desired out of random selection of targets
-    let lootTarget = randFromList(STANDARD_LOOTING_TARGETS);
-    for (let i = 0; i < 5; i++) {
-        let newTarget = randFromList(STANDARD_LOOTING_TARGETS);
-        if (Math.abs(level - lootTarget.level) < Math.abs(level - newTarget.level)) {
-            lootTarget = newTarget;
-        }
-    }
+    let lootTarget = randomizeTargetFromList(targetLevel, STANDARD_LOOTING_TARGETS, 6);
 
-    // determine quantity
-    let quantity = determineTaskQuantity(level, lootTarget.level);
+    let quantity = determineTaskQuantity(targetLevel, lootTarget.level);
 
-    level = Math.floor(level / quantity);
+    targetLevel = Math.floor(targetLevel / quantity);
   
-    taskName = applyTaskNameModifiers(level, lootTarget);
+    taskName = applyTaskNameModifiers(targetLevel, lootTarget);
 
-    taskName = LOOTING_PARTICIPALS[lootTarget.type] + ' ' + makeStringIndefinite(taskName, quantity);
+    taskName = TASK_PARTICIPALS[lootTarget.type] + ' ' + makeStringIndefinite(taskName, quantity);
 
     lootData.push({
         name: lootTarget.reward,
@@ -175,53 +202,103 @@ export function generateLootingTaskContentsFromLevel(level: number): {taskName: 
 
 export const STANDARD_LOOTING_TARGETS: LootingTarget[] = [
     {
-        type: LootingTargetType.LOCATION,
+        type: TaskTargetType.LOCATION,
         name: 'Temple of Scutabrix',
         level: 1,
         reward: 'smug Scutabrix idol',
     },
     {
-        type: LootingTargetType.LOCATION,
+        type: TaskTargetType.LOCATION,
         name: 'Barber Shop',
         level: 1,
-        reward: 'barber\'s pole',
+        reward: 'barber\'s cleaver',
     },
     {
-        type: LootingTargetType.LOCATION,
+        type: TaskTargetType.LOCATION,
         name: 'NagaMart',
         level: 2,
         reward: 'nagamart loyalty card',
     },
     {
-        type: LootingTargetType.MONSTER,
+        type: TaskTargetType.MONSTER,
         name: 'Orkey',
         level: 1,
         reward: 'orkey giblet',
     },
     {
-        type: LootingTargetType.MONSTER,
+        type: TaskTargetType.MONSTER,
         name: 'Frankenstork',
         level: 1,
         reward: 'frankenstork beak',
     },
     {
-        type: LootingTargetType.MONSTER,
+        type: TaskTargetType.MONSTER,
         name: 'Bison',
         level: 1,
         reward: 'bison beard',
     },
     {
-        type: LootingTargetType.MONSTER,
+        type: TaskTargetType.MONSTER,
         name: 'Mechanical marzipan',
         level: 1,
         reward: 'mechanical marzipan crumb',
     },
 ]
 
+/** END LOOTING */
+
 /** 
- * END LOOTING
+ * GLADIATING
  */
 
- /** 
-  * GLADIATING
-  */
+export interface GladiatingTarget {
+    type: TaskTargetType,
+    name: string,
+    level: number,
+    reward: string,
+};
+
+export function generateGladiatingTaskContentsFromLevel(level: number): {taskName: string, trophyData: CharTrophy[]} {
+    let taskName = '';
+    let trophyData: CharTrophy[] = [];
+
+    let targetLevel = randomizeTargetLevel(level);
+
+    if (randRange(0, 1)) {
+        // dueling task
+
+        // todo: randomize target's level (somehow)
+        // todo: get random race/class combo (should be generic util function we can use on character creation screen)
+        // todo: determine quantity based on target level and target's level
+        // todo: build task name
+        // todo: get reward from selected race
+
+    } else {
+        // trial task
+        let gladiatingTarget;
+        gladiatingTarget = randomizeTargetFromList(targetLevel, STANDARD_GLADIATING_TARGETS, 6);
+        
+        let quantity = determineTaskQuantity(targetLevel, gladiatingTarget.level);
+        targetLevel = Math.floor(targetLevel / quantity);
+      
+        // todo: need to either fit trials into the mould of this function, or create a new function/modify the old one.
+        taskName = applyTaskNameModifiers(targetLevel, gladiatingTarget);
+    
+        taskName = TASK_PARTICIPALS[gladiatingTarget.type] + ' ' + makeStringIndefinite(taskName, quantity);
+    
+        trophyData.push({
+            name: gladiatingTarget.reward,
+            quantity: 1,
+            value: 1,
+        });
+    }
+
+
+    return {taskName: taskName, trophyData: trophyData};
+}
+
+export const STANDARD_GLADIATING_TARGETS: GladiatingTarget[] = [
+    {
+
+    }
+]
