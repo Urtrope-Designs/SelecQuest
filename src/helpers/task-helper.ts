@@ -19,6 +19,14 @@ TASK_PARTICIPALS[TaskTargetType.MONSTER] = 'Executing';
 TASK_PARTICIPALS[TaskTargetType.DUEL] = 'Dueling';
 TASK_PARTICIPALS[TaskTargetType.TRIAL] = 'Undertaking';
 
+export let TASK_PREFIX_MINIMAL = [];
+export let TASK_PREFIX_BAD_FIRST = [];
+export let TASK_PREFIX_BAD_SECOND = [];
+export let TASK_PREFIX_MAXIMAL = [];
+export let TASK_PREFIX_GOOD_FIRST = [];
+export let TASK_PREFIX_GOOD_SECOND = [];
+
+
 function determineTaskQuantity(targetLevel: number, taskLevel: number) {
     let quantity = 1;
     if (targetLevel - taskLevel > 10) {
@@ -35,25 +43,25 @@ function applyTaskNameModifiers(targetLevel: number, taskTarget: LootingTarget):
     let taskName = taskTarget.name;
 
     if ((targetLevel - taskTarget.level) <= -10) {
-        taskName = LOOTING_PREFIX_MINIMAL[taskTarget.type] + ' ' + taskName;
+        taskName = TASK_PREFIX_MINIMAL[taskTarget.type] + ' ' + taskName;
     } else if ((targetLevel - taskTarget.level) < -5) {
-        const firstPrefix = randFromList(LOOTING_PREFIX_BAD_FIRST[taskTarget.type]);
-        const secondPrefix = randFromList(LOOTING_PREFIX_BAD_SECOND[taskTarget.type]);
+        const firstPrefix = randFromList(TASK_PREFIX_BAD_FIRST[taskTarget.type]);
+        const secondPrefix = randFromList(TASK_PREFIX_BAD_SECOND[taskTarget.type]);
         taskName = firstPrefix + ' ' + secondPrefix + ' ' + taskName;
     } else if (((targetLevel - taskTarget.level) < 0) && (randRange(0, 1))) {
-        taskName = randFromList(LOOTING_PREFIX_BAD_FIRST[taskTarget.type]) + ' ' + taskName;
+        taskName = randFromList(TASK_PREFIX_BAD_FIRST[taskTarget.type]) + ' ' + taskName;
     } else if (((targetLevel - taskTarget.level) < 0)) {
-        taskName = randFromList(LOOTING_PREFIX_BAD_SECOND[taskTarget.type]) + ' ' + taskName;
+        taskName = randFromList(TASK_PREFIX_BAD_SECOND[taskTarget.type]) + ' ' + taskName;
     } else if ((targetLevel - taskTarget.level) >= 10) {
-        taskName = LOOTING_PREFIX_MAXIMAL[taskTarget.type] + ' ' + taskName;
+        taskName = TASK_PREFIX_MAXIMAL[taskTarget.type] + ' ' + taskName;
     } else if ((targetLevel - taskTarget.level) > 5) {
-        const firstPrefix = randFromList(LOOTING_PREFIX_GOOD_FIRST[taskTarget.type]);
-        const secondPrefix = randFromList(LOOTING_PREFIX_GOOD_SECOND[taskTarget.type]);
+        const firstPrefix = randFromList(TASK_PREFIX_GOOD_FIRST[taskTarget.type]);
+        const secondPrefix = randFromList(TASK_PREFIX_GOOD_SECOND[taskTarget.type]);
         taskName = firstPrefix + ' ' + secondPrefix + ' ' + taskName;
     } else if (((targetLevel - taskTarget.level) > 0) && (randRange(0, 1))) {
-        taskName = randFromList(LOOTING_PREFIX_GOOD_FIRST[taskTarget.type]) + ' ' + taskName;
+        taskName = randFromList(TASK_PREFIX_GOOD_FIRST[taskTarget.type]) + ' ' + taskName;
     } else if (((targetLevel - taskTarget.level) > 0)) {
-        taskName = randFromList(LOOTING_PREFIX_GOOD_SECOND[taskTarget.type]) + ' ' + taskName;
+        taskName = randFromList(TASK_PREFIX_GOOD_SECOND[taskTarget.type]) + ' ' + taskName;
     }
 
     return taskName;
@@ -101,35 +109,30 @@ export interface LootingTarget {
     reward: string,
 };
 
-export let LOOTING_PREFIX_MINIMAL = [];
-LOOTING_PREFIX_MINIMAL[TaskTargetType.LOCATION] = 'imaginary';
-LOOTING_PREFIX_MINIMAL[TaskTargetType.MONSTER] = 'imaginary';
-
-export let LOOTING_PREFIX_BAD_FIRST = [];
-LOOTING_PREFIX_BAD_FIRST[TaskTargetType.LOCATION] = [
+TASK_PREFIX_MINIMAL[TaskTargetType.LOCATION] = 'imaginary';
+TASK_PREFIX_MINIMAL[TaskTargetType.MONSTER] = 'imaginary';
+TASK_PREFIX_BAD_FIRST[TaskTargetType.LOCATION] = [
     'dank',
     'desolate',
     'vandalized',
     'cobwebby',
     'dreary',
 ];
-LOOTING_PREFIX_BAD_FIRST[TaskTargetType.MONSTER] =[
+TASK_PREFIX_BAD_FIRST[TaskTargetType.MONSTER] =[
     'dead',
     'comatose',
     'crippled',
     'sick',
     'undernourished',
 ];
-
-export let LOOTING_PREFIX_BAD_SECOND = [];
-LOOTING_PREFIX_BAD_SECOND[TaskTargetType.LOCATION] = [
+TASK_PREFIX_BAD_SECOND[TaskTargetType.LOCATION] = [
     'abandoned',
     'underwhelming',
     'uninviting',
     'crumbling',
     'ramshackle',
 ];
-LOOTING_PREFIX_BAD_SECOND[TaskTargetType.MONSTER] = [
+TASK_PREFIX_BAD_SECOND[TaskTargetType.MONSTER] = [
     'foetal',
     'baby',
     'preadolescent',
@@ -137,12 +140,9 @@ LOOTING_PREFIX_BAD_SECOND[TaskTargetType.MONSTER] = [
     'underage',
 ];
 
-export let LOOTING_PREFIX_MAXIMAL = [];
-LOOTING_PREFIX_MAXIMAL[TaskTargetType.LOCATION] = 'messianic';
-LOOTING_PREFIX_MAXIMAL[TaskTargetType.MONSTER] = 'messianic';
-
-export let LOOTING_PREFIX_GOOD_FIRST = [];
-LOOTING_PREFIX_GOOD_FIRST[TaskTargetType.LOCATION] = [
+TASK_PREFIX_MAXIMAL[TaskTargetType.LOCATION] = 'messianic';
+TASK_PREFIX_MAXIMAL[TaskTargetType.MONSTER] = 'messianic';
+TASK_PREFIX_GOOD_FIRST[TaskTargetType.LOCATION] = [
     'posh',
     'thriving',
     'sturdy',
@@ -150,23 +150,21 @@ LOOTING_PREFIX_GOOD_FIRST[TaskTargetType.LOCATION] = [
     'sinister',
     'sprawling',
 ];
-LOOTING_PREFIX_GOOD_FIRST[TaskTargetType.MONSTER] = [
+TASK_PREFIX_GOOD_FIRST[TaskTargetType.MONSTER] = [
     'greater',
     'massive',
     'enormous',
     'giant',
     'titanic',
 ];
-
-export let LOOTING_PREFIX_GOOD_SECOND = [];
-LOOTING_PREFIX_GOOD_SECOND[TaskTargetType.LOCATION] = [
+TASK_PREFIX_GOOD_SECOND[TaskTargetType.LOCATION] = [
     'booby-trapped',
     'ominous',
     'creepy',
     'newly renovated',
     'massive',
 ];
-LOOTING_PREFIX_GOOD_SECOND[TaskTargetType.MONSTER] = [
+TASK_PREFIX_GOOD_SECOND[TaskTargetType.MONSTER] = [
     'veteran',
     'cursed',
     'warrior',
@@ -258,13 +256,46 @@ export interface GladiatingTarget {
     reward: string,
 };
 
+TASK_PREFIX_MINIMAL[TaskTargetType.TRIAL] = 'mock';
+TASK_PREFIX_BAD_FIRST[TaskTargetType.TRIAL] = [
+    'short',
+    'quick',
+    'basic',
+    'underwhelming',
+    'brief',
+];
+TASK_PREFIX_BAD_SECOND[TaskTargetType.TRIAL] = [
+    'easy',
+    'unceremonious',
+    'casual',
+    'impromptu',
+    'lite',
+    'predictable',
+];
+
+TASK_PREFIX_MAXIMAL[TaskTargetType.TRIAL] = 'insane';
+TASK_PREFIX_GOOD_FIRST[TaskTargetType.TRIAL] = [
+    'neverending',
+    'long',
+    'draining',
+    'enduring',
+    'extended',
+];
+TASK_PREFIX_GOOD_SECOND[TaskTargetType.TRIAL] = [
+    'arduous',
+    'onerous',
+    'demanding',
+    'challenging',
+    'herculean',
+];
+
 export function generateGladiatingTaskContentsFromLevel(level: number): {taskName: string, trophyData: CharTrophy[]} {
     let taskName = '';
     let trophyData: CharTrophy[] = [];
 
     let targetLevel = randomizeTargetLevel(level);
 
-    if (randRange(0, 1)) {
+    if (randRange(0, 0)) {
         // dueling task
 
         // todo: randomize target's level (somehow)
@@ -299,6 +330,15 @@ export function generateGladiatingTaskContentsFromLevel(level: number): {taskNam
 
 export const STANDARD_GLADIATING_TARGETS: GladiatingTarget[] = [
     {
-
-    }
+        type: TaskTargetType.TRIAL,
+        name: 'endurance challenge',
+        level: 1,
+        reward: 'gold star'
+    },
+    {
+        type: TaskTargetType.TRIAL,
+        name: 'bowling championship',
+        level: 1,
+        reward: 'bowling trophy'
+    },
 ]

@@ -5,7 +5,7 @@ import { Task, CharacterModification, CharacterModificationType, AppState, TaskM
 import { SetActiveTask, TaskCompleted } from './actions';
 import { randRange, makeStringIndefinite } from './utils';
 import { PROLOGUE_TASKS, PROLOGUE_ADVENTURE_NAME, generateNextAdventureName } from './storyline-helpers';
-import { generateLootingTaskContentsFromLevel } from './task-helper';
+import { generateLootingTaskContentsFromLevel, generateGladiatingTaskContentsFromLevel } from './task-helper';
 
 @Component({
     tag: 'task-manager',
@@ -69,7 +69,6 @@ interface TaskGenerator {
     generateTask: (state: AppState) => Task;
 }
 
-let gTaskInc = 1;
 let iTaskInc = 1;
 
 const lootingTaskGen: TaskGenerator = {
@@ -278,21 +277,14 @@ const gladiatingTaskGen: TaskGenerator = {
         return state.activeTaskMode == TaskMode.GLADIATING;
     },
     generateTask: (state: AppState) => {
-        const trophyName = 'trophy' + randRange(1, 4);
+        const {taskName, trophyData} = generateGladiatingTaskContentsFromLevel(state.character.level);
         const durationSeconds = randRange(5, 8);
         const isFatigued = state.character.fatigue >= state.character.maxFatigue;
-        let trophy = [
-            {
-                name: trophyName,
-                quantity: 1,
-                value: 2
-            }
-        ];
         const results: CharacterModification[] = [
             {
                 type: CharacterModificationType.ADD_QUANTITY,
                 attributeName: 'trophies',
-                data: trophy,
+                data: trophyData,
             },
             {
                 type: CharacterModificationType.DECREASE,
@@ -317,7 +309,7 @@ const gladiatingTaskGen: TaskGenerator = {
         ]
 
         const newTask = {
-            description: 'Do gladiating task ' + gTaskInc++,
+            description: taskName,
             durationMs: durationSeconds * 1000,
             results: results
         };
