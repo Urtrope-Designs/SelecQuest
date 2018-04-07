@@ -125,7 +125,7 @@ export function generateGladiatingTaskContentsFromLevel(level: number): {taskNam
         let quantity = determineTaskQuantity(targetLevel, foeLevel);
         if (quantity === 1) {
             let foeName = generateRandomName();
-            taskName = `${TASK_PARTICIPALS[TaskTargetType.DUEL]} ${foeName}, the ${foeRace.trophyName} ${foeClass}`;
+            taskName = `${TASK_PARTICIPALS[TaskTargetType.DUEL]} ${foeName}, the ${foeRace.raceName} ${foeClass}`;
         }
         else {
             taskName = TASK_PARTICIPALS[TaskTargetType.DUEL] + ' ' + makeStringIndefinite(`level ${foeLevel} ${foeRace.raceName} ${foeClass}`, quantity);
