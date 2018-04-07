@@ -1,4 +1,5 @@
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { STATIC_NAMES, RANDOM_NAME_PARTS } from '../global/config';
 
 export function urlB64ToUint8Array(base64String) {
     const padding = '='.repeat((4 - base64String.length % 4) % 4);
@@ -78,4 +79,18 @@ export function makeStringPlural(baseString: string): string {
 
 export function doesEndWith(baseString: string, ending: string): boolean {
     return baseString.slice(baseString.length - ending.length, baseString.length) == ending;
+}
+
+export function generateRandomName(): string {
+    let name = '';
+
+    if (!randRange(0, 4)) {     // should it only be 1 in 5?
+        name = randFromList(STATIC_NAMES);
+    } else {
+        for (var i = 0; i <= 5; ++i)
+            name += randFromList(RANDOM_NAME_PARTS[i % 3]);
+        name = name.charAt(0).toUpperCase() + name.slice(1);
+    }
+
+    return name;
 }

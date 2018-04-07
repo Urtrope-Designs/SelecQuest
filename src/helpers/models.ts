@@ -1,11 +1,43 @@
 import { Adventure } from "./storyline-helpers";
 
+/** Task related */
 export interface Task {
     completionTimeoutId?: any;
     description: string;
     durationMs: number;
     results: CharacterModification[];
 }
+
+export enum TaskMode {
+    LOOTING,
+    GLADIATING,
+    INVESTIGATING,
+}
+
+export enum TaskTargetType {
+    LOCATION,
+    MONSTER,
+    DUEL,
+    TRIAL,
+    INTERROGATION,
+    INVESTIGATION,
+};
+
+export interface LootingTarget {
+    type: TaskTargetType,
+    name: string,
+    level: number,
+    reward: string,
+};
+
+export interface GladiatingTarget {
+    type: TaskTargetType,
+    name: string,
+    level: number,
+    reward: string,
+};
+
+/** Character Related */
 
 export interface CharacterModification {
     type: CharacterModificationType,
@@ -31,7 +63,7 @@ export enum CharacterModificationType {
 
 export interface Character {
     name: string;
-    race: string;
+    raceName: string;
     class: string;
     level: number;
     /* states */
@@ -130,15 +162,16 @@ export enum AffiliationType {
     Offices,
 }
 
-export enum TaskMode {
-    LOOTING,
-    GLADIATING,
-    INVESTIGATING,
-}
+/** Other :) */
 
 export interface AppState {
     activeTask: Task;
     hasActiveTask: boolean;
     character: Character;
     activeTaskMode: TaskMode
+}
+
+export interface CharRace {
+    raceName: string,
+    trophyName: string,
 }

@@ -1,32 +1,10 @@
-import { CharLoot, CharTrophy } from "./models";
-import { randRange, randSign, randFromList, makeStringIndefinite } from "./utils";
+import { CharLoot, CharTrophy, LootingTarget, GladiatingTarget, TaskTargetType } from "./models";
+import { randRange, randSign, randFromList, makeStringIndefinite, generateRandomName } from "./utils";
+import { TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, TASK_PARTICIPALS, STANDARD_GLADIATING_TARGETS, STANDARD_LOOTING_TARGETS, RACES, CLASSES } from "../global/config";
 
 /**
  * GENERIC
  */
-export enum TaskTargetType {
-    LOCATION,
-    MONSTER,
-    DUEL,
-    TRIAL,
-    INTERROGATION,
-    INVESTIGATION,
-};
-
-export let TASK_PARTICIPALS = [];
-TASK_PARTICIPALS[TaskTargetType.LOCATION] = 'Ransacking';
-TASK_PARTICIPALS[TaskTargetType.MONSTER] = 'Executing';
-TASK_PARTICIPALS[TaskTargetType.DUEL] = 'Dueling';
-TASK_PARTICIPALS[TaskTargetType.TRIAL] = 'Undertaking';
-
-export let TASK_PREFIX_MINIMAL = [];
-export let TASK_PREFIX_BAD_FIRST = [];
-export let TASK_PREFIX_BAD_SECOND = [];
-export let TASK_PREFIX_MAXIMAL = [];
-export let TASK_PREFIX_GOOD_FIRST = [];
-export let TASK_PREFIX_GOOD_SECOND = [];
-
-
 function determineTaskQuantity(targetLevel: number, taskLevel: number) {
     let quantity = 1;
     if (targetLevel - taskLevel > 10) {
@@ -102,76 +80,6 @@ function randomizeTargetFromList(targetLevel: number, targetOptions: LootingTarg
  * LOOTING
  */
 
-export interface LootingTarget {
-    type: TaskTargetType,
-    name: string,
-    level: number,
-    reward: string,
-};
-
-TASK_PREFIX_MINIMAL[TaskTargetType.LOCATION] = 'imaginary';
-TASK_PREFIX_MINIMAL[TaskTargetType.MONSTER] = 'imaginary';
-TASK_PREFIX_BAD_FIRST[TaskTargetType.LOCATION] = [
-    'dank',
-    'desolate',
-    'vandalized',
-    'cobwebby',
-    'dreary',
-];
-TASK_PREFIX_BAD_FIRST[TaskTargetType.MONSTER] =[
-    'dead',
-    'comatose',
-    'crippled',
-    'sick',
-    'undernourished',
-];
-TASK_PREFIX_BAD_SECOND[TaskTargetType.LOCATION] = [
-    'abandoned',
-    'underwhelming',
-    'uninviting',
-    'crumbling',
-    'ramshackle',
-];
-TASK_PREFIX_BAD_SECOND[TaskTargetType.MONSTER] = [
-    'foetal',
-    'baby',
-    'preadolescent',
-    'teenage',
-    'underage',
-];
-
-TASK_PREFIX_MAXIMAL[TaskTargetType.LOCATION] = 'messianic';
-TASK_PREFIX_MAXIMAL[TaskTargetType.MONSTER] = 'messianic';
-TASK_PREFIX_GOOD_FIRST[TaskTargetType.LOCATION] = [
-    'posh',
-    'thriving',
-    'sturdy',
-    'fortified',
-    'sinister',
-    'sprawling',
-];
-TASK_PREFIX_GOOD_FIRST[TaskTargetType.MONSTER] = [
-    'greater',
-    'massive',
-    'enormous',
-    'giant',
-    'titanic',
-];
-TASK_PREFIX_GOOD_SECOND[TaskTargetType.LOCATION] = [
-    'booby-trapped',
-    'ominous',
-    'creepy',
-    'newly renovated',
-    'massive',
-];
-TASK_PREFIX_GOOD_SECOND[TaskTargetType.MONSTER] = [
-    'veteran',
-    'cursed',
-    'warrior',
-    'undead',
-    'demon',
-];
-
 //logic stolen pretty much directly from PQ
 export function generateLootingTaskContentsFromLevel(level: number): {taskName: string, lootData: CharLoot[]} {
     let taskName = '';
@@ -198,111 +106,35 @@ export function generateLootingTaskContentsFromLevel(level: number): {taskName: 
     return {taskName: taskName, lootData: lootData};
 }
 
-export const STANDARD_LOOTING_TARGETS: LootingTarget[] = [
-    {
-        type: TaskTargetType.LOCATION,
-        name: 'Temple of Scutabrix',
-        level: 1,
-        reward: 'smug Scutabrix idol',
-    },
-    {
-        type: TaskTargetType.LOCATION,
-        name: 'Barber Shop',
-        level: 1,
-        reward: 'barber\'s cleaver',
-    },
-    {
-        type: TaskTargetType.LOCATION,
-        name: 'NagaMart',
-        level: 2,
-        reward: 'nagamart loyalty card',
-    },
-    {
-        type: TaskTargetType.MONSTER,
-        name: 'Orkey',
-        level: 1,
-        reward: 'orkey giblet',
-    },
-    {
-        type: TaskTargetType.MONSTER,
-        name: 'Frankenstork',
-        level: 1,
-        reward: 'frankenstork beak',
-    },
-    {
-        type: TaskTargetType.MONSTER,
-        name: 'Bison',
-        level: 1,
-        reward: 'bison beard',
-    },
-    {
-        type: TaskTargetType.MONSTER,
-        name: 'Mechanical marzipan',
-        level: 1,
-        reward: 'mechanical marzipan crumb',
-    },
-]
-
 /** END LOOTING */
 
 /** 
  * GLADIATING
  */
-
-export interface GladiatingTarget {
-    type: TaskTargetType,
-    name: string,
-    level: number,
-    reward: string,
-};
-
-TASK_PREFIX_MINIMAL[TaskTargetType.TRIAL] = 'mock';
-TASK_PREFIX_BAD_FIRST[TaskTargetType.TRIAL] = [
-    'short',
-    'quick',
-    'basic',
-    'underwhelming',
-    'brief',
-];
-TASK_PREFIX_BAD_SECOND[TaskTargetType.TRIAL] = [
-    'easy',
-    'unceremonious',
-    'casual',
-    'impromptu',
-    'lite',
-    'predictable',
-];
-
-TASK_PREFIX_MAXIMAL[TaskTargetType.TRIAL] = 'insane';
-TASK_PREFIX_GOOD_FIRST[TaskTargetType.TRIAL] = [
-    'neverending',
-    'long',
-    'draining',
-    'enduring',
-    'extended',
-];
-TASK_PREFIX_GOOD_SECOND[TaskTargetType.TRIAL] = [
-    'arduous',
-    'onerous',
-    'demanding',
-    'challenging',
-    'herculean',
-];
-
 export function generateGladiatingTaskContentsFromLevel(level: number): {taskName: string, trophyData: CharTrophy[]} {
     let taskName = '';
     let trophyData: CharTrophy[] = [];
 
     let targetLevel = randomizeTargetLevel(level);
 
-    if (randRange(0, 0)) {
+    if (randRange(0, 1)) {
         // dueling task
-
-        // todo: randomize target's level (somehow)
-        // todo: get random race/class combo (should be generic util function we can use on character creation screen)
-        // todo: determine quantity based on target level and target's level
-        // todo: build task name
-        // todo: get reward from selected race
+        let foeLevel = randomizeTargetLevel(level);
+        let foeRace = randFromList(RACES);
+        let foeClass = randFromList(CLASSES);
+        let quantity = determineTaskQuantity(targetLevel, foeLevel);
+        if (quantity === 1) {
+            let foeName = generateRandomName();
+            taskName = `${TASK_PARTICIPALS[TaskTargetType.DUEL]} ${foeName}, the ${foeRace.trophyName} ${foeClass}`;
+        }
+        else {
+            taskName = TASK_PARTICIPALS[TaskTargetType.DUEL] + ' ' + makeStringIndefinite(`level ${foeLevel} ${foeRace.raceName} ${foeClass}`, quantity);
+        }
+        trophyData.push({
+            name: foeRace.raceName + ' ' + foeRace.trophyName,
+            quantity: 1,
+            value: 1,
+        })
 
     } else {
         // trial task
@@ -324,21 +156,5 @@ export function generateGladiatingTaskContentsFromLevel(level: number): {taskNam
         });
     }
 
-
     return {taskName: taskName, trophyData: trophyData};
 }
-
-export const STANDARD_GLADIATING_TARGETS: GladiatingTarget[] = [
-    {
-        type: TaskTargetType.TRIAL,
-        name: 'endurance challenge',
-        level: 1,
-        reward: 'gold star'
-    },
-    {
-        type: TaskTargetType.TRIAL,
-        name: 'bowling championship',
-        level: 1,
-        reward: 'bowling trophy'
-    },
-]

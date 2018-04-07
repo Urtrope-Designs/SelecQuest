@@ -5,7 +5,7 @@ import { PROLOGUE_ADVENTURE_NAME } from './storyline-helpers';
 export function createNewCharacter(): Character {
     const newChar: Character = {
         name: 'Garg',
-        race: 'Fartling',
+        raceName: 'Fartling',
         class: 'Meter Beater',
         level: 1,
         str: 10,
