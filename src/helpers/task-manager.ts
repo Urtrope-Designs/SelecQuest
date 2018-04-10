@@ -3,9 +3,10 @@ import { Observable } from 'rxjs/Observable';
 
 import { Task, CharacterModification, CharacterModificationType, AppState, TaskMode, AccoladeType, AffiliationType } from './models';
 import { SetActiveTask, TaskCompleted } from './actions';
-import { randRange, makeStringIndefinite } from './utils';
+import { randRange, makeStringIndefinite, randFromList } from './utils';
 import { PROLOGUE_TASKS, PROLOGUE_ADVENTURE_NAME, generateNextAdventureName } from './storyline-helpers';
 import { generateLootingTaskContentsFromLevel, generateGladiatingTaskContentsFromLevel } from './task-helper';
+import { LEAD_GATHERING_TASK_MODIFIERS } from '../global/config';
 
 @Component({
     tag: 'task-manager',
@@ -419,7 +420,7 @@ const endBoastingTaskGen: TaskGenerator = {
     },
     generateTask: (/*state: AppState*/) => {
         const newTask: Task = {
-            description: 'Heading to the arena',
+            description: 'Heading off in search of glory',
             durationMs: randRange(2,3) * 1000,
             results: [
                 {
@@ -479,7 +480,7 @@ const investigatingTaskGen: TaskGenerator = {
     },
     generateTask: (state: AppState) => {
         const leadName = 'lead' + randRange(1, 100);
-        const durationSeconds = randRange(5, 8);
+        const durationSeconds = randRange(2, 3);
         const isOverexposed = state.character.socialExposure >= state.character.maxSocialCapital;        
         let lead = [
             {
@@ -618,7 +619,7 @@ const endLeadFollowingTaskGen: TaskGenerator = {
     },
     generateTask: (/*state: AppState*/) => {
         const newTask: Task = {
-            description: 'Heading to the inn to imbibe a mug o\' scuttlebutt',
+            description: `Rooting out some ${randFromList(LEAD_GATHERING_TASK_MODIFIERS)} leads`,
             durationMs: randRange(2,3) * 1000,
             results: [
                 {

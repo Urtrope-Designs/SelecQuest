@@ -1,6 +1,6 @@
 import { CharLoot, CharTrophy, LootingTarget, GladiatingTarget, TaskTargetType } from "./models";
 import { randRange, randSign, randFromList, makeStringIndefinite, generateRandomName } from "./utils";
-import { TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, TASK_PARTICIPALS, STANDARD_GLADIATING_TARGETS, STANDARD_LOOTING_TARGETS, RACES, CLASSES } from "../global/config";
+import { TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, TASK_GERUNDS, STANDARD_GLADIATING_TARGETS, STANDARD_LOOTING_TARGETS, RACES, CLASSES } from "../global/config";
 
 /**
  * GENERIC
@@ -95,7 +95,7 @@ export function generateLootingTaskContentsFromLevel(level: number): {taskName: 
   
     taskName = applyTaskNameModifiers(targetLevel, lootTarget);
 
-    taskName = TASK_PARTICIPALS[lootTarget.type] + ' ' + makeStringIndefinite(taskName, quantity);
+    taskName = TASK_GERUNDS[lootTarget.type] + ' ' + makeStringIndefinite(taskName, quantity);
 
     lootData.push({
         name: lootTarget.reward,
@@ -125,10 +125,10 @@ export function generateGladiatingTaskContentsFromLevel(level: number): {taskNam
         let quantity = determineTaskQuantity(targetLevel, foeLevel);
         if (quantity === 1) {
             let foeName = generateRandomName();
-            taskName = `${TASK_PARTICIPALS[TaskTargetType.DUEL]} ${foeName}, the ${foeRace.raceName} ${foeClass}`;
+            taskName = `${TASK_GERUNDS[TaskTargetType.DUEL]} ${foeName}, the ${foeRace.raceName} ${foeClass}`;
         }
         else {
-            taskName = TASK_PARTICIPALS[TaskTargetType.DUEL] + ' ' + makeStringIndefinite(`level ${foeLevel} ${foeRace.raceName} ${foeClass}`, quantity);
+            taskName = TASK_GERUNDS[TaskTargetType.DUEL] + ' ' + makeStringIndefinite(`level ${foeLevel} ${foeRace.raceName} ${foeClass}`, quantity);
         }
         trophyData.push({
             name: foeRace.raceName + ' ' + foeRace.trophyName,
@@ -147,7 +147,7 @@ export function generateGladiatingTaskContentsFromLevel(level: number): {taskNam
         // todo: need to either fit trials into the mould of this function, or create a new function/modify the old one.
         taskName = applyTaskNameModifiers(targetLevel, gladiatingTarget);
     
-        taskName = TASK_PARTICIPALS[gladiatingTarget.type] + ' ' + makeStringIndefinite(taskName, quantity);
+        taskName = TASK_GERUNDS[gladiatingTarget.type] + ' ' + makeStringIndefinite(taskName, quantity);
     
         trophyData.push({
             name: gladiatingTarget.reward,

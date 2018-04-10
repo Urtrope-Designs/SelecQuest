@@ -1,10 +1,10 @@
-import { TaskTargetType, LootingTarget, GladiatingTarget, CharRace } from "../helpers/models";
+import { TaskTargetType, LootingTarget, GladiatingTarget, CharRace, LeadGatheringTarget, LeadType } from "../helpers/models";
 
-export let TASK_PARTICIPALS = [];
-TASK_PARTICIPALS[TaskTargetType.LOCATION] = 'Ransacking';
-TASK_PARTICIPALS[TaskTargetType.MONSTER] = 'Executing';
-TASK_PARTICIPALS[TaskTargetType.DUEL] = 'Dueling';
-TASK_PARTICIPALS[TaskTargetType.TRIAL] = 'Undertaking';
+export let TASK_GERUNDS = [];
+TASK_GERUNDS[TaskTargetType.LOCATION] = 'Ransacking';
+TASK_GERUNDS[TaskTargetType.MONSTER] = 'Executing';
+TASK_GERUNDS[TaskTargetType.DUEL] = 'Dueling';
+TASK_GERUNDS[TaskTargetType.TRIAL] = 'Undertaking';
 
 export let TASK_PREFIX_MINIMAL = [];
 export let TASK_PREFIX_BAD_FIRST = [];
@@ -169,6 +169,37 @@ export const STANDARD_GLADIATING_TARGETS: GladiatingTarget[] = [
         reward: 'bowling trophy'
     },
 ]
+
+export const LEAD_GATHERING_TASK_MODIFIERS: string[] = [
+    'hot',
+    'fresh',
+    'new',
+    'buzzworthy',
+    'salacious',
+]
+
+export const STANDARD_LEAD_GATHERING_TARGETS: LeadGatheringTarget[] = [
+    {
+        gerundPhrase: 'gossipping with',
+        predicateOptions: [
+            'the local women\'s circle',
+            'your brew-pub crew',
+            'three ancient crones',
+            'a bunch of retired ditch-diggers',
+        ],
+        leadType: LeadType.FETCH,
+    },
+    {
+        gerundPhrase: 'scowering',
+        predicateOptions: [
+            'the MonsterHunterz bulletin board',
+            'the latest issue of "Spelunker\'s Booty"',
+            'the trash heap behind the inn',
+        ],
+        leadType: LeadType.FETCH,
+    }
+]
+
 
 export const STATIC_NAMES: string[] = [
     'Scutabrix',

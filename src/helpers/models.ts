@@ -37,6 +37,23 @@ export interface GladiatingTarget {
     reward: string,
 };
 
+export interface LeadGatheringTarget {
+    gerundPhrase: string,
+    predicateOptions: string[],
+    leadType: LeadType,
+}
+
+export enum LeadType {
+    FETCH,
+
+}
+
+export interface LeadTarget {
+    verb: string,
+    predicateFactory: () => string,
+    predicateOptions: string[],
+}
+
 /** Character Related */
 
 export interface CharacterModification {
@@ -145,7 +162,8 @@ export interface CharTrophy {
 };
 
 export interface CharLead {
-    name: string,
+    questlogName: string,
+    taskName: string,
     value: number,
 };
 
