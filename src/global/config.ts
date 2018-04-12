@@ -1,4 +1,4 @@
-import { TaskTargetType, LootingTarget, GladiatingTarget, CharRace, LeadGatheringTarget, LeadType } from "../helpers/models";
+import { TaskTargetType, LootingTarget, GladiatingTarget, CharRace, LeadGatheringTarget, LeadType, LeadTarget } from "../helpers/models";
 
 export let TASK_GERUNDS = [];
 TASK_GERUNDS[TaskTargetType.LOCATION] = 'Ransacking';
@@ -198,6 +198,11 @@ export const STANDARD_LEAD_GATHERING_TARGETS: LeadGatheringTarget[] = [
         ],
         leadType: LeadType.FETCH,
     }
+]
+
+export const STANDARD_LEAD_TARGETS = [];
+STANDARD_LEAD_TARGETS[LeadType.FIND] = [
+    {}
 ]
 
 

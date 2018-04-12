@@ -45,7 +45,11 @@ export interface LeadGatheringTarget {
 
 export enum LeadType {
     FETCH,
-
+    FIND,
+    EXTERMINATE,
+    PLACATE,
+    NURSE,
+    DEFEND,
 }
 
 export interface LeadTarget {

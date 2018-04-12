@@ -1,10 +1,7 @@
-import { CharLoot, CharTrophy, LootingTarget, GladiatingTarget, TaskTargetType } from "./models";
+import { CharLoot, CharTrophy, LootingTarget, GladiatingTarget, TaskTargetType, CharLead } from "./models";
 import { randRange, randSign, randFromList, makeStringIndefinite, generateRandomName } from "./utils";
-import { TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, TASK_GERUNDS, STANDARD_GLADIATING_TARGETS, STANDARD_LOOTING_TARGETS, RACES, CLASSES } from "../global/config";
+import { TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, TASK_GERUNDS, STANDARD_GLADIATING_TARGETS, STANDARD_LOOTING_TARGETS, RACES, CLASSES, STANDARD_LEAD_GATHERING_TARGETS } from "../global/config";
 
-/**
- * GENERIC
- */
 function determineTaskQuantity(targetLevel: number, taskLevel: number) {
     let quantity = 1;
     if (targetLevel - taskLevel > 10) {
@@ -74,12 +71,6 @@ function randomizeTargetFromList(targetLevel: number, targetOptions: LootingTarg
     return target;
 }
 
-/** END GENERIC */
-
-/** 
- * LOOTING
- */
-
 //logic stolen pretty much directly from PQ
 export function generateLootingTaskContentsFromLevel(level: number): {taskName: string, lootData: CharLoot[]} {
     let taskName = '';
@@ -106,11 +97,6 @@ export function generateLootingTaskContentsFromLevel(level: number): {taskName: 
     return {taskName: taskName, lootData: lootData};
 }
 
-/** END LOOTING */
-
-/** 
- * GLADIATING
- */
 export function generateGladiatingTaskContentsFromLevel(level: number): {taskName: string, trophyData: CharTrophy[]} {
     let taskName = '';
     let trophyData: CharTrophy[] = [];
@@ -157,4 +143,16 @@ export function generateGladiatingTaskContentsFromLevel(level: number): {taskNam
     }
 
     return {taskName: taskName, trophyData: trophyData};
+}
+
+export function generateInvestigatingTaskContents(): {taskName: string, leadData: CharLead[]} {
+    let taskName = '';
+    let leadData = [];
+
+    let investigatingTarget = randFromList(STANDARD_LEAD_GATHERING_TARGETS);
+
+    taskName = investigatingTarget.gerundPhrase + randFromList(investigatingTarget.predicateOptions);
+    
+
+    return {taskName: taskName, leadData: leadData};
 }
