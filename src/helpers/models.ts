@@ -40,12 +40,13 @@ export interface GladiatingTarget {
 export interface LeadGatheringTarget {
     gerundPhrase: string,
     predicateOptions: string[],
-    leadType: LeadType,
+    leadTypes: LeadType[],
 }
 
 export enum LeadType {
     FETCH,
-    FIND,
+    DELIVER,
+    SEEK,
     EXTERMINATE,
     PLACATE,
     NURSE,
@@ -55,7 +56,6 @@ export enum LeadType {
 export interface LeadTarget {
     verb: string,
     predicateFactory: () => string,
-    predicateOptions: string[],
 }
 
 /** Character Related */
