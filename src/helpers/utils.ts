@@ -77,6 +77,10 @@ export function makeStringPlural(baseString: string): string {
     }
 }
 
+export function makeVerbGerund(baseString: string): string {
+    return baseString + 'ing';
+}
+
 export function doesEndWith(baseString: string, ending: string): boolean {
     return baseString.slice(baseString.length - ending.length, baseString.length) == ending;
 }

@@ -1,4 +1,5 @@
 import { TaskTargetType, LootingTarget, GladiatingTarget, CharRace, LeadGatheringTarget, LeadType, LeadTarget } from "../helpers/models";
+import { makeStringIndefinite, randFromList } from "../helpers/utils";
 
 export let TASK_GERUNDS = [];
 TASK_GERUNDS[TaskTargetType.LOCATION] = 'Ransacking';
@@ -117,9 +118,15 @@ export const STANDARD_LOOTING_TARGETS: LootingTarget[] = [
     {
         type: TaskTargetType.MONSTER,
         name: 'Mechanical marzipan',
-        level: 1,
+        level: 3,
         reward: 'mechanical marzipan crumb',
     },
+    {
+        type: TaskTargetType.MONSTER,
+        name: 'Grumpkin',
+        level: 1,
+        reward: 'Grumpkin frown',
+    }
 ];
 
 TASK_PREFIX_MINIMAL[TaskTargetType.TRIAL] = 'mock';
@@ -187,23 +194,73 @@ export const STANDARD_LEAD_GATHERING_TARGETS: LeadGatheringTarget[] = [
             'three ancient crones',
             'a bunch of retired ditch-diggers',
         ],
-        leadType: LeadType.FETCH,
+        leadTypes: [LeadType.FETCH],
     },
     {
-        gerundPhrase: 'scowering',
+        gerundPhrase: 'scouring',
         predicateOptions: [
             'the MonsterHunterz bulletin board',
             'the latest issue of "Spelunker\'s Booty"',
             'the trash heap behind the inn',
         ],
-        leadType: LeadType.FETCH,
+        leadTypes: [LeadType.FETCH],
     }
 ]
 
-export const STANDARD_LEAD_TARGETS = [];
-STANDARD_LEAD_TARGETS[LeadType.FIND] = [
-    {}
-]
+export const STANDARD_LEAD_TARGETS: LeadTarget[][] = [];
+STANDARD_LEAD_TARGETS[LeadType.FETCH] = [
+    {
+        verb: 'fetch',
+        predicateFactory: () => {
+            return makeStringIndefinite(randFromList(FETCH_TARGET_OBJECTS), 1);
+        }
+    }
+];
+
+const FETCH_TARGET_OBJECTS = [
+    'nail',
+    'lunchpail',
+    'sock',
+    'I.O.U.',
+    'cookie',
+    'pint',
+    'toothpick',
+    'writ',
+    'newspaper',
+    'letter',
+    'plank',
+    'hat',
+    'egg',
+    'coin',
+    'needle',
+    'bucket',
+    'ladder',
+    'chicken',
+    'twig',
+    'dirtclod',
+    'counterpane',
+    'vest',
+    'teratoma',
+    'bunny',
+    'rock',
+    'pole',
+    'carrot',
+    'canoe',
+    'inkwell',
+    'hoe',
+    'bandage',
+    'trowel',
+    'towel',
+    'planter box',
+    'anvil',
+    'axle',
+    'tuppence',
+    'casket',
+    'nosegay',
+    'trinket',
+    'credenza',
+    'writ'
+];
 
 
 export const STATIC_NAMES: string[] = [

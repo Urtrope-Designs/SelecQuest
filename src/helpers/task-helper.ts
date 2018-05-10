@@ -1,6 +1,6 @@
 import { CharLoot, CharTrophy, LootingTarget, GladiatingTarget, TaskTargetType, CharLead } from "./models";
-import { randRange, randSign, randFromList, makeStringIndefinite, generateRandomName } from "./utils";
-import { TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, TASK_GERUNDS, STANDARD_GLADIATING_TARGETS, STANDARD_LOOTING_TARGETS, RACES, CLASSES, STANDARD_LEAD_GATHERING_TARGETS } from "../global/config";
+import { randRange, randSign, randFromList, makeStringIndefinite, generateRandomName, makeVerbGerund } from "./utils";
+import { TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, TASK_GERUNDS, STANDARD_GLADIATING_TARGETS, STANDARD_LOOTING_TARGETS, RACES, CLASSES, STANDARD_LEAD_GATHERING_TARGETS, STANDARD_LEAD_TARGETS } from "../global/config";
 
 function determineTaskQuantity(targetLevel: number, taskLevel: number) {
     let quantity = 1;
@@ -152,7 +152,17 @@ export function generateInvestigatingTaskContents(): {taskName: string, leadData
     let investigatingTarget = randFromList(STANDARD_LEAD_GATHERING_TARGETS);
 
     taskName = investigatingTarget.gerundPhrase + randFromList(investigatingTarget.predicateOptions);
-    
+
+    let leadTargetType = randFromList(investigatingTarget.leadTypes);
+    let leadTarget = randFromList(STANDARD_LEAD_TARGETS[leadTargetType]);
+
+    let lead: CharLead = {
+        questlogName: leadTarget.verb + leadTarget.predicateFactory.apply(null),
+        taskName: makeVerbGerund(leadTarget.verb) + leadTarget.predicateFactory.apply(null),
+        value: 1,
+    }
+
+    leadData.push(lead);
 
     return {taskName: taskName, leadData: leadData};
 }
