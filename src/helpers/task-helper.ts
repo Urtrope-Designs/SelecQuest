@@ -149,16 +149,17 @@ export function generateInvestigatingTaskContents(): {taskName: string, leadData
     let taskName = '';
     let leadData = [];
 
-    let investigatingTarget = randFromList(STANDARD_LEAD_GATHERING_TARGETS);
+    const investigatingTarget = randFromList(STANDARD_LEAD_GATHERING_TARGETS);
 
-    taskName = investigatingTarget.gerundPhrase + randFromList(investigatingTarget.predicateOptions);
+    taskName = `${investigatingTarget.gerundPhrase} ${randFromList(investigatingTarget.predicateOptions)}`;
 
-    let leadTargetType = randFromList(investigatingTarget.leadTypes);
-    let leadTarget = randFromList(STANDARD_LEAD_TARGETS[leadTargetType]);
+    const leadTargetType = randFromList(investigatingTarget.leadTypes);
+    const leadTarget = randFromList(STANDARD_LEAD_TARGETS[leadTargetType]);
 
-    let lead: CharLead = {
-        questlogName: leadTarget.verb + leadTarget.predicateFactory.apply(null),
-        taskName: makeVerbGerund(leadTarget.verb) + leadTarget.predicateFactory.apply(null),
+    const leadPredicate = leadTarget.predicateFactory.apply(null);
+    const lead: CharLead = {
+        questlogName: `${leadTarget.verb} ${leadPredicate}`,
+        taskName: `${makeVerbGerund(leadTarget.verb)} ${leadPredicate}`,
         value: 1,
     }
 

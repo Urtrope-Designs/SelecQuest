@@ -139,7 +139,7 @@ export class AppHome {
                             this.character.leads.length == 0
                             ? <div>[None]</div>
                             : this.character.leads.map((item) => 
-                                    <div>{item.name}</div>
+                                    <div>{item.questlogName}</div>
                                 )
                         }
                     </p>

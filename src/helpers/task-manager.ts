@@ -5,7 +5,7 @@ import { Task, CharacterModification, CharacterModificationType, AppState, TaskM
 import { SetActiveTask, TaskCompleted } from './actions';
 import { randRange, makeStringIndefinite, randFromList } from './utils';
 import { PROLOGUE_TASKS, PROLOGUE_ADVENTURE_NAME, generateNextAdventureName } from './storyline-helpers';
-import { generateLootingTaskContentsFromLevel, generateGladiatingTaskContentsFromLevel } from './task-helper';
+import { generateLootingTaskContentsFromLevel, generateGladiatingTaskContentsFromLevel, generateInvestigatingTaskContents } from './task-helper';
 import { LEAD_GATHERING_TASK_MODIFIERS } from '../global/config';
 
 @Component({
@@ -69,8 +69,6 @@ interface TaskGenerator {
     shouldRun: (state: AppState) => boolean;
     generateTask: (state: AppState) => Task;
 }
-
-let iTaskInc = 1;
 
 const lootingTaskGen: TaskGenerator = {
     priority: 0,
@@ -478,46 +476,20 @@ const investigatingTaskGen: TaskGenerator = {
     shouldRun: (state: AppState) => {
         return state.activeTaskMode == TaskMode.INVESTIGATING;
     },
-    generateTask: (state: AppState) => {
-        const leadName = 'lead' + randRange(1, 100);
+    generateTask: (/*state: AppState*/) => {
+        const {taskName, leadData} = generateInvestigatingTaskContents();
         const durationSeconds = randRange(2, 3);
-        const isOverexposed = state.character.socialExposure >= state.character.maxSocialCapital;        
-        let lead = [
-            {
-                name: leadName,
-                value: 2
-            }
-        ];
+
         const results: CharacterModification[] = [
             {
                 type: CharacterModificationType.ADD,
                 attributeName: 'leads',
-                data: lead,
-            },
-            {
-                type: CharacterModificationType.DECREASE,
-                attributeName: 'marketSaturation',
-                data: -2,
-            },
-            {
-                type: CharacterModificationType.DECREASE,
-                attributeName: 'fatigue',
-                data: -2,
-            },
-            {
-                type: CharacterModificationType.INCREASE,
-                attributeName: 'currentXp',
-                data: (Math.ceil(durationSeconds / (isOverexposed ? 2 : 1))),
-            },
-            {
-                type: CharacterModificationType.INCREASE,
-                attributeName: 'adventureProgress',
-                data: (Math.ceil(durationSeconds / (isOverexposed ? 2 : 1))),
+                data: leadData,
             },
         ]
         
         const newTask = {
-            description: 'Do investigating task ' + iTaskInc++,
+            description: taskName,
             durationMs: durationSeconds * 1000,
             results: results
         };
@@ -537,7 +509,7 @@ const triggerLeadFollowingTaskGen: TaskGenerator = {
     generateTask: (/*state: AppState*/) => {
         const newTask: Task = {
             description: 'Organizing your Questlog',
-            durationMs: randRange(2,3) * 1000,
+            durationMs: randRange(5,8) * 1000,
             results: [
                 {
                     type: CharacterModificationType.SET,
@@ -561,17 +533,12 @@ const leadFollowingTaskGen: TaskGenerator = {
         if (!!leadToFollow) {
             const isOverexposed = state.character.socialExposure >= state.character.maxSocialCapital;
             const reputationValue = (Math.ceil(leadToFollow.value / (isOverexposed ? 2 : 1)));
-            let leads = [
-                {
-                    name: leadToFollow.name,
-                    value: 0
-                }
-            ];
+            const durationSeconds = randRange(5, 8);
             const results: CharacterModification[] = [
                 {
                     type: CharacterModificationType.REMOVE,
                     attributeName: 'leads',
-                    data: leads,
+                    data: [leadToFollow],
                 },
                 {
                     type: CharacterModificationType.INCREASE,
@@ -583,11 +550,31 @@ const leadFollowingTaskGen: TaskGenerator = {
                     attributeName: 'socialExposure',
                     data: reputationValue,
                 },
+                {
+                    type: CharacterModificationType.DECREASE,
+                    attributeName: 'marketSaturation',
+                    data: -2,
+                },
+                {
+                    type: CharacterModificationType.DECREASE,
+                    attributeName: 'fatigue',
+                    data: -2,
+                },
+                {
+                    type: CharacterModificationType.INCREASE,
+                    attributeName: 'currentXp',
+                    data: (Math.ceil(durationSeconds / (isOverexposed ? 2 : 1))),
+                },
+                {
+                    type: CharacterModificationType.INCREASE,
+                    attributeName: 'adventureProgress',
+                    data: (Math.ceil(durationSeconds / (isOverexposed ? 2 : 1))),
+                },
             ]
             
             const newTask = {
-                description: 'Follow ' + leadToFollow.name,
-                durationMs: randRange(2,3) * 1000,
+                description: leadToFollow.taskName,
+                durationMs: durationSeconds * 1000,
                 results: results,
             }
             return newTask;
