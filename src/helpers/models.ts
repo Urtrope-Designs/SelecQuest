@@ -81,19 +81,32 @@ export enum CharacterModificationType {
     REMOVE_QUANTITY,
 }
 
+class CharacterStats {
+    'str': number = 0;
+    'dex': number = 0;
+    'con': number = 0;
+    'int': number = 0;
+    'wis': number = 0;
+    'cha': number = 0;
+}
 
-export interface Character {
+const charStats = new CharacterStats();
+export function getCharacterStatList(): string[] {
+    return Object.keys(charStats);
+}
+
+export interface Character extends CharacterStats {
     name: string;
     raceName: string;
     class: string;
     level: number;
-    /* states */
-    str: number;
-    dex: number;
-    con: number;
-    int: number;
-    wis: number;
-    cha: number;
+    /* stats inherited from CharacterStats */
+    // str: number;
+    // dex: number;
+    // con: number;
+    // int: number;
+    // wis: number;
+    // cha: number;
     /* end stats */
     maxHp: number;
     maxMp: number;

@@ -1,5 +1,5 @@
-import { Character, CharacterModificationType, AccoladeType, AffiliationType, CharacterModification } from './models';
-import { randRange } from './utils';
+import { Character, CharacterModificationType, AccoladeType, AffiliationType, CharacterModification, getCharacterStatList } from './models';
+import { randRange, randFromList } from './utils';
 import { PROLOGUE_ADVENTURE_NAME } from './storyline-helpers';
 
 export function createNewCharacter(): Character {
@@ -184,7 +184,7 @@ export function hasCharacterReachedNextLevel(character: Character): boolean {
     }
 }
 
-export function getLevelUpModifications(): CharacterModification[] {
+export function getLevelUpModifications(character: Character): CharacterModification[] {
     let levelMods = [];
 
     levelMods.push({
@@ -195,20 +195,57 @@ export function getLevelUpModifications(): CharacterModification[] {
     levelMods.push({
         type: CharacterModificationType.INCREASE,
         attributeName: 'maxHp',
-        data: randRange(1, 4),
+        data: Math.floor(character.con / 3) + 1 + randRange(0, 3),
     });
     levelMods.push({
         type: CharacterModificationType.INCREASE,
         attributeName: 'maxMp',
-        data: randRange(0, 2),
+        data: Math.floor(character.int / 3 ) + 1 + randRange(0, 3),
     })
-
-    levelMods.push(LEVEL_UP_BONUSES[randRange(0, LEVEL_UP_BONUSES.length-1)]);
-    if (!randRange(0, 3)) {
-        levelMods.push(LEVEL_UP_BONUSES[randRange(0, LEVEL_UP_BONUSES.length-1)]);
+    const winStat1 = selectLevelBonusStat(character);
+    const winStat2 = selectLevelBonusStat(character);
+    if (winStat1 === winStat2) {
+        levelMods.push(generateStatModification(winStat1, 2));
+    } else {
+        levelMods.push(generateStatModification(winStat1));
+        levelMods.push(generateStatModification(winStat2));
     }
+    //winSpell
 
     return levelMods;
+}
+
+function selectLevelBonusStat(character: Character): string {
+    let selectedStat: string;
+    const allStats = getCharacterStatList();
+
+    selectedStat = randFromList(allStats);
+    if (randRange(0, 1)) {
+        // Favor the best stat so it will tend to clump
+        let i = 0;
+        for (let curStat of allStats) {
+            i += character[curStat] ** 2;
+        }
+        i = randRange(0, i-1);
+        for (let curStat of allStats) {
+            selectedStat = curStat;
+            i -= character[curStat] ** 2;
+            if (i < 0) {
+                break;
+            }
+        }
+    }
+
+    return selectedStat;
+}
+
+function generateStatModification(attributeName: string, modValue: number = 1): CharacterModification {
+    const mod: CharacterModification = {
+        type: CharacterModificationType.INCREASE,
+        attributeName: attributeName,
+        data: modValue,        
+    }
+    return mod;
 }
 
 const XP_REQUIRED_FOR_NEXT_LEVEL = [
@@ -218,35 +255,35 @@ const XP_REQUIRED_FOR_NEXT_LEVEL = [
     36000,
 ]
 
-const LEVEL_UP_BONUSES = [
-    {
-        type: CharacterModificationType.INCREASE,
-        attributeName: 'str',
-        data: 1,
-    },
-    {
-        type: CharacterModificationType.INCREASE,
-        attributeName: 'dex',
-        data: 1,
-    },
-    {
-        type: CharacterModificationType.INCREASE,
-        attributeName: 'con',
-        data: 1,
-    },
-    {
-        type: CharacterModificationType.INCREASE,
-        attributeName: 'int',
-        data: 1,
-    },
-    {
-        type: CharacterModificationType.INCREASE,
-        attributeName: 'wis',
-        data: 1,
-    },
-    {
-        type: CharacterModificationType.INCREASE,
-        attributeName: 'cha',
-        data: 1,
-    },
-]
+// const LEVEL_UP_BONUSES = [
+//     {
+//         type: CharacterModificationType.INCREASE,
+//         attributeName: 'str',
+//         data: 1,
+//     },
+//     {
+//         type: CharacterModificationType.INCREASE,
+//         attributeName: 'dex',
+//         data: 1,
+//     },
+//     {
+//         type: CharacterModificationType.INCREASE,
+//         attributeName: 'con',
+//         data: 1,
+//     },
+//     {
+//         type: CharacterModificationType.INCREASE,
+//         attributeName: 'int',
+//         data: 1,
+//     },
+//     {
+//         type: CharacterModificationType.INCREASE,
+//         attributeName: 'wis',
+//         data: 1,
+//     },
+//     {
+//         type: CharacterModificationType.INCREASE,
+//         attributeName: 'cha',
+//         data: 1,
+//     },
+// ]
