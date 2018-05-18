@@ -211,7 +211,7 @@ export function getLevelUpModifications(character: Character): CharacterModifica
         levelMods.push(generateStatModification(winStat1));
         levelMods.push(generateStatModification(winStat2));
     }
-    levelMods.push(generateSpellOrAbilityModification());
+    levelMods.push(generateSpellOrAbilityModification(character));
 
     return levelMods;
 }
@@ -249,15 +249,19 @@ function generateStatModification(attributeName: string, modValue: number = 1): 
     return mod;
 }
 
-function generateSpellOrAbilityModification(): CharacterModification {
+function generateSpellOrAbilityModification(character: Character, modValue: number = 1): CharacterModification {
     let attributeName = '';
-    let dataObj = {name: '', rank: 1};
+    let dataObj = {name: '', rank: modValue};
     if (randRange(0, 1)) {
         attributeName = 'spells';
-        dataObj.name = randFromList(SPELLS); 
+        // pick a spell early in the list, limited by int + level, and weighted toward 0
+        let spellIndex = Math.min(randRange(0, character.int + character.level), randRange(0, character.int + character.level), SPELLS.length-1);
+        dataObj.name = SPELLS[spellIndex]; 
     } else {
         attributeName = 'abilities';
-        dataObj.name = randFromList(ABILITIES);
+        // pick an ability early in the list, limited by wisdom + level, and weighted toward 0
+        let abilityIndex = Math.min(randRange(0, character.wis + character.level), randRange(0, character.wis + character.level), ABILITIES.length-1);
+        dataObj.name = ABILITIES[abilityIndex]; 
     }
 
     const mod: CharacterModification = {
@@ -275,36 +279,3 @@ const XP_REQUIRED_FOR_NEXT_LEVEL = [
     12000,
     36000,
 ]
-
-// const LEVEL_UP_BONUSES = [
-//     {
-//         type: CharacterModificationType.INCREASE,
-//         attributeName: 'str',
-//         data: 1,
-//     },
-//     {
-//         type: CharacterModificationType.INCREASE,
-//         attributeName: 'dex',
-//         data: 1,
-//     },
-//     {
-//         type: CharacterModificationType.INCREASE,
-//         attributeName: 'con',
-//         data: 1,
-//     },
-//     {
-//         type: CharacterModificationType.INCREASE,
-//         attributeName: 'int',
-//         data: 1,
-//     },
-//     {
-//         type: CharacterModificationType.INCREASE,
-//         attributeName: 'wis',
-//         data: 1,
-//     },
-//     {
-//         type: CharacterModificationType.INCREASE,
-//         attributeName: 'cha',
-//         data: 1,
-//     },
-// ]
