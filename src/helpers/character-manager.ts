@@ -1,6 +1,7 @@
 import { Character, CharacterModificationType, AccoladeType, AffiliationType, CharacterModification, getCharacterStatList } from './models';
 import { randRange, randFromList } from './utils';
 import { PROLOGUE_ADVENTURE_NAME } from './storyline-helpers';
+import { SPELLS, ABILITIES } from '../global/config';
 
 export function createNewCharacter(): Character {
     const newChar: Character = {
@@ -210,7 +211,7 @@ export function getLevelUpModifications(character: Character): CharacterModifica
         levelMods.push(generateStatModification(winStat1));
         levelMods.push(generateStatModification(winStat2));
     }
-    //winSpell
+    levelMods.push(generateSpellOrAbilityModification());
 
     return levelMods;
 }
@@ -245,6 +246,26 @@ function generateStatModification(attributeName: string, modValue: number = 1): 
         attributeName: attributeName,
         data: modValue,        
     }
+    return mod;
+}
+
+function generateSpellOrAbilityModification(): CharacterModification {
+    let attributeName = '';
+    let dataObj = {name: '', rank: 1};
+    if (randRange(0, 1)) {
+        attributeName = 'spells';
+        dataObj.name = randFromList(SPELLS); 
+    } else {
+        attributeName = 'abilities';
+        dataObj.name = randFromList(ABILITIES);
+    }
+
+    const mod: CharacterModification = {
+        type: CharacterModificationType.ADD_RANK,
+        attributeName: attributeName,
+        data: [dataObj],
+    }
+
     return mod;
 }
 

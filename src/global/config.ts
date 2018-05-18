@@ -292,3 +292,18 @@ export const CLASSES: string[] = [
     'War Flautist',
     'Sarcasminista',
 ]
+
+export const SPELLS: string[] = [
+    'Tonguehairs',
+    'Digest',
+    'Undigest',
+    'Hide Agenda',
+    'Suddenly Sand Wedge',
+    'Miasmatic Ward',
+]
+
+export const ABILITIES: string[] = [
+    'Twist and Trout',
+    'Soul Prick',
+    'Imitate Mating Call',
+]

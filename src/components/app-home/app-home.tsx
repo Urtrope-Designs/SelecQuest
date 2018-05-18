@@ -114,6 +114,16 @@ export class AppHome {
                         }
                     </p>
                     <p>
+                        Abilities:
+                        {
+                            this.character.abilities.length == 0 
+                            ? <div>[None]</div>    
+                            : this.character.abilities.map((ability) => 
+                                    <div>{ability.name} {ability.rank}</div>
+                                )
+                        }
+                    </p>
+                    <p>
                         Encumbrance: {this.character.loot.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)} / {this.character.maxEncumbrance}
                         {
                             this.character.loot.length == 0
