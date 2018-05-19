@@ -1,7 +1,7 @@
 import { Character, CharacterModificationType, AccoladeType, AffiliationType, CharacterModification, getCharacterStatList } from './models';
 import { randRange, randFromList } from './utils';
 import { PROLOGUE_ADVENTURE_NAME } from './storyline-helpers';
-import { SPELLS, ABILITIES } from '../global/config';
+import { SPELLS, ABILITIES, IS_DEBUG } from '../global/config';
 
 export function createNewCharacter(): Character {
     const newChar: Character = {
@@ -169,11 +169,13 @@ export function updateCharacterState(character: Character): Character {
 
 export function getXpRequiredForNextLevel(curLevel: number): number {
     let xpRequired = 0;
-    if (curLevel < XP_REQUIRED_FOR_NEXT_LEVEL.length) {
-        xpRequired = XP_REQUIRED_FOR_NEXT_LEVEL[curLevel];
+
+    if (IS_DEBUG) {
+        xpRequired = 30;
     } else {
-        xpRequired = 36000 * (curLevel - 2);
+        xpRequired = 20 * (curLevel + 1) * 60;
     }
+
     return xpRequired;
 }
 
@@ -272,10 +274,3 @@ function generateSpellOrAbilityModification(character: Character, modValue: numb
 
     return mod;
 }
-
-const XP_REQUIRED_FOR_NEXT_LEVEL = [
-    0,
-    30,
-    12000,
-    36000,
-]
