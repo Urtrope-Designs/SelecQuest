@@ -134,7 +134,7 @@ export class AppHome {
                         }
                     </p>
                     <p>
-                        Equipment Wear: {this.character.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)} / {this.character.maxEquipmentIntegrity}
+                        Equipment Wear: {this.character.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)} / {this.character.maxEquipmentWear}
                         {
                             this.character.trophies.length == 0
                             ? <div>[None]</div>

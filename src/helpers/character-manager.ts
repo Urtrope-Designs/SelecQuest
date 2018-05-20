@@ -45,7 +45,7 @@ export function createNewCharacter(): Character {
             {type: AffiliationType.Offices, received: []},
         ],
         maxEncumbrance: 10,
-        maxEquipmentIntegrity: 10,
+        maxEquipmentWear: 10,
         maxQuestLogSize: 10,
         gold: 0,
         renown: 0,

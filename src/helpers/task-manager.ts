@@ -323,10 +323,10 @@ const triggerBoastingTaskGen: TaskGenerator = {
             return false;
         }
 
-        const currentEquipmentIntegrity = state.character.trophies.reduce((prevVal, curVal) => {
+        const currentEquipmentWear = state.character.trophies.reduce((prevVal, curVal) => {
             return prevVal + curVal.quantity;
         }, 0);
-        return currentEquipmentIntegrity >= state.character.maxEquipmentIntegrity;
+        return currentEquipmentWear >= state.character.maxEquipmentWear;
     },
     generateTask: (/*state: AppState*/) => {
         const newTask: Task = {

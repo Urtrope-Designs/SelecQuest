@@ -117,7 +117,7 @@ export interface Character extends CharacterStats {
     accolades: CharAccolade[];
     affiliations: CharAffilitation[];
     maxEncumbrance: number;
-    maxEquipmentIntegrity: number;
+    maxEquipmentWear: number;
     maxQuestLogSize: number;
     gold: number;
     renown: number;
