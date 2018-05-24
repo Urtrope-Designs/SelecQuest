@@ -44,9 +44,9 @@ export function createNewCharacter(): Character {
             {type: AffiliationType.Connections, received: []},
             {type: AffiliationType.Offices, received: []},
         ],
-        maxEncumbrance: 10,
-        maxEquipmentWear: 10,
-        maxQuestLogSize: 10,
+        get maxEncumbrance() {return this.str + 10},
+        get maxEquipmentWear() {return this.dex + 10},
+        get maxQuestLogSize() {return this.int + 10},
         gold: 0,
         renown: 0,
         spentRenown: 0,
@@ -59,11 +59,29 @@ export function createNewCharacter(): Character {
         isInTrophyBoastingMode: true,
         isInLeadFollowingMode: true,
         marketSaturation: 0,
-        maxMarketSaturation: 35,
+        get maxMarketSaturation() {
+            if (IS_DEBUG) {
+                return 35;
+            } else {
+                return 30 * (this.level + this.int);
+            }
+        },
         fatigue: 0,
-        maxFatigue: 35,
+        get maxFatigue() {
+            if (IS_DEBUG) {
+                return 35;
+            } else {
+                return 30 * (this.level + this.con);
+            }
+        },
         socialExposure: 0,
-        maxSocialCapital: 35,
+        get maxSocialCapital() {
+            if (IS_DEBUG) {
+                return 35;
+            } else {
+                return 30 * (this.level + this.wis);
+            }
+        },
         currentAdventure: {name: PROLOGUE_ADVENTURE_NAME, progressRequired: 28},
         completedAdventures: [],
         adventureProgress: 0,
@@ -195,6 +213,11 @@ export function getLevelUpModifications(character: Character): CharacterModifica
         attributeName: 'level',
         data: 1,
     });
+    levelMods.push({
+        type: CharacterModificationType.SET,
+        attributeName: 'currentXp',
+        data: 0,
+    })
     levelMods.push({
         type: CharacterModificationType.INCREASE,
         attributeName: 'maxHp',

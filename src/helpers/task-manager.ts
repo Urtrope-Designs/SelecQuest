@@ -154,7 +154,7 @@ const selloffTaskGen: TaskGenerator = {
         if (!!sellItem) {
             const isMarketSaturated = state.character.marketSaturation >= state.character.maxMarketSaturation;
             const sellQuantity = sellItem.quantity;
-            const sellValue = Math.ceil((sellQuantity * sellItem.value) / (isMarketSaturated ? 2 : 1));
+            const sellValue = Math.ceil((sellQuantity * sellItem.value * state.character.level) / (isMarketSaturated ? 2 : 1));
             let lootData = [
                 {
                     name: sellItem.name,
@@ -176,13 +176,13 @@ const selloffTaskGen: TaskGenerator = {
                 {
                     type: CharacterModificationType.INCREASE,
                     attributeName: 'marketSaturation',
-                    data: sellValue,
+                    data: sellQuantity,
                 },
             ]
 
             const newTask = {
                 description: 'Selling ' + makeStringIndefinite(sellItem.name, sellItem.quantity),
-                durationMs: randRange(2,3) * 1000,
+                durationMs: 1000,
                 results: results,
             }
             return newTask;
@@ -355,7 +355,7 @@ const boastingTaskGen: TaskGenerator = {
         if (!!boastItem) {
             const isFatigued = state.character.fatigue >= state.character.maxFatigue;
             const boastQuantity = boastItem.quantity;
-            const renownValue = (boastQuantity * Math.ceil(boastItem.value / (isFatigued ? 2 : 1)));
+            const renownValue = Math.ceil((boastQuantity * boastItem.value * state.character.level) / (isFatigued ? 2 : 1));
             let trophies = [
                 {
                     name: boastItem.name,
@@ -377,13 +377,13 @@ const boastingTaskGen: TaskGenerator = {
                 {
                     type: CharacterModificationType.INCREASE,
                     attributeName: 'fatigue',
-                    data: renownValue,
+                    data: boastQuantity,
                 },
             ]
             
             const newTask = {
                 description: 'Boast of ' + boastItem.name,
-                durationMs: randRange(2,3) * 300,
+                durationMs: 1000,
                 results: results,
             }
             return newTask;
@@ -478,7 +478,7 @@ const investigatingTaskGen: TaskGenerator = {
     },
     generateTask: (/*state: AppState*/) => {
         const {taskName, leadData} = generateInvestigatingTaskContents();
-        const durationSeconds = randRange(2, 3);
+        const durationSeconds = 1;
 
         const results: CharacterModification[] = [
             {
@@ -532,7 +532,7 @@ const leadFollowingTaskGen: TaskGenerator = {
         const leadToFollow = state.character.leads[0];
         if (!!leadToFollow) {
             const isOverexposed = state.character.socialExposure >= state.character.maxSocialCapital;
-            const reputationValue = (Math.ceil(leadToFollow.value / (isOverexposed ? 2 : 1)));
+            const reputationValue = Math.ceil((leadToFollow.value * state.character.level) / (isOverexposed ? 2 : 1));
             const durationSeconds = randRange(5, 8);
             const results: CharacterModification[] = [
                 {
@@ -548,7 +548,7 @@ const leadFollowingTaskGen: TaskGenerator = {
                 {
                     type: CharacterModificationType.INCREASE,
                     attributeName: 'socialExposure',
-                    data: reputationValue,
+                    data: 1,
                 },
                 {
                     type: CharacterModificationType.DECREASE,
