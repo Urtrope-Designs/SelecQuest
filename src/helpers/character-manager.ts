@@ -1,5 +1,5 @@
 import { Character, CharacterModificationType, AccoladeType, AffiliationType, CharacterModification, getCharacterStatList } from './models';
-import { randRange, randFromList } from './utils';
+import { randRange, randFromList, deepCopyObject } from './utils';
 import { PROLOGUE_ADVENTURE_NAME } from './storyline-helpers';
 import { SPELLS, ABILITIES, IS_DEBUG } from '../global/config';
 
@@ -91,7 +91,7 @@ export function createNewCharacter(): Character {
 }
     
 export function applyCharacterModifications(baseChar: Character, characterMods: CharacterModification[]): Character {
-    let newChar = Object.assign({}, baseChar);
+    let newChar = deepCopyObject(baseChar);         // need to deep clone rather than using Object.assign() or spread operator
 
     for (let result of characterMods) {
         switch(result.type) {
@@ -171,7 +171,7 @@ export function applyCharacterModifications(baseChar: Character, characterMods: 
 }
 
 export function updateCharacterState(character: Character): Character {
-    let newChar = Object.assign({}, character);
+    let newChar = deepCopyObject(character);          // need to deep clone rather than using Object.assign() or spread operator
 
     newChar.marketSaturation = Math.min(newChar.marketSaturation, newChar.maxMarketSaturation);
     newChar.marketSaturation = Math.max(newChar.marketSaturation, 0);

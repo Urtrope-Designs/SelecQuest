@@ -98,3 +98,20 @@ export function generateRandomName(): string {
 
     return name;
 }
+
+export function deepCopyObject(original: any): any {
+    if (null == original || "object" != typeof original) {
+        return original;
+    }
+    let copy = original.constructor();
+    Object.keys(original).map((key) => {
+        if (Object.getOwnPropertyDescriptor(original, key).value instanceof Object) {
+            copy[key] = deepCopyObject(original[key]);
+        } else {
+            Object.defineProperty(copy, key, Object.getOwnPropertyDescriptor(original, key));;
+
+        }
+    });
+
+    return copy;
+}
