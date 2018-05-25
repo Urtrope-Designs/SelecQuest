@@ -1,7 +1,7 @@
 import { TaskTargetType, LootingTarget, GladiatingTarget, CharRace, LeadGatheringTarget, LeadType, LeadTarget } from "../helpers/models";
 import { makeStringIndefinite, randFromList } from "../helpers/utils";
 
-export const IS_DEBUG = true;
+export const IS_DEBUG = false;
 
 export let TASK_GERUNDS = [];
 TASK_GERUNDS[TaskTargetType.LOCATION] = 'Ransacking';

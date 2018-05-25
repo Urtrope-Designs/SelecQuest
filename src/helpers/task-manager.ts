@@ -242,9 +242,9 @@ const purchaseEquipmentTaskGen: TaskGenerator = {
         const currentEncumbrance = state.character.loot.reduce((prevVal, curVal) => {
             return prevVal + curVal.quantity;
         }, 0);
-        return currentEncumbrance <= 0 && state.character.gold >= 100;
+        return currentEncumbrance <= 0 && state.character.gold >= 5 * state.character.level**2 + 10 * state.character.level + 20;
     },
-    generateTask: (/*state: AppState*/) => {
+    generateTask: (state: AppState) => {
         const newTask: Task = {
             description: 'Negotiating the purchase of better equipment',
             durationMs: randRange(4, 6) * 1000,
@@ -262,7 +262,7 @@ const purchaseEquipmentTaskGen: TaskGenerator = {
                 {
                     type: CharacterModificationType.DECREASE,
                     attributeName: 'gold',
-                    data: -100,
+                    data: -(5 * state.character.level**2 + 10 * state.character.level + 20),
                 },
             ]
         }
