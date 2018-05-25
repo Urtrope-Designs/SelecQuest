@@ -202,19 +202,23 @@ export class AppHome {
                         <div>Current Adventure: {this.character.currentAdventure.name}</div>
                         <div>Adventure Progress: {this.character.adventureProgress} / {this.character.currentAdventure.progressRequired}</div>
                     </p>
-                    <p>
-                        Current Task:
-                        {
-                            !!this.activeTask
-                            ? <div>{this.activeTask.description}...</div>
-                            : <div>Loading...</div>
-                        }
-                        
-                    </p>
                     <ion-button {...(this.activeTaskMode != TaskMode.LOOTING ? {color: 'light'} : {})} onClick={ () => this.taskModeButtonClicked('LOOTING')}>LOOTING</ion-button>
                     <ion-button color={this.activeTaskMode == TaskMode.GLADIATING ? 'default' : 'light'} onClick={ () => this.taskModeButtonClicked('GLADIATING')}>GLADIATING</ion-button>
                     <ion-button color={this.activeTaskMode == TaskMode.INVESTIGATING ? 'default' : 'light'} onClick={ () => this.taskModeButtonClicked('INVESTIGATING')}>INVESTIGATING</ion-button>
                 </ion-content>
+
+                <ion-footer>
+                    <ion-toolbar>
+                        <p>
+                            Current Task:
+                            {
+                                !!this.activeTask
+                                ? <div>{this.activeTask.description}...</div>
+                                : <div>Loading...</div>
+                            }
+                        </p>
+                    </ion-toolbar>
+                </ion-footer>
             </ion-page>
         );
     }
