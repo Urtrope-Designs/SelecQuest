@@ -1,7 +1,7 @@
-import { TaskTargetType, LootingTarget, GladiatingTarget, CharRace, LeadGatheringTarget, LeadType, LeadTarget } from "../helpers/models";
+import { TaskTargetType, LootingTarget, GladiatingTarget, CharRace, LeadGatheringTarget, LeadType, LeadTarget, EquipmentMaterial, EquipmentModifier } from "../helpers/models";
 import { makeStringIndefinite, randFromList } from "../helpers/utils";
 
-export const IS_DEBUG = false;
+export const IS_DEBUG = true;
 
 export let TASK_GERUNDS = [];
 TASK_GERUNDS[TaskTargetType.LOCATION] = 'Ransacking';
@@ -308,4 +308,247 @@ export const ABILITIES: string[] = [
     'Twist and Trout',
     'Soul Prick',
     'Imitate Mating Call',
+]
+
+export const EQUIPMENT_MODIFIERS = {
+    offense: [
+        {
+            description: 'Precious',
+            levelModifier: 2,
+        },
+        {
+            description: 'Leeching',
+            levelModifier: 3,
+        },
+        {
+            description: 'Enforcing',
+            levelModifier: 4,
+        },
+        {
+            description: 'Twee',
+            levelModifier: -2,
+        },
+        {
+            description: 'Bungled',
+            levelModifier: -3
+        },
+    ] as EquipmentModifier[],
+    defense: [
+        {
+            description: 'Naff',
+            levelModifier: -1,
+        },
+        {
+            description: 'Mixolydian',
+            levelModifier: 2,
+        },
+        {
+            description: 'Tectonic',
+            levelModifier: 5,
+        },
+        {
+            description: 'Bungled',
+            levelModifier: -3
+        },
+        {
+            description: 'Bespoke',
+            levelModifier: 4
+        },
+        {
+            description: 'Hardened',
+            levelModifier: 1,
+        },
+        {
+            description: 'Ill-fitting',
+            levelModifier: -2,
+        },
+        {
+            description: 'Thunderlogged',
+            levelModifier: -4,
+        },
+    ] as EquipmentModifier[],
+}
+
+export const ARMOR_MATERIALS: EquipmentMaterial[] = [
+    {
+        description: 'Mahogany',
+        baseLevel: 4,
+        modifierList: EQUIPMENT_MODIFIERS.defense,
+    },
+    {
+        description: 'Shingle Mail',
+        baseLevel: 2,
+        modifierList: EQUIPMENT_MODIFIERS.defense,
+    },
+    {
+        description: 'Mulch Mail',
+        baseLevel: 1,
+        modifierList: EQUIPMENT_MODIFIERS.defense,
+    },
+]
+
+export const WEAPON_MATERIALS: EquipmentMaterial[] = [
+    {
+        description: 'Ski Pole',
+        baseLevel: 3,
+        modifierList: EQUIPMENT_MODIFIERS.offense,
+    },
+    {
+        description: 'Power Glove\u2122',
+        baseLevel: 5,
+        modifierList: EQUIPMENT_MODIFIERS.offense,
+    },
+    {
+        description: 'De-icer',
+        baseLevel: 4,
+        modifierList: EQUIPMENT_MODIFIERS.offense,
+    },
+    {
+        description: 'Wolf-eater',
+        baseLevel: 8,
+        modifierList: EQUIPMENT_MODIFIERS.offense,
+    },
+    {
+        description: 'Taserclaw',
+        baseLevel: 12,
+        modifierList: EQUIPMENT_MODIFIERS.offense,
+    },
+    {
+        description: 'Snagglesword',
+        baseLevel: 6,
+        modifierList: EQUIPMENT_MODIFIERS.offense,
+    },
+    {
+        description: 'Dowsing Rod',
+        baseLevel: 1,
+        modifierList: EQUIPMENT_MODIFIERS.offense,
+    },
+    {
+        description: 'Smart Iron',
+        baseLevel: 5,
+        modifierList: EQUIPMENT_MODIFIERS.offense,
+    },
+    {
+        description: 'Battle Tines',
+        baseLevel: 3,
+        modifierList: EQUIPMENT_MODIFIERS.offense,
+    },
+    {
+        description: 'B\u00e2ton',
+        baseLevel: 2,
+        modifierList: EQUIPMENT_MODIFIERS.offense,
+    },
+    {
+        description: 'Cat-o-nine-tails',
+        baseLevel: 6,
+        modifierList: EQUIPMENT_MODIFIERS.offense,
+    },
+    {
+        description: 'Gatortooth',
+        baseLevel: 3,
+        modifierList: EQUIPMENT_MODIFIERS.offense,
+    },
+    {
+        description: 'Unicorn Femur',
+        baseLevel: 3,
+        modifierList: EQUIPMENT_MODIFIERS.offense,
+    },
+    {
+        description: 'Skipping Stones',
+        baseLevel: 1,
+        modifierList: EQUIPMENT_MODIFIERS.offense,
+    },
+    {
+        description: 'Atl-atl',
+        baseLevel: 2,
+        modifierList: EQUIPMENT_MODIFIERS.offense,
+    },
+    {
+        description: 'Bo Staff',
+        baseLevel: 3,
+        modifierList: EQUIPMENT_MODIFIERS.offense,
+    },
+    {
+        description: 'War Knuckles',
+        baseLevel: 5,
+        modifierList: EQUIPMENT_MODIFIERS.offense,
+    },
+    {
+        description: 'Limb Wrench',
+        baseLevel: 4,
+        modifierList: EQUIPMENT_MODIFIERS.offense,
+    },
+    {
+        description: 'Pike',
+        baseLevel: 6,
+        modifierList: EQUIPMENT_MODIFIERS.offense,
+    },
+    {
+        description: 'Trepanner',
+        baseLevel: 8,
+        modifierList: EQUIPMENT_MODIFIERS.offense,
+    },
+    {
+        description: 'Power Trowel',
+        baseLevel: 5,
+        modifierList: EQUIPMENT_MODIFIERS.offense,
+    },
+    {
+        description: 'Truncheon',
+        baseLevel: 5,
+        modifierList: EQUIPMENT_MODIFIERS.offense,
+    },
+];
+
+export const SHEILD_MATERIALS: EquipmentMaterial[] = [
+    {
+        description: 'Frolf Disc',
+        baseLevel: 1,
+        modifierList: EQUIPMENT_MODIFIERS.defense,
+    },
+    {
+        description: 'Oak Burl',
+        baseLevel: 2,
+        modifierList: EQUIPMENT_MODIFIERS.defense,
+    },
+    {
+        description: 'Hide Shield',
+        baseLevel: 2,
+        modifierList: EQUIPMENT_MODIFIERS.defense,
+    },
+    {
+        description: 'Wicker Targe',
+        baseLevel: 3,
+        modifierList: EQUIPMENT_MODIFIERS.defense,
+    },
+    {
+        description: 'Ishlangu',
+        baseLevel: 3,
+        modifierList: EQUIPMENT_MODIFIERS.defense,
+    },
+    {
+        description: 'Wooden Buckler',
+        baseLevel: 3,
+        modifierList: EQUIPMENT_MODIFIERS.defense,
+    },
+    {
+        description: 'Heater Shield',
+        baseLevel: 4,
+        modifierList: EQUIPMENT_MODIFIERS.defense,
+    },
+    {
+        description: 'Hoplon',
+        baseLevel: 5,
+        modifierList: EQUIPMENT_MODIFIERS.defense,
+    },
+    {
+        description: 'Scutum',
+        baseLevel: 6,
+        modifierList: EQUIPMENT_MODIFIERS.defense,
+    },
+    {
+        description: 'Fridge Door',
+        baseLevel: 8,
+        modifierList: EQUIPMENT_MODIFIERS.defense,
+    },
 ]

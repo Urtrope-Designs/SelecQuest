@@ -6,7 +6,8 @@ import { SetActiveTask, TaskCompleted } from './actions';
 import { randRange, makeStringIndefinite, randFromList } from './utils';
 import { PROLOGUE_TASKS, PROLOGUE_ADVENTURE_NAME, generateNextAdventureName } from './storyline-helpers';
 import { generateLootingTaskContentsFromLevel, generateGladiatingTaskContentsFromLevel, generateInvestigatingTaskContents } from './task-helper';
-import { LEAD_GATHERING_TASK_MODIFIERS } from '../global/config';
+import { LEAD_GATHERING_TASK_MODIFIERS, IS_DEBUG } from '../global/config';
+import { generateNewEquipmentModification, generateSpellOrAbilityModification } from './character-manager';
 
 @Component({
     tag: 'task-manager',
@@ -17,7 +18,7 @@ export class TaskManager {
     @Event() taskAction: EventEmitter;
 
     constructor() {
-        this.taskGenAlgos =[
+        this.taskGenAlgos = [
             lootingTaskGen,
             triggerSelloffTaskGen,
             selloffTaskGen,
@@ -242,23 +243,16 @@ const purchaseEquipmentTaskGen: TaskGenerator = {
         const currentEncumbrance = state.character.loot.reduce((prevVal, curVal) => {
             return prevVal + curVal.quantity;
         }, 0);
-        return currentEncumbrance <= 0 && state.character.gold >= 5 * state.character.level**2 + 10 * state.character.level + 20;
+        const minGold = IS_DEBUG ? 25 : 5 * state.character.level**2 + 10 * state.character.level + 20;
+        return currentEncumbrance <= 0 && state.character.gold >= minGold;
     },
     generateTask: (state: AppState) => {
+        const newEquipmentMod = generateNewEquipmentModification(state.character);
         const newTask: Task = {
             description: 'Negotiating the purchase of better equipment',
             durationMs: randRange(4, 6) * 1000,
             results: [
-                {
-                    type: CharacterModificationType.SET_EQUIPMENT,
-                    attributeName: 'equipment',
-                    data: [
-                        {
-                            type: 'Vambraces',
-                            description: 'Bungled Mixolydian Power Glove\u2122'
-                        }
-                    ]
-                },
+                newEquipmentMod,
                 {
                     type: CharacterModificationType.DECREASE,
                     attributeName: 'gold',
@@ -723,6 +717,7 @@ const adventureTransitionTaskGen: TaskGenerator = {
     },
     generateTask: (state: AppState) => {
         const newAdventure = generateNextAdventureName(state.character.currentAdventure);
+        const completionReward = randRange(0, 1) ? generateNewEquipmentModification(state.character) : generateSpellOrAbilityModification(state.character);
         const newTask: Task = {
             description: 'Experiencing an enigmatic and foreboding night vision',
             durationMs: randRange(4, 6) * 1000,
@@ -742,11 +737,7 @@ const adventureTransitionTaskGen: TaskGenerator = {
                     attributeName: 'completedAdventures',
                     data: [state.character.currentAdventure.name],
                 },
-                {
-                    type: CharacterModificationType.ADD_RANK,
-                    attributeName: 'spells',
-                    data: [{name: 'Tonguehairs', rank: 1}],
-                },
+                completionReward,
             ],
         };
         return newTask;

@@ -81,7 +81,7 @@ export enum CharacterModificationType {
     REMOVE_QUANTITY,
 }
 
-class CharacterStats {
+export class CharacterStats {
     'str': number = 0;
     'dex': number = 0;
     'con': number = 0;
@@ -152,7 +152,7 @@ export interface CharAbility {
 };
 
 export interface CharEquipment {
-    type: string,
+    type: EquipmentType,
     description: string,
 };
 
@@ -184,6 +184,20 @@ export interface CharLead {
     value: number,
 };
 
+export enum EquipmentType {
+    Weapon = 'Weapon',
+    Shield = 'Shield',
+    Helm = 'Helm',
+    Hauberk = 'Hauberk',
+    Brassairts = 'Brassairts',
+    Vambraces = 'Vambraces',
+    Gauntlets = 'Gauntlets',
+    Gambeson = 'Gambeson',
+    Cuisses = 'Cuisses',
+    Greaves = 'Greaves',
+    Sollerets = 'Sollerets',
+}
+
 export enum AccoladeType {
     Epithets,
     Titles,
@@ -210,3 +224,16 @@ export interface CharRace {
     raceName: string,
     trophyName: string,
 }
+
+export interface EquipmentModifier {
+    description: string,
+    levelModifier: number,
+}
+
+export interface EquipmentMaterial {
+    description: string,
+    baseLevel: number,
+    modifierList: EquipmentModifier[],
+}
+
+

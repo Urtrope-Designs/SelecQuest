@@ -1,7 +1,7 @@
-import { Character, CharacterModificationType, AccoladeType, AffiliationType, CharacterModification, getCharacterStatList } from './models';
+import { Character, CharacterModificationType, AccoladeType, AffiliationType, CharacterModification, getCharacterStatList, CharacterStats, CharEquipment, EquipmentType, EquipmentMaterial } from './models';
 import { randRange, randFromList, deepCopyObject } from './utils';
 import { PROLOGUE_ADVENTURE_NAME } from './storyline-helpers';
-import { SPELLS, ABILITIES, IS_DEBUG } from '../global/config';
+import { SPELLS, ABILITIES, IS_DEBUG, WEAPON_MATERIALS, SHEILD_MATERIALS, ARMOR_MATERIALS } from '../global/config';
 
 export function createNewCharacter(): Character {
     const newChar: Character = {
@@ -21,17 +21,17 @@ export function createNewCharacter(): Character {
         spells: [],
         abilities: [],
         equipment: [
-            {type: 'Weapon', description: ''},
-            {type: 'Shield', description: ''},
-            {type: 'Helm', description: ''},
-            {type: 'Hauberk', description: ''},
-            {type: 'Brassairts', description: ''},
-            {type: 'Vambraces', description: ''},
-            {type: 'Gauntlets', description: ''},
-            {type: 'Gambeson', description: ''},
-            {type: 'Cuisses', description: ''},
-            {type: 'Greaves', description: ''},
-            {type: 'Sollerets', description: ''},
+            {type: EquipmentType.Weapon, description: ''},
+            {type: EquipmentType.Shield, description: ''},
+            {type: EquipmentType.Helm, description: ''},
+            {type: EquipmentType.Hauberk, description: ''},
+            {type: EquipmentType.Brassairts, description: ''},
+            {type: EquipmentType.Vambraces, description: ''},
+            {type: EquipmentType.Gauntlets, description: ''},
+            {type: EquipmentType.Gambeson, description: ''},
+            {type: EquipmentType.Cuisses, description: ''},
+            {type: EquipmentType.Greaves, description: ''},
+            {type: EquipmentType.Sollerets, description: ''},
         ],
         accolades: [
             {type: AccoladeType.Epithets, received: []},
@@ -103,11 +103,11 @@ export function applyCharacterModifications(baseChar: Character, characterMods: 
                 newChar[result.attributeName] = result.data;
                 break;
             case CharacterModificationType.SET_EQUIPMENT:
-                result.data.map((equip: {type: string, description: string}) => {
-                    const existingEquipType = newChar[result.attributeName].find(e => {
+                result.data.map((equip: CharEquipment) => {
+                    const existingEquipment = newChar[result.attributeName].find(e => {
                         return e.type == equip.type;
                     })
-                    existingEquipType.description = equip.description;
+                    existingEquipment.description = equip.description;
                 })
                 break;
             case CharacterModificationType.ADD_RANK:
@@ -241,7 +241,7 @@ export function getLevelUpModifications(character: Character): CharacterModifica
     return levelMods;
 }
 
-function selectLevelBonusStat(character: Character): string {
+function selectLevelBonusStat(character: CharacterStats): string {
     let selectedStat: string;
     const allStats = getCharacterStatList();
 
@@ -274,7 +274,7 @@ function generateStatModification(attributeName: string, modValue: number = 1): 
     return mod;
 }
 
-function generateSpellOrAbilityModification(character: Character, modValue: number = 1): CharacterModification {
+export function generateSpellOrAbilityModification(character: CharacterStats & {level: number}, modValue: number = 1): CharacterModification {
     let attributeName = '';
     let dataObj = {name: '', rank: modValue};
     if (randRange(0, 1)) {
@@ -296,4 +296,68 @@ function generateSpellOrAbilityModification(character: Character, modValue: numb
     }
 
     return mod;
+}
+
+export function generateNewEquipmentModification(character: Character): CharacterModification {
+    const newEquipmentData = generateRandomEquipment(character.level);
+    
+    const mod: CharacterModification = {
+        type: CharacterModificationType.SET_EQUIPMENT,
+        attributeName: 'equipment',
+        data: [newEquipmentData],
+    };
+
+    return mod;
+}
+
+function generateRandomEquipment(targetLevel: number): CharEquipment {
+    //     randomly pick equipment type
+    const newEquipmentType: EquipmentType = EquipmentType[randFromList(Object.keys(EquipmentType))];
+    // 2. randomly pick 5 items of selected equipment type, & pick the one closest to character level
+    let targetList: EquipmentMaterial[];
+    if (newEquipmentType == EquipmentType.Weapon) {
+        targetList = WEAPON_MATERIALS;
+    } else if (newEquipmentType == EquipmentType.Shield) {
+        targetList = SHEILD_MATERIALS;
+    } else {
+        targetList = ARMOR_MATERIALS;
+    }
+    
+    let material = randFromList(targetList);
+    for (let i = 0; i <= 5; i++) {
+        let compare = randFromList(targetList);
+        if (Math.abs(targetLevel - material.baseLevel) > Math.abs(targetLevel - compare.baseLevel)) {
+            material = compare;
+        }
+    }
+
+    // 3. add up to 2 modifiers (no duplicates) to bring quality of selected item closer to character level (don't allow it to go over)
+    let qualityDifference = targetLevel - material.baseLevel;
+    let newEquipmentDescription = material.description;
+    for (let i = 0; i < 2 && qualityDifference != 0; i++) {
+        const modifier = randFromList(material.modifierList.filter(i => qualityDifference > 0 ? i.levelModifier >= 0 : i.levelModifier < 0));
+        if (newEquipmentDescription.includes(modifier.description)) {
+            //no repeats
+            break;
+        }
+        if (Math.abs(qualityDifference) < Math.abs(modifier.levelModifier)) {
+            // too much
+            break;
+        }
+
+        newEquipmentDescription = `${modifier.description} ${newEquipmentDescription}`;
+        qualityDifference -= modifier.levelModifier;
+    }
+    
+    // 4. add remainder of difference (between quality of item adjusted by mods and character level) as numeric modifier.
+    if (qualityDifference != 0) {
+        newEquipmentDescription = `${qualityDifference > 0 ? '+' : ''}${qualityDifference} ${newEquipmentDescription}`;
+    }
+
+    const newEquipment = {
+        type: newEquipmentType,
+        description: newEquipmentDescription,
+    };
+
+    return newEquipment;
 }
