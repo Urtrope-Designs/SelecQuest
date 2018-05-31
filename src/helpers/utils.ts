@@ -45,6 +45,17 @@ export function randFromList<T>(list: T[]): T {
     return list[index];
 }
 
+export function randFromListLow<T>(list: T[], weightFactor = 2, maxIndex = -1): T {
+    if (weightFactor < 1) weightFactor = 1;
+    if (maxIndex === -1) maxIndex = list.length-1;
+    let indices: number[] = [];
+    for (let i = 0; i < weightFactor; i++) {
+        indices.push(randRange(0, maxIndex));
+    }
+    const finalIndex = Math.min(...indices, list.length-1);
+    return list[finalIndex];
+}
+
 export function makeStringIndefinite(baseString: string, quantity: number): string {
     if (quantity === 1) {
         if ('AEIOUaeiou'.indexOf(baseString.charAt(0)) > -1)

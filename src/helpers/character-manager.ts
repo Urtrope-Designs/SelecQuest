@@ -1,5 +1,5 @@
 import { Character, CharacterModificationType, AccoladeType, AffiliationType, CharacterModification, getCharacterStatList, CharacterStats, CharEquipment, EquipmentType, EquipmentMaterial } from './models';
-import { randRange, randFromList, deepCopyObject } from './utils';
+import { randRange, randFromList, deepCopyObject, randFromListLow } from './utils';
 import { PROLOGUE_ADVENTURE_NAME } from './storyline-helpers';
 import { SPELLS, ABILITIES, IS_DEBUG, WEAPON_MATERIALS, SHEILD_MATERIALS, ARMOR_MATERIALS } from '../global/config';
 
@@ -276,18 +276,20 @@ function generateStatModification(attributeName: string, modValue: number = 1): 
 
 export function generateSpellOrAbilityModification(character: CharacterStats & {level: number}, modValue: number = 1): CharacterModification {
     let attributeName = '';
+    let affectingStat = '';
+    let optionList = [];
     let dataObj = {name: '', rank: modValue};
     if (randRange(0, 1)) {
         attributeName = 'spells';
-        // pick a spell early in the list, limited by int + level, and weighted toward 0
-        let spellIndex = Math.min(randRange(0, character.int + character.level), randRange(0, character.int + character.level), SPELLS.length-1);
-        dataObj.name = SPELLS[spellIndex]; 
+        affectingStat = 'int';
+        optionList = SPELLS;
     } else {
         attributeName = 'abilities';
-        // pick an ability early in the list, limited by wisdom + level, and weighted toward 0
-        let abilityIndex = Math.min(randRange(0, character.wis + character.level), randRange(0, character.wis + character.level), ABILITIES.length-1);
-        dataObj.name = ABILITIES[abilityIndex]; 
+        affectingStat = 'wis';
+        optionList = ABILITIES;
     }
+    // pick a spell/ability early in the list, weighted toward 0
+    dataObj.name = randFromListLow(optionList, 2, character.level + character[affectingStat]);
 
     const mod: CharacterModification = {
         type: CharacterModificationType.ADD_RANK,

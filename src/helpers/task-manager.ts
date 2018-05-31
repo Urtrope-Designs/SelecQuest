@@ -250,7 +250,7 @@ const purchaseEquipmentTaskGen: TaskGenerator = {
         const newEquipmentMod = generateNewEquipmentModification(state.character);
         const newTask: Task = {
             description: 'Negotiating the purchase of better equipment',
-            durationMs: randRange(4, 6) * 1000,
+            durationMs: 5 * 1000,
             results: [
                 newEquipmentMod,
                 {
