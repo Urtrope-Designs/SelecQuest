@@ -1,13 +1,13 @@
 import { Event, EventEmitter, Component, Prop } from '@stencil/core';
 import { Observable } from 'rxjs/Observable';
 
-import { Task, CharacterModification, CharacterModificationType, AppState, TaskMode, AccoladeType, AffiliationType } from './models';
+import { Task, CharacterModification, CharacterModificationType, AppState, TaskMode, AffiliationType } from './models';
 import { SetActiveTask, TaskCompleted } from './actions';
 import { randRange, makeStringIndefinite, randFromList } from './utils';
 import { PROLOGUE_TASKS, PROLOGUE_ADVENTURE_NAME, generateNextAdventureName } from './storyline-helpers';
 import { generateLootingTaskContentsFromLevel, generateGladiatingTaskContentsFromLevel, generateInvestigatingTaskContents } from './task-helper';
 import { LEAD_GATHERING_TASK_MODIFIERS, IS_DEBUG } from '../global/config';
-import { generateNewEquipmentModification, generateSpellOrAbilityModification } from './character-manager';
+import { generateNewEquipmentModification, generateSpellOrAbilityModification, generateNewAccoladeModification } from './character-manager';
 
 @Component({
     tag: 'task-manager',
@@ -443,21 +443,13 @@ const earnAccoladeTaskGen: TaskGenerator = {
         }, 0);
         return currentEquipmentIntegrity <= 0 && (state.character.renown - state.character.spentRenown) >= 50;
     },
-    generateTask: (/*state: AppState*/) => {
+    generateTask: (state: AppState) => {
+        const newAccoladeMod = generateNewAccoladeModification(state.character);
         const newTask: Task = {
             description: 'Being honored for your glorious achievements',
             durationMs: randRange(4, 6) * 1000,
             results: [
-                {
-                    type: CharacterModificationType.ADD_ACCOLADE,
-                    attributeName: 'accolades',
-                    data: [
-                        {
-                            type: AccoladeType.Sobriquets,
-                            received: ['Soultugger']
-                        }
-                    ]
-                },
+                newAccoladeMod,
                 {
                     type: CharacterModificationType.INCREASE,
                     attributeName: 'spentRenown',

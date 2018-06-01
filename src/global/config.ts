@@ -284,6 +284,10 @@ export const RACES: CharRace[] = [
     {
         raceName: 'Werefellow',
         trophyName: 'bowler hat',
+    },
+    {
+        raceName: 'Fartling',
+        trophyName: 'cloud',
     }
 ]
 
@@ -551,4 +555,38 @@ export const SHEILD_MATERIALS: EquipmentMaterial[] = [
         baseLevel: 8,
         modifierList: EQUIPMENT_MODIFIERS.defense,
     },
+];
+
+export const EPITHET_DESCRIPTORS: string[] = [
+    'Cow-eyed',
+    'Soggy',
+    'Milk-white',
+    'Weather-worn',
+    'Jaunty',
+    'Bronzed',
+    'Ruthless'
+]
+
+export const EPITHET_BEING_ALL: string[] = [
+    'Bard',
+    'Traveler',
+    'Wanderer',
+    'Adventurer',
+    'Conqueror',
+]
+
+export const EPITHET_BEING_MALE: string[] = [
+    'Fellow',
+    'Temptor',
+    'God',
+]
+
+export const EPITHET_BEING_FEMALE: string[] = [
+    'Goddess',
+    'Lass',
+    'Temptress',
+];
+
+export const SOBRIQUET_NOUNS: string[] = [
+    'Soultugger'
 ]

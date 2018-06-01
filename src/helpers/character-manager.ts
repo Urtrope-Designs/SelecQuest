@@ -1,7 +1,7 @@
-import { Character, CharacterModificationType, AccoladeType, AffiliationType, CharacterModification, getCharacterStatList, CharacterStats, CharEquipment, EquipmentType, EquipmentMaterial } from './models';
+import { Character, CharacterModificationType, AccoladeType, AffiliationType, CharacterModification, getCharacterStatList, CharacterStats, CharEquipment, EquipmentType, EquipmentMaterial, CharAccolade } from './models';
 import { randRange, randFromList, deepCopyObject, randFromListLow } from './utils';
 import { PROLOGUE_ADVENTURE_NAME } from './storyline-helpers';
-import { SPELLS, ABILITIES, IS_DEBUG, WEAPON_MATERIALS, SHEILD_MATERIALS, ARMOR_MATERIALS } from '../global/config';
+import { SPELLS, ABILITIES, IS_DEBUG, WEAPON_MATERIALS, SHEILD_MATERIALS, ARMOR_MATERIALS, EPITHET_DESCRIPTORS, EPITHET_BEING_ALL } from '../global/config';
 
 export function createNewCharacter(): Character {
     const newChar: Character = {
@@ -362,4 +362,34 @@ function generateRandomEquipment(targetLevel: number): CharEquipment {
     };
 
     return newEquipment;
+}
+
+export function generateNewAccoladeModification(character: Character): CharacterModification {
+    const newAccoladeData = generateRandomAccolade(character.level);
+    
+    const mod: CharacterModification = {
+        type: CharacterModificationType.ADD_ACCOLADE,
+        attributeName: 'accolades',
+        data: [newAccoladeData],
+    };
+
+    return mod;
+}
+
+function generateRandomAccolade(targetLevel: number): CharAccolade {
+    const newAccoladeType = AccoladeType.Epithets;
+    const newAccoladeDescription = generateRandomAccoladeDescription[newAccoladeType](targetLevel);
+
+    const newAccolade = {
+        type: newAccoladeType,
+        received: [newAccoladeDescription]
+    }
+
+    return newAccolade;
+}
+
+const generateRandomAccoladeDescription: {[key: number]: (number) => string} = {};
+generateRandomAccoladeDescription[AccoladeType.Epithets] = () => {
+    let epithetDescription = `${randFromList(EPITHET_DESCRIPTORS)} ${randFromList(EPITHET_BEING_ALL)}`;
+    return epithetDescription;
 }
