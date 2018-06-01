@@ -233,6 +233,10 @@ const endSelloffTaskGen: TaskGenerator = {
     },
 };
 
+function getEquipmentCostForLevel(level: number): number {
+    return IS_DEBUG ? 25 : 5 * level**2 + 10 * level + 20;
+}
+
 const purchaseEquipmentTaskGen: TaskGenerator = {
     priority: 5,
     shouldRun: (state: AppState) => {
@@ -243,7 +247,7 @@ const purchaseEquipmentTaskGen: TaskGenerator = {
         const currentEncumbrance = state.character.loot.reduce((prevVal, curVal) => {
             return prevVal + curVal.quantity;
         }, 0);
-        const minGold = IS_DEBUG ? 25 : 5 * state.character.level**2 + 10 * state.character.level + 20;
+        const minGold = getEquipmentCostForLevel(state.character.level);
         return currentEncumbrance <= 0 && state.character.gold >= minGold;
     },
     generateTask: (state: AppState) => {
@@ -256,7 +260,7 @@ const purchaseEquipmentTaskGen: TaskGenerator = {
                 {
                     type: CharacterModificationType.DECREASE,
                     attributeName: 'gold',
-                    data: -(5 * state.character.level**2 + 10 * state.character.level + 20),
+                    data: -getEquipmentCostForLevel(state.character.level),
                 },
             ]
         }
