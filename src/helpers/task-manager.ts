@@ -78,7 +78,7 @@ const lootingTaskGen: TaskGenerator = {
     },
     generateTask: (state: AppState) => {
         const {taskName, taskLevel, lootData} = generateLootingTaskContentsFromLevel(state.character.level);
-        const durationSeconds = Math.floor(6 * state.character.level / taskLevel);
+        const durationSeconds = Math.floor(6 * taskLevel / state.character.level);
         console.log('Loot duration seconds: ' + durationSeconds);
         const isMarketSaturated = state.character.marketSaturation >= state.character.maxMarketSaturation;
         const results: CharacterModification[] = [
@@ -272,7 +272,7 @@ const gladiatingTaskGen: TaskGenerator = {
     },
     generateTask: (state: AppState) => {
         const {taskName, taskLevel, trophyData} = generateGladiatingTaskContentsFromLevel(state.character.level);
-        const durationSeconds = Math.floor(6 * state.character.level / taskLevel);
+        const durationSeconds = Math.floor(6 * taskLevel / state.character.level);
         const isFatigued = state.character.fatigue >= state.character.maxFatigue;
         const results: CharacterModification[] = [
             {

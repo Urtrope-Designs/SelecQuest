@@ -12,6 +12,23 @@ export const STANDARD_GROUPS_INDEFINITE: string[] = [
     'the Young Neocons Chapter',
 ];
 
+export const STANDARD_PLACES: string[] = [
+    'Sturtevant',
+    'Duplainville',
+    'Kankakee',
+    'Reno',
+    'Swington',
+    'Marshes of Mediocrity',
+    'The Tower of Trifling',
+    'Beggarton',
+    'Monrovia',
+    'The Misty Isles',
+    'The Seas of Cheese',
+    'Allbrainia',
+    'Bald Mountain',
+    'Hell',
+];
+
 export let TASK_GERUNDS = [];
 TASK_GERUNDS[TaskTargetType.LOCATION] = 'Ransacking';
 TASK_GERUNDS[TaskTargetType.MONSTER] = 'Executing';
@@ -137,7 +154,13 @@ export const STANDARD_LOOTING_TARGETS: LootingTarget[] = [
         name: 'Grumpkin',
         level: 1,
         reward: 'Grumpkin frown',
-    }
+    },
+    {
+        type: TaskTargetType.MONSTER,
+        name: 'Sofa King',
+        level: 5,
+        reward: 'Sofa King cushion',
+    },
 ];
 
 TASK_PREFIX_MINIMAL[TaskTargetType.TRIAL] = 'mock';
@@ -594,23 +617,30 @@ export const EPITHET_BEING_FEMALE: string[] = [
     'Temptress',
 ];
 
+export const TITLE_OBJECTS: string[] = [
+    'Funk',
+    'Audacity',
+    'Courage',
+    'Fecklessness',
+]
+
 export const TITLE_POSITIONS_ALL: CharTitlePosition[] = [
     {
-        description: 'Treasurer',
-        titleObjectList: STANDARD_GROUPS_INDEFINITE,
+        description: 'Vice-corporal',
+        titleObjectList: [...STANDARD_PLACES, ...TITLE_OBJECTS],
     },
     {
-        description: 'Captain',
-        titleObjectList: STANDARD_GROUPS_INDEFINITE,
+        description: 'Poet Laureate',
+        titleObjectList: STANDARD_PLACES,
     },
     {
-        description: 'Director',
-        titleObjectList: STANDARD_GROUPS_INDEFINITE,
+        description: 'Blue Ribbon Winner',
+        titleObjectList: TITLE_OBJECTS,
     },
     {
-        description: 'Messiah',
-        titleObjectList: STANDARD_GROUPS_INDEFINITE,
-    }
+        description: 'Connoisseur',
+        titleObjectList: TITLE_OBJECTS,
+    },
 ];
 
 export const SOBRIQUET_MODIFIERS: string[] = [
@@ -646,4 +676,17 @@ export const HONORIFIC_TEMPLATES: string[] = [
     'Herr Doktor %NAME%',
     'Elder %NAME%',
     'Primus %NAME%',
+]
+
+export const OFFICE_POSITIONS_ALL: string[] = [
+    'Treasurer',
+    'Captain',
+    'Director',
+    'Messiah',
+    'Striker',
+    'Court Jester',
+    'Artist-in-Residence',
+    'Speaker',
+    'Mascot',
+    'Reconnoitrer',
 ]
