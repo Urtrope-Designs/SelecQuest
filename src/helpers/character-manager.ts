@@ -1,7 +1,7 @@
-import { Character, CharacterModificationType, AccoladeType, AffiliationType, CharacterModification, getCharacterStatList, CharacterStats, CharEquipment, EquipmentType, EquipmentMaterial, CharAccolade } from './models';
+import { Character, CharacterModificationType, AccoladeType, AffiliationType, CharacterModification, getCharacterStatList, CharacterStats, CharEquipment, EquipmentType, EquipmentMaterial, CharAccolade, CharAffilitation } from './models';
 import { randRange, randFromList, deepCopyObject, randFromListLow, randFromListHigh } from './utils';
 import { PROLOGUE_ADVENTURE_NAME } from './storyline-helpers';
-import { SPELLS, ABILITIES, IS_DEBUG, WEAPON_MATERIALS, SHEILD_MATERIALS, ARMOR_MATERIALS, EPITHET_DESCRIPTORS, EPITHET_BEING_ALL, TITLE_POSITIONS_ALL, SOBRIQUET_MODIFIERS, SOBRIQUET_NOUN_PORTION, HONORIFIC_TEMPLATES } from '../global/config';
+import { SPELLS, ABILITIES, IS_DEBUG, WEAPON_MATERIALS, SHEILD_MATERIALS, ARMOR_MATERIALS, EPITHET_DESCRIPTORS, EPITHET_BEING_ALL, TITLE_POSITIONS_ALL, SOBRIQUET_MODIFIERS, SOBRIQUET_NOUN_PORTION, HONORIFIC_TEMPLATES, OFFICE_POSITIONS_ALL, STANDARD_GROUPS_INDEFINITE } from '../global/config';
 
 export function createNewCharacter(): Character {
     const newChar: Character = {
@@ -442,4 +442,47 @@ function generateRandomHonorificDescription(targetLevel: number, heroName: strin
     const honorificDescription = honorificTemplate.replace('%NAME%', heroName);
     
     return honorificDescription;
+}
+
+export function generateNewAffiliationModification(character: Character): CharacterModification {
+    const newAffiliationData = generateRandomAffiliation(character);
+
+    const mod = {
+        type: CharacterModificationType.ADD_AFFILIATION,
+        attributeName: 'affiliations',
+        data: [newAffiliationData],
+    };
+
+    return mod;
+}
+
+function generateRandomAffiliation(character: Character): CharAffilitation {
+    const newAffiliationType = AffiliationType[randFromList(Object.keys(AffiliationType).filter(key => isNaN(+key)))];
+    let newAffiliationDescription = '';
+    switch(newAffiliationType) {
+        case AffiliationType.Connections:
+        case AffiliationType.Affiliations:
+        case AffiliationType.Offices:
+            newAffiliationDescription = generateRandomOfficeDescription(character.affiliations[AffiliationType.Offices].received.join(''));
+            break;
+    }
+
+    const affiliation = {
+        type: newAffiliationType,
+        received: [newAffiliationDescription],
+    };
+
+    return affiliation;
+}
+
+function generateRandomOfficeDescription(exclusions: string): string {
+    let position = '';
+    do {
+        position = randFromList(OFFICE_POSITIONS_ALL);
+    } while (exclusions.toLocaleLowerCase().includes(position));
+
+    let group = randFromList(STANDARD_GROUPS_INDEFINITE);
+
+    const officeDescription = `${position} for ${group}`;
+    return officeDescription;
 }

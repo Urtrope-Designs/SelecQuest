@@ -1,13 +1,13 @@
 import { Event, EventEmitter, Component, Prop } from '@stencil/core';
 import { Observable } from 'rxjs/Observable';
 
-import { Task, CharacterModification, CharacterModificationType, AppState, TaskMode, AffiliationType } from './models';
+import { Task, CharacterModification, CharacterModificationType, AppState, TaskMode } from './models';
 import { SetActiveTask, TaskCompleted } from './actions';
 import { randRange, makeStringIndefinite, randFromList } from './utils';
 import { PROLOGUE_TASKS, PROLOGUE_ADVENTURE_NAME, generateNextAdventureName } from './storyline-helpers';
 import { generateLootingTaskContentsFromLevel, generateGladiatingTaskContentsFromLevel, generateInvestigatingTaskContents, getTradeInCostForLevel } from './task-helper';
 import { LEAD_GATHERING_TASK_MODIFIERS } from '../global/config';
-import { generateNewEquipmentModification, generateSpellOrAbilityModification, generateNewAccoladeModification } from './character-manager';
+import { generateNewEquipmentModification, generateSpellOrAbilityModification, generateNewAccoladeModification, generateNewAffiliationModification } from './character-manager';
 
 @Component({
     tag: 'task-manager',
@@ -618,20 +618,12 @@ const gainAffiliationTaskGen: TaskGenerator = {
         return state.character.leads.length <= 0 && (state.character.reputation - state.character.spentReputation) >= getTradeInCostForLevel(state.character.level);
     },
     generateTask: (state: AppState) => {
+        const newAffiliationMod = generateNewAffiliationModification(state.character);
         const newTask: Task = {
             description: 'Solidifying a new connection',
             durationMs: 5 * 1000,
             results: [
-                {
-                    type: CharacterModificationType.ADD_AFFILIATION,
-                    attributeName: 'affiliations',
-                    data: [
-                        {
-                            type: AffiliationType.Offices,
-                            received: ['Vice-corporal of Funk']
-                        }
-                    ]
-                },
+                newAffiliationMod,
                 {
                     type: CharacterModificationType.INCREASE,
                     attributeName: 'spentReputation',
