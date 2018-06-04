@@ -1,3 +1,5 @@
+import { IS_DEBUG } from "../global/config";
+
 export const PROLOGUE_TASKS = [
     {taskDescription: 'Experiencing an enigmatic and foreboding night vision', durationSeconds: 10},
     {taskDescription: 'Much is revealed about that wise old bastard you\'d underestimated', durationSeconds: 6},
@@ -10,7 +12,8 @@ export const PROLOGUE_ADVENTURE_NAME = 'Prologue'
 
 export function generateNextAdventureName(completedAdventure: Adventure): Adventure {
     const oldChapNum = +completedAdventure.name.match(/\d+$/)[0] || 0;
-    return {name: `Chapter ${oldChapNum + 1}`, progressRequired: 60};
+    const newChapDuration = IS_DEBUG ? 60 : (60 * 60 * (1 + 5 * oldChapNum + 1));
+    return {name: `Chapter ${oldChapNum + 1}`, progressRequired: newChapDuration};
 }
 
 export interface Adventure {

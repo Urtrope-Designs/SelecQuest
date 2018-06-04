@@ -1,6 +1,6 @@
 import { CharLoot, CharTrophy, LootingTarget, GladiatingTarget, TaskTargetType, CharLead, LeadType, LeadTarget } from "./models";
 import { randRange, randSign, randFromList, makeStringIndefinite, generateRandomName, makeVerbGerund } from "./utils";
-import { TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, TASK_GERUNDS, STANDARD_GLADIATING_TARGETS, STANDARD_LOOTING_TARGETS, RACES, CLASSES, STANDARD_LEAD_GATHERING_TARGETS, STANDARD_LEAD_TARGETS } from "../global/config";
+import { TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, TASK_GERUNDS, STANDARD_GLADIATING_TARGETS, STANDARD_LOOTING_TARGETS, RACES, CLASSES, STANDARD_LEAD_GATHERING_TARGETS, STANDARD_LEAD_TARGETS, IS_DEBUG } from "../global/config";
 
 function determineTaskQuantity(targetLevel: number, taskLevel: number) {
     let quantity = 1;
@@ -72,7 +72,7 @@ function randomizeTargetFromList(targetLevel: number, targetOptions: LootingTarg
 }
 
 //logic stolen pretty much directly from PQ
-export function generateLootingTaskContentsFromLevel(level: number): {taskName: string, lootData: CharLoot[]} {
+export function generateLootingTaskContentsFromLevel(level: number): {taskName: string, taskLevel: number, lootData: CharLoot[]} {
     let taskName = '';
     let lootData: CharLoot[] = [];
 
@@ -94,14 +94,15 @@ export function generateLootingTaskContentsFromLevel(level: number): {taskName: 
         value: 1,
     });
 
-    return {taskName: taskName, lootData: lootData};
+    return {taskName: taskName, taskLevel: targetLevel * quantity, lootData: lootData};
 }
 
-export function generateGladiatingTaskContentsFromLevel(level: number): {taskName: string, trophyData: CharTrophy[]} {
+export function generateGladiatingTaskContentsFromLevel(level: number): {taskName: string, taskLevel: number, trophyData: CharTrophy[]} {
     let taskName = '';
     let trophyData: CharTrophy[] = [];
 
     let targetLevel = randomizeTargetLevel(level);
+    let taskLevel = targetLevel;
 
     if (randRange(0, 1)) {
         // dueling task
@@ -116,6 +117,8 @@ export function generateGladiatingTaskContentsFromLevel(level: number): {taskNam
         else {
             taskName = TASK_GERUNDS[TaskTargetType.DUEL] + ' ' + makeStringIndefinite(`level ${foeLevel} ${foeRace.raceName} ${foeClass}`, quantity);
         }
+        taskLevel = foeLevel * quantity;
+        
         trophyData.push({
             name: foeRace.raceName + ' ' + foeRace.trophyName,
             quantity: 1,
@@ -134,7 +137,9 @@ export function generateGladiatingTaskContentsFromLevel(level: number): {taskNam
         taskName = applyTaskNameModifiers(targetLevel, gladiatingTarget);
     
         taskName = TASK_GERUNDS[gladiatingTarget.type] + ' ' + makeStringIndefinite(taskName, quantity);
-    
+
+        taskLevel = targetLevel * quantity;
+
         trophyData.push({
             name: gladiatingTarget.reward,
             quantity: 1,
@@ -142,7 +147,7 @@ export function generateGladiatingTaskContentsFromLevel(level: number): {taskNam
         });
     }
 
-    return {taskName: taskName, trophyData: trophyData};
+    return {taskName: taskName, taskLevel: taskLevel, trophyData: trophyData};
 }
 
 export function generateInvestigatingTaskContents(): {taskName: string, leadData: CharLead[]} {
@@ -166,4 +171,8 @@ export function generateInvestigatingTaskContents(): {taskName: string, leadData
     leadData.push(lead);
 
     return {taskName: taskName, leadData: leadData};
+}
+
+export function getTradeInCostForLevel(level: number): number {
+    return IS_DEBUG ? 25 : 5 * level**2 + 10 * level + 20;
 }

@@ -56,6 +56,20 @@ export function randFromListLow<T>(list: T[], weightFactor = 2, maxIndex = -1): 
     return list[finalIndex];
 }
 
+export function randFromListHigh<T>(list: T[], weightFactor = 2, minIndex = 0, maxIndex = -1): T {
+    if (weightFactor < 1) weightFactor = 1;
+    if (maxIndex < 0 || maxIndex > list.length-1) maxIndex = list.length-1;
+    if (minIndex < 0) minIndex = 0;
+    if (minIndex > maxIndex) minIndex = maxIndex;
+
+    let indices: number[] = [];
+    for (let i = 0; i < weightFactor; i++) {
+        indices.push(randRange(minIndex, maxIndex));
+    }
+    const finalIndex = Math.max(...indices);
+    return list[finalIndex];
+}
+
 export function makeStringIndefinite(baseString: string, quantity: number): string {
     if (quantity === 1) {
         if ('AEIOUaeiou'.indexOf(baseString.charAt(0)) > -1)

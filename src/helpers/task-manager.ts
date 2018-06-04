@@ -5,8 +5,8 @@ import { Task, CharacterModification, CharacterModificationType, AppState, TaskM
 import { SetActiveTask, TaskCompleted } from './actions';
 import { randRange, makeStringIndefinite, randFromList } from './utils';
 import { PROLOGUE_TASKS, PROLOGUE_ADVENTURE_NAME, generateNextAdventureName } from './storyline-helpers';
-import { generateLootingTaskContentsFromLevel, generateGladiatingTaskContentsFromLevel, generateInvestigatingTaskContents } from './task-helper';
-import { LEAD_GATHERING_TASK_MODIFIERS, IS_DEBUG } from '../global/config';
+import { generateLootingTaskContentsFromLevel, generateGladiatingTaskContentsFromLevel, generateInvestigatingTaskContents, getTradeInCostForLevel } from './task-helper';
+import { LEAD_GATHERING_TASK_MODIFIERS } from '../global/config';
 import { generateNewEquipmentModification, generateSpellOrAbilityModification, generateNewAccoladeModification } from './character-manager';
 
 @Component({
@@ -77,8 +77,9 @@ const lootingTaskGen: TaskGenerator = {
         return true;
     },
     generateTask: (state: AppState) => {
-        const {taskName, lootData} = generateLootingTaskContentsFromLevel(state.character.level);
-        const durationSeconds = randRange(5, 8);        
+        const {taskName, taskLevel, lootData} = generateLootingTaskContentsFromLevel(state.character.level);
+        const durationSeconds = Math.floor(6 * state.character.level / taskLevel);
+        console.log('Loot duration seconds: ' + durationSeconds);
         const isMarketSaturated = state.character.marketSaturation >= state.character.maxMarketSaturation;
         const results: CharacterModification[] = [
             {
@@ -131,7 +132,7 @@ const triggerSelloffTaskGen: TaskGenerator = {
     generateTask: (/*state: AppState*/) => {
         const newTask: Task = {
             description: 'Heading to market to pawn your loot',
-            durationMs: randRange(2,3) * 1000,
+            durationMs: 4 * 1000,
             results: [
                 {
                     type: CharacterModificationType.SET,
@@ -219,7 +220,7 @@ const endSelloffTaskGen: TaskGenerator = {
     generateTask: (/*state: AppState*/) => {
         const newTask: Task = {
             description: 'Heading out to find some swag',
-            durationMs: randRange(2, 3) * 1000,
+            durationMs: 4 * 1000,
             results: [
                 {
                     type: CharacterModificationType.SET,
@@ -233,10 +234,6 @@ const endSelloffTaskGen: TaskGenerator = {
     },
 };
 
-function getEquipmentCostForLevel(level: number): number {
-    return IS_DEBUG ? 25 : 5 * level**2 + 10 * level + 20;
-}
-
 const purchaseEquipmentTaskGen: TaskGenerator = {
     priority: 5,
     shouldRun: (state: AppState) => {
@@ -247,7 +244,7 @@ const purchaseEquipmentTaskGen: TaskGenerator = {
         const currentEncumbrance = state.character.loot.reduce((prevVal, curVal) => {
             return prevVal + curVal.quantity;
         }, 0);
-        const minGold = getEquipmentCostForLevel(state.character.level);
+        const minGold = getTradeInCostForLevel(state.character.level);
         return currentEncumbrance <= 0 && state.character.gold >= minGold;
     },
     generateTask: (state: AppState) => {
@@ -260,7 +257,7 @@ const purchaseEquipmentTaskGen: TaskGenerator = {
                 {
                     type: CharacterModificationType.DECREASE,
                     attributeName: 'gold',
-                    data: -getEquipmentCostForLevel(state.character.level),
+                    data: -getTradeInCostForLevel(state.character.level),
                 },
             ]
         }
@@ -274,8 +271,8 @@ const gladiatingTaskGen: TaskGenerator = {
         return state.activeTaskMode == TaskMode.GLADIATING;
     },
     generateTask: (state: AppState) => {
-        const {taskName, trophyData} = generateGladiatingTaskContentsFromLevel(state.character.level);
-        const durationSeconds = randRange(5, 8);
+        const {taskName, taskLevel, trophyData} = generateGladiatingTaskContentsFromLevel(state.character.level);
+        const durationSeconds = Math.floor(6 * state.character.level / taskLevel);
         const isFatigued = state.character.fatigue >= state.character.maxFatigue;
         const results: CharacterModification[] = [
             {
@@ -329,7 +326,7 @@ const triggerBoastingTaskGen: TaskGenerator = {
     generateTask: (/*state: AppState*/) => {
         const newTask: Task = {
             description: 'Heading to the nearest inn to boast of your recent deeds while your armor is repaired',
-            durationMs: randRange(2,3) * 1000,
+            durationMs: 4 * 1000,
             results: [
                 {
                     type: CharacterModificationType.SET,
@@ -380,7 +377,7 @@ const boastingTaskGen: TaskGenerator = {
             ]
             
             const newTask = {
-                description: 'Boast of ' + boastItem.name,
+                description: 'Boasting of ' + makeStringIndefinite(boastItem.name, boastQuantity),
                 durationMs: 1000,
                 results: results,
             }
@@ -417,7 +414,7 @@ const endBoastingTaskGen: TaskGenerator = {
     generateTask: (/*state: AppState*/) => {
         const newTask: Task = {
             description: 'Heading off in search of glory',
-            durationMs: randRange(2,3) * 1000,
+            durationMs: 4 * 1000,
             results: [
                 {
                     type: CharacterModificationType.SET,
@@ -441,19 +438,19 @@ const earnAccoladeTaskGen: TaskGenerator = {
         const currentEquipmentIntegrity = state.character.trophies.reduce((prevVal, curVal) => {
             return prevVal + curVal.quantity;
         }, 0);
-        return currentEquipmentIntegrity <= 0 && (state.character.renown - state.character.spentRenown) >= 50;
+        return currentEquipmentIntegrity <= 0 && (state.character.renown - state.character.spentRenown) >= getTradeInCostForLevel(state.character.level);
     },
     generateTask: (state: AppState) => {
         const newAccoladeMod = generateNewAccoladeModification(state.character);
         const newTask: Task = {
             description: 'Being honored for your glorious achievements',
-            durationMs: randRange(4, 6) * 1000,
+            durationMs: 5 * 1000,
             results: [
                 newAccoladeMod,
                 {
                     type: CharacterModificationType.INCREASE,
                     attributeName: 'spentRenown',
-                    data: 50,
+                    data: getTradeInCostForLevel(state.character.level),
                 },
             ]
         }
@@ -499,7 +496,7 @@ const triggerLeadFollowingTaskGen: TaskGenerator = {
     generateTask: (/*state: AppState*/) => {
         const newTask: Task = {
             description: 'Organizing your Questlog',
-            durationMs: randRange(5,8) * 1000,
+            durationMs: 4 * 1000,
             results: [
                 {
                     type: CharacterModificationType.SET,
@@ -597,7 +594,7 @@ const endLeadFollowingTaskGen: TaskGenerator = {
     generateTask: (/*state: AppState*/) => {
         const newTask: Task = {
             description: `Rooting out some ${randFromList(LEAD_GATHERING_TASK_MODIFIERS)} leads`,
-            durationMs: randRange(2,3) * 1000,
+            durationMs: 4 * 1000,
             results: [
                 {
                     type: CharacterModificationType.SET,
@@ -618,12 +615,12 @@ const gainAffiliationTaskGen: TaskGenerator = {
             return false;
         }
 
-        return state.character.leads.length <= 0 && (state.character.reputation - state.character.spentReputation) >= 50;
+        return state.character.leads.length <= 0 && (state.character.reputation - state.character.spentReputation) >= getTradeInCostForLevel(state.character.level);
     },
-    generateTask: (/*state: AppState*/) => {
+    generateTask: (state: AppState) => {
         const newTask: Task = {
             description: 'Solidifying a new connection',
-            durationMs: randRange(4, 6) * 1000,
+            durationMs: 5 * 1000,
             results: [
                 {
                     type: CharacterModificationType.ADD_AFFILIATION,
@@ -638,7 +635,7 @@ const gainAffiliationTaskGen: TaskGenerator = {
                 {
                     type: CharacterModificationType.INCREASE,
                     attributeName: 'spentReputation',
-                    data: 50,
+                    data: getTradeInCostForLevel(state.character.level),
                 },
             ]
         }
@@ -716,7 +713,7 @@ const adventureTransitionTaskGen: TaskGenerator = {
         const completionReward = randRange(0, 1) ? generateNewEquipmentModification(state.character) : generateSpellOrAbilityModification(state.character);
         const newTask: Task = {
             description: 'Experiencing an enigmatic and foreboding night vision',
-            durationMs: randRange(4, 6) * 1000,
+            durationMs: randRange(2, 3) * 1000,
             results: [
                 {
                     type: CharacterModificationType.SET,

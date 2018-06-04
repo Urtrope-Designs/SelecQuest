@@ -236,4 +236,7 @@ export interface EquipmentMaterial {
     modifierList: EquipmentModifier[],
 }
 
-
+export interface CharTitlePosition {
+    description: string,
+    titleObjectList: string[],
+}

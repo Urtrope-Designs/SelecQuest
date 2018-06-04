@@ -1,7 +1,16 @@
-import { TaskTargetType, LootingTarget, GladiatingTarget, CharRace, LeadGatheringTarget, LeadType, LeadTarget, EquipmentMaterial, EquipmentModifier } from "../helpers/models";
+import { TaskTargetType, LootingTarget, GladiatingTarget, CharRace, LeadGatheringTarget, LeadType, LeadTarget, EquipmentMaterial, EquipmentModifier, CharTitlePosition } from "../helpers/models";
 import { makeStringIndefinite, randFromList } from "../helpers/utils";
 
 export const IS_DEBUG = true;
+
+export const STANDARD_GROUPS_INDEFINITE: string[] = [
+    'the Thieves Guild',
+    'the Volleyball Team',
+    'the local women\'s circle',
+    'your brew-pub crew',
+    'a bunch of retired ditch-diggers',
+    'the Young Neocons Chapter',
+];
 
 export let TASK_GERUNDS = [];
 TASK_GERUNDS[TaskTargetType.LOCATION] = 'Ransacking';
@@ -191,10 +200,8 @@ export const STANDARD_LEAD_GATHERING_TARGETS: LeadGatheringTarget[] = [
     {
         gerundPhrase: 'gossipping with',
         predicateOptions: [
-            'the local women\'s circle',
-            'your brew-pub crew',
+            ...STANDARD_GROUPS_INDEFINITE,
             'three ancient crones',
-            'a bunch of retired ditch-diggers',
         ],
         leadTypes: [LeadType.FETCH],
     },
@@ -587,6 +594,56 @@ export const EPITHET_BEING_FEMALE: string[] = [
     'Temptress',
 ];
 
-export const SOBRIQUET_NOUNS: string[] = [
-    'Soultugger'
+export const TITLE_POSITIONS_ALL: CharTitlePosition[] = [
+    {
+        description: 'Treasurer',
+        titleObjectList: STANDARD_GROUPS_INDEFINITE,
+    },
+    {
+        description: 'Captain',
+        titleObjectList: STANDARD_GROUPS_INDEFINITE,
+    },
+    {
+        description: 'Director',
+        titleObjectList: STANDARD_GROUPS_INDEFINITE,
+    },
+    {
+        description: 'Messiah',
+        titleObjectList: STANDARD_GROUPS_INDEFINITE,
+    }
+];
+
+export const SOBRIQUET_MODIFIERS: string[] = [
+    'Old',
+    'The',
+    'Copper',
+    'Big',
+    'Tiny',
+];
+
+export const SOBRIQUET_NOUN_PORTION: string[] = [
+    'fox',
+    'tims',
+    'soul',
+    'crank',
+    'munch',
+    'tugger',
+    'tower',
+    'blossom',
+    'sweet',
+    'silver',
+    'bell',
+    'dale',
+    'horn',
+];
+
+export const HONORIFIC_TEMPLATES: string[] = [
+    '%NAME%, Esquire',
+    'Prof %NAME%',
+    'Reverend %NAME%',
+    'Professor %NAME%',
+    '%NAME%, MD',
+    'Herr Doktor %NAME%',
+    'Elder %NAME%',
+    'Primus %NAME%',
 ]
