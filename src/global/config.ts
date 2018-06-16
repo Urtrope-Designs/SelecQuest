@@ -665,6 +665,8 @@ export const SOBRIQUET_NOUN_PORTION: string[] = [
     'bell',
     'dale',
     'horn',
+    'way',
+    'star',
 ];
 
 export const HONORIFIC_TEMPLATES: string[] = [

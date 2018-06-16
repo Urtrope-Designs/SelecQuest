@@ -81,6 +81,12 @@ export enum CharacterModificationType {
     REMOVE_QUANTITY,
 }
 
+export enum AffiliationType {
+    CONNECTIONS = 'connections',
+    MEMBERSHIPS = 'memberships',
+    OFFICES = 'offices',
+}
+
 export class CharacterStats {
     'str': number = 0;
     'dex': number = 0;
@@ -115,7 +121,7 @@ export interface Character extends CharacterStats {
     abilities: CharAbility[]; 
     equipment: CharEquipment[];
     accolades: CharAccolade[];
-    affiliations: CharAffilitation[];
+    affiliations: CharAffiliations;
     maxEncumbrance: number;
     maxEquipmentWear: number;
     maxQuestLogSize: number;
@@ -161,10 +167,26 @@ export interface CharAccolade {
     received: string[],
 };
 
-export interface CharAffilitation {
-    type: AffiliationType,
-    received: string[],
+export interface CharAffiliations {
+    [AffiliationType.CONNECTIONS]: CharConnection[],
+    [AffiliationType.MEMBERSHIPS]: CharMembership[],
+    [AffiliationType.OFFICES]: CharOffice[],
 };
+
+export interface CharConnection {
+    affiliatedPersonName: string,
+    affiliatedPersonTitle: string,
+    affiliatedGroupName: string,
+}
+
+export interface CharMembership {
+    affiliatedGroupName: string,
+}
+
+export interface CharOffice {
+    officeTitleDescription: string,
+    affiliatedGroupName: string,
+}
 
 export interface CharLoot {
     name: string,
@@ -203,12 +225,6 @@ export enum AccoladeType {
     Titles,
     Sobriquets,
     Honorifics,
-}
-
-export enum AffiliationType {
-    Connections,
-    Affiliations,
-    Offices,
 }
 
 /** Other :) */
