@@ -1,7 +1,7 @@
 import { Component, Prop, State, Event, EventEmitter } from '@stencil/core';
 import { Observable } from 'rxjs/Observable';
 
-import { AppState, Character, Task, TaskMode, AccoladeType, AffiliationType } from '../../helpers/models';
+import { AppState, Character, Task, TaskMode, AccoladeType, AffiliationType, CharConnection, CharMembership, CharOffice } from '../../helpers/models';
 import {getXpRequiredForNextLevel} from '../../helpers/character-manager';
 
 @Component({
@@ -185,18 +185,46 @@ export class AppHome {
                     </p>
                     <p>
                         Affiliations:
-                        {
-                            this.character.affiliations.map(affiliation =>
-                                <div>
-                                    {AffiliationType[affiliation.type]}:&nbsp;
-                                    {
-                                        affiliation.received.length <= 0
-                                        ? <span>[None]</span>
-                                        : <span>{affiliation.received.join(', ')}</span>
-                                    }
-                                </div>
-                            )
-                        }
+                        <div>
+                            {AffiliationType.CONNECTIONS}:&nbsp;
+                            {
+                                this.character.affiliations[AffiliationType.CONNECTIONS].length <= 0
+                                ? <span>[None]</span>
+                                : <span>{
+                                    this.character.affiliations[AffiliationType.CONNECTIONS]
+                                        .map((connection: CharConnection) => {
+                                            return `${connection.affiliatedPersonName}, ${connection.affiliatedPersonTitle} for ${connection.affiliatedGroupName}`;
+                                        })
+                                        .join(', ')
+                                }</span>
+                            }
+                        </div>
+                        <div>
+                            {AffiliationType.MEMBERSHIPS}:&nbsp;
+                            {
+                                this.character.affiliations[AffiliationType.MEMBERSHIPS].length <= 0
+                                ? <span>[None]</span>
+                                : <span>{
+                                    this.character.affiliations[AffiliationType.MEMBERSHIPS]
+                                        .map((membership: CharMembership) => membership.affiliatedGroupName)
+                                        .join(', ')
+                                }</span>
+                            }
+                        </div>
+                        <div>
+                            {AffiliationType.OFFICES}:&nbsp;
+                            {
+                                this.character.affiliations[AffiliationType.OFFICES].length <= 0
+                                ? <span>[None]</span>
+                                : <span>{
+                                    this.character.affiliations[AffiliationType.OFFICES]
+                                        .map((office: CharOffice) => {
+                                            return `${office.officeTitleDescription} for ${office.affiliatedGroupName}`;
+                                        })
+                                        .join(', ')
+                                }</span>
+                            }
+                        </div>
                     </p>
                     <p>
                         <div>Current Adventure: {this.character.currentAdventure.name}</div>

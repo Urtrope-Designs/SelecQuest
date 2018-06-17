@@ -91,7 +91,7 @@ export function createNewCharacter(): Character {
 }
     
 export function applyCharacterModifications(baseChar: Character, characterMods: CharacterModification[]): Character {
-    let newChar = deepCopyObject(baseChar);         // need to deep clone rather than using Object.assign() or spread operator
+    let newChar: Character = deepCopyObject(baseChar);         // need to deep clone rather than using Object.assign() or spread operator
 
     for (let result of characterMods) {
         switch(result.type) {
@@ -164,11 +164,10 @@ export function applyCharacterModifications(baseChar: Character, characterMods: 
                 })
                 break;
             case CharacterModificationType.ADD_AFFILIATION:
-                newChar.affiliations = {
-                    [AffiliationType.CONNECTIONS]: Object.assign({}, newChar.affiliations[AffiliationType.CONNECTIONS], result.data[AffiliationType.CONNECTIONS]),
-                    [AffiliationType.MEMBERSHIPS]: Object.assign({}, newChar.affiliations[AffiliationType.MEMBERSHIPS], result.data[AffiliationType.MEMBERSHIPS]),
-                    [AffiliationType.OFFICES]: Object.assign({}, newChar.affiliations[AffiliationType.OFFICES], result.data[AffiliationType.OFFICES]),
-                }
+                result.data.map((newAffiliation: AffiliationGenerationData) => {
+                    let curAffiliationType = newChar.affiliations[newAffiliation.type];
+                    (curAffiliationType as any[]).push(newAffiliation.object);
+                })
                 break;
         }
     }
@@ -462,19 +461,19 @@ export function generateNewAffiliationModification(character: Character): Charac
     return mod;
 }
 
-function generateRandomAffiliation(character: Character): {[key: string]: CharConnection | CharMembership | CharOffice} {
-    let newAffiliationType: AffiliationType;
-    let newAffiliationObj: CharConnection | CharMembership | CharOffice;
+interface AffiliationGenerationData {
+    type: AffiliationType,
+    object: CharConnection | CharMembership | CharOffice
+}
+
+function generateRandomAffiliation(character: Character): AffiliationGenerationData {
+    let newAffiliationData: {type: AffiliationType, object: CharConnection | CharMembership | CharOffice};
 
     if (character.affiliations[AffiliationType.OFFICES].length >= STANDARD_GROUPS_INDEFINITE.length) {
-        // upgrade an existing office
-        newAffiliationObj = generateUpgradedOffice(character.affiliations);
-        if (newAffiliationObj == null) {
-            // add a random non-duplicate Office for any Group with which the Hero has a Membership
-        }
-        newAffiliationType = AffiliationType.OFFICES;
+        // add a random non-duplicate Office for any Group with which the Hero has a Membership
+        newAffiliationData = generateRandomNonDupOfficeObject(character.affiliations);
     } else {
-        let newAffiliationFactories: ((existingAffiliations: CharAffiliations) => {type: AffiliationType, obj: CharConnection | CharMembership | CharOffice})[] = [];
+        let newAffiliationFactories: ((existingAffiliations: CharAffiliations) => AffiliationGenerationData)[] = [];
         if (character.affiliations[AffiliationType.CONNECTIONS].length < STANDARD_GROUPS_INDEFINITE.length) {
             newAffiliationFactories.push(generateRandomDistinctConnection);
         }
@@ -482,24 +481,18 @@ function generateRandomAffiliation(character: Character): {[key: string]: CharCo
             newAffiliationFactories.push(generateRandomDistinctMembership);
         }
         if (character.affiliations[AffiliationType.OFFICES].length < character.affiliations[AffiliationType.MEMBERSHIPS].length) {
-            newAffiliationFactories.push(generateRandomRandomDistinctOffice);
+            newAffiliationFactories.push(generateRandomDistinctOffice);
         }
 
         
         let selectedFactory = randFromList(newAffiliationFactories);
-        let newAffiliationData = selectedFactory(character.affiliations);
-        newAffiliationType = newAffiliationData.type;
-        newAffiliationObj = newAffiliationData.obj;
+        newAffiliationData = selectedFactory(character.affiliations);
     }
 
-    const affiliationsObj = {
-        [newAffiliationType]: newAffiliationObj,
-    };
-
-    return affiliationsObj;
+    return newAffiliationData;
 }
 
-function generateRandomDistinctConnection(existingAffiliations: CharAffiliations): {type: AffiliationType, obj: CharConnection} {
+function generateRandomDistinctConnection(existingAffiliations: CharAffiliations): {type: AffiliationType, object: CharConnection} {
     const availableDistinctGroups: string[] = STANDARD_GROUPS_INDEFINITE.filter((groupName: string) => {
         return existingAffiliations.connections.map(connection => connection.affiliatedGroupName).indexOf(groupName) === -1;
     });
@@ -510,7 +503,7 @@ function generateRandomDistinctConnection(existingAffiliations: CharAffiliations
             affiliatedPersonTitle: null,
             affiliatedGroupName: null,
         }
-        return {type: AffiliationType.CONNECTIONS, obj: nullConnection};
+        return {type: AffiliationType.CONNECTIONS, object: nullConnection};
     }
     
     const newConnectionName = generateRandomName();
@@ -523,18 +516,18 @@ function generateRandomDistinctConnection(existingAffiliations: CharAffiliations
     }
     const returnData = {
         type: AffiliationType.CONNECTIONS,
-        obj: newConnection,
+        object: newConnection,
     }
     return returnData;
 }
 
-function generateRandomDistinctMembership(existingAffiliations: CharAffiliations): {type: AffiliationType, obj: CharMembership} {
+function generateRandomDistinctMembership(existingAffiliations: CharAffiliations): {type: AffiliationType, object: CharMembership} {
     const availableMembershipGroups: string[] = existingAffiliations.connections.map(connection => connection.affiliatedGroupName).filter((groupName: string) => {
         return existingAffiliations.memberships.map(membership => membership.affiliatedGroupName).indexOf(groupName) === -1;
     });
 
     if (availableMembershipGroups.length === 0) {
-        return {type: AffiliationType.MEMBERSHIPS, obj: {affiliatedGroupName: null}};
+        return {type: AffiliationType.MEMBERSHIPS, object: {affiliatedGroupName: null}};
     }
 
     const newMembershipGroupName = randFromList(availableMembershipGroups);
@@ -543,29 +536,25 @@ function generateRandomDistinctMembership(existingAffiliations: CharAffiliations
     };
     const returnData = {
         type: AffiliationType.MEMBERSHIPS,
-        obj: newMembership,
+        object: newMembership,
     }
     return returnData;
 }
 
-function generateRandomRandomDistinctOffice(existingAffiliations: CharAffiliations): {type: AffiliationType, obj: CharOffice} {
-    const availableTitles: string[] = OFFICE_POSITIONS_ALL.filter((position: string) => {
-        return existingAffiliations.offices.map(office => office.officeTitleDescription).indexOf(position) === -1;
-    });
-    
+function generateRandomDistinctOffice(existingAffiliations: CharAffiliations): {type: AffiliationType, object: CharOffice} {
     const availableOfficeGroups: string[] = existingAffiliations.memberships.map(membership => membership.affiliatedGroupName).filter((groupName: string) => {
         return existingAffiliations.offices.map(office => office.affiliatedGroupName).indexOf(groupName) === -1;
     })
     
-    if (availableTitles.length === 0 || availableOfficeGroups.length === 0) {
+    if (availableOfficeGroups.length === 0) {
         const nullOffice: CharOffice = {
             officeTitleDescription: null,
             affiliatedGroupName: null,
         }
-        return {type: AffiliationType.OFFICES, obj: nullOffice};
+        return {type: AffiliationType.OFFICES, object: nullOffice};
     }
     
-    const position = randFromList(availableTitles);
+    const position = randFromList(OFFICE_POSITIONS_ALL);
     const group = randFromList(availableOfficeGroups);
     const officeObj: CharOffice = {
         officeTitleDescription: position,
@@ -573,7 +562,29 @@ function generateRandomRandomDistinctOffice(existingAffiliations: CharAffiliatio
     }
     const returnData = {
         type: AffiliationType.OFFICES,
-        obj: officeObj,
+        object: officeObj,
+    }
+    return returnData;
+}
+
+function generateRandomNonDupOfficeObject(existingAffiliations: CharAffiliations): {type: AffiliationType, object: CharOffice} {
+    const group = randFromList(STANDARD_GROUPS_INDEFINITE);
+    const existingOfficesForGroup: string[] = existingAffiliations.offices
+        .filter(office => office.affiliatedGroupName == group)
+        .map(office => office.officeTitleDescription);
+    const availableGroupOffices: string[] = OFFICE_POSITIONS_ALL.filter((office: string) => {
+        return existingOfficesForGroup.indexOf(office) === -1;
+    })
+
+    const position = randFromList(availableGroupOffices);
+    const officeObj: CharOffice = {
+        officeTitleDescription: position,
+        affiliatedGroupName: group,
+    }
+    
+    const returnData = {
+        type: AffiliationType.OFFICES,
+        object: officeObj,
     }
     return returnData;
 }
