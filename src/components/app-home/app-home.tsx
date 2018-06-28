@@ -78,7 +78,7 @@ export class AppHome {
                             this.character.spells.length == 0 
                             ? <div>[None]</div>    
                             : this.character.spells.map((spell) => 
-                                    <div>{spell.name} {spell.rank}</div>
+                                    <div sq-flex><span sq-mr-auto>{spell.name}</span> {spell.rank}</div>
                                 )
                         }
                     </p>
@@ -88,7 +88,7 @@ export class AppHome {
                             this.character.abilities.length == 0 
                             ? <div>[None]</div>    
                             : this.character.abilities.map((ability) => 
-                                    <div>{ability.name} {ability.rank}</div>
+                                    <div sq-flex><span sq-mr-auto>{ability.name}</span> {ability.rank}</div>
                                 )
                         }
                     </p>
