@@ -54,51 +54,24 @@ export class AppHome {
                 <ion-content>
                     <h1>SelecQuest</h1>
                     <p>
-                        Level: {this.character.level}
+                        <div sq-flex><span sq-mr-auto>Name</span> {this.character.name}</div>
+                        <div sq-flex><span sq-mr-auto>Race</span> {this.character.raceName}</div>
+                        <div sq-flex><span sq-mr-auto>Class</span> {this.character.class}</div>
+                        <div sq-flex><span sq-mr-auto>Level</span> {this.character.level}</div>
                     </p>
                     <p>
-                        <div>Str: {this.character.str}</div>
-                        <div>Dex: {this.character.dex}</div>
-                        <div>Con: {this.character.con}</div>
-                        <div>Wis: {this.character.wis}</div>
-                        <div>Int: {this.character.int}</div>
-                        <div>Cha: {this.character.cha}</div>
+                        <div sq-flex><span sq-mr-auto>Str</span> {this.character.str}</div>
+                        <div sq-flex><span sq-mr-auto>Dex</span> {this.character.dex}</div>
+                        <div sq-flex><span sq-mr-auto>Con</span> {this.character.con}</div>
+                        <div sq-flex><span sq-mr-auto>Wis</span> {this.character.wis}</div>
+                        <div sq-flex><span sq-mr-auto>Int</span> {this.character.int}</div>
+                        <div sq-flex><span sq-mr-auto>Cha</span> {this.character.cha}</div>
+                        <div sq-flex><span sq-mr-auto>Max HP</span> {this.character.maxHp}</div>
+                        <div sq-flex><span sq-mr-auto>Max MP</span> {this.character.maxMp}</div>
                     </p>
                     <p>
-                        XP Needed for next level: {getXpRequiredForNextLevel(this.character.level) - this.character.currentXp}
+                        <div sq-flex><span sq-mr-auto>XP to next level</span> {getXpRequiredForNextLevel(this.character.level) - this.character.currentXp}</div>
                     </p>
-                    <p>
-                        <div>Gold: {this.character.gold}</div>
-                        <div>Renown: {this.character.renown}</div>
-                        <div>Reputation: {this.character.reputation}</div>
-                    </p>
-                    <p>
-                        <div>
-                            Market Saturation = {this.character.marketSaturation} / {this.character.maxMarketSaturation}
-                            {
-                                this.character.marketSaturation >= this.character.maxMarketSaturation
-                                ? <div><b>MARKET SATURATED</b></div>
-                                : <br/>
-                            }
-                        </div>
-                        <div>
-                            Fatigue = {this.character.fatigue} / {this.character.maxFatigue}
-                            {
-                                this.character.fatigue >= this.character.maxFatigue
-                                ? <div><b>FATIGUED</b></div>
-                                : <br/>
-                            }
-                        </div>
-                        <div>
-                            Social Exposure = {this.character.socialExposure} / {this.character.maxSocialCapital}
-                            {
-                                this.character.socialExposure >= this.character.maxSocialCapital
-                                ? <div><b>OVEREXPOSED</b></div>
-                                : <br/>
-                            }
-                        </div>
-                    </p>
-
                     <p>
                         Spells:
                         {
@@ -120,27 +93,54 @@ export class AppHome {
                         }
                     </p>
                     <p>
-                        Encumbrance: {this.character.loot.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)} / {this.character.maxEncumbrance}
+                        <div sq-flex><span sq-mr-auto>Gold</span> {this.character.gold}</div>
+                        <div sq-flex>
+                            <span sq-mr-auto>Market Saturation</span> {this.character.marketSaturation} / {this.character.maxMarketSaturation}
+                            {
+                                this.character.marketSaturation >= this.character.maxMarketSaturation
+                                ? <div><b>MARKET SATURATED</b></div>
+                                : <br/>
+                            }
+                        </div>
+                        <div sq-flex><span sq-mr-auto>Encumbrance</span> {this.character.loot.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)} / {this.character.maxEncumbrance}</div>
                         {
                             this.character.loot.length == 0
                             ? <div>[None]</div>
                             : this.character.loot.map((item) => 
-                                    <div>{item.name} {item.quantity}</div>
+                                    <div sq-flex><span sq-mr-auto>{item.name}</span> {item.quantity}</div>
                                 )
                         }
                     </p>
                     <p>
-                        Equipment Wear: {this.character.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)} / {this.character.maxEquipmentWear}
+                        <div sq-flex><span sq-mr-auto>Renown</span> {this.character.renown}</div>
+                        <div sq-flex>
+                            <span sq-mr-auto>Fatigue</span> {this.character.fatigue} / {this.character.maxFatigue}
+                            {
+                                this.character.fatigue >= this.character.maxFatigue
+                                ? <div><b>FATIGUED</b></div>
+                                : <br/>
+                            }
+                        </div>
+                        <div sq-flex><span sq-mr-auto>Equipment Wear</span> {this.character.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)} / {this.character.maxEquipmentWear}</div>
                         {
                             this.character.trophies.length == 0
                             ? <div>[None]</div>
                             : this.character.trophies.map((item) => 
-                                    <div>{item.name} {item.quantity}</div>
+                                    <div sq-flex><span sq-mr-auto>{item.name}</span> {item.quantity}</div>
                                 )
                         }
                     </p>
                     <p>
-                        Questlog: {this.character.leads.length} / {this.character.maxQuestLogSize}
+                        <div sq-flex><span sq-mr-auto>Reputation</span> {this.character.reputation}</div>
+                        <div sq-flex>
+                            <span sq-mr-auto>Social Exposure</span> {this.character.socialExposure} / {this.character.maxSocialCapital}
+                            {
+                                this.character.socialExposure >= this.character.maxSocialCapital
+                                ? <div><b>OVEREXPOSED</b></div>
+                                : <br/>
+                            }
+                        </div>
+                        <div sq-flex><span sq-mr-auto>Questlog</span> {this.character.leads.length} / {this.character.maxQuestLogSize}</div>
                         {
                             this.character.leads.length == 0
                             ? <div>[None]</div>
@@ -153,8 +153,8 @@ export class AppHome {
                         Equipment:
                         {
                             this.character.equipment.map(equip => 
-                                <div>
-                                    {equip.type}:&nbsp;
+                                <div sq-flex>
+                                    <span sq-mr-auto>{equip.type}</span>&nbsp;
                                     {
                                         !!equip.description
                                         ? <span>{equip.description}</span>
@@ -168,8 +168,8 @@ export class AppHome {
                         Accolades:
                         {
                             this.character.accolades.map(accolade =>
-                                <div>
-                                    {AccoladeType[accolade.type]}:&nbsp;
+                                <div sq-flex>
+                                    <span sq-mr-auto>{AccoladeType[accolade.type]}</span>&nbsp;
                                     {
                                         accolade.received.length <= 0
                                         ? <span>[None]</span>
@@ -181,8 +181,8 @@ export class AppHome {
                     </p>
                     <p>
                         Affiliations:
-                        <div>
-                            {AffiliationType.CONNECTIONS}:&nbsp;
+                        <div sq-flex>
+                            <span sq-mr-auto>{AffiliationType.CONNECTIONS}</span>&nbsp;
                             {
                                 this.character.affiliations[AffiliationType.CONNECTIONS].length <= 0
                                 ? <span>[None]</span>
@@ -195,8 +195,8 @@ export class AppHome {
                                 }</span>
                             }
                         </div>
-                        <div>
-                            {AffiliationType.MEMBERSHIPS}:&nbsp;
+                        <div sq-flex>
+                            <span sq-mr-auto>{AffiliationType.MEMBERSHIPS}</span>&nbsp;
                             {
                                 this.character.affiliations[AffiliationType.MEMBERSHIPS].length <= 0
                                 ? <span>[None]</span>
@@ -207,8 +207,8 @@ export class AppHome {
                                 }</span>
                             }
                         </div>
-                        <div>
-                            {AffiliationType.OFFICES}:&nbsp;
+                        <div sq-flex>
+                            <span sq-mr-auto>{AffiliationType.OFFICES}</span>&nbsp;
                             {
                                 this.character.affiliations[AffiliationType.OFFICES].length <= 0
                                 ? <span>[None]</span>
@@ -223,8 +223,8 @@ export class AppHome {
                         </div>
                     </p>
                     <p>
-                        <div>Current Adventure: {this.character.currentAdventure.name}</div>
-                        <div>Adventure Progress: {this.character.adventureProgress} / {this.character.currentAdventure.progressRequired}</div>
+                        <div sq-flex><span sq-mr-auto>Current Adventure</span> {this.character.currentAdventure.name}</div>
+                        <div sq-flex><span sq-mr-auto>Adventure Progress</span> {this.character.adventureProgress} / {this.character.currentAdventure.progressRequired}</div>
                     </p>
                     <ion-button {...(this.activeTaskMode != TaskMode.LOOTING ? {color: 'light'} : {})} onClick={ () => this.taskModeButtonClicked('LOOTING')}>LOOTING</ion-button>
                     <ion-button color={this.activeTaskMode == TaskMode.GLADIATING ? 'default' : 'light'} onClick={ () => this.taskModeButtonClicked('GLADIATING')}>GLADIATING</ion-button>

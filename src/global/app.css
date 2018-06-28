@@ -15,11 +15,28 @@ h1, h2, h3, h4, h5, p {
 }
 
 :root {
-    --sq-bg-color: #222;
+    --sq-bg-color: #222922;
     --sq-primary-color: #61f180;
     --ion-background-md-color: var(--sq-bg-color);
+    --ion-background-ios-color: var(--sq-bg-color);
+    --ion-background-color: var(--sq-bg-color);
     --ion-toolbar-md-background-color: var(--sq-bg-color);
+    --ion-toolbar-ios-background-color: var(--sq-bg-color);
+    --ion-toolbar-background-color: var(--sq-bg-color);
     --ion-text-md-color: var(--sq-primary-color);
+    --ion-text-ios-color: var(--sq-primary-color);
+    --ion-text-color: var(--sq-primary-color);
+}
+
+[sq-flex] {
+    display: flex;
+}
+
+[sq-mr-auto] {
+    margin-right: auto;
+}
+[sq-ml-auto] {
+    margin-left: auto;
 }
 
 @font-face {
