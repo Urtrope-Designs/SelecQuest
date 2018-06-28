@@ -1,4 +1,4 @@
-import { Character, CharacterModificationType, AccoladeType, AffiliationType, CharacterModification, getCharacterStatList, CharacterStats, CharEquipment, EquipmentType, EquipmentMaterial, CharAccolade, CharAffiliations, CharConnection, CharMembership, CharOffice } from './models';
+import { Character, CharacterModificationType, AccoladeType, AffiliationType, CharacterModification, getCharacterStatList, CharacterStats, CharEquipment, EquipmentType, EquipmentMaterial, CharAccolade, CharAffiliations, CharConnection, CharMembership, CharOffice, CharTitlePosition } from './models';
 import { randRange, randFromList, deepCopyObject, randFromListLow, randFromListHigh, generateRandomName } from './utils';
 import { PROLOGUE_ADVENTURE_NAME } from './storyline-helpers';
 import { SPELLS, ABILITIES, IS_DEBUG, WEAPON_MATERIALS, SHEILD_MATERIALS, ARMOR_MATERIALS, EPITHET_DESCRIPTORS, EPITHET_BEING_ALL, TITLE_POSITIONS_ALL, SOBRIQUET_MODIFIERS, SOBRIQUET_NOUN_PORTION, HONORIFIC_TEMPLATES, OFFICE_POSITIONS_ALL, STANDARD_GROUPS_INDEFINITE } from '../global/config';
@@ -386,16 +386,16 @@ function generateRandomAccolade(character: Character): CharAccolade {
     let newAccoladeDescription = '';
     switch(newAccoladeType) {
         case AccoladeType.Epithets:
-            newAccoladeDescription = generateRandomEpithetDescription();
+            newAccoladeDescription = generateRandomEpithetDescription(character.accolades[AccoladeType.Epithets].received.join(''));
             break;
         case AccoladeType.Titles:
-            newAccoladeDescription = generateRandomTitleDescription();
+            newAccoladeDescription = generateRandomTitleDescription(character.accolades[AccoladeType.Titles].received.join(''));
             break;
         case AccoladeType.Sobriquets:
             newAccoladeDescription = generateRandomSobriquetDescription(character.accolades[AccoladeType.Sobriquets].received.join(''));
             break;
         case AccoladeType.Honorifics:
-            newAccoladeDescription = generateRandomHonorificDescription(character.level, character.name);
+            newAccoladeDescription = generateRandomHonorificDescription(character.accolades[AccoladeType.Honorifics].received.join(''), character.level, character.name);
             break;
     }
 
@@ -407,13 +407,30 @@ function generateRandomAccolade(character: Character): CharAccolade {
     return newAccolade;
 }
 
-function generateRandomEpithetDescription() {
-    let epithetDescription = `${randFromList(EPITHET_DESCRIPTORS)} ${randFromList(EPITHET_BEING_ALL)}`;
+function generateRandomEpithetDescription(exclusions: string) {
+    let epithetDescriptor: string;
+    let epithetBeing: string;
+
+    do {
+        epithetDescriptor = randFromList(EPITHET_DESCRIPTORS);
+    } while (exclusions.toLocaleLowerCase().includes(epithetDescriptor.toLocaleLowerCase()));
+    do {
+        epithetBeing = randFromList(EPITHET_BEING_ALL);
+    } while (exclusions.toLocaleLowerCase().includes(epithetBeing.toLocaleLowerCase()));
+
+    let epithetDescription = `${epithetDescriptor} ${epithetBeing}`;
     return epithetDescription;
 };
-function generateRandomTitleDescription() {
-    const titlePosition = randFromList(TITLE_POSITIONS_ALL);
-    const titleObject = randFromList(titlePosition.titleObjectList);
+function generateRandomTitleDescription(exclusions: string) {
+    let titlePosition: CharTitlePosition;
+    let titleObject: string;
+    do {
+        titlePosition = randFromList(TITLE_POSITIONS_ALL);
+    } while (exclusions.toLocaleLowerCase().includes(titlePosition.description.toLocaleLowerCase()));
+    do {
+        titleObject = randFromList(titlePosition.titleObjectList);
+    } while (exclusions.toLocaleLowerCase().includes(titleObject.toLocaleLowerCase()));
+
     const titleDescription = `${titlePosition.description} of ${titleObject}`;
 
     return titleDescription;
@@ -422,7 +439,7 @@ function generateRandomSobriquetDescription(exclusions: string) {
     let modifier = ''
     do {
         modifier = randFromList(SOBRIQUET_MODIFIERS);
-    } while (exclusions.toLocaleLowerCase().includes(modifier));
+    } while (exclusions.toLocaleLowerCase().includes(modifier.toLocaleLowerCase()));
 
     // one or two (twice as likely) SOBRIQUET_NOUN_PORTIONs
     let noun = '';
@@ -430,7 +447,7 @@ function generateRandomSobriquetDescription(exclusions: string) {
         let nounPortion = '';
         do {
             nounPortion = randFromList(SOBRIQUET_NOUN_PORTION);
-        } while (exclusions.toLocaleLowerCase().includes(nounPortion) || noun.includes(nounPortion));
+        } while (exclusions.toLocaleLowerCase().includes(nounPortion.toLocaleLowerCase()) || noun.toLocaleLowerCase().includes(nounPortion.toLocaleLowerCase()));
         noun += nounPortion;
     }
 
@@ -441,10 +458,17 @@ function generateRandomSobriquetDescription(exclusions: string) {
     const sobriquetDescription = `${modifier} ${noun}`;
     return sobriquetDescription;
 }
-function generateRandomHonorificDescription(targetLevel: number, heroName: string) {
-    const honorificTemplate = randFromListHigh(HONORIFIC_TEMPLATES, 2, targetLevel - 2, targetLevel + 2);
-
-    const honorificDescription = honorificTemplate.replace('%NAME%', heroName);
+function generateRandomHonorificDescription(exclusions: string, targetLevel: number, heroName: string) {
+    let honorificTemplate: string;
+    let honorificDescription: string;
+    
+    const deviation = 4;
+    const minIndex = Math.min(targetLevel - deviation, HONORIFIC_TEMPLATES.length - deviation);
+    const maxIndex = Math.max(targetLevel + deviation, deviation);
+    do {
+        honorificTemplate = randFromListHigh(HONORIFIC_TEMPLATES, 1, minIndex, maxIndex);
+        honorificDescription = honorificTemplate.replace('%NAME%', heroName);
+    } while (exclusions.toLocaleLowerCase().includes(honorificDescription.toLocaleLowerCase()));
     
     return honorificDescription;
 }

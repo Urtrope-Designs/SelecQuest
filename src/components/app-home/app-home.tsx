@@ -50,13 +50,9 @@ export class AppHome {
     render() {
         return (
             <ion-page class='show-page'>
-                <ion-header md-height='56px'>
-                    <ion-toolbar color='primary'>
-                        <ion-title>SelecQuest</ion-title>
-                    </ion-toolbar>
-                </ion-header>
 
                 <ion-content>
+                    <h1>SelecQuest</h1>
                     <p>
                         Level: {this.character.level}
                     </p>
