@@ -1,5 +1,61 @@
+@import '../global/app.css';
+
 app-home {
-  ion-scroll {
-    padding: 15px;
-  }
+    ion-scroll {
+        padding: 15px;
+
+        & div {
+            font-family: 'whitrabt', sans-serif;
+            font-family: 'bitwise', sans-serif;
+            text-shadow: 0 0 .5rem;
+            letter-spacing: .1rem;        
+        }
+    }
+
+    table {
+        table-layout: fixed;
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1rem;
+    }
+
+    thead {
+        background-color: var(--sq-primary-color);
+        color: var(--sq-bg-color);
+        font-weight: bold;
+    }
+
+    th {
+        text-align: left;
+    }
+
+    th, td {
+        padding: .3rem 1rem .3rem 0;
+    }
+    th:first-child, td:first-child {
+        padding-left: .4rem;
+        padding-right: 1rem;
+    }
+    th:last-child, td:last-child {
+        padding-right: .4rem;
+    }
+
+    .textRow {
+        padding: .3rem 0;
+    }
+
+    .listBox {
+        border: 2px solid;
+        
+        & .textRow {
+            padding-left: .4rem;
+            padding-right: .4rem;
+        }
+    }
+
+    .item-highlight {
+        background-color: var(--sq-primary-color);
+        color: var(--sq-bg-color);
+        font-weight: bold;
+    }
 }

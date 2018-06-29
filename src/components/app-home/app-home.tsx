@@ -53,122 +53,153 @@ export class AppHome {
 
                 <ion-content>
                     <h1>SelecQuest</h1>
+                    <table class="listBox">
+                        <thead>
+                            <tr>
+                                <th style={{width: "35%"}}>Trait</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Name</td><td>{this.character.name}</td></tr>
+                            <tr><td>Race</td><td>{this.character.raceName}</td></tr>
+                            <tr><td>Class</td><td>{this.character.class}</td></tr>
+                            <tr><td>Level</td><td>{this.character.level}</td></tr>
+                        </tbody>
+                    </table>
+                    <table class="listBox">
+                        <thead>
+                            <tr>
+                                <th style={{width: "65%"}}>Stat</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td sq-mr-auto>Str</td><td>{this.character.str}</td></tr>
+                            <tr><td sq-mr-auto>Dex</td><td>{this.character.dex}</td></tr>
+                            <tr><td sq-mr-auto>Con</td><td>{this.character.con}</td></tr>
+                            <tr><td sq-mr-auto>Wis</td><td>{this.character.wis}</td></tr>
+                            <tr><td sq-mr-auto>Int</td><td>{this.character.int}</td></tr>
+                            <tr><td sq-mr-auto>Cha</td><td>{this.character.cha}</td></tr>
+                            <tr><td sq-mr-auto>Max HP</td><td>{this.character.maxHp}</td></tr>
+                            <tr><td sq-mr-auto>Max MP</td><td>{this.character.maxMp}</td></tr>
+                        </tbody>
+                    </table>
                     <p>
-                        <div sq-flex><span sq-mr-auto>Name</span> {this.character.name}</div>
-                        <div sq-flex><span sq-mr-auto>Race</span> {this.character.raceName}</div>
-                        <div sq-flex><span sq-mr-auto>Class</span> {this.character.class}</div>
-                        <div sq-flex><span sq-mr-auto>Level</span> {this.character.level}</div>
+                        <div sq-flex class="textRow"><span sq-mr-auto>XP to next level</span> {getXpRequiredForNextLevel(this.character.level) - this.character.currentXp}</div>
                     </p>
-                    <p>
-                        <div sq-flex><span sq-mr-auto>Str</span> {this.character.str}</div>
-                        <div sq-flex><span sq-mr-auto>Dex</span> {this.character.dex}</div>
-                        <div sq-flex><span sq-mr-auto>Con</span> {this.character.con}</div>
-                        <div sq-flex><span sq-mr-auto>Wis</span> {this.character.wis}</div>
-                        <div sq-flex><span sq-mr-auto>Int</span> {this.character.int}</div>
-                        <div sq-flex><span sq-mr-auto>Cha</span> {this.character.cha}</div>
-                        <div sq-flex><span sq-mr-auto>Max HP</span> {this.character.maxHp}</div>
-                        <div sq-flex><span sq-mr-auto>Max MP</span> {this.character.maxMp}</div>
-                    </p>
-                    <p>
-                        <div sq-flex><span sq-mr-auto>XP to next level</span> {getXpRequiredForNextLevel(this.character.level) - this.character.currentXp}</div>
-                    </p>
-                    <p>
-                        Spells:
+                    <p class="listBox">
+                        <div sq-flex class="item-highlight textRow">
+                            <span sq-mr-auto>Spells</span>
+                            <span>Rank</span>
+                        </div>
                         {
                             this.character.spells.length == 0 
-                            ? <div>[None]</div>    
+                            ? <div class="textRow">[None]</div>    
                             : this.character.spells.map((spell) => 
-                                    <div sq-flex><span sq-mr-auto>{spell.name}</span> {spell.rank}</div>
+                                    <div sq-flex class="textRow"><span sq-mr-auto>{spell.name}</span> {spell.rank}</div>
                                 )
                         }
                     </p>
-                    <p>
-                        Abilities:
+                    <p class="listBox">
+                        <div sq-flex class="item-highlight textRow">
+                            <span sq-mr-auto>Abilities</span>
+                            <span>Rank</span>
+                        </div>
                         {
                             this.character.abilities.length == 0 
-                            ? <div>[None]</div>    
+                            ? <div class="textRow">[None]</div>    
                             : this.character.abilities.map((ability) => 
-                                    <div sq-flex><span sq-mr-auto>{ability.name}</span> {ability.rank}</div>
+                                    <div sq-flex class="textRow"><span sq-mr-auto>{ability.name}</span> {ability.rank}</div>
                                 )
                         }
                     </p>
                     <p>
-                        <div sq-flex><span sq-mr-auto>Gold</span> {this.character.gold}</div>
-                        <div sq-flex>
+                        <div sq-flex class="textRow"><span sq-mr-auto>Gold</span> {this.character.gold}</div>
+                        <div sq-flex class="textRow">
                             <span sq-mr-auto>Market Saturation</span> {this.character.marketSaturation} / {this.character.maxMarketSaturation}
+                        </div>
+                        <div sq-flex class="textRow"><span sq-mr-auto>Encumbrance</span> {this.character.loot.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)} / {this.character.maxEncumbrance}</div>
+                        <div class="listBox">
+                            <div sq-flex class="item-highlight textRow">
+                                <span sq-mr-auto>Loot</span>
+                                <span>Qty</span>
+                            </div>
                             {
-                                this.character.marketSaturation >= this.character.maxMarketSaturation
-                                ? <div><b>MARKET SATURATED</b></div>
-                                : <br/>
+                                this.character.loot.length == 0
+                                ? <div class="textRow">[None]</div>
+                                : this.character.loot.map((item) => 
+                                        <div sq-flex class="textRow"><span sq-mr-auto>{item.name}</span> {item.quantity}</div>
+                                    )
                             }
                         </div>
-                        <div sq-flex><span sq-mr-auto>Encumbrance</span> {this.character.loot.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)} / {this.character.maxEncumbrance}</div>
-                        {
-                            this.character.loot.length == 0
-                            ? <div>[None]</div>
-                            : this.character.loot.map((item) => 
-                                    <div sq-flex><span sq-mr-auto>{item.name}</span> {item.quantity}</div>
-                                )
-                        }
                     </p>
                     <p>
-                        <div sq-flex><span sq-mr-auto>Renown</span> {this.character.renown}</div>
-                        <div sq-flex>
+                        <div sq-flex class="textRow"><span sq-mr-auto>Renown</span> {this.character.renown}</div>
+                        <div sq-flex class="textRow">
                             <span sq-mr-auto>Fatigue</span> {this.character.fatigue} / {this.character.maxFatigue}
+                        </div>
+                        <div sq-flex class="textRow"><span sq-mr-auto>Equipment Wear</span> {this.character.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)} / {this.character.maxEquipmentWear}</div>
+                        <div class="listBox">
+                            <div sq-flex class="item-highlight textRow">
+                                <span sq-mr-auto>Trophies</span>
+                                <span>Qty</span>
+                            </div>
                             {
-                                this.character.fatigue >= this.character.maxFatigue
-                                ? <div><b>FATIGUED</b></div>
-                                : <br/>
+                                this.character.trophies.length == 0
+                                ? <div class="textRow">[None]</div>
+                                : this.character.trophies.map((item) => 
+                                    <div sq-flex class="textRow"><span sq-mr-auto>{item.name}</span> {item.quantity}</div>
+                                )
                             }
                         </div>
-                        <div sq-flex><span sq-mr-auto>Equipment Wear</span> {this.character.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)} / {this.character.maxEquipmentWear}</div>
-                        {
-                            this.character.trophies.length == 0
-                            ? <div>[None]</div>
-                            : this.character.trophies.map((item) => 
-                                    <div sq-flex><span sq-mr-auto>{item.name}</span> {item.quantity}</div>
-                                )
-                        }
                     </p>
                     <p>
-                        <div sq-flex><span sq-mr-auto>Reputation</span> {this.character.reputation}</div>
-                        <div sq-flex>
+                        <div sq-flex class="textRow"><span sq-mr-auto>Reputation</span> {this.character.reputation}</div>
+                        <div sq-flex class="textRow">
                             <span sq-mr-auto>Social Exposure</span> {this.character.socialExposure} / {this.character.maxSocialCapital}
+                        </div>
+                        <div sq-flex class="textRow"><span sq-mr-auto>Questlog</span> {this.character.leads.length} / {this.character.maxQuestLogSize}</div>
+                        <div class="listBox">
+                            <div sq-flex class="item-highlight textRow">
+                                <span sq-mr-auto>Quests</span>
+                            </div>
                             {
-                                this.character.socialExposure >= this.character.maxSocialCapital
-                                ? <div><b>OVEREXPOSED</b></div>
-                                : <br/>
+                                this.character.leads.length == 0
+                                ? <div class="textRow">[None]</div>
+                                : this.character.leads.map((item) => 
+                                        <div class="textRow">{item.questlogName}</div>
+                                    )
                             }
                         </div>
-                        <div sq-flex><span sq-mr-auto>Questlog</span> {this.character.leads.length} / {this.character.maxQuestLogSize}</div>
-                        {
-                            this.character.leads.length == 0
-                            ? <div>[None]</div>
-                            : this.character.leads.map((item) => 
-                                    <div>{item.questlogName}</div>
+                    </p>
+                    <table class="listBox">
+                        <thead>
+                            <tr>
+                                <th style={{width:"40%"}}>Equipment</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                this.character.equipment.map(equip => 
+                                    <tr class="textRow">
+                                        <td style={{width: "40%"}}>{equip.type}</td>
+                                        {
+                                            !!equip.description
+                                            ? <td>{equip.description}</td>
+                                            : <td>[None]</td>
+                                        }
+                                    </tr>
                                 )
-                        }
-                    </p>
-                    <p>
-                        Equipment:
-                        {
-                            this.character.equipment.map(equip => 
-                                <div sq-flex>
-                                    <span sq-mr-auto>{equip.type}</span>&nbsp;
-                                    {
-                                        !!equip.description
-                                        ? <span>{equip.description}</span>
-                                        : <span>[None]</span>
-                                    }
-                                </div>
-                            )
-                        }
-                    </p>
-                    <p>
-                        Accolades:
+                            }
+                        </tbody>
+                    </table>
+                    <p class="listBox">
+                        <div sq-flex class="item-highlight textRow">Accolades</div>
                         {
                             this.character.accolades.map(accolade =>
-                                <div sq-flex>
+                                <div sq-flex class="textRow">
                                     <span sq-mr-auto>{AccoladeType[accolade.type]}</span>&nbsp;
                                     {
                                         accolade.received.length <= 0
@@ -179,9 +210,9 @@ export class AppHome {
                             )
                         }
                     </p>
-                    <p>
-                        Affiliations:
-                        <div sq-flex>
+                    <p class="listBox">
+                        <div sq-flex class="item-highlight textRow">Affiliations</div>
+                        <div sq-flex class="textRow">
                             <span sq-mr-auto>{AffiliationType.CONNECTIONS}</span>&nbsp;
                             {
                                 this.character.affiliations[AffiliationType.CONNECTIONS].length <= 0
@@ -195,7 +226,7 @@ export class AppHome {
                                 }</span>
                             }
                         </div>
-                        <div sq-flex>
+                        <div sq-flex class="textRow">
                             <span sq-mr-auto>{AffiliationType.MEMBERSHIPS}</span>&nbsp;
                             {
                                 this.character.affiliations[AffiliationType.MEMBERSHIPS].length <= 0
@@ -207,7 +238,7 @@ export class AppHome {
                                 }</span>
                             }
                         </div>
-                        <div sq-flex>
+                        <div sq-flex class="textRow">
                             <span sq-mr-auto>{AffiliationType.OFFICES}</span>&nbsp;
                             {
                                 this.character.affiliations[AffiliationType.OFFICES].length <= 0
@@ -223,8 +254,8 @@ export class AppHome {
                         </div>
                     </p>
                     <p>
-                        <div sq-flex><span sq-mr-auto>Current Adventure</span> {this.character.currentAdventure.name}</div>
-                        <div sq-flex><span sq-mr-auto>Adventure Progress</span> {this.character.adventureProgress} / {this.character.currentAdventure.progressRequired}</div>
+                        <div sq-flex class="textRow"><span sq-mr-auto>Current Adventure</span> {this.character.currentAdventure.name}</div>
+                        <div sq-flex class="textRow"><span sq-mr-auto>Adventure Progress</span> {this.character.adventureProgress} / {this.character.currentAdventure.progressRequired}</div>
                     </p>
                     <ion-button {...(this.activeTaskMode != TaskMode.LOOTING ? {color: 'light'} : {})} onClick={ () => this.taskModeButtonClicked('LOOTING')}>LOOTING</ion-button>
                     <ion-button color={this.activeTaskMode == TaskMode.GLADIATING ? 'default' : 'light'} onClick={ () => this.taskModeButtonClicked('GLADIATING')}>GLADIATING</ion-button>
@@ -233,12 +264,21 @@ export class AppHome {
 
                 <ion-footer>
                     <ion-toolbar>
+                        {
+                            this.character.marketSaturation >= this.character.maxMarketSaturation
+                            ? <div class="textRow"><b>MARKET SATURATED</b></div>
+                            : this.character.fatigue >= this.character.maxFatigue
+                                ? <div class="textRow"><b>FATIGUED</b></div>
+                                : this.character.socialExposure >= this.character.maxSocialCapital
+                                    ? <div class="textRow"><b>OVEREXPOSED</b></div>
+                                    : <br/>
+                        }
                         <p>
-                            Current Task:
+                            <div class="textRow">Current Task</div>
                             {
                                 !!this.activeTask
-                                ? <div>{this.activeTask.description}...</div>
-                                : <div>Loading...</div>
+                                ? <div class="textRow">{this.activeTask.description}...</div>
+                                : <div class="textRow">Loading...</div>
                             }
                         </p>
                     </ion-toolbar>
