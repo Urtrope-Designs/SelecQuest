@@ -303,9 +303,9 @@ export class AppHome {
                         <div sq-flex class="textRow"><span sq-mr-auto>Current Adventure</span> {this.character.currentAdventure.name}</div>
                         <div sq-flex class="textRow"><span sq-mr-auto>Adventure Progress</span> {this.character.adventureProgress} / {this.character.currentAdventure.progressRequired}</div>
                     </p>
-                    <ion-button {...(this.activeTaskMode != TaskMode.LOOTING ? {color: 'light'} : {})} onClick={ () => this.taskModeButtonClicked('LOOTING')}>LOOTING</ion-button>
-                    <ion-button color={this.activeTaskMode == TaskMode.GLADIATING ? 'default' : 'light'} onClick={ () => this.taskModeButtonClicked('GLADIATING')}>GLADIATING</ion-button>
-                    <ion-button color={this.activeTaskMode == TaskMode.INVESTIGATING ? 'default' : 'light'} onClick={ () => this.taskModeButtonClicked('INVESTIGATING')}>INVESTIGATING</ion-button>
+                    <ion-button {...(this.activeTaskMode != TaskMode.LOOTING ? {fill: 'clear'} : {})} onClick={ () => this.taskModeButtonClicked('LOOTING')}>LOOTING</ion-button>
+                    <ion-button {...(this.activeTaskMode == TaskMode.GLADIATING ? {color: 'default'} : {fill: 'clear'})} onClick={ () => this.taskModeButtonClicked('GLADIATING')}>GLADIATING</ion-button>
+                    <ion-button {...(this.activeTaskMode == TaskMode.INVESTIGATING ? {color: 'default'} : {fill: 'clear'})} onClick={ () => this.taskModeButtonClicked('INVESTIGATING')}>INVESTIGATING</ion-button>
                 </ion-content>
 
                 <ion-footer>
