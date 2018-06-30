@@ -23,6 +23,7 @@ app-home {
         background-color: var(--sq-primary-color);
         color: var(--sq-bg-color);
         font-weight: bold;
+        text-shadow: 0 0 .1rem;
     }
 
     th {
@@ -31,13 +32,16 @@ app-home {
 
     th, td {
         padding: .3rem 1rem .3rem 0;
+        vertical-align: top;
+    }
+    th:last-child, td:last-child {
+        padding-right: .4rem;
+        text-align: right;
     }
     th:first-child, td:first-child {
         padding-left: .4rem;
         padding-right: 1rem;
-    }
-    th:last-child, td:last-child {
-        padding-right: .4rem;
+        text-align: left;
     }
 
     .textRow {
@@ -57,5 +61,6 @@ app-home {
         background-color: var(--sq-primary-color);
         color: var(--sq-bg-color);
         font-weight: bold;
+        text-shadow: 0 0 .1rem;
     }
 }
