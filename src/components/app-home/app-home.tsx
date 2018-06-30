@@ -252,7 +252,7 @@ export class AppHome {
                     <table class="listBox">
                         <thead>
                             <tr>
-                                <th style={{width: "40%"}}>Affiliations</th>
+                                <th style={{width: "45%"}}>Affiliations</th>
                                 <th></th>    
                             </tr>
                         </thead>

@@ -79,7 +79,6 @@ const lootingTaskGen: TaskGenerator = {
     generateTask: (state: AppState) => {
         const {taskName, taskLevel, lootData} = generateLootingTaskContentsFromLevel(state.character.level);
         const durationSeconds = Math.floor(6 * taskLevel / state.character.level);
-        console.log('Loot duration seconds: ' + durationSeconds);
         const isMarketSaturated = state.character.marketSaturation >= state.character.maxMarketSaturation;
         const results: CharacterModification[] = [
             {
