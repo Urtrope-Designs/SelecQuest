@@ -31,16 +31,16 @@ export class AppHome {
         })
     }
 
-    taskModeButtonClicked(newTaskModeString: string) {
+    taskModeButtonClicked(newTaskModeString: TaskMode) {
         let newTaskMode;
         switch(newTaskModeString) {
-            case 'LOOTING':
+            case TaskMode.LOOTING:
                 newTaskMode = TaskMode.LOOTING;
                 break;
-            case 'GLADIATING':
+            case TaskMode.GLADIATING:
                 newTaskMode = TaskMode.GLADIATING;
                 break;
-            case 'INVESTIGATING':
+            case TaskMode.INVESTIGATING:
                 newTaskMode = TaskMode.INVESTIGATING;
                 break;
         }
@@ -162,7 +162,7 @@ export class AppHome {
                         </div>
                         <div sq-flex class="textRow"><span sq-mr-auto>Equipment Wear</span> {this.character.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)} / {this.character.maxEquipmentWear}</div>
                     </p>    
-                    <table>
+                    <table class="listBox">
                         <thead>
                             <tr>
                                 <td style={{width: "65%"}}>Trophies</td>
@@ -303,9 +303,6 @@ export class AppHome {
                         <div sq-flex class="textRow"><span sq-mr-auto>Current Adventure</span> {this.character.currentAdventure.name}</div>
                         <div sq-flex class="textRow"><span sq-mr-auto>Adventure Progress</span> {this.character.adventureProgress} / {this.character.currentAdventure.progressRequired}</div>
                     </p>
-                    <ion-button {...(this.activeTaskMode != TaskMode.LOOTING ? {fill: 'clear'} : {})} onClick={ () => this.taskModeButtonClicked('LOOTING')}>LOOTING</ion-button>
-                    <ion-button {...(this.activeTaskMode == TaskMode.GLADIATING ? {color: 'default'} : {fill: 'clear'})} onClick={ () => this.taskModeButtonClicked('GLADIATING')}>GLADIATING</ion-button>
-                    <ion-button {...(this.activeTaskMode == TaskMode.INVESTIGATING ? {color: 'default'} : {fill: 'clear'})} onClick={ () => this.taskModeButtonClicked('INVESTIGATING')}>INVESTIGATING</ion-button>
                 </ion-content>
 
                 <ion-footer>
@@ -319,6 +316,11 @@ export class AppHome {
                                     ? <div class="textRow"><b>OVEREXPOSED</b></div>
                                     : <br/>
                         }
+                        <div class="buttonRow">
+                            <button {...(this.activeTaskMode != TaskMode.LOOTING ? {} : {class: 'selected'})} onClick={ () => this.taskModeButtonClicked(TaskMode.LOOTING)}>Looting</button>
+                            <button {...(this.activeTaskMode == TaskMode.GLADIATING ? {class: 'selected'} : {})} onClick={ () => this.taskModeButtonClicked(TaskMode.GLADIATING)}>Gladiating</button>
+                            <button {...(this.activeTaskMode == TaskMode.INVESTIGATING ? {class: 'selected'} : {})} onClick={ () => this.taskModeButtonClicked(TaskMode.INVESTIGATING)}>Investigating</button>
+                        </div>
                         <p>
                             <div class="textRow">Current Task</div>
                             {

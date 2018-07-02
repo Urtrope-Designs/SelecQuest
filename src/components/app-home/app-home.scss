@@ -5,10 +5,10 @@ app-home {
         padding: 15px;
 
         & div {
-            font-family: 'whitrabt', sans-serif;
-            font-family: 'bitwise', sans-serif;
-            text-shadow: 0 0 .5rem;
-            letter-spacing: .1rem;        
+            // font-family: 'whitrabt', sans-serif;
+            // font-family: 'bitwise', sans-serif;
+            // text-shadow: 0 0 .5rem;
+            // letter-spacing: .1rem;        
         }
     }
 
@@ -62,5 +62,11 @@ app-home {
         color: var(--sq-bg-color);
         font-weight: bold;
         text-shadow: 0 0 .1rem;
+    }
+
+    .buttonRow {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
     }
 }

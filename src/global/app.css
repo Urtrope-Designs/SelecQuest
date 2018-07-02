@@ -5,18 +5,42 @@ body {
     font-family: 'bitwise', sans-serif;         /* leave uncommented so we can change on fly in browser */
     font-family: 'whitrabt', sans-serif;
     color: var(--sq-primary-color);
+    text-shadow: 0 0 .5rem;
+    /* letter-spacing: .1rem; */
 }
 
-h1, h2, h3, h4, h5, p {
+h1, h2, h3, h4, h5, p, button, div {
     font-family: 'bitwise', sans-serif;
     font-family: 'whitrabt', sans-serif;
     text-shadow: 0 0 .5rem;
     letter-spacing: .1rem;
 }
 
+button {
+    padding: .4rem;
+    line-height: initial;
+    background-color: transparent;
+    color: var(--sq-primary-color);
+}
+
+button:active, button:focus {
+    outline: none;
+}
+
+button.selected {
+    background-color: var(--sq-primary-color);
+    color: var(--sq-bg-color);
+}
+
 :root {
     --sq-bg-color: #222922;
     --sq-primary-color: #61f180;
+    --ion-color-primary: #61f180;
+    --ion-color-primary-rgb: 97,241,128;
+    --ion-color-primary-contrast: #222922;
+    --ion-color-primary-contrast-rgb: 34, 41, 34;
+    --ion-color-primary-shade: #61f180;
+    --ion-color-primary-tint: #61f180;
     --ion-background-md-color: var(--sq-bg-color);
     --ion-background-ios-color: var(--sq-bg-color);
     --ion-background-color: var(--sq-bg-color);
@@ -47,3 +71,5 @@ h1, h2, h3, h4, h5, p {
     font-family: 'whitrabt';
     src: url('/assets/fonts/whitrabt.woff');
 }
+
+/** Ionic overrides **/
