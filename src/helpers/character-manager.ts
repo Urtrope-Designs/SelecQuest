@@ -384,18 +384,23 @@ export function generateNewAccoladeModification(character: Character): Character
 function generateRandomAccolade(character: Character): CharAccolade {
     const newAccoladeType = AccoladeType[randFromList(Object.keys(AccoladeType).filter(key => isNaN(+key)))];
     let newAccoladeDescription = '';
+    let exclusions: string = '';
     switch(newAccoladeType) {
         case AccoladeType.Epithets:
-            newAccoladeDescription = generateRandomEpithetDescription(character.accolades[AccoladeType.Epithets].received.join(''));
+            exclusions = character.accolades.find(accolade => accolade.type == AccoladeType.Epithets).received.join(' ');
+            newAccoladeDescription = generateRandomEpithetDescription(exclusions);
             break;
         case AccoladeType.Titles:
-            newAccoladeDescription = generateRandomTitleDescription(character.accolades[AccoladeType.Titles].received.join(''));
+            exclusions = character.accolades.find(accolade => accolade.type == AccoladeType.Titles).received.join(' ');
+            newAccoladeDescription = generateRandomTitleDescription(exclusions);
             break;
-        case AccoladeType.Sobriquets:
-            newAccoladeDescription = generateRandomSobriquetDescription(character.accolades[AccoladeType.Sobriquets].received.join(''));
+            case AccoladeType.Sobriquets:
+            exclusions = character.accolades.find(accolade => accolade.type == AccoladeType.Sobriquets).received.join(' ');
+            newAccoladeDescription = generateRandomSobriquetDescription(exclusions);
             break;
-        case AccoladeType.Honorifics:
-            newAccoladeDescription = generateRandomHonorificDescription(character.accolades[AccoladeType.Honorifics].received.join(''), character.level, character.name);
+            case AccoladeType.Honorifics:
+            exclusions = character.accolades.find(accolade => accolade.type == AccoladeType.Honorifics).received.join(' ');
+            newAccoladeDescription = generateRandomHonorificDescription(exclusions, character.level, character.name);
             break;
     }
 

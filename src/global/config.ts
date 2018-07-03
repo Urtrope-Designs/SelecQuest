@@ -674,9 +674,14 @@ export const HONORIFIC_TEMPLATES: string[] = [
     'Prof %NAME%',
     'Reverend %NAME%',
     'Professor %NAME%',
+    'Swami %NAME%',
     '%NAME%, MD',
+    'The Right Reverend %NAME%',
     'Herr Doktor %NAME%',
+    'Frau Doktor %NAME%',
     'Elder %NAME%',
+    'Your Excellency, %NAME%',
+    'The Most Honorable %NAME%',
     'Primus %NAME%',
 ]
 
