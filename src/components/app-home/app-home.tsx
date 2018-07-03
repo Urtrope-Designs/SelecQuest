@@ -56,21 +56,22 @@ export class AppHome {
     render() {
         return (
             <ion-page class='show-page'>
-
-                <ion-content>
+                <ion-header>
                     <h1>SelecQuest</h1>
                     <div class="buttonRow">
                         {
                             Object.keys(VisibleSection).map(sectionName => 
                                 <button 
-                                    {...(this.activeVisibleSection == VisibleSection[sectionName] ? {class: 'selected'} : {})}
-                                    onClick={ () => this.visibleSectionButtonClicked(VisibleSection[sectionName])}
+                                {...(this.activeVisibleSection == VisibleSection[sectionName] ? {class: 'selected'} : {})}
+                                onClick={ () => this.visibleSectionButtonClicked(VisibleSection[sectionName])}
                                 >
                                     {VisibleSection[sectionName]}
                                 </button>
                             )
                         }
                     </div>
+                </ion-header>
+                <ion-content>
                     <section class={this.activeVisibleSection == VisibleSection.character ? 'charSheetSection charSheetSection-selected' : 'charSheetSection'}>
                         <table class="listBox">
                             <thead>
@@ -336,30 +337,28 @@ export class AppHome {
                 </ion-content>
 
                 <ion-footer>
-                    <ion-toolbar>
+                    {
+                        this.character.marketSaturation >= this.character.maxMarketSaturation
+                        ? <div class="textRow"><b>MARKET SATURATED</b></div>
+                        : this.character.fatigue >= this.character.maxFatigue
+                            ? <div class="textRow"><b>FATIGUED</b></div>
+                            : this.character.socialExposure >= this.character.maxSocialCapital
+                                ? <div class="textRow"><b>OVEREXPOSED</b></div>
+                                : <br/>
+                    }
+                    <div class="buttonRow">
+                        <button {...(this.activeTaskMode != TaskMode.LOOTING ? {} : {class: 'selected'})} onClick={ () => this.taskModeButtonClicked(TaskMode.LOOTING)}>Looting</button>
+                        <button {...(this.activeTaskMode == TaskMode.GLADIATING ? {class: 'selected'} : {})} onClick={ () => this.taskModeButtonClicked(TaskMode.GLADIATING)}>Gladiating</button>
+                        <button {...(this.activeTaskMode == TaskMode.INVESTIGATING ? {class: 'selected'} : {})} onClick={ () => this.taskModeButtonClicked(TaskMode.INVESTIGATING)}>Investigating</button>
+                    </div>
+                    <p>
+                        <div class="textRow">Current Task</div>
                         {
-                            this.character.marketSaturation >= this.character.maxMarketSaturation
-                            ? <div class="textRow"><b>MARKET SATURATED</b></div>
-                            : this.character.fatigue >= this.character.maxFatigue
-                                ? <div class="textRow"><b>FATIGUED</b></div>
-                                : this.character.socialExposure >= this.character.maxSocialCapital
-                                    ? <div class="textRow"><b>OVEREXPOSED</b></div>
-                                    : <br/>
+                            !!this.activeTask
+                            ? <div class="textRow">{this.activeTask.description}...</div>
+                            : <div class="textRow">Loading...</div>
                         }
-                        <div class="buttonRow">
-                            <button {...(this.activeTaskMode != TaskMode.LOOTING ? {} : {class: 'selected'})} onClick={ () => this.taskModeButtonClicked(TaskMode.LOOTING)}>Looting</button>
-                            <button {...(this.activeTaskMode == TaskMode.GLADIATING ? {class: 'selected'} : {})} onClick={ () => this.taskModeButtonClicked(TaskMode.GLADIATING)}>Gladiating</button>
-                            <button {...(this.activeTaskMode == TaskMode.INVESTIGATING ? {class: 'selected'} : {})} onClick={ () => this.taskModeButtonClicked(TaskMode.INVESTIGATING)}>Investigating</button>
-                        </div>
-                        <p>
-                            <div class="textRow">Current Task</div>
-                            {
-                                !!this.activeTask
-                                ? <div class="textRow">{this.activeTask.description}...</div>
-                                : <div class="textRow">Loading...</div>
-                            }
-                        </p>
-                    </ion-toolbar>
+                    </p>
                 </ion-footer>
             </ion-page>
         );

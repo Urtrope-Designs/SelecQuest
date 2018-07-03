@@ -1,15 +1,8 @@
 @import '../global/app.css';
 
-app-home {
-    ion-scroll {
+ion-page {
+    ion-header, ion-footer, ion-scroll {
         padding: 15px;
-
-        & div {
-            // font-family: 'whitrabt', sans-serif;
-            // font-family: 'bitwise', sans-serif;
-            // text-shadow: 0 0 .5rem;
-            // letter-spacing: .1rem;        
-        }
     }
 
     .charSheetSection:not(.charSheetSection-selected) {
@@ -66,12 +59,6 @@ app-home {
         color: var(--sq-bg-color);
         font-weight: bold;
         text-shadow: 0 0 .1rem;
-    }
-
-    .buttonRow {
-        display: flex;
-        flex-wrap: wrap;
-        margin-bottom: 1rem;
     }
 
     .buttonRow button {
