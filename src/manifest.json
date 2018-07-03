@@ -1,6 +1,6 @@
 {
-  "name": "Ionic PWA Toolkit",
-  "short_name": "Ionic PWA",
+  "name": "SelecQuest",
+  "short_name": "SelecQuest",
   "start_url": "/",
   "display": "standalone",
   "icons": [{
