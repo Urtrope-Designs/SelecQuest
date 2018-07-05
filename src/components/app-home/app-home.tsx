@@ -332,6 +332,22 @@ export class AppHome {
                         <p>
                             <div sq-flex class="textRow"><span sq-mr-auto>Current Adventure</span> {this.character.currentAdventure.name}</div>
                             <div sq-flex class="textRow"><span sq-mr-auto>Adventure Progress</span> {this.character.adventureProgress} / {this.character.currentAdventure.progressRequired}</div>
+                            <table class="listBox">
+                                <thead>
+                                    <tr>
+                                        <th>Completed Adventures</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        this.character.completedAdventures.length === 0
+                                        ? <tr><td>[None]</td></tr>
+                                        : this.character.completedAdventures.map((adventure: string) => 
+                                            <tr><td>{adventure}</td></tr>
+                                        )
+                                    }
+                                </tbody>
+                            </table>
                         </p>
                     </section>
                 </ion-content>
@@ -352,7 +368,6 @@ export class AppHome {
                         <button {...(this.activeTaskMode == TaskMode.INVESTIGATING ? {class: 'selected'} : {})} onClick={ () => this.taskModeButtonClicked(TaskMode.INVESTIGATING)}>Investigating</button>
                     </div>
                     <p>
-                        <div class="textRow">Current Task</div>
                         {
                             !!this.activeTask
                             ? <div class="textRow">{this.activeTask.description}...</div>

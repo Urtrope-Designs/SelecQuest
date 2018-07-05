@@ -17,8 +17,8 @@ ion-page {
     }
 
     thead {
-        background-color: var(--sq-primary-color);
-        color: var(--sq-bg-color);
+        background-color: var(--sq-color-primary);
+        color: var(--sq-color-primary-contrast);
         font-weight: bold;
         text-shadow: 0 0 .1rem;
     }
@@ -47,6 +47,11 @@ ion-page {
 
     .listBox {
         border: 2px solid;
+        min-height: 7rem;
+
+        & tr:not(:last-child) {
+            height: min-content;
+        }
         
         & .textRow {
             padding-left: .4rem;
@@ -55,8 +60,8 @@ ion-page {
     }
 
     .item-highlight {
-        background-color: var(--sq-primary-color);
-        color: var(--sq-bg-color);
+        background-color: var(--sq-color-primary);
+        color: var(--sq-color-primary-contrast);
         font-weight: bold;
         text-shadow: 0 0 .1rem;
     }
