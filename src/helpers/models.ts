@@ -82,9 +82,9 @@ export enum CharacterModificationType {
 }
 
 export enum AffiliationType {
-    CONNECTIONS = 'connections',
-    MEMBERSHIPS = 'memberships',
-    OFFICES = 'offices',
+    CONNECTIONS = 'Connections',
+    MEMBERSHIPS = 'Memberships',
+    OFFICES = 'Offices',
 }
 
 export class CharacterStats {

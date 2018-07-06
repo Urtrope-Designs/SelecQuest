@@ -1,5 +1,5 @@
 import { CharLoot, CharTrophy, LootingTarget, GladiatingTarget, TaskTargetType, CharLead, LeadType, LeadTarget } from "./models";
-import { randRange, randSign, randFromList, makeStringIndefinite, generateRandomName, makeVerbGerund } from "./utils";
+import { randRange, randSign, randFromList, makeStringIndefinite, generateRandomName, makeVerbGerund, capitalizeInitial } from "./utils";
 import { TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, TASK_GERUNDS, STANDARD_GLADIATING_TARGETS, STANDARD_LOOTING_TARGETS, RACES, CLASSES, STANDARD_LEAD_GATHERING_TARGETS, STANDARD_LEAD_TARGETS, IS_DEBUG } from "../global/config";
 
 function determineTaskQuantity(targetLevel: number, taskLevel: number) {
@@ -141,7 +141,7 @@ export function generateGladiatingTaskContentsFromLevel(level: number): {taskNam
         taskLevel = targetLevel * quantity;
 
         trophyData.push({
-            name: gladiatingTarget.reward,
+            name: capitalizeInitial(gladiatingTarget.reward),
             quantity: 1,
             value: 1,
         });
@@ -151,26 +151,26 @@ export function generateGladiatingTaskContentsFromLevel(level: number): {taskNam
 }
 
 export function generateInvestigatingTaskContents(): {taskName: string, leadData: CharLead[]} {
-    let taskName = '';
+    let investigatingTaskName = '';
     let leadData = [];
 
     const investigatingTarget = randFromList(STANDARD_LEAD_GATHERING_TARGETS);
 
-    taskName = `${investigatingTarget.gerundPhrase} ${randFromList(investigatingTarget.predicateOptions)}`;
+    investigatingTaskName = capitalizeInitial(`${investigatingTarget.gerundPhrase} ${randFromList(investigatingTarget.predicateOptions)}`);
 
     const leadTargetType: LeadType = randFromList(investigatingTarget.leadTypes);
     const leadTarget: LeadTarget = randFromList(STANDARD_LEAD_TARGETS[leadTargetType]);
 
     const leadPredicate = leadTarget.predicateFactory.apply(null);
     const lead: CharLead = {
-        questlogName: `${leadTarget.verb} ${leadPredicate}`,
-        taskName: `${makeVerbGerund(leadTarget.verb)} ${leadPredicate}`,
+        questlogName: capitalizeInitial(`${leadTarget.verb} ${leadPredicate}`),
+        taskName: capitalizeInitial(`${makeVerbGerund(leadTarget.verb)} ${leadPredicate}`),
         value: 1,
     }
 
     leadData.push(lead);
 
-    return {taskName: taskName, leadData: leadData};
+    return {taskName: investigatingTaskName, leadData: leadData};
 }
 
 export function getTradeInCostForLevel(level: number): number {

@@ -33,6 +33,7 @@ button:active, button:focus {
 button.selected {
     background-color: var(--sq-color-primary);
     color: var(--sq-color-primary-contrast);
+    font-weight: bold;
 }
 
 :root {

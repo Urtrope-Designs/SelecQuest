@@ -1,5 +1,5 @@
 import { Character, CharacterModificationType, AccoladeType, AffiliationType, CharacterModification, getCharacterStatList, CharacterStats, CharEquipment, EquipmentType, EquipmentMaterial, CharAccolade, CharAffiliations, CharConnection, CharMembership, CharOffice, CharTitlePosition } from './models';
-import { randRange, randFromList, deepCopyObject, randFromListLow, randFromListHigh, generateRandomName } from './utils';
+import { randRange, randFromList, deepCopyObject, randFromListLow, randFromListHigh, generateRandomName, capitalizeInitial } from './utils';
 import { PROLOGUE_ADVENTURE_NAME } from './storyline-helpers';
 import { SPELLS, ABILITIES, IS_DEBUG, WEAPON_MATERIALS, SHEILD_MATERIALS, ARMOR_MATERIALS, EPITHET_DESCRIPTORS, EPITHET_BEING_ALL, TITLE_POSITIONS_ALL, SOBRIQUET_MODIFIERS, SOBRIQUET_NOUN_PORTION, HONORIFIC_TEMPLATES, OFFICE_POSITIONS_ALL, STANDARD_GROUPS_INDEFINITE } from '../global/config';
 
@@ -456,11 +456,7 @@ function generateRandomSobriquetDescription(exclusions: string) {
         noun += nounPortion;
     }
 
-    // capitalize
-    noun = noun[0].toLocaleUpperCase() + noun.slice(1);
-
-    
-    const sobriquetDescription = `${modifier} ${noun}`;
+    const sobriquetDescription = `${modifier} ${capitalizeInitial(noun)}`;
     return sobriquetDescription;
 }
 function generateRandomHonorificDescription(exclusions: string, targetLevel: number, heroName: string) {
@@ -523,7 +519,7 @@ function generateRandomAffiliation(character: Character): AffiliationGenerationD
 
 function generateRandomDistinctConnection(existingAffiliations: CharAffiliations): {type: AffiliationType, object: CharConnection} {
     const availableDistinctGroups: string[] = STANDARD_GROUPS_INDEFINITE.filter((groupName: string) => {
-        return existingAffiliations.connections.map(connection => connection.affiliatedGroupName).indexOf(groupName) === -1;
+        return existingAffiliations[AffiliationType.CONNECTIONS].map(connection => connection.affiliatedGroupName).indexOf(groupName) === -1;
     });
 
     if (availableDistinctGroups.length === 0) {
@@ -551,8 +547,8 @@ function generateRandomDistinctConnection(existingAffiliations: CharAffiliations
 }
 
 function generateRandomDistinctMembership(existingAffiliations: CharAffiliations): {type: AffiliationType, object: CharMembership} {
-    const availableMembershipGroups: string[] = existingAffiliations.connections.map(connection => connection.affiliatedGroupName).filter((groupName: string) => {
-        return existingAffiliations.memberships.map(membership => membership.affiliatedGroupName).indexOf(groupName) === -1;
+    const availableMembershipGroups: string[] = existingAffiliations[AffiliationType.CONNECTIONS].map(connection => connection.affiliatedGroupName).filter((groupName: string) => {
+        return existingAffiliations[AffiliationType.MEMBERSHIPS].map(membership => membership.affiliatedGroupName).indexOf(groupName) === -1;
     });
 
     if (availableMembershipGroups.length === 0) {
@@ -561,7 +557,7 @@ function generateRandomDistinctMembership(existingAffiliations: CharAffiliations
 
     const newMembershipGroupName = randFromList(availableMembershipGroups);
     const newMembership: CharMembership = {
-        affiliatedGroupName: newMembershipGroupName,
+        affiliatedGroupName: capitalizeInitial(newMembershipGroupName),
     };
     const returnData = {
         type: AffiliationType.MEMBERSHIPS,
@@ -571,8 +567,8 @@ function generateRandomDistinctMembership(existingAffiliations: CharAffiliations
 }
 
 function generateRandomDistinctOffice(existingAffiliations: CharAffiliations): {type: AffiliationType, object: CharOffice} {
-    const availableOfficeGroups: string[] = existingAffiliations.memberships.map(membership => membership.affiliatedGroupName).filter((groupName: string) => {
-        return existingAffiliations.offices.map(office => office.affiliatedGroupName).indexOf(groupName) === -1;
+    const availableOfficeGroups: string[] = existingAffiliations[AffiliationType.MEMBERSHIPS].map(membership => membership.affiliatedGroupName).filter((groupName: string) => {
+        return existingAffiliations[AffiliationType.OFFICES].map(office => office.affiliatedGroupName).indexOf(groupName) === -1;
     })
     
     if (availableOfficeGroups.length === 0) {
@@ -598,7 +594,7 @@ function generateRandomDistinctOffice(existingAffiliations: CharAffiliations): {
 
 function generateRandomNonDupOfficeObject(existingAffiliations: CharAffiliations): {type: AffiliationType, object: CharOffice} {
     const group = randFromList(STANDARD_GROUPS_INDEFINITE);
-    const existingOfficesForGroup: string[] = existingAffiliations.offices
+    const existingOfficesForGroup: string[] = existingAffiliations[AffiliationType.OFFICES]
         .filter(office => office.affiliatedGroupName == group)
         .map(office => office.officeTitleDescription);
     const availableGroupOffices: string[] = OFFICE_POSITIONS_ALL.filter((office: string) => {

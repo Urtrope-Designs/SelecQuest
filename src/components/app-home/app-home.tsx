@@ -1,8 +1,9 @@
-import { Component, Prop, State, Event, EventEmitter } from '@stencil/core';
+import { Component, Prop, State, Event, EventEmitter, Element } from '@stencil/core';
 import { Observable } from 'rxjs/Observable';
 
 import { AppState, Character, Task, TaskMode, AccoladeType, AffiliationType, CharConnection, CharMembership, CharOffice } from '../../helpers/models';
 import {getXpRequiredForNextLevel} from '../../helpers/character-manager';
+import { capitalizeInitial } from '../../helpers/utils';
 
 @Component({
     tag: 'app-home',
@@ -11,6 +12,7 @@ import {getXpRequiredForNextLevel} from '../../helpers/character-manager';
 export class AppHome {
     @Prop() appState: Observable<AppState>;
 
+    @Element() homeEl: HTMLElement;
     @State() character: Character;
     @State() activeTask: Task;
     @State() activeTaskMode: TaskMode;
@@ -51,6 +53,8 @@ export class AppHome {
 
     visibleSectionButtonClicked(newVisibleSection: VisibleSection) {
         this.activeVisibleSection = newVisibleSection;
+        const scrollElem = this.homeEl.querySelector('ion-content');
+        scrollElem.scrollToTop(0);
     }
 
     render() {
@@ -159,7 +163,7 @@ export class AppHome {
                             <tbody>
                                 {
                                     this.character.equipment.map(equip => 
-                                        <tr class="textRow">
+                                        <tr>
                                             <td style={{width: "40%"}}>{equip.type}</td>
                                             {
                                                 !!equip.description
@@ -191,7 +195,7 @@ export class AppHome {
                                     ? <tr><td colSpan={2}>[None]</td></tr>
                                     : this.character.loot.map((item) => 
                                             <tr>
-                                                <td>{item.name}</td>
+                                                <td>{capitalizeInitial(item.name)}</td>
                                                 <td>{item.quantity}</td>
                                             </tr>
                                         )
@@ -203,7 +207,7 @@ export class AppHome {
                         <table class="listBox">
                             <thead>
                                 <tr>
-                                    <th style={{width: "43%"}}>Accolades</th>
+                                    <th style={{width: "45%"}}>Accolades</th>
                                     <th></th>    
                                 </tr>
                             </thead>
@@ -325,7 +329,7 @@ export class AppHome {
                             </tbody>
                         </table>
                     </section>
-                    <section class={this.activeVisibleSection == VisibleSection.progress ? 'charSheetSection charSheetSection-selected' : 'charSheetSection'}>                    
+                    <section class={this.activeVisibleSection == VisibleSection.plot ? 'charSheetSection charSheetSection-selected' : 'charSheetSection'}>                    
                         <p>
                             <div sq-flex class="textRow"><span sq-mr-auto>XP to next level</span> {getXpRequiredForNextLevel(this.character.level) - this.character.currentXp}</div>
                         </p>
@@ -386,5 +390,5 @@ enum VisibleSection {
     deeds = "Deeds",
     social = "Social",
     actions = "Actions",
-    progress = "Progress",
+    plot = "Plot",
 }

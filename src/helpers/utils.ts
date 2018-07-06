@@ -110,6 +110,11 @@ export function doesEndWith(baseString: string, ending: string): boolean {
     return baseString.slice(baseString.length - ending.length, baseString.length) == ending;
 }
 
+export function capitalizeInitial(baseString: string): string {
+    if (!baseString) return baseString;
+    return baseString.charAt(0).toLocaleUpperCase() + baseString.slice(1);
+}
+
 export function generateRandomName(): string {
     let name = '';
 
@@ -118,7 +123,7 @@ export function generateRandomName(): string {
     } else {
         for (var i = 0; i <= 5; ++i)
             name += randFromList(RANDOM_NAME_PARTS[i % 3]);
-        name = name.charAt(0).toUpperCase() + name.slice(1);
+        name = capitalizeInitial(name);
     }
 
     return name;
