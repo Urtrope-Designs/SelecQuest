@@ -1,7 +1,7 @@
 import { Component, Prop, State, Event, EventEmitter, Element } from '@stencil/core';
 import { Observable } from 'rxjs/Observable';
 
-import { AppState, Character, Task, TaskMode, AccoladeType, AffiliationType, CharConnection, CharMembership, CharOffice } from '../../helpers/models';
+import { AppState, Character, Task, TaskMode, AccoladeType, AffiliationType, CharConnection, CharMembership, CharOffice, EquipmentType } from '../../helpers/models';
 import {getXpRequiredForNextLevel} from '../../helpers/character-manager';
 import { capitalizeInitial } from '../../helpers/utils';
 
@@ -57,6 +57,20 @@ export class AppHome {
         scrollElem.scrollToTop(0);
     }
 
+    findUpdate(attributeName: string) {
+        return this.character.latestModifications.find(mod => mod.attributeName === attributeName);
+    }
+    highlightOrNot(conditional) {
+        return conditional ? {class: 'textRow-highlight'} : {};
+    }
+    highlightModifiedAttribute(attributeName: string) {
+        return this.highlightOrNot(!!this.findUpdate(attributeName));
+    }
+    highlightModifiedEquipmentType(attributeName: string, equipmentType: EquipmentType) {
+        const update = this.findUpdate(attributeName);
+        return this.highlightOrNot(!!update && update.data == equipmentType);
+    }
+
     render() {
         return (
             <ion-page class='show-page'>
@@ -88,7 +102,7 @@ export class AppHome {
                                 <tr><td>Name</td><td>{this.character.name}</td></tr>
                                 <tr><td>Race</td><td>{this.character.raceName}</td></tr>
                                 <tr><td>Class</td><td>{this.character.class}</td></tr>
-                                <tr><td>Level</td><td>{this.character.level}</td></tr>
+                                <tr {...this.highlightModifiedAttribute('level')}><td>Level</td><td>{this.character.level}</td></tr>
                             </tbody>
                         </table>
                         <table class="listBox">
@@ -99,14 +113,14 @@ export class AppHome {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr><td>Str</td><td>{this.character.str}</td></tr>
-                                <tr><td>Dex</td><td>{this.character.dex}</td></tr>
-                                <tr><td>Con</td><td>{this.character.con}</td></tr>
-                                <tr><td>Wis</td><td>{this.character.wis}</td></tr>
-                                <tr><td>Int</td><td>{this.character.int}</td></tr>
-                                <tr><td>Cha</td><td>{this.character.cha}</td></tr>
-                                <tr><td>Max HP</td><td>{this.character.maxHp}</td></tr>
-                                <tr><td>Max MP</td><td>{this.character.maxMp}</td></tr>
+                                <tr {...this.highlightModifiedAttribute('str')}><td>Str</td><td>{this.character.str}</td></tr>
+                                <tr {...this.highlightModifiedAttribute('dex')}><td>Dex</td><td>{this.character.dex}</td></tr>
+                                <tr {...this.highlightModifiedAttribute('con')}><td>Con</td><td>{this.character.con}</td></tr>
+                                <tr {...this.highlightModifiedAttribute('wis')}><td>Wis</td><td>{this.character.wis}</td></tr>
+                                <tr {...this.highlightModifiedAttribute('int')}><td>Int</td><td>{this.character.int}</td></tr>
+                                <tr {...this.highlightModifiedAttribute('cha')}><td>Cha</td><td>{this.character.cha}</td></tr>
+                                <tr {...this.highlightModifiedAttribute('maxHp')}><td>Max HP</td><td>{this.character.maxHp}</td></tr>
+                                <tr {...this.highlightModifiedAttribute('maxMp')}><td>Max MP</td><td>{this.character.maxMp}</td></tr>
                             </tbody>
                         </table>
                     </section>
@@ -163,7 +177,7 @@ export class AppHome {
                             <tbody>
                                 {
                                     this.character.equipment.map(equip => 
-                                        <tr>
+                                        <tr {...this.highlightModifiedEquipmentType('equipment', equip.type)}>
                                             <td style={{width: "40%"}}>{equip.type}</td>
                                             {
                                                 !!equip.description

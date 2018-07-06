@@ -85,22 +85,29 @@ export function createNewCharacter(): Character {
         currentAdventure: {name: PROLOGUE_ADVENTURE_NAME, progressRequired: 28},
         completedAdventures: [],
         adventureProgress: 0,
+        latestModifications: [],
     }
 
     return newChar;
 }
     
-export function applyCharacterModifications(baseChar: Character, characterMods: CharacterModification[]): Character {
+export function applyCharacterModifications(baseChar: Character, characterMods: CharacterModification[], resetModsList = true): Character {
     let newChar: Character = deepCopyObject(baseChar);         // need to deep clone rather than using Object.assign() or spread operator
+
+    if (resetModsList) {
+        newChar.latestModifications = [];
+    }
 
     for (let result of characterMods) {
         switch(result.type) {
             case CharacterModificationType.INCREASE:
             case CharacterModificationType.DECREASE:
                 newChar[result.attributeName] += result.data;
+                newChar.latestModifications.push({attributeName: result.attributeName, data: null});
                 break;
             case CharacterModificationType.SET:
                 newChar[result.attributeName] = result.data;
+                newChar.latestModifications.push({attributeName: result.attributeName, data: null});
                 break;
             case CharacterModificationType.SET_EQUIPMENT:
                 result.data.map((equip: CharEquipment) => {
@@ -108,6 +115,7 @@ export function applyCharacterModifications(baseChar: Character, characterMods: 
                         return e.type == equip.type;
                     })
                     existingEquipment.description = equip.description;
+                    newChar.latestModifications.push({attributeName: result.attributeName, data: equip.type});
                 })
                 break;
             case CharacterModificationType.ADD_RANK:

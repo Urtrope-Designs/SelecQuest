@@ -145,6 +145,7 @@ export interface Character extends CharacterStats {
     currentAdventure: Adventure;
     completedAdventures: string[];
     adventureProgress: number;
+    latestModifications: {attributeName: string, data: any}[];
 }
 
 export interface CharSpell {
