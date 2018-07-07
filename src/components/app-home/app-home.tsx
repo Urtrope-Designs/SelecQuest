@@ -281,7 +281,7 @@ export class AppHome {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                <tr {...this.highlightModifiedAttribute('affiliations', AffiliationType.CONNECTIONS)}>
                                     <td>{AffiliationType.CONNECTIONS}</td>
                                     {
                                         this.character.affiliations[AffiliationType.CONNECTIONS].length <= 0
@@ -295,7 +295,7 @@ export class AppHome {
                                         }</td>
                                     }
                                 </tr>
-                                <tr>
+                                <tr {...this.highlightModifiedAttribute('affiliations', AffiliationType.MEMBERSHIPS)}>
                                     <td>{AffiliationType.MEMBERSHIPS}</td>
                                     {
                                         this.character.affiliations[AffiliationType.MEMBERSHIPS].length <= 0
@@ -307,7 +307,7 @@ export class AppHome {
                                         }</td>
                                     }
                                 </tr>
-                                <tr>
+                                <tr {...this.highlightModifiedAttribute('affiliations', AffiliationType.OFFICES)}>
                                     <td>{AffiliationType.OFFICES}</td>
                                     {
                                         this.character.affiliations[AffiliationType.OFFICES].length <= 0
@@ -325,11 +325,11 @@ export class AppHome {
                             </tbody>
                         </table>
                         <p>
-                            <div sq-flex class="textRow"><span sq-mr-auto>Reputation</span> {this.character.reputation}</div>
-                            <div sq-flex class="textRow">
+                            <div sq-flex class={this.findUpdate('reputation') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Reputation</span> {this.character.reputation}</div>
+                            <div sq-flex class={this.findUpdate('level') || this.findUpdate('wis') ? 'textRow textRow-highlight' : 'textRow'}>
                                 <span sq-mr-auto>Social Exposure</span> {this.character.socialExposure} / {this.character.maxSocialCapital}
                             </div>
-                            <div sq-flex class="textRow"><span sq-mr-auto>Questlog</span> {this.character.leads.length} / {this.character.maxQuestLogSize}</div>
+                            <div sq-flex class={this.findUpdate('int') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Questlog</span> {this.character.leads.length} / {this.character.maxQuestLogSize}</div>
                         </p>
                         <table class="listBox">
                             <thead>
@@ -341,8 +341,8 @@ export class AppHome {
                                 {
                                     this.character.leads.length == 0
                                     ? <tr><td>[None]</td></tr>
-                                    : this.character.leads.map((item) => 
-                                            <tr><td>{item.questlogName}</td></tr>
+                                    : this.character.leads.map((item, index, array) => 
+                                            <tr {...this.findUpdate('leads') && index == array.length-1 ? {class: 'textRow-highlight'} : {}}><td>{item.questlogName}</td></tr>
                                         )
                                 }
                                 <tr><td class="placeholderRow"></td></tr>
@@ -354,7 +354,7 @@ export class AppHome {
                             <div sq-flex class="textRow"><span sq-mr-auto>XP to next level</span> {getXpRequiredForNextLevel(this.character.level) - this.character.currentXp}</div>
                         </p>
                         <p>
-                            <div sq-flex class="textRow"><span sq-mr-auto>Current Adventure</span> {this.character.currentAdventure.name}</div>
+                            <div sq-flex class={this.findUpdate('currentAdventure') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Current Adventure</span> {this.character.currentAdventure.name}</div>
                             <div sq-flex class="textRow"><span sq-mr-auto>Adventure Progress</span> {this.character.adventureProgress} / {this.character.currentAdventure.progressRequired}</div>
                             <table class="listBox">
                                 <thead>
@@ -366,8 +366,8 @@ export class AppHome {
                                     {
                                         this.character.completedAdventures.length === 0
                                         ? <tr><td>[None]</td></tr>
-                                        : this.character.completedAdventures.map((adventure: string) => 
-                                            <tr><td>{adventure}</td></tr>
+                                        : this.character.completedAdventures.map((adventure: string, index, array) => 
+                                            <tr {...this.findUpdate('completedAdventures') && index == array.length-1 ? {class: 'textRow-highlight'} : {}}><td>{adventure}</td></tr>
                                         )
                                     }
                                     <tr><td class="placeholderRow"></td></tr>

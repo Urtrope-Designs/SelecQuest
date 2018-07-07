@@ -22,7 +22,8 @@ function applyTaskNameModifiers(targetLevel: number, taskTarget: LootingTarget):
     } else if ((targetLevel - taskTarget.level) < -5) {
         const firstPrefix = randFromList(TASK_PREFIX_BAD_FIRST[taskTarget.type]);
         const secondPrefix = randFromList(TASK_PREFIX_BAD_SECOND[taskTarget.type]);
-        taskName = firstPrefix + ' ' + secondPrefix + ' ' + taskName;
+        const prefixSeparator = taskTarget.type == TaskTargetType.LOCATION ? ', ' : ' ';
+        taskName = firstPrefix + prefixSeparator + secondPrefix + ' ' + taskName;
     } else if (((targetLevel - taskTarget.level) < 0) && (randRange(0, 1))) {
         taskName = randFromList(TASK_PREFIX_BAD_FIRST[taskTarget.type]) + ' ' + taskName;
     } else if (((targetLevel - taskTarget.level) < 0)) {
@@ -32,7 +33,8 @@ function applyTaskNameModifiers(targetLevel: number, taskTarget: LootingTarget):
     } else if ((targetLevel - taskTarget.level) > 5) {
         const firstPrefix = randFromList(TASK_PREFIX_GOOD_FIRST[taskTarget.type]);
         const secondPrefix = randFromList(TASK_PREFIX_GOOD_SECOND[taskTarget.type]);
-        taskName = firstPrefix + ' ' + secondPrefix + ' ' + taskName;
+        const prefixSeparator = taskTarget.type == TaskTargetType.LOCATION ? ', ' : ' ';
+        taskName = firstPrefix + prefixSeparator + secondPrefix + ' ' + taskName;
     } else if (((targetLevel - taskTarget.level) > 0) && (randRange(0, 1))) {
         taskName = randFromList(TASK_PREFIX_GOOD_FIRST[taskTarget.type]) + ' ' + taskName;
     } else if (((targetLevel - taskTarget.level) > 0)) {
