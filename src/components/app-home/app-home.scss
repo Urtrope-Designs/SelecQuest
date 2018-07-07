@@ -46,6 +46,10 @@ ion-page {
         line-height: 1.3;
     }
 
+    tr, .textRow {
+        transition: background-color .2s ease-in-out, color .2s ease-in-out;
+    }
+
     .listBox {
         border: 2px solid;
         min-height: 7rem;
