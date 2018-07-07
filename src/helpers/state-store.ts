@@ -43,7 +43,7 @@ function character(initState: Character, actions: Observable<Action>): Observabl
                 const updatedCharacter = applyCharacterModifications(state, action.completedTask.results);
                 const stateCheckedCharacter = updateCharacterState(updatedCharacter);
                 const levelCheckedCharacter = (hasCharacterReachedNextLevel(stateCheckedCharacter)
-                    ? applyCharacterModifications(stateCheckedCharacter, getLevelUpModifications(stateCheckedCharacter))
+                    ? applyCharacterModifications(stateCheckedCharacter, getLevelUpModifications(stateCheckedCharacter), false)
                     : stateCheckedCharacter);
                 return levelCheckedCharacter;
             } else {

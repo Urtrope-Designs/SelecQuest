@@ -82,7 +82,7 @@ export function createNewCharacter(): Character {
                 return 30 * (this.level + this.wis);
             }
         },
-        currentAdventure: {name: PROLOGUE_ADVENTURE_NAME, progressRequired: 28},
+        currentAdventure: IS_DEBUG ? {name: 'Chapter 1', progressRequired: 40} : {name: PROLOGUE_ADVENTURE_NAME, progressRequired: 28},
         completedAdventures: [],
         adventureProgress: 0,
         latestModifications: [],
@@ -101,11 +101,13 @@ export function applyCharacterModifications(baseChar: Character, characterMods: 
     for (let result of characterMods) {
         switch(result.type) {
             case CharacterModificationType.INCREASE:
-            case CharacterModificationType.DECREASE:
                 /* level, stats, maxHp, maxMp, currentXp, gold, renown, spentRenown, reputation, spentReputation,
                     marketSaturation, fatigue, socialExposure, adventureProgress */
-                newChar[result.attributeName] += result.data;
                 newChar.latestModifications.push({attributeName: result.attributeName, data: null});
+                // fallthrough
+            case CharacterModificationType.DECREASE:
+                /* gold, marketSaturation, fatigue, socialExposure */
+                newChar[result.attributeName] += result.data;
                 break;
             case CharacterModificationType.SET:
                 /* currentXp, isInLootSelloffMode, isInTrophyBoastingMode, isInLeadFollowingMode, currentAdventure, adventureProgress */
@@ -151,6 +153,7 @@ export function applyCharacterModifications(baseChar: Character, characterMods: 
                     } else {
                         newChar[result.attributeName].push(item);
                     }
+                    newChar.latestModifications.push({attributeName: result.attributeName, data: item.name})
                 }
                 break;
             case CharacterModificationType.REMOVE_QUANTITY:
@@ -168,24 +171,28 @@ export function applyCharacterModifications(baseChar: Character, characterMods: 
             case CharacterModificationType.ADD:
                 /* leads, completedAdventures */
                 newChar[result.attributeName] = newChar[result.attributeName].concat(result.data);
+                newChar.latestModifications.push({attributeName: result.attributeName, data: null});
                 break;
             case CharacterModificationType.ADD_ACCOLADE:
                 /* accolades */
-                result.data.map((newA: {type: string, received: string[]}) => {
-                    const existingA: {type: string, received: string[]} = newChar[result.attributeName].find(a => {
-                        return a.type == newA.type;
+                result.data.map((newAccolade: CharAccolade) => {
+                    const existingAccolade: CharAccolade = newChar[result.attributeName].find(a => {
+                        return a.type == newAccolade.type;
                     })
-                    existingA.received = existingA.received.concat(newA.received);
-                    if (existingA.received.length > 3) {
-                        existingA.received.splice(0, existingA.received.length - 3);
+                    existingAccolade.received = existingAccolade.received.concat(newAccolade.received);
+                    if (existingAccolade.received.length > 3) {
+                        existingAccolade.received.splice(0, existingAccolade.received.length - 3);
                     }
+                    newChar.latestModifications.push({attributeName: result.attributeName, data: newAccolade.type});
                 })
                 break;
-            case CharacterModificationType.ADD_AFFILIATION:
+                case CharacterModificationType.ADD_AFFILIATION:
                 /* affiliations */
                 result.data.map((newAffiliation: AffiliationGenerationData) => {
                     let curAffiliationType = newChar.affiliations[newAffiliation.type];
                     (curAffiliationType as any[]).push(newAffiliation.object);
+
+                    newChar.latestModifications.push({attributeName: result.attributeName, data: newAffiliation.type});
                 })
                 break;
         }

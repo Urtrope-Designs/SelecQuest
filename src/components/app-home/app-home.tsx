@@ -1,7 +1,7 @@
 import { Component, Prop, State, Event, EventEmitter, Element } from '@stencil/core';
 import { Observable } from 'rxjs/Observable';
 
-import { AppState, Character, Task, TaskMode, AccoladeType, AffiliationType, CharConnection, CharMembership, CharOffice, EquipmentType } from '../../helpers/models';
+import { AppState, Character, Task, TaskMode, AccoladeType, AffiliationType, CharConnection, CharMembership, CharOffice } from '../../helpers/models';
 import {getXpRequiredForNextLevel} from '../../helpers/character-manager';
 import { capitalizeInitial } from '../../helpers/utils';
 
@@ -67,15 +67,8 @@ export class AppHome {
     highlightOrNot(conditional) {
         return conditional ? {class: 'textRow-highlight'} : {};
     }
-    highlightModifiedAttribute(attributeName: string) {
-        return this.highlightOrNot(!!this.findUpdate(attributeName));
-    }
-    highlightModifiedEquipmentType(attributeName: string, equipmentType: EquipmentType) {
-        const update = this.findUpdate(attributeName, (data) => data == equipmentType);
-        return this.highlightOrNot(!!update);
-    }
-    highlightModifiedRank(attributeName: string, actionName: string) {
-        return this.highlightOrNot(!!this.findUpdate(attributeName, (data) => data == actionName));
+    highlightModifiedAttribute(attributeName: string, itemName?: string) {
+        return this.highlightOrNot(!!this.findUpdate(attributeName, !!itemName ? (data) => data == itemName : null));
     }
 
     render() {
@@ -144,7 +137,7 @@ export class AppHome {
                                     this.character.spells.length == 0 
                                     ? <tr><td colSpan={2}>[None]</td></tr>    
                                     : this.character.spells.map((spell) => 
-                                            <tr {...(this.highlightModifiedRank('spells', spell.name))}>
+                                            <tr {...(this.highlightModifiedAttribute('spells', spell.name))}>
                                                 <td>{spell.name}</td>
                                                 <td>{spell.rank}</td>
                                             </tr>
@@ -165,7 +158,7 @@ export class AppHome {
                                     this.character.abilities.length == 0 
                                     ? <tr><td colSpan={2}>[None]</td></tr>    
                                     : this.character.abilities.map((ability) => 
-                                            <tr {...(this.highlightModifiedRank('abilities', ability.name))}>
+                                            <tr {...(this.highlightModifiedAttribute('abilities', ability.name))}>
                                                 <td>{ability.name}</td>
                                                 <td>{ability.rank}</td>
                                             </tr>
@@ -186,7 +179,7 @@ export class AppHome {
                             <tbody>
                                 {
                                     this.character.equipment.map(equip => 
-                                        <tr {...this.highlightModifiedEquipmentType('equipment', equip.type)}>
+                                        <tr {...this.highlightModifiedAttribute('equipment', equip.type)}>
                                             <td style={{width: "40%"}}>{equip.type}</td>
                                             {
                                                 !!equip.description
@@ -199,11 +192,11 @@ export class AppHome {
                             </tbody>
                         </table>
                         <p>
-                            <div sq-flex class="textRow"><span sq-mr-auto>Gold</span> {this.character.gold}</div>
-                            <div sq-flex class="textRow">
+                            <div sq-flex class={this.findUpdate('gold') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Gold</span> {this.character.gold}</div>
+                            <div sq-flex class={this.findUpdate('level') || this.findUpdate('int') ? 'textRow textRow-highlight' : 'textRow'}>
                                 <span sq-mr-auto>Market Saturation</span> {this.character.marketSaturation} / {this.character.maxMarketSaturation}
                             </div>
-                            <div sq-flex class="textRow"><span sq-mr-auto>Encumbrance</span> {this.character.loot.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)} / {this.character.maxEncumbrance}</div>
+                            <div sq-flex class={this.findUpdate('str') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Encumbrance</span> {this.character.loot.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)} / {this.character.maxEncumbrance}</div>
                         </p>
                         <table class="listBox">
                             <thead>
@@ -217,7 +210,7 @@ export class AppHome {
                                     this.character.loot.length == 0
                                     ? <tr><td colSpan={2}>[None]</td></tr>
                                     : this.character.loot.map((item) => 
-                                            <tr>
+                                            <tr {...this.highlightModifiedAttribute('loot', item.name)}>
                                                 <td>{capitalizeInitial(item.name)}</td>
                                                 <td>{item.quantity}</td>
                                             </tr>
@@ -238,7 +231,7 @@ export class AppHome {
                             <tbody>
                                 {
                                     this.character.accolades.map(accolade =>
-                                        <tr>
+                                        <tr {...this.highlightModifiedAttribute('accolades', ''+accolade.type)}>
                                             <td>{AccoladeType[accolade.type]}</td>
                                             {
                                                 accolade.received.length <= 0
@@ -251,11 +244,11 @@ export class AppHome {
                             </tbody>
                         </table>
                         <p>
-                            <div sq-flex class="textRow"><span sq-mr-auto>Renown</span> {this.character.renown}</div>
-                            <div sq-flex class="textRow">
+                            <div sq-flex class={this.findUpdate('renown') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Renown</span> {this.character.renown}</div>
+                            <div sq-flex class={this.findUpdate('level') || this.findUpdate('con') ? 'textRow textRow-highlight' : 'textRow'}>
                                 <span sq-mr-auto>Fatigue</span> {this.character.fatigue} / {this.character.maxFatigue}
                             </div>
-                            <div sq-flex class="textRow"><span sq-mr-auto>Equipment Wear</span> {this.character.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)} / {this.character.maxEquipmentWear}</div>
+                            <div sq-flex class={this.findUpdate('dex') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Equipment Wear</span> {this.character.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)} / {this.character.maxEquipmentWear}</div>
                         </p>    
                         <table class="listBox">
                             <thead>
@@ -269,7 +262,7 @@ export class AppHome {
                                     this.character.trophies.length == 0
                                     ? <tr><td colSpan={2}>[None]</td></tr>
                                     : this.character.trophies.map((item) => 
-                                        <tr>
+                                        <tr {...this.highlightModifiedAttribute('trophies', item.name)}>
                                             <td>{item.name}</td>
                                             <td>{item.quantity}</td>
                                         </tr>
