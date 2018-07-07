@@ -102,14 +102,18 @@ export function applyCharacterModifications(baseChar: Character, characterMods: 
         switch(result.type) {
             case CharacterModificationType.INCREASE:
             case CharacterModificationType.DECREASE:
+                /* level, stats, maxHp, maxMp, currentXp, gold, renown, spentRenown, reputation, spentReputation,
+                    marketSaturation, fatigue, socialExposure, adventureProgress */
                 newChar[result.attributeName] += result.data;
                 newChar.latestModifications.push({attributeName: result.attributeName, data: null});
                 break;
             case CharacterModificationType.SET:
+                /* currentXp, isInLootSelloffMode, isInTrophyBoastingMode, isInLeadFollowingMode, currentAdventure, adventureProgress */
                 newChar[result.attributeName] = result.data;
                 newChar.latestModifications.push({attributeName: result.attributeName, data: null});
                 break;
             case CharacterModificationType.SET_EQUIPMENT:
+                /* equipment */
                 result.data.map((equip: CharEquipment) => {
                     const existingEquipment = newChar[result.attributeName].find(e => {
                         return e.type == equip.type;
@@ -119,6 +123,7 @@ export function applyCharacterModifications(baseChar: Character, characterMods: 
                 })
                 break;
             case CharacterModificationType.ADD_RANK:
+                /* spells, abilities */
                 for (let item of result.data) {
                     let existingItem = newChar[result.attributeName].find((i) => {
                         return item.name == i.name;
@@ -128,9 +133,11 @@ export function applyCharacterModifications(baseChar: Character, characterMods: 
                     } else {
                         newChar[result.attributeName].push(item);
                     }
+                    newChar.latestModifications.push({attributeName: result.attributeName, data: item.name})
                 }
                 break;
             case CharacterModificationType.ADD_QUANTITY:
+                /* loot, trophies */
                 for (let item of result.data) {
                     let existingItem = newChar[result.attributeName].find((i) => {
                         return item.name == i.name;
@@ -148,6 +155,7 @@ export function applyCharacterModifications(baseChar: Character, characterMods: 
                 break;
             case CharacterModificationType.REMOVE_QUANTITY:
             case CharacterModificationType.REMOVE:
+                /* loot, trophies, leads */
                 for (let item of result.data) {
                     let existingItemIndex = newChar[result.attributeName].findIndex((i) => {
                         return item.name == i.name;
@@ -158,9 +166,11 @@ export function applyCharacterModifications(baseChar: Character, characterMods: 
                 }
                 break;
             case CharacterModificationType.ADD:
+                /* leads, completedAdventures */
                 newChar[result.attributeName] = newChar[result.attributeName].concat(result.data);
                 break;
             case CharacterModificationType.ADD_ACCOLADE:
+                /* accolades */
                 result.data.map((newA: {type: string, received: string[]}) => {
                     const existingA: {type: string, received: string[]} = newChar[result.attributeName].find(a => {
                         return a.type == newA.type;
@@ -172,6 +182,7 @@ export function applyCharacterModifications(baseChar: Character, characterMods: 
                 })
                 break;
             case CharacterModificationType.ADD_AFFILIATION:
+                /* affiliations */
                 result.data.map((newAffiliation: AffiliationGenerationData) => {
                     let curAffiliationType = newChar.affiliations[newAffiliation.type];
                     (curAffiliationType as any[]).push(newAffiliation.object);

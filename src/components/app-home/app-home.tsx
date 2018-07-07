@@ -57,8 +57,12 @@ export class AppHome {
         scrollElem.scrollToTop(0);
     }
 
-    findUpdate(attributeName: string) {
-        return this.character.latestModifications.find(mod => mod.attributeName === attributeName);
+    findUpdate(attributeName: string, dataMatch?: (any) => boolean) {
+        const found = this.character.latestModifications
+            .find(mod => {
+                return mod.attributeName === attributeName && (dataMatch == null || dataMatch(mod.data));
+            })
+        return found;
     }
     highlightOrNot(conditional) {
         return conditional ? {class: 'textRow-highlight'} : {};
@@ -67,8 +71,11 @@ export class AppHome {
         return this.highlightOrNot(!!this.findUpdate(attributeName));
     }
     highlightModifiedEquipmentType(attributeName: string, equipmentType: EquipmentType) {
-        const update = this.findUpdate(attributeName);
-        return this.highlightOrNot(!!update && update.data == equipmentType);
+        const update = this.findUpdate(attributeName, (data) => data == equipmentType);
+        return this.highlightOrNot(!!update);
+    }
+    highlightModifiedRank(attributeName: string, actionName: string) {
+        return this.highlightOrNot(!!this.findUpdate(attributeName, (data) => data == actionName));
     }
 
     render() {
@@ -137,12 +144,13 @@ export class AppHome {
                                     this.character.spells.length == 0 
                                     ? <tr><td colSpan={2}>[None]</td></tr>    
                                     : this.character.spells.map((spell) => 
-                                            <tr>
+                                            <tr {...(this.highlightModifiedRank('spells', spell.name))}>
                                                 <td>{spell.name}</td>
                                                 <td>{spell.rank}</td>
                                             </tr>
                                         )
                                 }
+                                <tr><td colSpan={2} class="placeholderRow"></td></tr>
                             </tbody>
                         </table>
                         <table class="listBox">
@@ -157,12 +165,13 @@ export class AppHome {
                                     this.character.abilities.length == 0 
                                     ? <tr><td colSpan={2}>[None]</td></tr>    
                                     : this.character.abilities.map((ability) => 
-                                            <tr>
+                                            <tr {...(this.highlightModifiedRank('abilities', ability.name))}>
                                                 <td>{ability.name}</td>
                                                 <td>{ability.rank}</td>
                                             </tr>
                                         )
                                 }
+                                <tr><td colSpan={2} class="placeholderRow"></td></tr>
                             </tbody>
                         </table>
                     </section>
@@ -214,6 +223,7 @@ export class AppHome {
                                             </tr>
                                         )
                                 }
+                                <tr><td colSpan={2} class="placeholderRow"></td></tr>
                             </tbody>
                         </table>
                     </section>
@@ -265,6 +275,7 @@ export class AppHome {
                                         </tr>
                                     )
                                 }
+                                <tr><td colSpan={2} class="placeholderRow"></td></tr>
                             </tbody>
                         </table>
                     </section>
@@ -317,6 +328,7 @@ export class AppHome {
                                         }</td>
                                     }
                                 </tr>
+                                <tr><td colSpan={2} class="placeholderRow"></td></tr>
                             </tbody>
                         </table>
                         <p>
@@ -340,6 +352,7 @@ export class AppHome {
                                             <tr><td>{item.questlogName}</td></tr>
                                         )
                                 }
+                                <tr><td class="placeholderRow"></td></tr>
                             </tbody>
                         </table>
                     </section>
@@ -364,6 +377,7 @@ export class AppHome {
                                             <tr><td>{adventure}</td></tr>
                                         )
                                     }
+                                    <tr><td class="placeholderRow"></td></tr>
                                 </tbody>
                             </table>
                         </p>

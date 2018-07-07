@@ -27,7 +27,7 @@ ion-page {
         text-align: left;
     }
 
-    th, td {
+    th, td:not(.placeholderRow) {
         padding: .3rem 1rem .3rem 0;
         vertical-align: top;
     }
