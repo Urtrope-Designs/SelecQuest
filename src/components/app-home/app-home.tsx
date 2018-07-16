@@ -197,10 +197,10 @@ export class AppHome {
                             </table>
                             <p>
                                 <div sq-flex class={this.findUpdate('gold') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Gold</span> {this.character.gold}</div>
-                                <div sq-flex class={this.findUpdate('level') || this.findUpdate('int') ? 'textRow textRow-highlight' : 'textRow'}>
-                                    <span sq-mr-auto>Market Saturation</span> {this.character.marketSaturation} / {this.character.maxMarketSaturation}
-                                </div>
-                                <div sq-flex class={this.findUpdate('str') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Encumbrance</span> {this.character.loot.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)} / {this.character.maxEncumbrance}</div>
+                                <div class="textRow">Market Saturation</div>
+                                <sq-progress-bar totalValue={this.character.maxMarketSaturation} currentValue={this.character.marketSaturation}></sq-progress-bar>
+                                <div class="textRow">Encumbrance</div>
+                                <sq-progress-bar totalValue={this.character.maxEncumbrance} currentValue={this.character.loot.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}></sq-progress-bar>
                             </p>
                             <table class="listBox">
                                 <thead>
@@ -250,10 +250,10 @@ export class AppHome {
                             </table>
                             <p>
                                 <div sq-flex class={this.findUpdate('renown') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Renown</span> {this.character.renown}</div>
-                                <div sq-flex class={this.findUpdate('level') || this.findUpdate('con') ? 'textRow textRow-highlight' : 'textRow'}>
-                                    <span sq-mr-auto>Fatigue</span> {this.character.fatigue} / {this.character.maxFatigue}
-                                </div>
-                                <div sq-flex class={this.findUpdate('dex') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Equipment Wear</span> {this.character.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)} / {this.character.maxEquipmentWear}</div>
+                                <div class="textRow">Fatigue</div>
+                                <sq-progress-bar totalValue={this.character.maxFatigue} currentValue={this.character.fatigue}></sq-progress-bar>
+                                <div class="textRow">Equipment Wear</div>
+                                <sq-progress-bar totalValue={this.character.maxEquipmentWear} currentValue={this.character.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}></sq-progress-bar>
                             </p>    
                             <table class="listBox">
                                 <thead>
@@ -332,10 +332,10 @@ export class AppHome {
                             </table>
                             <p>
                                 <div sq-flex class={this.findUpdate('reputation') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Reputation</span> {this.character.reputation}</div>
-                                <div sq-flex class={this.findUpdate('level') || this.findUpdate('wis') ? 'textRow textRow-highlight' : 'textRow'}>
-                                    <span sq-mr-auto>Social Exposure</span> {this.character.socialExposure} / {this.character.maxSocialCapital}
-                                </div>
-                                <div sq-flex class={this.findUpdate('int') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Questlog</span> {this.character.leads.length} / {this.character.maxQuestLogSize}</div>
+                                <div class="textRow">Social Exposure</div>
+                                <sq-progress-bar totalValue={this.character.maxSocialCapital} currentValue={this.character.socialExposure}></sq-progress-bar>
+                                <div class="textRow">Questlog</div>
+                                <sq-progress-bar totalValue={this.character.maxQuestLogSize} currentValue={this.character.leads.length}></sq-progress-bar>
                             </p>
                             <table class="listBox">
                                 <thead>
