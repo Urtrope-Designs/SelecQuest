@@ -112,6 +112,37 @@ declare global {
 
 
 import {
+  ProgressBar as SqProgressBar
+} from './components/progress-bar/progress-bar';
+
+declare global {
+  interface HTMLSqProgressBarElement extends SqProgressBar, HTMLStencilElement {
+  }
+  var HTMLSqProgressBarElement: {
+    prototype: HTMLSqProgressBarElement;
+    new (): HTMLSqProgressBarElement;
+  };
+  interface HTMLElementTagNameMap {
+    "sq-progress-bar": HTMLSqProgressBarElement;
+  }
+  interface ElementTagNameMap {
+    "sq-progress-bar": HTMLSqProgressBarElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      "sq-progress-bar": JSXElements.SqProgressBarAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface SqProgressBarAttributes extends HTMLAttributes {
+      currentValue?: any;
+      totalValue?: number;
+    }
+  }
+}
+
+
+import {
   TaskManager as TaskManager
 } from './helpers/task-manager';
 

@@ -90,291 +90,299 @@ export class AppHome {
                     </div>
                 </ion-header>
                 <ion-content>
-                    <section class={this.activeVisibleSection == VisibleSection.character ? 'charSheetSection charSheetSection-selected' : 'charSheetSection'}>
-                        <table class="listBox">
-                            <thead>
-                                <tr>
-                                    <th style={{width: "35%"}}>Trait</th>
-                                    <th>Value</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr><td>Name</td><td>{this.character.name}</td></tr>
-                                <tr><td>Race</td><td>{this.character.raceName}</td></tr>
-                                <tr><td>Class</td><td>{this.character.class}</td></tr>
-                                <tr {...this.highlightModifiedAttribute('level')}><td>Level</td><td>{this.character.level}</td></tr>
-                            </tbody>
-                        </table>
-                        <table class="listBox">
-                            <thead>
-                                <tr>
-                                    <th style={{width: "65%"}}>Stat</th>
-                                    <th>Value</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr {...this.highlightModifiedAttribute('str')}><td>Str</td><td>{this.character.str}</td></tr>
-                                <tr {...this.highlightModifiedAttribute('dex')}><td>Dex</td><td>{this.character.dex}</td></tr>
-                                <tr {...this.highlightModifiedAttribute('con')}><td>Con</td><td>{this.character.con}</td></tr>
-                                <tr {...this.highlightModifiedAttribute('wis')}><td>Wis</td><td>{this.character.wis}</td></tr>
-                                <tr {...this.highlightModifiedAttribute('int')}><td>Int</td><td>{this.character.int}</td></tr>
-                                <tr {...this.highlightModifiedAttribute('cha')}><td>Cha</td><td>{this.character.cha}</td></tr>
-                                <tr {...this.highlightModifiedAttribute('maxHp')}><td>Max HP</td><td>{this.character.maxHp}</td></tr>
-                                <tr {...this.highlightModifiedAttribute('maxMp')}><td>Max MP</td><td>{this.character.maxMp}</td></tr>
-                            </tbody>
-                        </table>
-                    </section>
-                    <section class={this.activeVisibleSection == VisibleSection.actions ? 'charSheetSection charSheetSection-selected' : 'charSheetSection'}>
-                        <table class="listBox">
-                            <thead>
-                                <tr>
-                                    <th style={{width: "65%"}}>Spells</th>
-                                    <th>Rank</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    this.character.spells.length == 0 
-                                    ? <tr><td colSpan={2}>[None]</td></tr>    
-                                    : this.character.spells.map((spell) => 
-                                            <tr {...(this.highlightModifiedAttribute('spells', spell.name))}>
-                                                <td>{spell.name}</td>
-                                                <td>{spell.rank}</td>
-                                            </tr>
-                                        )
-                                }
-                                <tr><td colSpan={2} class="placeholderRow"></td></tr>
-                            </tbody>
-                        </table>
-                        <table class="listBox">
-                            <thead>
-                                <tr>
-                                    <th style={{width: "65%"}}>Abilities</th>
-                                    <th>Rank</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    this.character.abilities.length == 0 
-                                    ? <tr><td colSpan={2}>[None]</td></tr>    
-                                    : this.character.abilities.map((ability) => 
-                                            <tr {...(this.highlightModifiedAttribute('abilities', ability.name))}>
-                                                <td>{ability.name}</td>
-                                                <td>{ability.rank}</td>
-                                            </tr>
-                                        )
-                                }
-                                <tr><td colSpan={2} class="placeholderRow"></td></tr>
-                            </tbody>
-                        </table>
-                    </section>
-                    <section class={this.activeVisibleSection == VisibleSection.inventory ? 'charSheetSection charSheetSection-selected' : 'charSheetSection'}>
-                        <table class="listBox">
-                            <thead>
-                                <tr>
-                                    <th style={{width:"43%"}}>Equipment</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    this.character.equipment.map(equip => 
-                                        <tr {...this.highlightModifiedAttribute('equipment', equip.type)}>
-                                            <td style={{width: "40%"}}>{equip.type}</td>
-                                            {
-                                                !!equip.description
-                                                ? <td>{equip.description}</td>
-                                                : <td>[None]</td>
-                                            }
-                                        </tr>
-                                    )
-                                }
-                            </tbody>
-                        </table>
-                        <p>
-                            <div sq-flex class={this.findUpdate('gold') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Gold</span> {this.character.gold}</div>
-                            <div sq-flex class={this.findUpdate('level') || this.findUpdate('int') ? 'textRow textRow-highlight' : 'textRow'}>
-                                <span sq-mr-auto>Market Saturation</span> {this.character.marketSaturation} / {this.character.maxMarketSaturation}
-                            </div>
-                            <div sq-flex class={this.findUpdate('str') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Encumbrance</span> {this.character.loot.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)} / {this.character.maxEncumbrance}</div>
-                        </p>
-                        <table class="listBox">
-                            <thead>
-                                <tr>
-                                    <th style={{width: "65%"}}>Loot</th>
-                                    <th>Qty</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    this.character.loot.length == 0
-                                    ? <tr><td colSpan={2}>[None]</td></tr>
-                                    : this.character.loot.map((item) => 
-                                            <tr {...this.highlightModifiedAttribute('loot', item.name)}>
-                                                <td>{capitalizeInitial(item.name)}</td>
-                                                <td>{item.quantity}</td>
-                                            </tr>
-                                        )
-                                }
-                                <tr><td colSpan={2} class="placeholderRow"></td></tr>
-                            </tbody>
-                        </table>
-                    </section>
-                    <section class={this.activeVisibleSection == VisibleSection.deeds ? 'charSheetSection charSheetSection-selected' : 'charSheetSection'}>
-                        <table class="listBox">
-                            <thead>
-                                <tr>
-                                    <th style={{width: "45%"}}>Accolades</th>
-                                    <th></th>    
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    this.character.accolades.map(accolade =>
-                                        <tr {...this.highlightModifiedAttribute('accolades', ''+accolade.type)}>
-                                            <td>{AccoladeType[accolade.type]}</td>
-                                            {
-                                                accolade.received.length <= 0
-                                                ? <td>[None]</td>
-                                                : <td>{accolade.received.join(', ')}</td>
-                                            }
-                                        </tr>
-                                    )
-                                }
-                            </tbody>
-                        </table>
-                        <p>
-                            <div sq-flex class={this.findUpdate('renown') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Renown</span> {this.character.renown}</div>
-                            <div sq-flex class={this.findUpdate('level') || this.findUpdate('con') ? 'textRow textRow-highlight' : 'textRow'}>
-                                <span sq-mr-auto>Fatigue</span> {this.character.fatigue} / {this.character.maxFatigue}
-                            </div>
-                            <div sq-flex class={this.findUpdate('dex') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Equipment Wear</span> {this.character.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)} / {this.character.maxEquipmentWear}</div>
-                        </p>    
-                        <table class="listBox">
-                            <thead>
-                                <tr>
-                                    <td style={{width: "65%"}}>Trophies</td>
-                                    <td>Qty</td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    this.character.trophies.length == 0
-                                    ? <tr><td colSpan={2}>[None]</td></tr>
-                                    : this.character.trophies.map((item) => 
-                                        <tr {...this.highlightModifiedAttribute('trophies', item.name)}>
-                                            <td>{item.name}</td>
-                                            <td>{item.quantity}</td>
-                                        </tr>
-                                    )
-                                }
-                                <tr><td colSpan={2} class="placeholderRow"></td></tr>
-                            </tbody>
-                        </table>
-                    </section>
-                    <section class={this.activeVisibleSection == VisibleSection.social ? 'charSheetSection charSheetSection-selected' : 'charSheetSection'}>                    
-                        <table class="listBox">
-                            <thead>
-                                <tr>
-                                    <th style={{width: "50%"}}>Affiliations</th>
-                                    <th></th>    
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr {...this.highlightModifiedAttribute('affiliations', AffiliationType.CONNECTIONS)}>
-                                    <td>{AffiliationType.CONNECTIONS}</td>
-                                    {
-                                        this.character.affiliations[AffiliationType.CONNECTIONS].length <= 0
-                                        ? <td>[None]</td>
-                                        : <td>{
-                                            this.character.affiliations[AffiliationType.CONNECTIONS]
-                                                .map((connection: CharConnection) => {
-                                                    return `${connection.affiliatedPersonName}, ${connection.affiliatedPersonTitle} for ${connection.affiliatedGroupName}`;
-                                                })
-                                                .join(', ')
-                                        }</td>
-                                    }
-                                </tr>
-                                <tr {...this.highlightModifiedAttribute('affiliations', AffiliationType.MEMBERSHIPS)}>
-                                    <td>{AffiliationType.MEMBERSHIPS}</td>
-                                    {
-                                        this.character.affiliations[AffiliationType.MEMBERSHIPS].length <= 0
-                                        ? <td>[None]</td>
-                                        : <td>{
-                                            this.character.affiliations[AffiliationType.MEMBERSHIPS]
-                                                .map((membership: CharMembership) => membership.affiliatedGroupName)
-                                                .join(', ')
-                                        }</td>
-                                    }
-                                </tr>
-                                <tr {...this.highlightModifiedAttribute('affiliations', AffiliationType.OFFICES)}>
-                                    <td>{AffiliationType.OFFICES}</td>
-                                    {
-                                        this.character.affiliations[AffiliationType.OFFICES].length <= 0
-                                        ? <td>[None]</td>
-                                        : <td>{
-                                            this.character.affiliations[AffiliationType.OFFICES]
-                                                .map((office: CharOffice) => {
-                                                    return `${office.officeTitleDescription} for ${office.affiliatedGroupName}`;
-                                                })
-                                                .join(', ')
-                                        }</td>
-                                    }
-                                </tr>
-                                <tr><td colSpan={2} class="placeholderRow"></td></tr>
-                            </tbody>
-                        </table>
-                        <p>
-                            <div sq-flex class={this.findUpdate('reputation') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Reputation</span> {this.character.reputation}</div>
-                            <div sq-flex class={this.findUpdate('level') || this.findUpdate('wis') ? 'textRow textRow-highlight' : 'textRow'}>
-                                <span sq-mr-auto>Social Exposure</span> {this.character.socialExposure} / {this.character.maxSocialCapital}
-                            </div>
-                            <div sq-flex class={this.findUpdate('int') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Questlog</span> {this.character.leads.length} / {this.character.maxQuestLogSize}</div>
-                        </p>
-                        <table class="listBox">
-                            <thead>
-                                <tr>
-                                    <td>Quests</td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    this.character.leads.length == 0
-                                    ? <tr><td>[None]</td></tr>
-                                    : this.character.leads.map((item, index, array) => 
-                                            <tr {...this.findUpdate('leads') && index == array.length-1 ? {class: 'textRow-highlight'} : {}}><td>{item.questlogName}</td></tr>
-                                        )
-                                }
-                                <tr><td class="placeholderRow"></td></tr>
-                            </tbody>
-                        </table>
-                    </section>
-                    <section class={this.activeVisibleSection == VisibleSection.plot ? 'charSheetSection charSheetSection-selected' : 'charSheetSection'}>                    
-                        <p>
-                            <div sq-flex class="textRow"><span sq-mr-auto>XP to next level</span> {getXpRequiredForNextLevel(this.character.level) - this.character.currentXp}</div>
-                        </p>
-                        <p>
-                            <div sq-flex class={this.findUpdate('currentAdventure') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Current Adventure</span> {this.character.currentAdventure.name}</div>
-                            <div sq-flex class="textRow"><span sq-mr-auto>Adventure Progress</span> {this.character.adventureProgress} / {this.character.currentAdventure.progressRequired}</div>
+                    {
+                        this.activeVisibleSection == VisibleSection.character 
+                        ? <section>
                             <table class="listBox">
                                 <thead>
                                     <tr>
-                                        <th>Completed Adventures</th>
+                                        <th style={{width: "35%"}}>Trait</th>
+                                        <th>Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Name</td><td>{this.character.name}</td></tr>
+                                    <tr><td>Race</td><td>{this.character.raceName}</td></tr>
+                                    <tr><td>Class</td><td>{this.character.class}</td></tr>
+                                    <tr {...this.highlightModifiedAttribute('level')}><td>Level</td><td>{this.character.level}</td></tr>
+                                </tbody>
+                            </table>
+                            <table class="listBox">
+                                <thead>
+                                    <tr>
+                                        <th style={{width: "65%"}}>Stat</th>
+                                        <th>Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr {...this.highlightModifiedAttribute('str')}><td>Str</td><td>{this.character.str}</td></tr>
+                                    <tr {...this.highlightModifiedAttribute('dex')}><td>Dex</td><td>{this.character.dex}</td></tr>
+                                    <tr {...this.highlightModifiedAttribute('con')}><td>Con</td><td>{this.character.con}</td></tr>
+                                    <tr {...this.highlightModifiedAttribute('wis')}><td>Wis</td><td>{this.character.wis}</td></tr>
+                                    <tr {...this.highlightModifiedAttribute('int')}><td>Int</td><td>{this.character.int}</td></tr>
+                                    <tr {...this.highlightModifiedAttribute('cha')}><td>Cha</td><td>{this.character.cha}</td></tr>
+                                    <tr {...this.highlightModifiedAttribute('maxHp')}><td>Max HP</td><td>{this.character.maxHp}</td></tr>
+                                    <tr {...this.highlightModifiedAttribute('maxMp')}><td>Max MP</td><td>{this.character.maxMp}</td></tr>
+                                </tbody>
+                            </table>
+                        </section>
+                        : this.activeVisibleSection == VisibleSection.actions
+                        ? <section>
+                            <table class="listBox">
+                                <thead>
+                                    <tr>
+                                        <th style={{width: "65%"}}>Spells</th>
+                                        <th>Rank</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {
-                                        this.character.completedAdventures.length === 0
-                                        ? <tr><td>[None]</td></tr>
-                                        : this.character.completedAdventures.map((adventure: string, index, array) => 
-                                            <tr {...this.findUpdate('completedAdventures') && index == array.length-1 ? {class: 'textRow-highlight'} : {}}><td>{adventure}</td></tr>
+                                        this.character.spells.length == 0 
+                                        ? <tr><td colSpan={2}>[None]</td></tr>    
+                                        : this.character.spells.map((spell) => 
+                                                <tr {...(this.highlightModifiedAttribute('spells', spell.name))}>
+                                                    <td>{spell.name}</td>
+                                                    <td>{spell.rank}</td>
+                                                </tr>
+                                            )
+                                    }
+                                    <tr><td colSpan={2} class="placeholderRow"></td></tr>
+                                </tbody>
+                            </table>
+                            <table class="listBox">
+                                <thead>
+                                    <tr>
+                                        <th style={{width: "65%"}}>Abilities</th>
+                                        <th>Rank</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        this.character.abilities.length == 0 
+                                        ? <tr><td colSpan={2}>[None]</td></tr>    
+                                        : this.character.abilities.map((ability) => 
+                                                <tr {...(this.highlightModifiedAttribute('abilities', ability.name))}>
+                                                    <td>{ability.name}</td>
+                                                    <td>{ability.rank}</td>
+                                                </tr>
+                                            )
+                                    }
+                                    <tr><td colSpan={2} class="placeholderRow"></td></tr>
+                                </tbody>
+                            </table>
+                        </section>
+                        : this.activeVisibleSection == VisibleSection.inventory
+                        ? <section>
+                            <table class="listBox">
+                                <thead>
+                                    <tr>
+                                        <th style={{width:"43%"}}>Equipment</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        this.character.equipment.map(equip => 
+                                            <tr {...this.highlightModifiedAttribute('equipment', equip.type)}>
+                                                <td style={{width: "40%"}}>{equip.type}</td>
+                                                {
+                                                    !!equip.description
+                                                    ? <td>{equip.description}</td>
+                                                    : <td>[None]</td>
+                                                }
+                                            </tr>
                                         )
+                                    }
+                                </tbody>
+                            </table>
+                            <p>
+                                <div sq-flex class={this.findUpdate('gold') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Gold</span> {this.character.gold}</div>
+                                <div sq-flex class={this.findUpdate('level') || this.findUpdate('int') ? 'textRow textRow-highlight' : 'textRow'}>
+                                    <span sq-mr-auto>Market Saturation</span> {this.character.marketSaturation} / {this.character.maxMarketSaturation}
+                                </div>
+                                <div sq-flex class={this.findUpdate('str') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Encumbrance</span> {this.character.loot.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)} / {this.character.maxEncumbrance}</div>
+                            </p>
+                            <table class="listBox">
+                                <thead>
+                                    <tr>
+                                        <th style={{width: "65%"}}>Loot</th>
+                                        <th>Qty</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        this.character.loot.length == 0
+                                        ? <tr><td colSpan={2}>[None]</td></tr>
+                                        : this.character.loot.map((item) => 
+                                                <tr {...this.highlightModifiedAttribute('loot', item.name)}>
+                                                    <td>{capitalizeInitial(item.name)}</td>
+                                                    <td>{item.quantity}</td>
+                                                </tr>
+                                            )
+                                    }
+                                    <tr><td colSpan={2} class="placeholderRow"></td></tr>
+                                </tbody>
+                            </table>
+                        </section>
+                        : this.activeVisibleSection == VisibleSection.deeds
+                        ? <section>
+                            <table class="listBox">
+                                <thead>
+                                    <tr>
+                                        <th style={{width: "45%"}}>Accolades</th>
+                                        <th></th>    
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        this.character.accolades.map(accolade =>
+                                            <tr {...this.highlightModifiedAttribute('accolades', ''+accolade.type)}>
+                                                <td>{AccoladeType[accolade.type]}</td>
+                                                {
+                                                    accolade.received.length <= 0
+                                                    ? <td>[None]</td>
+                                                    : <td>{accolade.received.join(', ')}</td>
+                                                }
+                                            </tr>
+                                        )
+                                    }
+                                </tbody>
+                            </table>
+                            <p>
+                                <div sq-flex class={this.findUpdate('renown') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Renown</span> {this.character.renown}</div>
+                                <div sq-flex class={this.findUpdate('level') || this.findUpdate('con') ? 'textRow textRow-highlight' : 'textRow'}>
+                                    <span sq-mr-auto>Fatigue</span> {this.character.fatigue} / {this.character.maxFatigue}
+                                </div>
+                                <div sq-flex class={this.findUpdate('dex') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Equipment Wear</span> {this.character.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)} / {this.character.maxEquipmentWear}</div>
+                            </p>    
+                            <table class="listBox">
+                                <thead>
+                                    <tr>
+                                        <td style={{width: "65%"}}>Trophies</td>
+                                        <td>Qty</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        this.character.trophies.length == 0
+                                        ? <tr><td colSpan={2}>[None]</td></tr>
+                                        : this.character.trophies.map((item) => 
+                                            <tr {...this.highlightModifiedAttribute('trophies', item.name)}>
+                                                <td>{item.name}</td>
+                                                <td>{item.quantity}</td>
+                                            </tr>
+                                        )
+                                    }
+                                    <tr><td colSpan={2} class="placeholderRow"></td></tr>
+                                </tbody>
+                            </table>
+                        </section>
+                        : this.activeVisibleSection == VisibleSection.social
+                        ? <section>                    
+                            <table class="listBox">
+                                <thead>
+                                    <tr>
+                                        <th style={{width: "50%"}}>Affiliations</th>
+                                        <th></th>    
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr {...this.highlightModifiedAttribute('affiliations', AffiliationType.CONNECTIONS)}>
+                                        <td>{AffiliationType.CONNECTIONS}</td>
+                                        {
+                                            this.character.affiliations[AffiliationType.CONNECTIONS].length <= 0
+                                            ? <td>[None]</td>
+                                            : <td>{
+                                                this.character.affiliations[AffiliationType.CONNECTIONS]
+                                                    .map((connection: CharConnection) => {
+                                                        return `${connection.affiliatedPersonName}, ${connection.affiliatedPersonTitle} for ${connection.affiliatedGroupName}`;
+                                                    })
+                                                    .join(', ')
+                                            }</td>
+                                        }
+                                    </tr>
+                                    <tr {...this.highlightModifiedAttribute('affiliations', AffiliationType.MEMBERSHIPS)}>
+                                        <td>{AffiliationType.MEMBERSHIPS}</td>
+                                        {
+                                            this.character.affiliations[AffiliationType.MEMBERSHIPS].length <= 0
+                                            ? <td>[None]</td>
+                                            : <td>{
+                                                this.character.affiliations[AffiliationType.MEMBERSHIPS]
+                                                    .map((membership: CharMembership) => membership.affiliatedGroupName)
+                                                    .join(', ')
+                                            }</td>
+                                        }
+                                    </tr>
+                                    <tr {...this.highlightModifiedAttribute('affiliations', AffiliationType.OFFICES)}>
+                                        <td>{AffiliationType.OFFICES}</td>
+                                        {
+                                            this.character.affiliations[AffiliationType.OFFICES].length <= 0
+                                            ? <td>[None]</td>
+                                            : <td>{
+                                                this.character.affiliations[AffiliationType.OFFICES]
+                                                    .map((office: CharOffice) => {
+                                                        return `${office.officeTitleDescription} for ${office.affiliatedGroupName}`;
+                                                    })
+                                                    .join(', ')
+                                            }</td>
+                                        }
+                                    </tr>
+                                    <tr><td colSpan={2} class="placeholderRow"></td></tr>
+                                </tbody>
+                            </table>
+                            <p>
+                                <div sq-flex class={this.findUpdate('reputation') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Reputation</span> {this.character.reputation}</div>
+                                <div sq-flex class={this.findUpdate('level') || this.findUpdate('wis') ? 'textRow textRow-highlight' : 'textRow'}>
+                                    <span sq-mr-auto>Social Exposure</span> {this.character.socialExposure} / {this.character.maxSocialCapital}
+                                </div>
+                                <div sq-flex class={this.findUpdate('int') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Questlog</span> {this.character.leads.length} / {this.character.maxQuestLogSize}</div>
+                            </p>
+                            <table class="listBox">
+                                <thead>
+                                    <tr>
+                                        <td>Quests</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        this.character.leads.length == 0
+                                        ? <tr><td>[None]</td></tr>
+                                        : this.character.leads.map((item, index, array) => 
+                                                <tr {...this.findUpdate('leads') && index == array.length-1 ? {class: 'textRow-highlight'} : {}}><td>{item.questlogName}</td></tr>
+                                            )
                                     }
                                     <tr><td class="placeholderRow"></td></tr>
                                 </tbody>
                             </table>
-                        </p>
-                    </section>
+                        </section>
+                        : <section>                    
+                            <p>
+                                <div class="textRow">Experience</div>
+                                <sq-progress-bar totalValue={getXpRequiredForNextLevel(this.character.level)} currentValue={this.character.currentXp}></sq-progress-bar>
+                            </p>
+                            <p>
+                                <div class={this.findUpdate('currentAdventure') ? 'textRow textRow-highlight' : 'textRow'}>{this.character.currentAdventure.name}</div>
+                                <sq-progress-bar totalValue={this.character.currentAdventure.progressRequired} currentValue={this.character.adventureProgress}></sq-progress-bar>
+                                <table class="listBox">
+                                    <thead>
+                                        <tr>
+                                            <th>Completed Adventures</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            this.character.completedAdventures.length === 0
+                                            ? <tr><td>[None]</td></tr>
+                                            : this.character.completedAdventures.map((adventure: string, index, array) => 
+                                                <tr {...this.findUpdate('completedAdventures') && index == array.length-1 ? {class: 'textRow-highlight'} : {}}><td>{adventure}</td></tr>
+                                            )
+                                        }
+                                        <tr><td class="placeholderRow"></td></tr>
+                                    </tbody>
+                                </table>
+                            </p>
+                        </section>
+                    }
                 </ion-content>
 
                 <ion-footer>

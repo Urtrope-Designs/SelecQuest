@@ -1,0 +1,16 @@
+@import '../global/app.css';
+
+sq-progress-bar {
+    display: block;
+    width: 100%;
+
+    .progressBar_wrapper {
+        margin: .4rem .4rem 1rem;
+    }
+
+    .progressBar_inner {
+        span {
+            display: inline-block;
+        }
+    }
+}
