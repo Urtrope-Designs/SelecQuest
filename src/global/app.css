@@ -11,7 +11,6 @@ body {
     font-family: '7_12', monospace;
     color: var(--sq-color-primary);
     text-shadow: 0 0 .5rem;
-    /* letter-spacing: .1rem; */
 }
 
 h1, h2, h3, h4, h5, p, button, div {
@@ -40,6 +39,8 @@ button.selected {
     background-color: var(--sq-color-primary);
     color: var(--sq-color-primary-contrast);
     font-weight: bold;
+    box-shadow: 0 0 .5rem var(--sq-color-primary);
+    text-shadow: 0 0 .2rem;
 }
 
 :root {

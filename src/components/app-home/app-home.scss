@@ -14,19 +14,21 @@ ion-page {
         width: 100%;
         border-collapse: collapse;
         margin-bottom: 1rem;
+        box-shadow: 0 0 .4rem var(--sq-color-primary), inset 0 0 .4rem var(--sq-color-primary);
     }
 
     thead {
         background-color: var(--sq-color-primary);
         color: var(--sq-color-primary-contrast);
         font-weight: bold;
-        text-shadow: 0 0 .1rem;
+        box-shadow: 0 1px .4rem var(--sq-color-primary);
     }
-
+    
     th {
         text-align: left;
+        text-shadow: 0 0 .2rem;
     }
-
+    
     th, td:not(.placeholderRow) {
         padding: .3rem 1rem .3rem 0;
         vertical-align: top;
@@ -66,6 +68,7 @@ ion-page {
         color: var(--sq-color-primary-contrast);
         font-weight: bold;
         text-shadow: 0 0 .1rem;
+        box-shadow: 0 0 .4rem var(--sq-color-primary);
     }
 
     .buttonRow button {
