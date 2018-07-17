@@ -281,6 +281,11 @@ const gladiatingTaskGen: TaskGenerator = {
                 data: trophyData,
             },
             {
+                type: CharacterModificationType.INCREASE,
+                attributeName: 'fatigue',
+                data: 1,
+            },
+            {
                 type: CharacterModificationType.DECREASE,
                 attributeName: 'marketSaturation',
                 data: -2,
@@ -368,11 +373,6 @@ const boastingTaskGen: TaskGenerator = {
                     type: CharacterModificationType.INCREASE,
                     attributeName: 'renown',
                     data: renownValue,
-                },
-                {
-                    type: CharacterModificationType.INCREASE,
-                    attributeName: 'fatigue',
-                    data: boastQuantity,
                 },
             ]
             
