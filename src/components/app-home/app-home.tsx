@@ -265,8 +265,8 @@ export class AppHome {
                             <table class="listBox">
                                 <thead>
                                     <tr>
-                                        <td style={{width: "65%"}}>Trophies</td>
-                                        <td>Qty</td>
+                                        <th style={{width: "65%"}}>Trophies</th>
+                                        <th>Qty</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -347,7 +347,7 @@ export class AppHome {
                             <table class="listBox">
                                 <thead>
                                     <tr>
-                                        <td>Quests</td>
+                                        <th>Quests</th>
                                     </tr>
                                 </thead>
                                 <tbody>
