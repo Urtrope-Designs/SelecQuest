@@ -40,7 +40,7 @@ export class ProgressBar {
     }
 
     updateSizing() {
-        console.dir(this.elemWidth = this.progressElem.querySelector('.progressBar_inner').clientWidth);
+        this.elemWidth = this.progressElem.querySelector('.progressBar_inner').clientWidth;
         this.calculateChars();
     }
     

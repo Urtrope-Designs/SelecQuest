@@ -2,7 +2,7 @@ import { Component, Prop, State, Event, EventEmitter, Element } from '@stencil/c
 import { Observable } from 'rxjs/Observable';
 
 import { AppState, Character, Task, TaskMode, AccoladeType, AffiliationType, CharConnection, CharMembership, CharOffice } from '../../helpers/models';
-import {getXpRequiredForNextLevel} from '../../helpers/character-manager';
+import {getXpRequiredForNextLevel } from '../../helpers/character-manager';
 import { capitalizeInitial } from '../../helpers/utils';
 
 @Component({
@@ -15,6 +15,8 @@ export class AppHome {
     @Element() homeEl: HTMLElement;
     @State() character: Character;
     @State() activeTask: Task;
+    @State() activeTaskProgressMs: number = 0;
+    private activeTaskProgressInterval: number;
     @State() activeTaskMode: TaskMode;
     @State() activeVisibleSection: VisibleSection;
     @Event() taskModeAction: EventEmitter;
@@ -30,6 +32,11 @@ export class AppHome {
             }
             if (state.hasActiveTask) {
                 this.activeTask = state.activeTask;
+                clearInterval(this.activeTaskProgressInterval);
+                this.activeTaskProgressMs = 0;
+                this.activeTaskProgressInterval = window.setInterval((activeTask: Task) => {
+                    this.activeTaskProgressMs = new Date().getTime() - activeTask.taskStartTime;
+                }, 100, this.activeTask);
             }
         });
         this.activeVisibleSection = VisibleSection.character;
@@ -403,8 +410,10 @@ export class AppHome {
                     <p>
                         {
                             !!this.activeTask
-                            ? <div class="textRow">{this.activeTask.description}...</div>
-                            : <div class="textRow">Loading...</div>
+                            ? [<div class="textRow">{this.activeTask.description}...</div>,
+                                <sq-progress-bar totalValue={this.activeTask.durationMs} currentValue={this.activeTaskProgressMs}></sq-progress-bar>]
+                            : [<div class="textRow">Loading...</div>,
+                                <sq-progress-bar totalValue={1} currentValue={0}></sq-progress-bar>]
                         }
                     </p>
                 </ion-footer>

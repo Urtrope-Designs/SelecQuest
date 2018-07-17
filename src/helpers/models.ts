@@ -3,6 +3,7 @@ import { Adventure } from "./storyline-helpers";
 /** Task related */
 export interface Task {
     completionTimeoutId?: any;
+    taskStartTime?: number;
     description: string;
     durationMs: number;
     results: CharacterModification[];

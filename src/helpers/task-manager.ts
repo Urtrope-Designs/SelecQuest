@@ -53,6 +53,7 @@ export class TaskManager {
                 let newTask = curAlgo.generateTask(state);
         
                 setTimeout(() => {
+                    newTask.taskStartTime = new Date().getTime();
                     newTask.completionTimeoutId = setTimeout(this.completeTask.bind(this), newTask.durationMs, newTask);
                     this.taskAction.emit(new SetActiveTask(newTask));
                 }, 10)
