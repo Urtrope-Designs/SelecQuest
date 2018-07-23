@@ -1,4 +1,14 @@
 /* Document Level Styles */
+
+@import "~@ionic/core/css/normalize.css";
+@import "~@ionic/core/css/structure.css";
+@import "~@ionic/core/css/colors.css";
+
+@import "~@ionic/core/css/padding.css";
+@import "~@ionic/core/css/float-elements.css";
+@import "~@ionic/core/css/text-alignment.css";
+@import "~@ionic/core/css/text-transformation.css";
+
 html {
     font-size: 18px;
 }
@@ -11,6 +21,7 @@ body {
     font-family: '7_12', monospace;
     color: var(--sq-color-primary);
     text-shadow: 0 0 .5rem;
+    background-color: var(--sq-color-primary-contrast);
 }
 
 h1, h2, h3, h4, h5, p, button, div {

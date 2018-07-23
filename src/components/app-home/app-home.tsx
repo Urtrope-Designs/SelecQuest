@@ -60,8 +60,8 @@ export class AppHome {
 
     visibleSectionButtonClicked(newVisibleSection: VisibleSection) {
         this.activeVisibleSection = newVisibleSection;
-        const scrollElem = this.homeEl.querySelector('ion-content');
-        scrollElem.scrollToTop(0);
+        const contentElem = this.homeEl.querySelector('ion-content');
+        contentElem.getScrollElement().scrollToTop(0);
     }
 
     findUpdate(attributeName: string, dataMatch?: (any) => boolean) {
@@ -80,7 +80,7 @@ export class AppHome {
 
     render() {
         return (
-            <ion-page class='show-page'>
+            <ion-page class='ion-page show-page'>
                 <ion-header>
                     <h1>SelecQuest</h1>
                     <div class="buttonRow">
@@ -112,6 +112,7 @@ export class AppHome {
                                     <tr><td>Race</td><td>{this.character.raceName}</td></tr>
                                     <tr><td>Class</td><td>{this.character.class}</td></tr>
                                     <tr {...this.highlightModifiedAttribute('level')}><td>Level</td><td>{this.character.level}</td></tr>
+                                    <tr><td colSpan={2} class="placeholderRow"></td></tr>
                                 </tbody>
                             </table>
                             <table class="listBox">
@@ -253,6 +254,7 @@ export class AppHome {
                                             </tr>
                                         )
                                     }
+                                    <tr><td colSpan={2} class="placeholderRow"></td></tr>
                                 </tbody>
                             </table>
                             <p>

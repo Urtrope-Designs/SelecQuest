@@ -1,4 +1,4 @@
-import { render } from '@stencil/core/testing';
+import { render } from '@stencil/core/dist/testing';
 import { MyApp } from './my-app';
 
 describe('my-app', () => {

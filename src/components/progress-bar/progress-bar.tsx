@@ -10,7 +10,7 @@ const CHAR_WIDTH = 10.8;
 })
 export class ProgressBar {
     @Prop() totalValue: number;
-    @Prop() currentValue;
+    @Prop() currentValue: number;
     @Element() progressElem: HTMLElement;
 
     @State() elemWidth: number;

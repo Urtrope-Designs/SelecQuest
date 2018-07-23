@@ -2,7 +2,7 @@ import { Observable } from 'rxjs/Observable';
 import { zip } from 'rxjs/observable/zip';
 import { scan } from 'rxjs/operators/scan';
 import { map } from 'rxjs/operators/map';
-import { Action, SetActiveTask, TaskCompleted, ChangeActiveTaskMode } from './actions';
+import { Action, SetActiveTask, TaskCompleted, ChangeActiveTaskMode, ActionType } from '../global/actions';
 import { Task, AppState, Character, TaskMode } from './models';
 import { applyCharacterModifications, updateCharacterState, hasCharacterReachedNextLevel, getLevelUpModifications } from './character-manager';
 import { wrapIntoBehavior } from './utils';
@@ -10,8 +10,8 @@ import { wrapIntoBehavior } from './utils';
 function activeTask(initState: Task, actions: Observable<Action>) {
     return actions.pipe(
         scan((state: Task, action: Action) => {
-            if (action instanceof SetActiveTask) {
-                return action.newTask;
+            if (action.actionType === ActionType.SetActiveTask) {
+                return (action as SetActiveTask).newTask;
             }
             else {
                 return state;
@@ -23,10 +23,10 @@ function activeTask(initState: Task, actions: Observable<Action>) {
 function hasActiveTask(initState: boolean, actions: Observable<Action>): Observable<boolean> {
     return actions.pipe(
         scan((state: boolean, action: Action) => {
-            if (action instanceof SetActiveTask) {
+            if (action.actionType === ActionType.SetActiveTask) {
                 return true;
             }
-            else if (action instanceof TaskCompleted) {
+            else if (action.actionType === ActionType.TaskCompleted) {
                 return false;
             }
             else {
@@ -39,8 +39,8 @@ function hasActiveTask(initState: boolean, actions: Observable<Action>): Observa
 function character(initState: Character, actions: Observable<Action>): Observable<Character> {
     return actions.pipe(
         scan((state: Character, action: Action) => {
-            if (action instanceof TaskCompleted) {
-                const updatedCharacter = applyCharacterModifications(state, action.completedTask.results);
+            if (action.actionType === ActionType.TaskCompleted) {
+                const updatedCharacter = applyCharacterModifications(state, (action as TaskCompleted).completedTask.results);
                 const stateCheckedCharacter = updateCharacterState(updatedCharacter);
                 const levelCheckedCharacter = (hasCharacterReachedNextLevel(stateCheckedCharacter)
                     ? applyCharacterModifications(stateCheckedCharacter, getLevelUpModifications(stateCheckedCharacter), false)
