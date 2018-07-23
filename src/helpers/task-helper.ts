@@ -18,13 +18,14 @@ function determineTaskQuantity(targetLevel: number, taskLevel: number) {
 
 function applyTaskNameModifiers(targetLevel: number, taskTarget: LootingTarget): string {
     let taskName = taskTarget.name;
+    const NEEDS_PREFIX_SEPARATOR = taskTarget.type == TaskTargetType.LOCATION || taskTarget.type == TaskTargetType.TRIAL;
 
     if ((targetLevel - taskTarget.level) <= -10) {
         taskName = TASK_PREFIX_MINIMAL[taskTarget.type] + ' ' + taskName;
     } else if ((targetLevel - taskTarget.level) < -5) {
         const firstPrefix = randFromList(TASK_PREFIX_BAD_FIRST[taskTarget.type]);
         const secondPrefix = randFromList(TASK_PREFIX_BAD_SECOND[taskTarget.type]);
-        const prefixSeparator = taskTarget.type == TaskTargetType.LOCATION ? ', ' : ' ';
+        const prefixSeparator = NEEDS_PREFIX_SEPARATOR ? ', ' : ' ';
         taskName = firstPrefix + prefixSeparator + secondPrefix + ' ' + taskName;
     } else if (((targetLevel - taskTarget.level) < 0) && (randRange(0, 1))) {
         taskName = randFromList(TASK_PREFIX_BAD_FIRST[taskTarget.type]) + ' ' + taskName;
@@ -35,7 +36,7 @@ function applyTaskNameModifiers(targetLevel: number, taskTarget: LootingTarget):
     } else if ((targetLevel - taskTarget.level) > 5) {
         const firstPrefix = randFromList(TASK_PREFIX_GOOD_FIRST[taskTarget.type]);
         const secondPrefix = randFromList(TASK_PREFIX_GOOD_SECOND[taskTarget.type]);
-        const prefixSeparator = taskTarget.type == TaskTargetType.LOCATION ? ', ' : ' ';
+        const prefixSeparator = NEEDS_PREFIX_SEPARATOR ? ', ' : ' ';
         taskName = firstPrefix + prefixSeparator + secondPrefix + ' ' + taskName;
     } else if (((targetLevel - taskTarget.level) > 0) && (randRange(0, 1))) {
         taskName = randFromList(TASK_PREFIX_GOOD_FIRST[taskTarget.type]) + ' ' + taskName;

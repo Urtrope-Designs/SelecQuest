@@ -26,7 +26,6 @@ declare global {
 }
 
 import '@ionic/core';
-import 'ionicons';
 
 import {
   Observable,
