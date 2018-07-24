@@ -2,7 +2,7 @@ import { Observable } from 'rxjs/Observable';
 import { zip } from 'rxjs/observable/zip';
 import { scan } from 'rxjs/operators/scan';
 import { map } from 'rxjs/operators/map';
-import { Action, SetActiveTask, TaskCompleted, ChangeActiveTaskMode, ActionType } from '../global/actions';
+import { Action, SetActiveTask, TaskCompleted, ChangeActiveTaskMode, ActionType } from './actions';
 import { Task, AppState, Character, TaskMode } from './models';
 import { applyCharacterModifications, updateCharacterState, hasCharacterReachedNextLevel, getLevelUpModifications } from './character-manager';
 import { wrapIntoBehavior } from './utils';

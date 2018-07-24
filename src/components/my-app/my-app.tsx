@@ -6,7 +6,7 @@ import { Subject } from 'rxjs/Subject';
 
 import { stateFn } from '../../helpers/state-store';
 import { AppState, TaskMode } from '../../helpers/models';
-import { Action, ChangeActiveTaskMode } from '../../global/actions';
+import { Action, ChangeActiveTaskMode } from '../../helpers/actions';
 import { createNewCharacter } from '../../helpers/character-manager';
 
 @Component({

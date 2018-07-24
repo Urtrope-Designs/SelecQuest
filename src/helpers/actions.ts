@@ -1,4 +1,4 @@
-import { Task, TaskMode } from "../helpers/models";
+import { Task, TaskMode } from "./models";
 
 export enum ActionType {
     SetActiveTask,

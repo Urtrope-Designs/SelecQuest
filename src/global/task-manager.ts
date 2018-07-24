@@ -2,7 +2,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
 import { Task, AppState } from '../helpers/models';
-import { SetActiveTask, TaskCompleted, Action } from './actions';
+import { SetActiveTask, TaskCompleted, Action } from '../helpers/actions';
 import { TaskGenerator, PRIORITIZED_TASK_GENERATORS } from '../helpers/task-helper';
 
 export default (function() {
