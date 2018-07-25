@@ -13,7 +13,7 @@ export class ProgressBar {
     @Prop() currentValue: number;
     @Element() progressElem: HTMLElement;
 
-    @State() elemWidth: number;
+    @State() elemWidth: number = 0;
     @State() totalCharsArray: number[];
     @State() currentChars: number;
 
@@ -45,7 +45,8 @@ export class ProgressBar {
     }
     
     calculateChars() {
-        this.totalCharsArray = new Array(Math.max(Math.floor(this.elemWidth / CHAR_WIDTH) - 2, 0));
+        const numTotalChars = Math.max(Math.floor(this.elemWidth / CHAR_WIDTH) - 2, 4)
+        this.totalCharsArray = new Array(numTotalChars);
         this.totalCharsArray.fill(0);
         this.currentChars = Math.floor(this.currentValue / this.totalValue * this.totalCharsArray.length + .01);        //avoid floating-point error when at 100%
     }
