@@ -54,8 +54,6 @@ export class ProgressBar {
     render() {
         return (
             <div class="progressBar_wrapper">
-                {/* <div class="progressBar_current" style={{width: `${100 * (this.currentValue / this.totalValue)}%`}}>
-                </div> */}
                 <div class="progressBar_inner">
                     &lt;
                         {
@@ -67,8 +65,6 @@ export class ProgressBar {
                         }
                     &gt;
                 </div>
-                {/* {this.elemWidth}
-                test */}
             </div>
         )
     }
