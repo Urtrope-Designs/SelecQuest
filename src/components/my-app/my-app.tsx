@@ -1,13 +1,14 @@
 import '@ionic/core';
 
-import { Component, Prop, Listen } from '@stencil/core';
+import { Component, Prop, Listen, State } from '@stencil/core';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
 import { stateFn } from '../../helpers/state-store';
 import { AppState, TaskMode } from '../../helpers/models';
-import { Action, ChangeActiveTaskMode } from '../../helpers/actions';
+import { Action, ChangeActiveTaskMode, TaskCompleted } from '../../helpers/actions';
 import { createNewCharacter } from '../../helpers/character-manager';
+import { GameDataManager } from '../../services/game-data-manager';
 
 @Component({
     tag: 'my-app',
@@ -17,8 +18,10 @@ export class MyApp {
 
     @Prop({ connect: 'ion-toast-controller' }) toastCtrl: HTMLIonToastControllerElement;
     @Prop({ context: 'taskMgr'}) taskMgr: {init: (stateStore: Observable<AppState>) => void, getTaskAction$: () => Observable<Action>};
-    private actionSubject: Subject<Action>;
-    private state: Observable<AppState>;
+    private actionSubject: Subject<Action> = new Subject<Action>();
+    @State() state: Observable<AppState>;
+    private statePromise: Promise<Observable<AppState>>;
+    private gameDataMgr = new GameDataManager();
     
     @Listen('taskAction')
     taskActionhandler(event: CustomEvent) {
@@ -30,8 +33,28 @@ export class MyApp {
     }
 
     constructor() {
-        this.actionSubject = new Subject<Action>();
-        this.state = stateFn({ activeTask: null, hasActiveTask: false, character: createNewCharacter(), activeTaskMode: TaskMode.LOOTING }, this.actionSubject.asObservable());
+        this.statePromise = new Promise((resolve, reject) => {
+            this.gameDataMgr.getGameData('Garg')
+                .then((serializedState: AppState) => {
+                    console.log('Game State at load:', serializedState);
+                    if (!!serializedState && !!serializedState.activeTask) {
+                        const taskTimeRemaining = serializedState.activeTask.taskStartTime + serializedState.activeTask.durationMs - new Date().getTime();
+                        serializedState.activeTask.completionTimeoutId = setTimeout(() => {
+                            this.actionSubject.next(new TaskCompleted(serializedState.activeTask));
+                        }, Math.max(taskTimeRemaining, 10));
+                    } 
+                    return serializedState;
+                })
+                .then(state => {
+                    const initialData = state || { activeTask: null, hasActiveTask: false, character: createNewCharacter(), activeTaskMode: TaskMode.LOOTING };
+                    this.state = stateFn(initialData, this.actionSubject.asObservable());
+                    this.gameDataMgr.persistAppData(this.state);
+                    resolve(this.state);
+                })
+                .catch(err => {
+                    reject(err);
+                })
+        });
     }
 
     /*
@@ -56,18 +79,29 @@ export class MyApp {
     }
 
     componentWillLoad() {
-        this.taskMgr.init(this.state);
-        this.taskMgr.getTaskAction$().subscribe((taskAction: Action) => {
-            this.actionSubject.next(taskAction);
-        })
+        this.statePromise
+            .then((state) => {
+                this.taskMgr.init(state);
+                this.taskMgr.getTaskAction$().subscribe((taskAction: Action) => {
+                    this.actionSubject.next(taskAction);
+                })
+            })
     }
 
     render() {
-        return (
-            <ion-app>
-                <app-home appState={this.state}>
-                </app-home>
-            </ion-app>
-        );
+        if (this.state) {
+            return (
+                <ion-app>
+                    <app-home appState={this.state}>
+                    </app-home>
+                </ion-app>
+            );
+        } else {
+            return (
+                <ion-app>
+                    Loading...
+                </ion-app>
+            )
+        }
     }
 }

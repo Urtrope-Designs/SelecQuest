@@ -33,7 +33,7 @@ export class AppHome {
             if (state.hasActiveTask) {
                 this.activeTask = state.activeTask;
                 clearInterval(this.activeTaskProgressInterval);
-                this.activeTaskProgressMs = 0;
+                this.activeTaskProgressMs = new Date().getTime() - this.activeTask.taskStartTime;
                 this.activeTaskProgressInterval = window.setInterval((activeTask: Task) => {
                     this.activeTaskProgressMs = new Date().getTime() - activeTask.taskStartTime;
                 }, 100, this.activeTask);

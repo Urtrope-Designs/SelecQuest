@@ -17,6 +17,8 @@
     "@ionic/core": "4.0.0-alpha.11",
     "@stencil/core": "0.10.7",
     "@stencil/sass": "0.0.5",
+    "localforage": "^1.7.2",
+    "localforage-cordovasqlitedriver": "^1.7.0",
     "npm": "^6.1.0",
     "rxjs": "^5.5.6"
   },
