@@ -306,7 +306,7 @@ export class AppHome {
                                                     .map((connection: CharConnection) => {
                                                         return `${connection.affiliatedPersonName}, ${connection.affiliatedPersonTitle} for ${connection.affiliatedGroupName}`;
                                                     })
-                                                    .join(', ')
+                                                    .join('; ')
                                             }</td>
                                         }
                                     </tr>
@@ -317,8 +317,8 @@ export class AppHome {
                                             ? <td>[None]</td>
                                             : <td>{
                                                 this.character.affiliations[AffiliationType.MEMBERSHIPS]
-                                                    .map((membership: CharMembership) => membership.affiliatedGroupName)
-                                                    .join(', ')
+                                                    .map((membership: CharMembership) => capitalizeInitial(membership.affiliatedGroupName))
+                                                    .join('; ')
                                             }</td>
                                         }
                                     </tr>
@@ -332,7 +332,7 @@ export class AppHome {
                                                     .map((office: CharOffice) => {
                                                         return `${office.officeTitleDescription} for ${office.affiliatedGroupName}`;
                                                     })
-                                                    .join(', ')
+                                                    .join('; ')
                                             }</td>
                                         }
                                     </tr>

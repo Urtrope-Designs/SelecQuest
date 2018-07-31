@@ -95,7 +95,7 @@ TASK_PREFIX_GOOD_SECOND[TaskTargetType.LOCATION] = [
     'booby-trapped',
     'ominous',
     'creepy',
-    'newly renovated',
+    'renovated',
     'massive',
 ];
 TASK_PREFIX_GOOD_SECOND[TaskTargetType.MONSTER] = [

@@ -36,7 +36,6 @@ export class MyApp {
         this.statePromise = new Promise((resolve, reject) => {
             this.gameDataMgr.getGameData('Garg')
                 .then((serializedState: AppState) => {
-                    console.log('Game State at load:', serializedState);
                     if (!!serializedState && !!serializedState.activeTask) {
                         const taskTimeRemaining = serializedState.activeTask.taskStartTime + serializedState.activeTask.durationMs - new Date().getTime();
                         serializedState.activeTask.completionTimeoutId = setTimeout(() => {

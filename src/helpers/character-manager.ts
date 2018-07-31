@@ -583,7 +583,7 @@ function generateRandomDistinctMembership(existingAffiliations: CharAffiliations
 
     const newMembershipGroupName = randFromList(availableMembershipGroups);
     const newMembership: CharMembership = {
-        affiliatedGroupName: capitalizeInitial(newMembershipGroupName),
+        affiliatedGroupName: newMembershipGroupName,
     };
     const returnData = {
         type: AffiliationType.MEMBERSHIPS,
