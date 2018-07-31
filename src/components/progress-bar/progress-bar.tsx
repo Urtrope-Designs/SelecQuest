@@ -58,7 +58,7 @@ export class ProgressBar {
                     &lt;
                         {
                             this.totalCharsArray && this.totalCharsArray.map((_val, index) => 
-                                index < this.currentChars 
+                                index < this.currentChars || (index === 0 && this.currentValue > 0)
                                     ? <span>&#9619;</span>
                                     : <span>&#9617;</span>
                             )
