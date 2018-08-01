@@ -72,41 +72,6 @@ declare global {
 declare global {
 
   namespace StencilComponents {
-    interface LazyImg {
-      'alt': string;
-      'src': string;
-    }
-  }
-
-  interface HTMLLazyImgElement extends StencilComponents.LazyImg, HTMLStencilElement {}
-
-  var HTMLLazyImgElement: {
-    prototype: HTMLLazyImgElement;
-    new (): HTMLLazyImgElement;
-  };
-  interface HTMLElementTagNameMap {
-    'lazy-img': HTMLLazyImgElement;
-  }
-  interface ElementTagNameMap {
-    'lazy-img': HTMLLazyImgElement;
-  }
-  namespace JSX {
-    interface IntrinsicElements {
-      'lazy-img': JSXElements.LazyImgAttributes;
-    }
-  }
-  namespace JSXElements {
-    export interface LazyImgAttributes extends HTMLAttributes {
-      'alt'?: string;
-      'src'?: string;
-    }
-  }
-}
-
-
-declare global {
-
-  namespace StencilComponents {
     interface SqProgressBar {
       'currentValue': number;
       'tapOverlayText': string;
