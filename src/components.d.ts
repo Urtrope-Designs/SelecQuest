@@ -26,7 +26,6 @@ declare global {
 }
 
 import '@ionic/core';
-import 'ionicons';
 
 import {
   Observable,
@@ -38,30 +37,30 @@ import {
 declare global {
 
   namespace StencilComponents {
-    interface AppHome {
+    interface SqPlayScreen {
       'appState': Observable<AppState>;
     }
   }
 
-  interface HTMLAppHomeElement extends StencilComponents.AppHome, HTMLStencilElement {}
+  interface HTMLSqPlayScreenElement extends StencilComponents.SqPlayScreen, HTMLStencilElement {}
 
-  var HTMLAppHomeElement: {
-    prototype: HTMLAppHomeElement;
-    new (): HTMLAppHomeElement;
+  var HTMLSqPlayScreenElement: {
+    prototype: HTMLSqPlayScreenElement;
+    new (): HTMLSqPlayScreenElement;
   };
   interface HTMLElementTagNameMap {
-    'app-home': HTMLAppHomeElement;
+    'sq-play-screen': HTMLSqPlayScreenElement;
   }
   interface ElementTagNameMap {
-    'app-home': HTMLAppHomeElement;
+    'sq-play-screen': HTMLSqPlayScreenElement;
   }
   namespace JSX {
     interface IntrinsicElements {
-      'app-home': JSXElements.AppHomeAttributes;
+      'sq-play-screen': JSXElements.SqPlayScreenAttributes;
     }
   }
   namespace JSXElements {
-    export interface AppHomeAttributes extends HTMLAttributes {
+    export interface SqPlayScreenAttributes extends HTMLAttributes {
       'appState'?: Observable<AppState>;
       'onTaskModeAction'?: (event: CustomEvent) => void;
     }

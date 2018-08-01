@@ -6,10 +6,10 @@ import {getXpRequiredForNextLevel } from '../../helpers/character-manager';
 import { capitalizeInitial, getRoughTime } from '../../helpers/utils';
 
 @Component({
-    tag: 'app-home',
-    styleUrl: 'app-home.scss'
+    tag: 'sq-play-screen',
+    styleUrl: 'play-screen.scss'
 })
-export class AppHome {
+export class PlayScreen {
     @Prop() appState: Observable<AppState>;
 
     @Element() homeEl: HTMLElement;
