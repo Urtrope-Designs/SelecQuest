@@ -26,6 +26,7 @@ declare global {
 }
 
 import '@ionic/core';
+import 'ionicons';
 
 import {
   Observable,
@@ -106,39 +107,6 @@ declare global {
 declare global {
 
   namespace StencilComponents {
-    interface MyApp {
-
-    }
-  }
-
-  interface HTMLMyAppElement extends StencilComponents.MyApp, HTMLStencilElement {}
-
-  var HTMLMyAppElement: {
-    prototype: HTMLMyAppElement;
-    new (): HTMLMyAppElement;
-  };
-  interface HTMLElementTagNameMap {
-    'my-app': HTMLMyAppElement;
-  }
-  interface ElementTagNameMap {
-    'my-app': HTMLMyAppElement;
-  }
-  namespace JSX {
-    interface IntrinsicElements {
-      'my-app': JSXElements.MyAppAttributes;
-    }
-  }
-  namespace JSXElements {
-    export interface MyAppAttributes extends HTMLAttributes {
-
-    }
-  }
-}
-
-
-declare global {
-
-  namespace StencilComponents {
     interface SqProgressBar {
       'currentValue': number;
       'tapOverlayText': string;
@@ -168,6 +136,39 @@ declare global {
       'currentValue'?: number;
       'tapOverlayText'?: string;
       'totalValue'?: number;
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
+    interface SqApp {
+
+    }
+  }
+
+  interface HTMLSqAppElement extends StencilComponents.SqApp, HTMLStencilElement {}
+
+  var HTMLSqAppElement: {
+    prototype: HTMLSqAppElement;
+    new (): HTMLSqAppElement;
+  };
+  interface HTMLElementTagNameMap {
+    'sq-app': HTMLSqAppElement;
+  }
+  interface ElementTagNameMap {
+    'sq-app': HTMLSqAppElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'sq-app': JSXElements.SqAppAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface SqAppAttributes extends HTMLAttributes {
+
     }
   }
 }

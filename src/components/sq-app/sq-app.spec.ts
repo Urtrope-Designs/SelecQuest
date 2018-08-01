@@ -1,16 +1,16 @@
 import { render } from '@stencil/core/dist/testing';
-import { MyApp } from './my-app';
+import { SqApp } from './sq-app';
 
-describe('my-app', () => {
+describe('sq-app', () => {
   it('should build', () => {
-    expect(new MyApp()).toBeTruthy();
+    expect(new SqApp()).toBeTruthy();
   });
 
   describe('rendering', () => {
     beforeEach(async () => {
       await render({
-        components: [MyApp],
-        html: '<my-app></my-app>'
+        components: [SqApp],
+        html: '<sq-app></sq-app>'
       });
     });
   });

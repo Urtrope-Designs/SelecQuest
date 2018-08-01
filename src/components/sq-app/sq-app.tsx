@@ -11,10 +11,10 @@ import { createNewCharacter } from '../../helpers/character-manager';
 import { GameDataManager } from '../../services/game-data-manager';
 
 @Component({
-    tag: 'my-app',
-    styleUrl: 'my-app.scss'
+    tag: 'sq-app',
+    styleUrl: 'sq-app.scss'
 })
-export class MyApp {
+export class SqApp {
 
     @Prop({ connect: 'ion-toast-controller' }) toastCtrl: HTMLIonToastControllerElement;
     @Prop({ context: 'taskMgr'}) taskMgr: {init: (stateStore: Observable<AppState>) => void, getTaskAction$: () => Observable<Action>};
