@@ -3,7 +3,7 @@ import { Observable } from 'rxjs/Observable';
 
 import { AppState, Character, Task, TaskMode, AccoladeType, AffiliationType, CharConnection, CharMembership, CharOffice } from '../../helpers/models';
 import {getXpRequiredForNextLevel } from '../../helpers/character-manager';
-import { capitalizeInitial } from '../../helpers/utils';
+import { capitalizeInitial, getRoughTime } from '../../helpers/utils';
 
 @Component({
     tag: 'app-home',
@@ -206,9 +206,17 @@ export class AppHome {
                             <p>
                                 <div sq-flex class={this.findUpdate('gold') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Gold</span> {this.character.gold}</div>
                                 <div class="textRow">Market Saturation</div>
-                                <sq-progress-bar totalValue={this.character.maxMarketSaturation} currentValue={this.character.marketSaturation}></sq-progress-bar>
+                                <sq-progress-bar
+                                    totalValue={this.character.maxMarketSaturation}
+                                    currentValue={this.character.marketSaturation}
+                                    tapOverlayText={`${Math.floor(100 * this.character.marketSaturation / this.character.maxMarketSaturation)}%`}
+                                ></sq-progress-bar>
                                 <div class="textRow">Encumbrance</div>
-                                <sq-progress-bar totalValue={this.character.maxEncumbrance} currentValue={this.character.loot.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}></sq-progress-bar>
+                                <sq-progress-bar
+                                    totalValue={this.character.maxEncumbrance}
+                                    currentValue={this.character.loot.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}
+                                    tapOverlayText={`${this.character.loot.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}/${this.character.maxEncumbrance}`}
+                                ></sq-progress-bar>
                             </p>
                             <table class="listBox">
                                 <thead>
@@ -260,9 +268,17 @@ export class AppHome {
                             <p>
                                 <div sq-flex class={this.findUpdate('renown') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Renown</span> {this.character.renown}</div>
                                 <div class="textRow">Fatigue</div>
-                                <sq-progress-bar totalValue={this.character.maxFatigue} currentValue={this.character.fatigue}></sq-progress-bar>
+                                <sq-progress-bar
+                                    totalValue={this.character.maxFatigue}
+                                    currentValue={this.character.fatigue}
+                                    tapOverlayText={`${Math.floor(100 * this.character.fatigue / this.character.maxFatigue)}%`}
+                                ></sq-progress-bar>
                                 <div class="textRow">Equipment Wear</div>
-                                <sq-progress-bar totalValue={this.character.maxEquipmentWear} currentValue={this.character.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}></sq-progress-bar>
+                                <sq-progress-bar
+                                    totalValue={this.character.maxEquipmentWear}
+                                    currentValue={this.character.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}
+                                    tapOverlayText={`${this.character.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}/${this.character.maxEquipmentWear}`}
+                                ></sq-progress-bar>
                             </p>    
                             <table class="listBox">
                                 <thead>
@@ -342,9 +358,17 @@ export class AppHome {
                             <p>
                                 <div sq-flex class={this.findUpdate('reputation') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Reputation</span> {this.character.reputation}</div>
                                 <div class="textRow">Social Exposure</div>
-                                <sq-progress-bar totalValue={this.character.maxSocialCapital} currentValue={this.character.socialExposure}></sq-progress-bar>
+                                <sq-progress-bar
+                                    totalValue={this.character.maxSocialCapital}
+                                    currentValue={this.character.socialExposure}
+                                    tapOverlayText={`${Math.floor(100 * this.character.socialExposure / this.character.maxSocialCapital)}%`}
+                                ></sq-progress-bar>
                                 <div class="textRow">Questlog</div>
-                                <sq-progress-bar totalValue={this.character.maxQuestLogSize} currentValue={this.character.leads.length}></sq-progress-bar>
+                                <sq-progress-bar
+                                    totalValue={this.character.maxQuestLogSize}
+                                    currentValue={this.character.leads.length}
+                                    tapOverlayText={`${this.character.leads.length}/${this.character.maxQuestLogSize}`}
+                                ></sq-progress-bar>
                             </p>
                             <table class="listBox">
                                 <thead>
@@ -367,11 +391,19 @@ export class AppHome {
                         : <section>                    
                             <p>
                                 <div class="textRow">Experience</div>
-                                <sq-progress-bar totalValue={getXpRequiredForNextLevel(this.character.level)} currentValue={this.character.currentXp}></sq-progress-bar>
+                                <sq-progress-bar
+                                    totalValue={getXpRequiredForNextLevel(this.character.level)}
+                                    currentValue={this.character.currentXp}
+                                    tapOverlayText={`${getXpRequiredForNextLevel(this.character.level) - this.character.currentXp} xp needed`}
+                                ></sq-progress-bar>
                             </p>
                             <p>
                                 <div class={this.findUpdate('currentAdventure') ? 'textRow textRow-highlight' : 'textRow'}>{this.character.currentAdventure.name}</div>
-                                <sq-progress-bar totalValue={this.character.currentAdventure.progressRequired} currentValue={this.character.adventureProgress}></sq-progress-bar>
+                                <sq-progress-bar 
+                                    totalValue={this.character.currentAdventure.progressRequired}
+                                    currentValue={this.character.adventureProgress}
+                                    tapOverlayText={`${getRoughTime(this.character.currentAdventure.progressRequired - this.character.adventureProgress)} remaining`}
+                                ></sq-progress-bar>
                                 <table class="listBox">
                                     <thead>
                                         <tr>
@@ -413,7 +445,11 @@ export class AppHome {
                         {
                             !!this.activeTask
                             ? [<div class="textRow">{this.activeTask.description}...</div>,
-                                <sq-progress-bar totalValue={this.activeTask.durationMs} currentValue={this.activeTaskProgressMs}></sq-progress-bar>]
+                                <sq-progress-bar
+                                    totalValue={this.activeTask.durationMs}
+                                    currentValue={this.activeTaskProgressMs}
+                                    tapOverlayText={`${Math.floor(100 * this.activeTaskProgressMs / this.activeTask.durationMs)}%`}
+                                ></sq-progress-bar>]
                             : [<div class="textRow">Loading...</div>,
                                 <sq-progress-bar totalValue={1} currentValue={0}></sq-progress-bar>]
                         }

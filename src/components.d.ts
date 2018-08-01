@@ -141,6 +141,7 @@ declare global {
   namespace StencilComponents {
     interface SqProgressBar {
       'currentValue': number;
+      'tapOverlayText': string;
       'totalValue': number;
     }
   }
@@ -165,6 +166,7 @@ declare global {
   namespace JSXElements {
     export interface SqProgressBarAttributes extends HTMLAttributes {
       'currentValue'?: number;
+      'tapOverlayText'?: string;
       'totalValue'?: number;
     }
   }

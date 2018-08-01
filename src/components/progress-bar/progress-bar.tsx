@@ -11,11 +11,13 @@ const CHAR_WIDTH = 10.8;
 export class ProgressBar {
     @Prop() totalValue: number;
     @Prop() currentValue: number;
+    @Prop() tapOverlayText: string;
     @Element() progressElem: HTMLElement;
 
     @State() elemWidth: number = 0;
     @State() totalCharsArray: number[];
     @State() currentChars: number;
+    @State() isTapOverlayActive: boolean = false;
 
     @Listen('window:resize')
     handleResize() {
@@ -53,9 +55,10 @@ export class ProgressBar {
     
     render() {
         return (
-            <div class="progressBar_wrapper">
+            <div class="progressBar_wrapper" onClick={() => this.isTapOverlayActive = !this.isTapOverlayActive} overlay-active={!!this.tapOverlayText && this.isTapOverlayActive}>
                 <div class="progressBar_inner">
                     &lt;
+
                         {
                             this.totalCharsArray && this.totalCharsArray.map((_val, index) => 
                                 index < this.currentChars || (index === 0 && this.currentValue > 0)
@@ -65,6 +68,7 @@ export class ProgressBar {
                         }
                     &gt;
                 </div>
+                <div class="tapOverlay">{this.tapOverlayText}</div>
             </div>
         )
     }

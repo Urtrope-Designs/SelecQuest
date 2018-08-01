@@ -145,3 +145,24 @@ export function deepCopyObject(original: any): any {
 
     return copy;
 }
+
+export function getRoughTime(timeSeconds: number): string {
+    if (timeSeconds < 120){
+        return timeSeconds + ' seconds';
+    }
+    else if (timeSeconds < 60 * 120) {
+        return Math.floor(timeSeconds / 60) + ' minutes';
+    }
+    else if (timeSeconds < 60 * 60 * 48) {
+        return Math.floor(timeSeconds / 3600) + ' hours';
+    }
+    else if (timeSeconds < 60 * 60 * 24 * 60) {
+        return Math.floor(timeSeconds / (3600 * 24)) + ' days';
+    }
+    else if (timeSeconds < 60 * 60 * 24 * 30 * 24) {
+        return Math.floor(timeSeconds / (3600 * 24 * 30)) +" months";
+    }
+    else {
+        return Math.floor(timeSeconds / (3600 * 24 * 30 * 12)) + " years";
+    }
+}
