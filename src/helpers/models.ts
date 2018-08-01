@@ -6,7 +6,7 @@ export interface Task {
     taskStartTime?: number;
     description: string;
     durationMs: number;
-    results: CharacterModification[];
+    results: HeroModification[];
 }
 
 export enum TaskMode {
@@ -59,16 +59,16 @@ export interface LeadTarget {
     predicateFactory: () => string,
 }
 
-/** Character Related */
+/** Hero Related */
 
-export interface CharacterModification {
-    type: CharacterModificationType,
+export interface HeroModification {
+    type: HeroModificationType,
     attributeName: string,
     data: any,
     // data: string | number | {name: string, rank: number}[] | {type: string, description: string, rating: number}[] | {type: AccoladeType, received: string[]}[] | {type: AffiliationType, received: string[]}[] | {name: string, quantity: number, value: number} | {name: string, value: string} | string[],
 }
 
-export enum CharacterModificationType {
+export enum HeroModificationType {
     INCREASE,
     DECREASE,
     SET,
@@ -88,7 +88,7 @@ export enum AffiliationType {
     OFFICES = 'Offices',
 }
 
-export class CharacterStats {
+export class HeroStats {
     'str': number = 0;
     'dex': number = 0;
     'con': number = 0;
@@ -97,17 +97,17 @@ export class CharacterStats {
     'cha': number = 0;
 }
 
-const charStats = new CharacterStats();
-export function getCharacterStatList(): string[] {
+const charStats = new HeroStats();
+export function getHeroStatList(): string[] {
     return Object.keys(charStats);
 }
 
-export interface Character extends CharacterStats {
+export interface Hero extends HeroStats {
     name: string;
     raceName: string;
     class: string;
     level: number;
-    /* stats inherited from CharacterStats */
+    /* stats inherited from HeroStats */
     // str: number;
     // dex: number;
     // con: number;
@@ -234,7 +234,7 @@ export enum AccoladeType {
 export interface AppState {
     activeTask: Task;
     hasActiveTask: boolean;
-    character: Character;
+    hero: Hero;
     activeTaskMode: TaskMode
 }
 

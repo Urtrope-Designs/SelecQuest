@@ -3,8 +3,8 @@ import { zip } from 'rxjs/observable/zip';
 import { scan } from 'rxjs/operators/scan';
 import { map } from 'rxjs/operators/map';
 import { Action, SetActiveTask, TaskCompleted, ChangeActiveTaskMode, ActionType } from './actions';
-import { Task, AppState, Character, TaskMode } from './models';
-import { applyCharacterModifications, updateCharacterState, hasCharacterReachedNextLevel, getLevelUpModifications } from './character-manager';
+import { Task, AppState, Hero, TaskMode } from './models';
+import { applyHeroModifications, updateHeroState, hasHeroReachedNextLevel, getLevelUpModifications } from './hero-manager';
 import { wrapIntoBehavior } from './utils';
 
 function activeTask(initState: Task, actions: Observable<Action>) {
@@ -36,16 +36,16 @@ function hasActiveTask(initState: boolean, actions: Observable<Action>): Observa
     );
 }
 
-function character(initState: Character, actions: Observable<Action>): Observable<Character> {
+function hero(initState: Hero, actions: Observable<Action>): Observable<Hero> {
     return actions.pipe(
-        scan((state: Character, action: Action) => {
+        scan((state: Hero, action: Action) => {
             if (action.actionType === ActionType.TaskCompleted) {
-                const updatedCharacter = applyCharacterModifications(state, (action as TaskCompleted).completedTask.results);
-                const stateCheckedCharacter = updateCharacterState(updatedCharacter);
-                const levelCheckedCharacter = (hasCharacterReachedNextLevel(stateCheckedCharacter)
-                    ? applyCharacterModifications(stateCheckedCharacter, getLevelUpModifications(stateCheckedCharacter), false)
-                    : stateCheckedCharacter);
-                return levelCheckedCharacter;
+                const updatedHero = applyHeroModifications(state, (action as TaskCompleted).completedTask.results);
+                const stateCheckedHero = updateHeroState(updatedHero);
+                const levelCheckedHero = (hasHeroReachedNextLevel(stateCheckedHero)
+                    ? applyHeroModifications(stateCheckedHero, getLevelUpModifications(stateCheckedHero), false)
+                    : stateCheckedHero);
+                return levelCheckedHero;
             } else {
                 return state;
             }
@@ -69,14 +69,14 @@ function activeTaskMode(initState: TaskMode, actions: Observable<Action>): Obser
 
 export function stateFn(initState: AppState, actions: Observable<Action>): Observable<AppState> {
     const combine = s => ({
-        character: s[0],
+        hero: s[0],
         activeTask: s[1],
         hasActiveTask: s[2],
         activeTaskMode: s[3],
     });
     const appStateObs: Observable<AppState> = 
         zip(
-            character(initState.character, actions),
+            hero(initState.hero, actions),
             activeTask(initState.activeTask, actions),
             hasActiveTask(initState.hasActiveTask, actions),
             activeTaskMode(initState.activeTaskMode, actions),

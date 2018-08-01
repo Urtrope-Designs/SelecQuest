@@ -1,8 +1,8 @@
 import { Component, Prop, State, Event, EventEmitter, Element } from '@stencil/core';
 import { Observable } from 'rxjs/Observable';
 
-import { AppState, Character, Task, TaskMode, AccoladeType, AffiliationType, CharConnection, CharMembership, CharOffice } from '../../helpers/models';
-import { getXpRequiredForNextLevel } from '../../helpers/character-manager';
+import { AppState, Hero, Task, TaskMode, AccoladeType, AffiliationType, CharConnection, CharMembership, CharOffice } from '../../helpers/models';
+import { getXpRequiredForNextLevel } from '../../helpers/hero-manager';
 import { capitalizeInitial, getRoughTime } from '../../helpers/utils';
 
 @Component({
@@ -13,7 +13,7 @@ export class PlayScreen {
     @Prop() appState: Observable<AppState>;
 
     @Element() homeEl: HTMLElement;
-    @State() character: Character;
+    @State() hero: Hero;
     @State() activeTask: Task;
     @State() activeTaskProgressMs: number = 0;
     private activeTaskProgressInterval: number;
@@ -24,8 +24,8 @@ export class PlayScreen {
 
     componentWillLoad() {
         this.appState.subscribe((state: AppState) => {
-            if (!!state.character) {
-                this.character = state.character;
+            if (!!state.hero) {
+                this.hero = state.hero;
             }
             if (state.activeTaskMode != null) {
                 this.activeTaskMode = state.activeTaskMode;
@@ -39,7 +39,7 @@ export class PlayScreen {
                 }, 100, this.activeTask);
             }
         });
-        this.activeVisibleSection = VisibleSection.character;
+        this.activeVisibleSection = VisibleSection.hero;
     }
 
     taskModeButtonClicked(newTaskModeString: TaskMode) {
@@ -65,7 +65,7 @@ export class PlayScreen {
     }
 
     findUpdate(attributeName: string, dataMatch?: (any) => boolean) {
-        const found = this.character.latestModifications
+        const found = this.hero.latestModifications
             .find(mod => {
                 return mod.attributeName === attributeName && (dataMatch == null || dataMatch(mod.data));
             })
@@ -98,7 +98,7 @@ export class PlayScreen {
                 </ion-header>
                 <ion-content>
                     {
-                        this.activeVisibleSection == VisibleSection.character 
+                        this.activeVisibleSection == VisibleSection.hero 
                         ? <section>
                             <table class="listBox">
                                 <thead>
@@ -108,10 +108,10 @@ export class PlayScreen {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr><td>Name</td><td>{this.character.name}</td></tr>
-                                    <tr><td>Race</td><td>{this.character.raceName}</td></tr>
-                                    <tr><td>Class</td><td>{this.character.class}</td></tr>
-                                    <tr {...this.highlightModifiedAttribute('level')}><td>Level</td><td>{this.character.level}</td></tr>
+                                    <tr><td>Name</td><td>{this.hero.name}</td></tr>
+                                    <tr><td>Race</td><td>{this.hero.raceName}</td></tr>
+                                    <tr><td>Class</td><td>{this.hero.class}</td></tr>
+                                    <tr {...this.highlightModifiedAttribute('level')}><td>Level</td><td>{this.hero.level}</td></tr>
                                     <tr><td colSpan={2} class="placeholderRow"></td></tr>
                                 </tbody>
                             </table>
@@ -123,14 +123,14 @@ export class PlayScreen {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr {...this.highlightModifiedAttribute('str')}><td>Str</td><td>{this.character.str}</td></tr>
-                                    <tr {...this.highlightModifiedAttribute('dex')}><td>Dex</td><td>{this.character.dex}</td></tr>
-                                    <tr {...this.highlightModifiedAttribute('con')}><td>Con</td><td>{this.character.con}</td></tr>
-                                    <tr {...this.highlightModifiedAttribute('wis')}><td>Wis</td><td>{this.character.wis}</td></tr>
-                                    <tr {...this.highlightModifiedAttribute('int')}><td>Int</td><td>{this.character.int}</td></tr>
-                                    <tr {...this.highlightModifiedAttribute('cha')}><td>Cha</td><td>{this.character.cha}</td></tr>
-                                    <tr {...this.highlightModifiedAttribute('maxHp')}><td>Max HP</td><td>{this.character.maxHp}</td></tr>
-                                    <tr {...this.highlightModifiedAttribute('maxMp')}><td>Max MP</td><td>{this.character.maxMp}</td></tr>
+                                    <tr {...this.highlightModifiedAttribute('str')}><td>Str</td><td>{this.hero.str}</td></tr>
+                                    <tr {...this.highlightModifiedAttribute('dex')}><td>Dex</td><td>{this.hero.dex}</td></tr>
+                                    <tr {...this.highlightModifiedAttribute('con')}><td>Con</td><td>{this.hero.con}</td></tr>
+                                    <tr {...this.highlightModifiedAttribute('wis')}><td>Wis</td><td>{this.hero.wis}</td></tr>
+                                    <tr {...this.highlightModifiedAttribute('int')}><td>Int</td><td>{this.hero.int}</td></tr>
+                                    <tr {...this.highlightModifiedAttribute('cha')}><td>Cha</td><td>{this.hero.cha}</td></tr>
+                                    <tr {...this.highlightModifiedAttribute('maxHp')}><td>Max HP</td><td>{this.hero.maxHp}</td></tr>
+                                    <tr {...this.highlightModifiedAttribute('maxMp')}><td>Max MP</td><td>{this.hero.maxMp}</td></tr>
                                 </tbody>
                             </table>
                         </section>
@@ -145,9 +145,9 @@ export class PlayScreen {
                                 </thead>
                                 <tbody>
                                     {
-                                        this.character.spells.length == 0 
+                                        this.hero.spells.length == 0 
                                         ? <tr><td colSpan={2}>[None]</td></tr>    
-                                        : this.character.spells.map((spell) => 
+                                        : this.hero.spells.map((spell) => 
                                                 <tr {...(this.highlightModifiedAttribute('spells', spell.name))}>
                                                     <td>{spell.name}</td>
                                                     <td>{spell.rank}</td>
@@ -166,9 +166,9 @@ export class PlayScreen {
                                 </thead>
                                 <tbody>
                                     {
-                                        this.character.abilities.length == 0 
+                                        this.hero.abilities.length == 0 
                                         ? <tr><td colSpan={2}>[None]</td></tr>    
-                                        : this.character.abilities.map((ability) => 
+                                        : this.hero.abilities.map((ability) => 
                                                 <tr {...(this.highlightModifiedAttribute('abilities', ability.name))}>
                                                     <td>{ability.name}</td>
                                                     <td>{ability.rank}</td>
@@ -190,7 +190,7 @@ export class PlayScreen {
                                 </thead>
                                 <tbody>
                                     {
-                                        this.character.equipment.map(equip => 
+                                        this.hero.equipment.map(equip => 
                                             <tr {...this.highlightModifiedAttribute('equipment', equip.type)}>
                                                 <td style={{width: "40%"}}>{equip.type}</td>
                                                 {
@@ -204,18 +204,18 @@ export class PlayScreen {
                                 </tbody>
                             </table>
                             <p>
-                                <div sq-flex class={this.findUpdate('gold') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Gold</span> {this.character.gold}</div>
+                                <div sq-flex class={this.findUpdate('gold') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Gold</span> {this.hero.gold}</div>
                                 <div class="textRow">Market Saturation</div>
                                 <sq-progress-bar
-                                    totalValue={this.character.maxMarketSaturation}
-                                    currentValue={this.character.marketSaturation}
-                                    tapOverlayText={`${Math.floor(100 * this.character.marketSaturation / this.character.maxMarketSaturation)}%`}
+                                    totalValue={this.hero.maxMarketSaturation}
+                                    currentValue={this.hero.marketSaturation}
+                                    tapOverlayText={`${Math.floor(100 * this.hero.marketSaturation / this.hero.maxMarketSaturation)}%`}
                                 ></sq-progress-bar>
                                 <div class="textRow">Encumbrance</div>
                                 <sq-progress-bar
-                                    totalValue={this.character.maxEncumbrance}
-                                    currentValue={this.character.loot.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}
-                                    tapOverlayText={`${this.character.loot.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}/${this.character.maxEncumbrance}`}
+                                    totalValue={this.hero.maxEncumbrance}
+                                    currentValue={this.hero.loot.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}
+                                    tapOverlayText={`${this.hero.loot.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}/${this.hero.maxEncumbrance}`}
                                 ></sq-progress-bar>
                             </p>
                             <table class="listBox">
@@ -227,9 +227,9 @@ export class PlayScreen {
                                 </thead>
                                 <tbody>
                                     {
-                                        this.character.loot.length == 0
+                                        this.hero.loot.length == 0
                                         ? <tr><td colSpan={2}>[None]</td></tr>
-                                        : this.character.loot.map((item) => 
+                                        : this.hero.loot.map((item) => 
                                                 <tr {...this.highlightModifiedAttribute('loot', item.name)}>
                                                     <td>{capitalizeInitial(item.name)}</td>
                                                     <td>{item.quantity}</td>
@@ -251,7 +251,7 @@ export class PlayScreen {
                                 </thead>
                                 <tbody>
                                     {
-                                        this.character.accolades.map(accolade =>
+                                        this.hero.accolades.map(accolade =>
                                             <tr {...this.highlightModifiedAttribute('accolades', ''+accolade.type)}>
                                                 <td>{AccoladeType[accolade.type]}</td>
                                                 {
@@ -266,18 +266,18 @@ export class PlayScreen {
                                 </tbody>
                             </table>
                             <p>
-                                <div sq-flex class={this.findUpdate('renown') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Renown</span> {this.character.renown}</div>
+                                <div sq-flex class={this.findUpdate('renown') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Renown</span> {this.hero.renown}</div>
                                 <div class="textRow">Fatigue</div>
                                 <sq-progress-bar
-                                    totalValue={this.character.maxFatigue}
-                                    currentValue={this.character.fatigue}
-                                    tapOverlayText={`${Math.floor(100 * this.character.fatigue / this.character.maxFatigue)}%`}
+                                    totalValue={this.hero.maxFatigue}
+                                    currentValue={this.hero.fatigue}
+                                    tapOverlayText={`${Math.floor(100 * this.hero.fatigue / this.hero.maxFatigue)}%`}
                                 ></sq-progress-bar>
                                 <div class="textRow">Equipment Wear</div>
                                 <sq-progress-bar
-                                    totalValue={this.character.maxEquipmentWear}
-                                    currentValue={this.character.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}
-                                    tapOverlayText={`${this.character.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}/${this.character.maxEquipmentWear}`}
+                                    totalValue={this.hero.maxEquipmentWear}
+                                    currentValue={this.hero.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}
+                                    tapOverlayText={`${this.hero.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}/${this.hero.maxEquipmentWear}`}
                                 ></sq-progress-bar>
                             </p>    
                             <table class="listBox">
@@ -289,9 +289,9 @@ export class PlayScreen {
                                 </thead>
                                 <tbody>
                                     {
-                                        this.character.trophies.length == 0
+                                        this.hero.trophies.length == 0
                                         ? <tr><td colSpan={2}>[None]</td></tr>
-                                        : this.character.trophies.map((item) => 
+                                        : this.hero.trophies.map((item) => 
                                             <tr {...this.highlightModifiedAttribute('trophies', item.name)}>
                                                 <td>{item.name}</td>
                                                 <td>{item.quantity}</td>
@@ -315,10 +315,10 @@ export class PlayScreen {
                                     <tr {...this.highlightModifiedAttribute('affiliations', AffiliationType.CONNECTIONS)}>
                                         <td>{AffiliationType.CONNECTIONS}</td>
                                         {
-                                            this.character.affiliations[AffiliationType.CONNECTIONS].length <= 0
+                                            this.hero.affiliations[AffiliationType.CONNECTIONS].length <= 0
                                             ? <td>[None]</td>
                                             : <td>{
-                                                this.character.affiliations[AffiliationType.CONNECTIONS]
+                                                this.hero.affiliations[AffiliationType.CONNECTIONS]
                                                     .map((connection: CharConnection) => {
                                                         return `${connection.affiliatedPersonName}, ${connection.affiliatedPersonTitle} for ${connection.affiliatedGroupName}`;
                                                     })
@@ -329,10 +329,10 @@ export class PlayScreen {
                                     <tr {...this.highlightModifiedAttribute('affiliations', AffiliationType.MEMBERSHIPS)}>
                                         <td>{AffiliationType.MEMBERSHIPS}</td>
                                         {
-                                            this.character.affiliations[AffiliationType.MEMBERSHIPS].length <= 0
+                                            this.hero.affiliations[AffiliationType.MEMBERSHIPS].length <= 0
                                             ? <td>[None]</td>
                                             : <td>{
-                                                this.character.affiliations[AffiliationType.MEMBERSHIPS]
+                                                this.hero.affiliations[AffiliationType.MEMBERSHIPS]
                                                     .map((membership: CharMembership) => capitalizeInitial(membership.affiliatedGroupName))
                                                     .join('; ')
                                             }</td>
@@ -341,10 +341,10 @@ export class PlayScreen {
                                     <tr {...this.highlightModifiedAttribute('affiliations', AffiliationType.OFFICES)}>
                                         <td>{AffiliationType.OFFICES}</td>
                                         {
-                                            this.character.affiliations[AffiliationType.OFFICES].length <= 0
+                                            this.hero.affiliations[AffiliationType.OFFICES].length <= 0
                                             ? <td>[None]</td>
                                             : <td>{
-                                                this.character.affiliations[AffiliationType.OFFICES]
+                                                this.hero.affiliations[AffiliationType.OFFICES]
                                                     .map((office: CharOffice) => {
                                                         return `${office.officeTitleDescription} for ${office.affiliatedGroupName}`;
                                                     })
@@ -356,18 +356,18 @@ export class PlayScreen {
                                 </tbody>
                             </table>
                             <p>
-                                <div sq-flex class={this.findUpdate('reputation') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Reputation</span> {this.character.reputation}</div>
+                                <div sq-flex class={this.findUpdate('reputation') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Reputation</span> {this.hero.reputation}</div>
                                 <div class="textRow">Social Exposure</div>
                                 <sq-progress-bar
-                                    totalValue={this.character.maxSocialCapital}
-                                    currentValue={this.character.socialExposure}
-                                    tapOverlayText={`${Math.floor(100 * this.character.socialExposure / this.character.maxSocialCapital)}%`}
+                                    totalValue={this.hero.maxSocialCapital}
+                                    currentValue={this.hero.socialExposure}
+                                    tapOverlayText={`${Math.floor(100 * this.hero.socialExposure / this.hero.maxSocialCapital)}%`}
                                 ></sq-progress-bar>
                                 <div class="textRow">Questlog</div>
                                 <sq-progress-bar
-                                    totalValue={this.character.maxQuestLogSize}
-                                    currentValue={this.character.leads.length}
-                                    tapOverlayText={`${this.character.leads.length}/${this.character.maxQuestLogSize}`}
+                                    totalValue={this.hero.maxQuestLogSize}
+                                    currentValue={this.hero.leads.length}
+                                    tapOverlayText={`${this.hero.leads.length}/${this.hero.maxQuestLogSize}`}
                                 ></sq-progress-bar>
                             </p>
                             <table class="listBox">
@@ -378,9 +378,9 @@ export class PlayScreen {
                                 </thead>
                                 <tbody>
                                     {
-                                        this.character.leads.length == 0
+                                        this.hero.leads.length == 0
                                         ? <tr><td>[None]</td></tr>
-                                        : this.character.leads.map((item, index, array) => 
+                                        : this.hero.leads.map((item, index, array) => 
                                                 <tr {...this.findUpdate('leads') && index == array.length-1 ? {class: 'textRow-highlight'} : {}}><td>{item.questlogName}</td></tr>
                                             )
                                     }
@@ -392,17 +392,17 @@ export class PlayScreen {
                             <p>
                                 <div class="textRow">Experience</div>
                                 <sq-progress-bar
-                                    totalValue={getXpRequiredForNextLevel(this.character.level)}
-                                    currentValue={this.character.currentXp}
-                                    tapOverlayText={`${getXpRequiredForNextLevel(this.character.level) - this.character.currentXp} xp needed`}
+                                    totalValue={getXpRequiredForNextLevel(this.hero.level)}
+                                    currentValue={this.hero.currentXp}
+                                    tapOverlayText={`${getXpRequiredForNextLevel(this.hero.level) - this.hero.currentXp} xp needed`}
                                 ></sq-progress-bar>
                             </p>
                             <p>
-                                <div class={this.findUpdate('currentAdventure') ? 'textRow textRow-highlight' : 'textRow'}>{this.character.currentAdventure.name}</div>
+                                <div class={this.findUpdate('currentAdventure') ? 'textRow textRow-highlight' : 'textRow'}>{this.hero.currentAdventure.name}</div>
                                 <sq-progress-bar 
-                                    totalValue={this.character.currentAdventure.progressRequired}
-                                    currentValue={this.character.adventureProgress}
-                                    tapOverlayText={`${getRoughTime(this.character.currentAdventure.progressRequired - this.character.adventureProgress)} remaining`}
+                                    totalValue={this.hero.currentAdventure.progressRequired}
+                                    currentValue={this.hero.adventureProgress}
+                                    tapOverlayText={`${getRoughTime(this.hero.currentAdventure.progressRequired - this.hero.adventureProgress)} remaining`}
                                 ></sq-progress-bar>
                                 <table class="listBox">
                                     <thead>
@@ -412,9 +412,9 @@ export class PlayScreen {
                                     </thead>
                                     <tbody>
                                         {
-                                            this.character.completedAdventures.length === 0
+                                            this.hero.completedAdventures.length === 0
                                             ? <tr><td>[None]</td></tr>
-                                            : this.character.completedAdventures.map((adventure: string, index, array) => 
+                                            : this.hero.completedAdventures.map((adventure: string, index, array) => 
                                                 <tr {...this.findUpdate('completedAdventures') && index == array.length-1 ? {class: 'textRow-highlight'} : {}}><td>{adventure}</td></tr>
                                             )
                                         }
@@ -428,11 +428,11 @@ export class PlayScreen {
 
                 <ion-footer>
                     {
-                        this.character.marketSaturation >= this.character.maxMarketSaturation
+                        this.hero.marketSaturation >= this.hero.maxMarketSaturation
                         ? <div class="textRow"><b>MARKET SATURATED</b></div>
-                        : this.character.fatigue >= this.character.maxFatigue
+                        : this.hero.fatigue >= this.hero.maxFatigue
                             ? <div class="textRow"><b>FATIGUED</b></div>
-                            : this.character.socialExposure >= this.character.maxSocialCapital
+                            : this.hero.socialExposure >= this.hero.maxSocialCapital
                                 ? <div class="textRow"><b>OVEREXPOSED</b></div>
                                 : <br/>
                     }
@@ -461,7 +461,7 @@ export class PlayScreen {
 }
 
 enum VisibleSection {
-    character = "Character",
+    hero = "Hero",
     inventory = "Inventory",
     deeds = "Deeds",
     social = "Social",

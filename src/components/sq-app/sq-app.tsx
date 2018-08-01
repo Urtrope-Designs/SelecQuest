@@ -7,7 +7,7 @@ import { Subject } from 'rxjs/Subject';
 import { stateFn } from '../../helpers/state-store';
 import { AppState, TaskMode } from '../../helpers/models';
 import { Action, ChangeActiveTaskMode, TaskCompleted } from '../../helpers/actions';
-import { createNewCharacter } from '../../helpers/character-manager';
+import { createNewHero } from '../../helpers/hero-manager';
 import { GameDataManager } from '../../services/game-data-manager';
 
 @Component({
@@ -45,7 +45,7 @@ export class SqApp {
                     return serializedState;
                 })
                 .then(state => {
-                    const initialData = state || { activeTask: null, hasActiveTask: false, character: createNewCharacter(), activeTaskMode: TaskMode.LOOTING };
+                    const initialData = state || { activeTask: null, hasActiveTask: false, hero: createNewHero(), activeTaskMode: TaskMode.LOOTING };
                     this.state = stateFn(initialData, this.actionSubject.asObservable());
                     this.gameDataMgr.persistAppData(this.state);
                     resolve(this.state);

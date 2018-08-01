@@ -1,10 +1,10 @@
-import { Character, CharacterModificationType, AccoladeType, AffiliationType, CharacterModification, getCharacterStatList, CharacterStats, CharEquipment, EquipmentType, EquipmentMaterial, CharAccolade, CharAffiliations, CharConnection, CharMembership, CharOffice, CharTitlePosition } from './models';
+import { Hero, HeroModificationType, AccoladeType, AffiliationType, HeroModification, getHeroStatList, HeroStats, CharEquipment, EquipmentType, EquipmentMaterial, CharAccolade, CharAffiliations, CharConnection, CharMembership, CharOffice, CharTitlePosition } from './models';
 import { randRange, randFromList, deepCopyObject, randFromListLow, randFromListHigh, generateRandomName, capitalizeInitial } from './utils';
 import { PROLOGUE_ADVENTURE_NAME } from './storyline-helpers';
 import { SPELLS, ABILITIES, IS_DEBUG, WEAPON_MATERIALS, SHEILD_MATERIALS, ARMOR_MATERIALS, EPITHET_DESCRIPTORS, EPITHET_BEING_ALL, TITLE_POSITIONS_ALL, SOBRIQUET_MODIFIERS, SOBRIQUET_NOUN_PORTION, HONORIFIC_TEMPLATES, OFFICE_POSITIONS_ALL, STANDARD_GROUPS_INDEFINITE } from '../global/config';
 
-export function createNewCharacter(): Character {
-    const newChar: Character = {
+export function createNewHero(): Hero {
+    const newHero: Hero = {
         name: 'Garg',
         raceName: 'Fartling',
         class: 'Meter Beater',
@@ -88,33 +88,33 @@ export function createNewCharacter(): Character {
         latestModifications: [],
     }
 
-    return newChar;
+    return newHero;
 }
     
-export function applyCharacterModifications(baseChar: Character, characterMods: CharacterModification[], resetModsList = true): Character {
-    let newChar: Character = deepCopyObject(baseChar);         // need to deep clone rather than using Object.assign() or spread operator
+export function applyHeroModifications(baseChar: Hero, heroMods: HeroModification[], resetModsList = true): Hero {
+    let newChar: Hero = deepCopyObject(baseChar);         // need to deep clone rather than using Object.assign() or spread operator
 
     if (resetModsList) {
         newChar.latestModifications = [];
     }
 
-    for (let result of characterMods) {
+    for (let result of heroMods) {
         switch(result.type) {
-            case CharacterModificationType.INCREASE:
+            case HeroModificationType.INCREASE:
                 /* level, stats, maxHp, maxMp, currentXp, gold, renown, spentRenown, reputation, spentReputation,
                     marketSaturation, fatigue, socialExposure, adventureProgress */
                 newChar.latestModifications.push({attributeName: result.attributeName, data: null});
                 // fallthrough
-            case CharacterModificationType.DECREASE:
+            case HeroModificationType.DECREASE:
                 /* gold, marketSaturation, fatigue, socialExposure */
                 newChar[result.attributeName] += result.data;
                 break;
-            case CharacterModificationType.SET:
+            case HeroModificationType.SET:
                 /* currentXp, isInLootSelloffMode, isInTrophyBoastingMode, isInLeadFollowingMode, currentAdventure, adventureProgress */
                 newChar[result.attributeName] = result.data;
                 newChar.latestModifications.push({attributeName: result.attributeName, data: null});
                 break;
-            case CharacterModificationType.SET_EQUIPMENT:
+            case HeroModificationType.SET_EQUIPMENT:
                 /* equipment */
                 result.data.map((equip: CharEquipment) => {
                     const existingEquipment = newChar[result.attributeName].find(e => {
@@ -124,7 +124,7 @@ export function applyCharacterModifications(baseChar: Character, characterMods: 
                     newChar.latestModifications.push({attributeName: result.attributeName, data: equip.type});
                 })
                 break;
-            case CharacterModificationType.ADD_RANK:
+            case HeroModificationType.ADD_RANK:
                 /* spells, abilities */
                 for (let item of result.data) {
                     let existingItem = newChar[result.attributeName].find((i) => {
@@ -138,7 +138,7 @@ export function applyCharacterModifications(baseChar: Character, characterMods: 
                     newChar.latestModifications.push({attributeName: result.attributeName, data: item.name})
                 }
                 break;
-            case CharacterModificationType.ADD_QUANTITY:
+            case HeroModificationType.ADD_QUANTITY:
                 /* loot, trophies */
                 for (let item of result.data) {
                     let existingItem = newChar[result.attributeName].find((i) => {
@@ -156,8 +156,8 @@ export function applyCharacterModifications(baseChar: Character, characterMods: 
                     newChar.latestModifications.push({attributeName: result.attributeName, data: item.name})
                 }
                 break;
-            case CharacterModificationType.REMOVE_QUANTITY:
-            case CharacterModificationType.REMOVE:
+            case HeroModificationType.REMOVE_QUANTITY:
+            case HeroModificationType.REMOVE:
                 /* loot, trophies, leads */
                 for (let item of result.data) {
                     let existingItemIndex = newChar[result.attributeName].findIndex((i) => {
@@ -168,12 +168,12 @@ export function applyCharacterModifications(baseChar: Character, characterMods: 
                     }
                 }
                 break;
-            case CharacterModificationType.ADD:
+            case HeroModificationType.ADD:
                 /* leads, completedAdventures */
                 newChar[result.attributeName] = newChar[result.attributeName].concat(result.data);
                 newChar.latestModifications.push({attributeName: result.attributeName, data: null});
                 break;
-            case CharacterModificationType.ADD_ACCOLADE:
+            case HeroModificationType.ADD_ACCOLADE:
                 /* accolades */
                 result.data.map((newAccolade: CharAccolade) => {
                     const existingAccolade: CharAccolade = newChar[result.attributeName].find(a => {
@@ -186,7 +186,7 @@ export function applyCharacterModifications(baseChar: Character, characterMods: 
                     newChar.latestModifications.push({attributeName: result.attributeName, data: newAccolade.type});
                 })
                 break;
-                case CharacterModificationType.ADD_AFFILIATION:
+                case HeroModificationType.ADD_AFFILIATION:
                 /* affiliations */
                 result.data.map((newAffiliation: AffiliationGenerationData) => {
                     let curAffiliationType = newChar.affiliations[newAffiliation.type];
@@ -201,8 +201,8 @@ export function applyCharacterModifications(baseChar: Character, characterMods: 
     return newChar;
 }
 
-export function updateCharacterState(character: Character): Character {
-    let newChar = deepCopyObject(character);          // need to deep clone rather than using Object.assign() or spread operator
+export function updateHeroState(hero: Hero): Hero {
+    let newChar = deepCopyObject(hero);          // need to deep clone rather than using Object.assign() or spread operator
 
     newChar.marketSaturation = Math.min(newChar.marketSaturation, newChar.maxMarketSaturation);
     newChar.marketSaturation = Math.max(newChar.marketSaturation, 0);
@@ -228,65 +228,65 @@ export function getXpRequiredForNextLevel(curLevel: number): number {
     return xpRequired;
 }
 
-export function hasCharacterReachedNextLevel(character: Character): boolean {
-    if (character.currentXp >= getXpRequiredForNextLevel(character.level)) {
+export function hasHeroReachedNextLevel(hero: Hero): boolean {
+    if (hero.currentXp >= getXpRequiredForNextLevel(hero.level)) {
         return true;
     } else {
         return false;
     }
 }
 
-export function getLevelUpModifications(character: Character): CharacterModification[] {
+export function getLevelUpModifications(hero: Hero): HeroModification[] {
     let levelMods = [];
 
     levelMods.push({
-        type: CharacterModificationType.INCREASE,
+        type: HeroModificationType.INCREASE,
         attributeName: 'level',
         data: 1,
     });
     levelMods.push({
-        type: CharacterModificationType.SET,
+        type: HeroModificationType.SET,
         attributeName: 'currentXp',
         data: 0,
     })
     levelMods.push({
-        type: CharacterModificationType.INCREASE,
+        type: HeroModificationType.INCREASE,
         attributeName: 'maxHp',
-        data: Math.floor(character.con / 3) + 1 + randRange(0, 3),
+        data: Math.floor(hero.con / 3) + 1 + randRange(0, 3),
     });
     levelMods.push({
-        type: CharacterModificationType.INCREASE,
+        type: HeroModificationType.INCREASE,
         attributeName: 'maxMp',
-        data: Math.floor(character.int / 3 ) + 1 + randRange(0, 3),
+        data: Math.floor(hero.int / 3 ) + 1 + randRange(0, 3),
     })
-    const winStat1 = selectLevelBonusStat(character);
-    const winStat2 = selectLevelBonusStat(character);
+    const winStat1 = selectLevelBonusStat(hero);
+    const winStat2 = selectLevelBonusStat(hero);
     if (winStat1 === winStat2) {
         levelMods.push(generateStatModification(winStat1, 2));
     } else {
         levelMods.push(generateStatModification(winStat1));
         levelMods.push(generateStatModification(winStat2));
     }
-    levelMods.push(generateSpellOrAbilityModification(character));
+    levelMods.push(generateSpellOrAbilityModification(hero));
 
     return levelMods;
 }
 
-function selectLevelBonusStat(character: CharacterStats): string {
+function selectLevelBonusStat(hero: HeroStats): string {
     let selectedStat: string;
-    const allStats = getCharacterStatList();
+    const allStats = getHeroStatList();
 
     selectedStat = randFromList(allStats);
     if (randRange(0, 1)) {
         // Favor the best stat so it will tend to clump
         let i = 0;
         for (let curStat of allStats) {
-            i += character[curStat] ** 2;
+            i += hero[curStat] ** 2;
         }
         i = randRange(0, i-1);
         for (let curStat of allStats) {
             selectedStat = curStat;
-            i -= character[curStat] ** 2;
+            i -= hero[curStat] ** 2;
             if (i < 0) {
                 break;
             }
@@ -296,16 +296,16 @@ function selectLevelBonusStat(character: CharacterStats): string {
     return selectedStat;
 }
 
-function generateStatModification(attributeName: string, modValue: number = 1): CharacterModification {
-    const mod: CharacterModification = {
-        type: CharacterModificationType.INCREASE,
+function generateStatModification(attributeName: string, modValue: number = 1): HeroModification {
+    const mod: HeroModification = {
+        type: HeroModificationType.INCREASE,
         attributeName: attributeName,
         data: modValue,        
     }
     return mod;
 }
 
-export function generateSpellOrAbilityModification(character: CharacterStats & {level: number}, modValue: number = 1): CharacterModification {
+export function generateSpellOrAbilityModification(hero: HeroStats & {level: number}, modValue: number = 1): HeroModification {
     let attributeName = '';
     let affectingStat = '';
     let optionList = [];
@@ -320,10 +320,10 @@ export function generateSpellOrAbilityModification(character: CharacterStats & {
         optionList = ABILITIES;
     }
     // pick a spell/ability early in the list, weighted toward 0
-    dataObj.name = randFromListLow(optionList, 2, character.level + character[affectingStat]);
+    dataObj.name = randFromListLow(optionList, 2, hero.level + hero[affectingStat]);
 
-    const mod: CharacterModification = {
-        type: CharacterModificationType.ADD_RANK,
+    const mod: HeroModification = {
+        type: HeroModificationType.ADD_RANK,
         attributeName: attributeName,
         data: [dataObj],
     }
@@ -331,11 +331,11 @@ export function generateSpellOrAbilityModification(character: CharacterStats & {
     return mod;
 }
 
-export function generateNewEquipmentModification(character: Character): CharacterModification {
-    const newEquipmentData = generateRandomEquipment(character.level);
+export function generateNewEquipmentModification(hero: Hero): HeroModification {
+    const newEquipmentData = generateRandomEquipment(hero.level);
     
-    const mod: CharacterModification = {
-        type: CharacterModificationType.SET_EQUIPMENT,
+    const mod: HeroModification = {
+        type: HeroModificationType.SET_EQUIPMENT,
         attributeName: 'equipment',
         data: [newEquipmentData],
     };
@@ -346,7 +346,7 @@ export function generateNewEquipmentModification(character: Character): Characte
 function generateRandomEquipment(targetLevel: number): CharEquipment {
     //     randomly pick equipment type
     const newEquipmentType: EquipmentType = EquipmentType[randFromList(Object.keys(EquipmentType))];
-    // 2. randomly pick 5 items of selected equipment type, & pick the one closest to character level
+    // 2. randomly pick 5 items of selected equipment type, & pick the one closest to hero level
     let targetList: EquipmentMaterial[];
     if (newEquipmentType == EquipmentType.Weapon) {
         targetList = WEAPON_MATERIALS;
@@ -364,7 +364,7 @@ function generateRandomEquipment(targetLevel: number): CharEquipment {
         }
     }
 
-    // 3. add up to 2 modifiers (no duplicates) to bring quality of selected item closer to character level (don't allow it to go over)
+    // 3. add up to 2 modifiers (no duplicates) to bring quality of selected item closer to hero level (don't allow it to go over)
     let qualityDifference = targetLevel - material.baseLevel;
     let newEquipmentDescription = material.description;
     for (let i = 0; i < 2 && qualityDifference != 0; i++) {
@@ -382,7 +382,7 @@ function generateRandomEquipment(targetLevel: number): CharEquipment {
         qualityDifference -= modifier.levelModifier;
     }
     
-    // 4. add remainder of difference (between quality of item adjusted by mods and character level) as numeric modifier.
+    // 4. add remainder of difference (between quality of item adjusted by mods and hero level) as numeric modifier.
     if (qualityDifference != 0) {
         newEquipmentDescription = `${qualityDifference > 0 ? '+' : ''}${qualityDifference} ${newEquipmentDescription}`;
     }
@@ -395,11 +395,11 @@ function generateRandomEquipment(targetLevel: number): CharEquipment {
     return newEquipment;
 }
 
-export function generateNewAccoladeModification(character: Character): CharacterModification {
-    const newAccoladeData = generateRandomAccolade(character);
+export function generateNewAccoladeModification(hero: Hero): HeroModification {
+    const newAccoladeData = generateRandomAccolade(hero);
     
-    const mod: CharacterModification = {
-        type: CharacterModificationType.ADD_ACCOLADE,
+    const mod: HeroModification = {
+        type: HeroModificationType.ADD_ACCOLADE,
         attributeName: 'accolades',
         data: [newAccoladeData],
     };
@@ -407,26 +407,26 @@ export function generateNewAccoladeModification(character: Character): Character
     return mod;
 }
 
-function generateRandomAccolade(character: Character): CharAccolade {
+function generateRandomAccolade(hero: Hero): CharAccolade {
     const newAccoladeType = AccoladeType[randFromList(Object.keys(AccoladeType).filter(key => isNaN(+key)))];
     let newAccoladeDescription = '';
     let exclusions: string = '';
     switch(newAccoladeType) {
         case AccoladeType.Epithets:
-            exclusions = character.accolades.find(accolade => accolade.type == AccoladeType.Epithets).received.join(' ');
+            exclusions = hero.accolades.find(accolade => accolade.type == AccoladeType.Epithets).received.join(' ');
             newAccoladeDescription = generateRandomEpithetDescription(exclusions);
             break;
         case AccoladeType.Titles:
-            exclusions = character.accolades.find(accolade => accolade.type == AccoladeType.Titles).received.join(' ');
+            exclusions = hero.accolades.find(accolade => accolade.type == AccoladeType.Titles).received.join(' ');
             newAccoladeDescription = generateRandomTitleDescription(exclusions);
             break;
             case AccoladeType.Sobriquets:
-            exclusions = character.accolades.find(accolade => accolade.type == AccoladeType.Sobriquets).received.join(' ');
+            exclusions = hero.accolades.find(accolade => accolade.type == AccoladeType.Sobriquets).received.join(' ');
             newAccoladeDescription = generateRandomSobriquetDescription(exclusions);
             break;
             case AccoladeType.Honorifics:
-            exclusions = character.accolades.find(accolade => accolade.type == AccoladeType.Honorifics).received.join(' ');
-            newAccoladeDescription = generateRandomHonorificDescription(exclusions, character.level, character.name);
+            exclusions = hero.accolades.find(accolade => accolade.type == AccoladeType.Honorifics).received.join(' ');
+            newAccoladeDescription = generateRandomHonorificDescription(exclusions, hero.level, hero.name);
             break;
     }
 
@@ -500,11 +500,11 @@ function generateRandomHonorificDescription(exclusions: string, targetLevel: num
     return honorificDescription;
 }
 
-export function generateNewAffiliationModification(character: Character): CharacterModification {
-    const newAffiliationData = generateRandomAffiliation(character);
+export function generateNewAffiliationModification(hero: Hero): HeroModification {
+    const newAffiliationData = generateRandomAffiliation(hero);
 
     const mod = {
-        type: CharacterModificationType.ADD_AFFILIATION,
+        type: HeroModificationType.ADD_AFFILIATION,
         attributeName: 'affiliations',
         data: [newAffiliationData],
     };
@@ -517,27 +517,27 @@ interface AffiliationGenerationData {
     object: CharConnection | CharMembership | CharOffice
 }
 
-function generateRandomAffiliation(character: Character): AffiliationGenerationData {
+function generateRandomAffiliation(hero: Hero): AffiliationGenerationData {
     let newAffiliationData: {type: AffiliationType, object: CharConnection | CharMembership | CharOffice};
 
-    if (character.affiliations[AffiliationType.OFFICES].length >= STANDARD_GROUPS_INDEFINITE.length) {
+    if (hero.affiliations[AffiliationType.OFFICES].length >= STANDARD_GROUPS_INDEFINITE.length) {
         // add a random non-duplicate Office for any Group with which the Hero has a Membership
-        newAffiliationData = generateRandomNonDupOfficeObject(character.affiliations);
+        newAffiliationData = generateRandomNonDupOfficeObject(hero.affiliations);
     } else {
         let newAffiliationFactories: ((existingAffiliations: CharAffiliations) => AffiliationGenerationData)[] = [];
-        if (character.affiliations[AffiliationType.CONNECTIONS].length < STANDARD_GROUPS_INDEFINITE.length) {
+        if (hero.affiliations[AffiliationType.CONNECTIONS].length < STANDARD_GROUPS_INDEFINITE.length) {
             newAffiliationFactories.push(generateRandomDistinctConnection);
         }
-        if (character.affiliations[AffiliationType.MEMBERSHIPS].length < character.affiliations[AffiliationType.CONNECTIONS].length) {
+        if (hero.affiliations[AffiliationType.MEMBERSHIPS].length < hero.affiliations[AffiliationType.CONNECTIONS].length) {
             newAffiliationFactories.push(generateRandomDistinctMembership);
         }
-        if (character.affiliations[AffiliationType.OFFICES].length < character.affiliations[AffiliationType.MEMBERSHIPS].length) {
+        if (hero.affiliations[AffiliationType.OFFICES].length < hero.affiliations[AffiliationType.MEMBERSHIPS].length) {
             newAffiliationFactories.push(generateRandomDistinctOffice);
         }
 
         
         let selectedFactory = randFromList(newAffiliationFactories);
-        newAffiliationData = selectedFactory(character.affiliations);
+        newAffiliationData = selectedFactory(hero.affiliations);
     }
 
     return newAffiliationData;

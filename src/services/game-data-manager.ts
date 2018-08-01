@@ -8,7 +8,7 @@ export class GameDataManager {
 
     persistAppData(appData$: Observable<AppState>): void {
         appData$.subscribe((data) => {
-            this.dataStore.set(`gameData_${data.character.name}`, data);
+            this.dataStore.set(`gameData_${data.hero.name}`, data);
         })
     }
 

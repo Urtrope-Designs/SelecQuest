@@ -1,8 +1,8 @@
-import { CharLoot, CharTrophy, LootingTarget, GladiatingTarget, TaskTargetType, CharLead, LeadType, LeadTarget, CharacterModification, CharacterModificationType, TaskMode, AppState, Task } from "./models";
+import { CharLoot, CharTrophy, LootingTarget, GladiatingTarget, TaskTargetType, CharLead, LeadType, LeadTarget, HeroModification, HeroModificationType, TaskMode, AppState, Task } from "./models";
 import { randRange, randSign, randFromList, makeStringIndefinite, generateRandomName, makeVerbGerund, capitalizeInitial } from "./utils";
 import { TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, TASK_GERUNDS, STANDARD_GLADIATING_TARGETS, STANDARD_LOOTING_TARGETS, RACES, CLASSES, STANDARD_LEAD_GATHERING_TARGETS, STANDARD_LEAD_TARGETS, IS_DEBUG, LEAD_GATHERING_TASK_MODIFIERS } from "../global/config";
 import { PROLOGUE_TASKS, PROLOGUE_ADVENTURE_NAME, generateNextAdventureName } from './storyline-helpers';
-import { generateNewEquipmentModification, generateSpellOrAbilityModification, generateNewAccoladeModification, generateNewAffiliationModification } from './character-manager';
+import { generateNewEquipmentModification, generateSpellOrAbilityModification, generateNewAccoladeModification, generateNewAffiliationModification } from './hero-manager';
 
 function determineTaskQuantity(targetLevel: number, taskLevel: number) {
     let quantity = 1;
@@ -194,32 +194,32 @@ const lootingTaskGen: TaskGenerator = {
         return true;
     },
     generateTask: (state: AppState) => {
-        const {taskName, taskLevel, lootData} = generateLootingTaskContentsFromLevel(state.character.level);
-        const durationSeconds = Math.floor(6 * taskLevel / state.character.level);
-        const isMarketSaturated = state.character.marketSaturation >= state.character.maxMarketSaturation;
-        const results: CharacterModification[] = [
+        const {taskName, taskLevel, lootData} = generateLootingTaskContentsFromLevel(state.hero.level);
+        const durationSeconds = Math.floor(6 * taskLevel / state.hero.level);
+        const isMarketSaturated = state.hero.marketSaturation >= state.hero.maxMarketSaturation;
+        const results: HeroModification[] = [
             {
-                type: CharacterModificationType.ADD_QUANTITY,
+                type: HeroModificationType.ADD_QUANTITY,
                 attributeName: 'loot',
                 data: lootData,
             },
             {
-                type: CharacterModificationType.DECREASE,
+                type: HeroModificationType.DECREASE,
                 attributeName: 'fatigue',
                 data: -2,
             },
             {
-                type: CharacterModificationType.DECREASE,
+                type: HeroModificationType.DECREASE,
                 attributeName: 'socialExposure',
                 data: -2,
             },
             {
-                type: CharacterModificationType.INCREASE,
+                type: HeroModificationType.INCREASE,
                 attributeName: 'currentXp',
                 data: (Math.ceil(durationSeconds / (isMarketSaturated ? 2 : 1))),
             },
             {
-                type: CharacterModificationType.INCREASE,
+                type: HeroModificationType.INCREASE,
                 attributeName: 'adventureProgress',
                 data: (Math.ceil(durationSeconds / (isMarketSaturated ? 2 : 1))),
             },
@@ -240,10 +240,10 @@ const triggerSelloffTaskGen: TaskGenerator = {
             return false;
         }
 
-        const currentEncumbrance = state.character.loot.reduce((prevVal, curVal) => {
+        const currentEncumbrance = state.hero.loot.reduce((prevVal, curVal) => {
             return prevVal + curVal.quantity;
         }, 0);
-        return currentEncumbrance >= state.character.maxEncumbrance;
+        return currentEncumbrance >= state.hero.maxEncumbrance;
     },
     generateTask: (/*state: AppState*/) => {
         const newTask: Task = {
@@ -251,7 +251,7 @@ const triggerSelloffTaskGen: TaskGenerator = {
             durationMs: 4 * 1000,
             results: [
                 {
-                    type: CharacterModificationType.SET,
+                    type: HeroModificationType.SET,
                     attributeName: 'isInLootSelloffMode',
                     data: true,
                 }
@@ -265,14 +265,14 @@ const triggerSelloffTaskGen: TaskGenerator = {
 const selloffTaskGen: TaskGenerator = {
     priority: 3,
     shouldRun: (state: AppState) => {
-        return state.activeTaskMode == TaskMode.LOOTING && state.character.isInLootSelloffMode;
+        return state.activeTaskMode == TaskMode.LOOTING && state.hero.isInLootSelloffMode;
     },
     generateTask: (state: AppState) => {
-        const sellItem = state.character.loot[0];
+        const sellItem = state.hero.loot[0];
         if (!!sellItem) {
-            const isMarketSaturated = state.character.marketSaturation >= state.character.maxMarketSaturation;
+            const isMarketSaturated = state.hero.marketSaturation >= state.hero.maxMarketSaturation;
             const sellQuantity = sellItem.quantity;
-            const sellValue = Math.ceil((sellQuantity * sellItem.value * state.character.level) / (isMarketSaturated ? 2 : 1));
+            const sellValue = Math.ceil((sellQuantity * sellItem.value * state.hero.level) / (isMarketSaturated ? 2 : 1));
             let lootData = [
                 {
                     name: sellItem.name,
@@ -280,19 +280,19 @@ const selloffTaskGen: TaskGenerator = {
                     value: 0
                 }
             ];
-            const results: CharacterModification[] = [
+            const results: HeroModification[] = [
                 {
-                    type: CharacterModificationType.REMOVE,
+                    type: HeroModificationType.REMOVE,
                     attributeName: 'loot',
                     data: lootData,
                 },
                 {
-                    type: CharacterModificationType.INCREASE,
+                    type: HeroModificationType.INCREASE,
                     attributeName: 'gold',
                     data: sellValue,
                 },
                 {
-                    type: CharacterModificationType.INCREASE,
+                    type: HeroModificationType.INCREASE,
                     attributeName: 'marketSaturation',
                     data: sellQuantity,
                 },
@@ -310,7 +310,7 @@ const selloffTaskGen: TaskGenerator = {
                 durationMs: 10,
                 results: [
                     {
-                        type: CharacterModificationType.SET,
+                        type: HeroModificationType.SET,
                         attributeName: 'isInLootSelloffMode',
                         data: false,
                     }
@@ -324,11 +324,11 @@ const selloffTaskGen: TaskGenerator = {
 const endSelloffTaskGen: TaskGenerator = {
     priority: 4,
     shouldRun: (state: AppState) => {
-        if (state.activeTaskMode !== TaskMode.LOOTING || !state.character.isInLootSelloffMode) {
+        if (state.activeTaskMode !== TaskMode.LOOTING || !state.hero.isInLootSelloffMode) {
             return false;
         }
 
-        const currentEncumbrance = state.character.loot.reduce((prevVal, curVal) => {
+        const currentEncumbrance = state.hero.loot.reduce((prevVal, curVal) => {
             return prevVal + curVal.quantity;
         }, 0);
         return currentEncumbrance <= 0;
@@ -339,7 +339,7 @@ const endSelloffTaskGen: TaskGenerator = {
             durationMs: 4 * 1000,
             results: [
                 {
-                    type: CharacterModificationType.SET,
+                    type: HeroModificationType.SET,
                     attributeName: 'isInLootSelloffMode',
                     data: false,
                 }
@@ -353,27 +353,27 @@ const endSelloffTaskGen: TaskGenerator = {
 const purchaseEquipmentTaskGen: TaskGenerator = {
     priority: 5,
     shouldRun: (state: AppState) => {
-        if (state.activeTaskMode !== TaskMode.LOOTING || !state.character.isInLootSelloffMode) {
+        if (state.activeTaskMode !== TaskMode.LOOTING || !state.hero.isInLootSelloffMode) {
             return false;
         }
 
-        const currentEncumbrance = state.character.loot.reduce((prevVal, curVal) => {
+        const currentEncumbrance = state.hero.loot.reduce((prevVal, curVal) => {
             return prevVal + curVal.quantity;
         }, 0);
-        const minGold = getTradeInCostForLevel(state.character.level);
-        return currentEncumbrance <= 0 && state.character.gold >= minGold;
+        const minGold = getTradeInCostForLevel(state.hero.level);
+        return currentEncumbrance <= 0 && state.hero.gold >= minGold;
     },
     generateTask: (state: AppState) => {
-        const newEquipmentMod = generateNewEquipmentModification(state.character);
+        const newEquipmentMod = generateNewEquipmentModification(state.hero);
         const newTask: Task = {
             description: 'Negotiating the purchase of better equipment',
             durationMs: 5 * 1000,
             results: [
                 newEquipmentMod,
                 {
-                    type: CharacterModificationType.DECREASE,
+                    type: HeroModificationType.DECREASE,
                     attributeName: 'gold',
-                    data: -getTradeInCostForLevel(state.character.level),
+                    data: -getTradeInCostForLevel(state.hero.level),
                 },
             ]
         }
@@ -387,37 +387,37 @@ const gladiatingTaskGen: TaskGenerator = {
         return state.activeTaskMode == TaskMode.GLADIATING;
     },
     generateTask: (state: AppState) => {
-        const {taskName, taskLevel, trophyData} = generateGladiatingTaskContentsFromLevel(state.character.level);
-        const durationSeconds = Math.floor(6 * taskLevel / state.character.level);
-        const isFatigued = state.character.fatigue >= state.character.maxFatigue;
-        const results: CharacterModification[] = [
+        const {taskName, taskLevel, trophyData} = generateGladiatingTaskContentsFromLevel(state.hero.level);
+        const durationSeconds = Math.floor(6 * taskLevel / state.hero.level);
+        const isFatigued = state.hero.fatigue >= state.hero.maxFatigue;
+        const results: HeroModification[] = [
             {
-                type: CharacterModificationType.ADD_QUANTITY,
+                type: HeroModificationType.ADD_QUANTITY,
                 attributeName: 'trophies',
                 data: trophyData,
             },
             {
-                type: CharacterModificationType.INCREASE,
+                type: HeroModificationType.INCREASE,
                 attributeName: 'fatigue',
                 data: 1,
             },
             {
-                type: CharacterModificationType.DECREASE,
+                type: HeroModificationType.DECREASE,
                 attributeName: 'marketSaturation',
                 data: -2,
             },
             {
-                type: CharacterModificationType.DECREASE,
+                type: HeroModificationType.DECREASE,
                 attributeName: 'socialExposure',
                 data: -2,
             },
             {
-                type: CharacterModificationType.INCREASE,
+                type: HeroModificationType.INCREASE,
                 attributeName: 'currentXp',
                 data: (Math.ceil(durationSeconds / (isFatigued ? 2 : 1))),
             },
             {
-                type: CharacterModificationType.INCREASE,
+                type: HeroModificationType.INCREASE,
                 attributeName: 'adventureProgress',
                 data: (Math.ceil(durationSeconds / (isFatigued ? 2 : 1))),
             },
@@ -439,10 +439,10 @@ const triggerBoastingTaskGen: TaskGenerator = {
             return false;
         }
 
-        const currentEquipmentWear = state.character.trophies.reduce((prevVal, curVal) => {
+        const currentEquipmentWear = state.hero.trophies.reduce((prevVal, curVal) => {
             return prevVal + curVal.quantity;
         }, 0);
-        return currentEquipmentWear >= state.character.maxEquipmentWear;
+        return currentEquipmentWear >= state.hero.maxEquipmentWear;
     },
     generateTask: (/*state: AppState*/) => {
         const newTask: Task = {
@@ -450,7 +450,7 @@ const triggerBoastingTaskGen: TaskGenerator = {
             durationMs: 4 * 1000,
             results: [
                 {
-                    type: CharacterModificationType.SET,
+                    type: HeroModificationType.SET,
                     attributeName: 'isInTrophyBoastingMode',
                     data: true,
                 }
@@ -464,14 +464,14 @@ const triggerBoastingTaskGen: TaskGenerator = {
 const boastingTaskGen: TaskGenerator = {
     priority: 3,
     shouldRun: (state: AppState) => {
-        return state.activeTaskMode === TaskMode.GLADIATING && state.character.isInTrophyBoastingMode;
+        return state.activeTaskMode === TaskMode.GLADIATING && state.hero.isInTrophyBoastingMode;
     },
     generateTask: (state: AppState) => {
-        const boastItem = state.character.trophies[0];
+        const boastItem = state.hero.trophies[0];
         if (!!boastItem) {
-            const isFatigued = state.character.fatigue >= state.character.maxFatigue;
+            const isFatigued = state.hero.fatigue >= state.hero.maxFatigue;
             const boastQuantity = boastItem.quantity;
-            const renownValue = Math.ceil((boastQuantity * boastItem.value * state.character.level) / (isFatigued ? 2 : 1));
+            const renownValue = Math.ceil((boastQuantity * boastItem.value * state.hero.level) / (isFatigued ? 2 : 1));
             let trophies = [
                 {
                     name: boastItem.name,
@@ -479,14 +479,14 @@ const boastingTaskGen: TaskGenerator = {
                     value: 0
                 }
             ];
-            const results: CharacterModification[] = [
+            const results: HeroModification[] = [
                 {
-                    type: CharacterModificationType.REMOVE,
+                    type: HeroModificationType.REMOVE,
                     attributeName: 'trophies',
                     data: trophies,
                 },
                 {
-                    type: CharacterModificationType.INCREASE,
+                    type: HeroModificationType.INCREASE,
                     attributeName: 'renown',
                     data: renownValue,
                 },
@@ -504,7 +504,7 @@ const boastingTaskGen: TaskGenerator = {
                 durationMs: 10,
                 results: [
                     {
-                        type: CharacterModificationType.SET,
+                        type: HeroModificationType.SET,
                         attributeName: 'isInTrophyBoastingMode',
                         data: false,
                     },
@@ -518,11 +518,11 @@ const boastingTaskGen: TaskGenerator = {
 const endBoastingTaskGen: TaskGenerator = {
     priority: 4,
     shouldRun: (state: AppState) => {
-        if (state.activeTaskMode !== TaskMode.GLADIATING || !state.character.isInTrophyBoastingMode) {
+        if (state.activeTaskMode !== TaskMode.GLADIATING || !state.hero.isInTrophyBoastingMode) {
             return false;
         }
 
-        const currentEquipmentIntegrity = state.character.trophies.reduce((prevVal, curVal) => {
+        const currentEquipmentIntegrity = state.hero.trophies.reduce((prevVal, curVal) => {
             return prevVal + curVal.quantity;
         }, 0);
         return currentEquipmentIntegrity <= 0;
@@ -533,7 +533,7 @@ const endBoastingTaskGen: TaskGenerator = {
             durationMs: 4 * 1000,
             results: [
                 {
-                    type: CharacterModificationType.SET,
+                    type: HeroModificationType.SET,
                     attributeName: 'isInTrophyBoastingMode',
                     data: false,
                 }
@@ -547,26 +547,26 @@ const endBoastingTaskGen: TaskGenerator = {
 const earnAccoladeTaskGen: TaskGenerator = {
     priority: 5,
     shouldRun: (state: AppState) => {
-        if (state.activeTaskMode !== TaskMode.GLADIATING || !state.character.isInTrophyBoastingMode) {
+        if (state.activeTaskMode !== TaskMode.GLADIATING || !state.hero.isInTrophyBoastingMode) {
             return false;
         }
 
-        const currentEquipmentIntegrity = state.character.trophies.reduce((prevVal, curVal) => {
+        const currentEquipmentIntegrity = state.hero.trophies.reduce((prevVal, curVal) => {
             return prevVal + curVal.quantity;
         }, 0);
-        return currentEquipmentIntegrity <= 0 && (state.character.renown - state.character.spentRenown) >= getTradeInCostForLevel(state.character.level);
+        return currentEquipmentIntegrity <= 0 && (state.hero.renown - state.hero.spentRenown) >= getTradeInCostForLevel(state.hero.level);
     },
     generateTask: (state: AppState) => {
-        const newAccoladeMod = generateNewAccoladeModification(state.character);
+        const newAccoladeMod = generateNewAccoladeModification(state.hero);
         const newTask: Task = {
             description: 'Being honored for your glorious achievements',
             durationMs: 5 * 1000,
             results: [
                 newAccoladeMod,
                 {
-                    type: CharacterModificationType.INCREASE,
+                    type: HeroModificationType.INCREASE,
                     attributeName: 'spentRenown',
-                    data: getTradeInCostForLevel(state.character.level),
+                    data: getTradeInCostForLevel(state.hero.level),
                 },
             ]
         }
@@ -583,9 +583,9 @@ const investigatingTaskGen: TaskGenerator = {
         const {taskName, leadData} = generateInvestigatingTaskContents();
         const durationSeconds = 1;
 
-        const results: CharacterModification[] = [
+        const results: HeroModification[] = [
             {
-                type: CharacterModificationType.ADD,
+                type: HeroModificationType.ADD,
                 attributeName: 'leads',
                 data: leadData,
             },
@@ -607,7 +607,7 @@ const triggerLeadFollowingTaskGen: TaskGenerator = {
             return false;
         }
 
-        return state.character.leads.length >= state.character.maxQuestLogSize;
+        return state.hero.leads.length >= state.hero.maxQuestLogSize;
     },
     generateTask: (/*state: AppState*/) => {
         const newTask: Task = {
@@ -615,7 +615,7 @@ const triggerLeadFollowingTaskGen: TaskGenerator = {
             durationMs: 4 * 1000,
             results: [
                 {
-                    type: CharacterModificationType.SET,
+                    type: HeroModificationType.SET,
                     attributeName: 'isInLeadFollowingMode',
                     data: true,
                 }
@@ -629,47 +629,47 @@ const triggerLeadFollowingTaskGen: TaskGenerator = {
 const leadFollowingTaskGen: TaskGenerator = {
     priority: 3,
     shouldRun: (state: AppState) => {
-        return state.activeTaskMode === TaskMode.INVESTIGATING && state.character.isInLeadFollowingMode;
+        return state.activeTaskMode === TaskMode.INVESTIGATING && state.hero.isInLeadFollowingMode;
     },
     generateTask: (state: AppState) => {
-        const leadToFollow = state.character.leads[0];
+        const leadToFollow = state.hero.leads[0];
         if (!!leadToFollow) {
-            const isOverexposed = state.character.socialExposure >= state.character.maxSocialCapital;
-            const reputationValue = Math.ceil((leadToFollow.value * state.character.level) / (isOverexposed ? 2 : 1));
+            const isOverexposed = state.hero.socialExposure >= state.hero.maxSocialCapital;
+            const reputationValue = Math.ceil((leadToFollow.value * state.hero.level) / (isOverexposed ? 2 : 1));
             const durationSeconds = randRange(5, 8);
-            const results: CharacterModification[] = [
+            const results: HeroModification[] = [
                 {
-                    type: CharacterModificationType.REMOVE,
+                    type: HeroModificationType.REMOVE,
                     attributeName: 'leads',
                     data: [leadToFollow],
                 },
                 {
-                    type: CharacterModificationType.INCREASE,
+                    type: HeroModificationType.INCREASE,
                     attributeName: 'reputation',
                     data: reputationValue,
                 },
                 {
-                    type: CharacterModificationType.INCREASE,
+                    type: HeroModificationType.INCREASE,
                     attributeName: 'socialExposure',
                     data: 1,
                 },
                 {
-                    type: CharacterModificationType.DECREASE,
+                    type: HeroModificationType.DECREASE,
                     attributeName: 'marketSaturation',
                     data: -2,
                 },
                 {
-                    type: CharacterModificationType.DECREASE,
+                    type: HeroModificationType.DECREASE,
                     attributeName: 'fatigue',
                     data: -2,
                 },
                 {
-                    type: CharacterModificationType.INCREASE,
+                    type: HeroModificationType.INCREASE,
                     attributeName: 'currentXp',
                     data: (Math.ceil(durationSeconds / (isOverexposed ? 2 : 1))),
                 },
                 {
-                    type: CharacterModificationType.INCREASE,
+                    type: HeroModificationType.INCREASE,
                     attributeName: 'adventureProgress',
                     data: (Math.ceil(durationSeconds / (isOverexposed ? 2 : 1))),
                 },
@@ -687,7 +687,7 @@ const leadFollowingTaskGen: TaskGenerator = {
                 durationMs: 10,
                 results: [
                     {
-                        type: CharacterModificationType.SET,
+                        type: HeroModificationType.SET,
                         attributeName: 'isInLeadFollowingMode',
                         data: false,
                     },
@@ -701,11 +701,11 @@ const leadFollowingTaskGen: TaskGenerator = {
 const endLeadFollowingTaskGen: TaskGenerator = {
     priority: 4,
     shouldRun: (state: AppState) => {
-        if (state.activeTaskMode !== TaskMode.INVESTIGATING || !state.character.isInLeadFollowingMode) {
+        if (state.activeTaskMode !== TaskMode.INVESTIGATING || !state.hero.isInLeadFollowingMode) {
             return false;
         }
 
-        return state.character.leads.length <= 0;
+        return state.hero.leads.length <= 0;
     },
     generateTask: (/*state: AppState*/) => {
         const newTask: Task = {
@@ -713,7 +713,7 @@ const endLeadFollowingTaskGen: TaskGenerator = {
             durationMs: 4 * 1000,
             results: [
                 {
-                    type: CharacterModificationType.SET,
+                    type: HeroModificationType.SET,
                     attributeName: 'isInLeadFollowingMode',
                     data: false,
                 }
@@ -727,23 +727,23 @@ const endLeadFollowingTaskGen: TaskGenerator = {
 const gainAffiliationTaskGen: TaskGenerator = {
     priority: 5,
     shouldRun: (state: AppState) => {
-        if (state.activeTaskMode !== TaskMode.INVESTIGATING || !state.character.isInLeadFollowingMode) {
+        if (state.activeTaskMode !== TaskMode.INVESTIGATING || !state.hero.isInLeadFollowingMode) {
             return false;
         }
 
-        return state.character.leads.length <= 0 && (state.character.reputation - state.character.spentReputation) >= getTradeInCostForLevel(state.character.level);
+        return state.hero.leads.length <= 0 && (state.hero.reputation - state.hero.spentReputation) >= getTradeInCostForLevel(state.hero.level);
     },
     generateTask: (state: AppState) => {
-        const newAffiliationMod = generateNewAffiliationModification(state.character);
+        const newAffiliationMod = generateNewAffiliationModification(state.hero);
         const newTask: Task = {
             description: 'Solidifying a new connection',
             durationMs: 5 * 1000,
             results: [
                 newAffiliationMod,
                 {
-                    type: CharacterModificationType.INCREASE,
+                    type: HeroModificationType.INCREASE,
                     attributeName: 'spentReputation',
-                    data: getTradeInCostForLevel(state.character.level),
+                    data: getTradeInCostForLevel(state.hero.level),
                 },
             ]
         }
@@ -755,7 +755,7 @@ let prologueInc = 0;
 const prologueTaskGen: TaskGenerator = {
     priority: 6,
     shouldRun: (state: AppState) => {
-        return state.character.currentAdventure.name == PROLOGUE_ADVENTURE_NAME;
+        return state.hero.currentAdventure.name == PROLOGUE_ADVENTURE_NAME;
     },
     generateTask: (/*state: AppState*/) => {
         const curPrologueTask = PROLOGUE_TASKS[prologueInc];
@@ -766,7 +766,7 @@ const prologueTaskGen: TaskGenerator = {
             durationMs: curPrologueTask.durationSeconds * 1000,
             results: [
                 {
-                    type: CharacterModificationType.INCREASE,
+                    type: HeroModificationType.INCREASE,
                     attributeName: 'adventureProgress',
                     data: curPrologueTask.durationSeconds,
                 },
@@ -779,7 +779,7 @@ const prologueTaskGen: TaskGenerator = {
 const prologueTransitionTaskGen: TaskGenerator = {
     priority: 7,
     shouldRun: (state: AppState) => {
-        return (state.character.currentAdventure.name == PROLOGUE_ADVENTURE_NAME && state.character.adventureProgress >= state.character.currentAdventure.progressRequired);
+        return (state.hero.currentAdventure.name == PROLOGUE_ADVENTURE_NAME && state.hero.adventureProgress >= state.hero.currentAdventure.progressRequired);
     },
     generateTask: (/*state: AppState*/) => {
         const newTask: Task = {
@@ -787,7 +787,7 @@ const prologueTransitionTaskGen: TaskGenerator = {
             durationMs: 20,
             results: [
                 {
-                    type: CharacterModificationType.SET,
+                    type: HeroModificationType.SET,
                     attributeName: 'currentAdventure',
                     data: {
                         name: 'Chapter 1',
@@ -795,12 +795,12 @@ const prologueTransitionTaskGen: TaskGenerator = {
                     },
                 },
                 {
-                    type: CharacterModificationType.SET,
+                    type: HeroModificationType.SET,
                     attributeName: 'adventureProgress',
                     data: 0,
                 },
                 {
-                    type: CharacterModificationType.ADD,
+                    type: HeroModificationType.ADD,
                     attributeName: 'completedAdventures',
                     data: [PROLOGUE_ADVENTURE_NAME],
                 },
@@ -814,29 +814,29 @@ const prologueTransitionTaskGen: TaskGenerator = {
 const adventureTransitionTaskGen: TaskGenerator = {
     priority: 6,
     shouldRun: (state: AppState) => {
-        return (state.character.adventureProgress >= state.character.currentAdventure.progressRequired);
+        return (state.hero.adventureProgress >= state.hero.currentAdventure.progressRequired);
     },
     generateTask: (state: AppState) => {
-        const newAdventure = generateNextAdventureName(state.character.currentAdventure);
-        const completionReward = randRange(0, 1) ? generateNewEquipmentModification(state.character) : generateSpellOrAbilityModification(state.character);
+        const newAdventure = generateNextAdventureName(state.hero.currentAdventure);
+        const completionReward = randRange(0, 1) ? generateNewEquipmentModification(state.hero) : generateSpellOrAbilityModification(state.hero);
         const newTask: Task = {
             description: 'Experiencing an enigmatic and foreboding night vision',
             durationMs: randRange(2, 3) * 1000,
             results: [
                 {
-                    type: CharacterModificationType.SET,
+                    type: HeroModificationType.SET,
                     attributeName: 'currentAdventure',
                     data: newAdventure,
                 },
                 {
-                    type: CharacterModificationType.SET,
+                    type: HeroModificationType.SET,
                     attributeName: 'adventureProgress',
                     data: 0,
                 },
                 {
-                    type: CharacterModificationType.ADD,
+                    type: HeroModificationType.ADD,
                     attributeName: 'completedAdventures',
-                    data: [state.character.currentAdventure.name],
+                    data: [state.hero.currentAdventure.name],
                 },
                 completionReward,
             ],
