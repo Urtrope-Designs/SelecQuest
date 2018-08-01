@@ -2,7 +2,7 @@ import { Component, Prop, State, Event, EventEmitter, Element } from '@stencil/c
 import { Observable } from 'rxjs/Observable';
 
 import { AppState, Character, Task, TaskMode, AccoladeType, AffiliationType, CharConnection, CharMembership, CharOffice } from '../../helpers/models';
-import {getXpRequiredForNextLevel } from '../../helpers/character-manager';
+import { getXpRequiredForNextLevel } from '../../helpers/character-manager';
 import { capitalizeInitial, getRoughTime } from '../../helpers/utils';
 
 @Component({

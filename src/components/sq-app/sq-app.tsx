@@ -91,6 +91,9 @@ export class SqApp {
         if (this.state) {
             return (
                 <ion-app>
+                    {
+                        this.state
+                    }
                     <sq-play-screen appState={this.state}>
                     </sq-play-screen>
                 </ion-app>
