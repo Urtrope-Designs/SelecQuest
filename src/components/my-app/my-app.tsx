@@ -97,9 +97,9 @@ export class MyApp {
             );
         } else {
             return (
-                <ion-app class="appLoading">
+                <div class="appLoading">
                     Loading...
-                </ion-app>
+                </div>
             )
         }
     }
