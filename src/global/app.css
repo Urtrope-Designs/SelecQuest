@@ -24,7 +24,7 @@ body {
     background-color: var(--sq-color-primary-contrast);
 }
 
-h1, h2, h3, h4, h5, p, button, div {
+h1, h2, h3, h4, h5, p, button, div, input {
     font-family: 'bitwise', sans-serif;
     font-family: 'whitrabt', sans-serif;
     font-family: '7_12', monospace;
@@ -52,6 +52,100 @@ button.selected {
     box-shadow: 0 0 .5rem var(--sq-color-primary);
     text-shadow: 0 0 .2rem;
 }
+
+button[disabled] {
+    opacity: .4;
+}
+
+.buttonRow button {
+    margin-right: .5rem;
+}
+
+input {
+    background-color: var(--sq-color-primary-contrast);
+    border: none;
+    text-align: right;
+    padding-right: .9rem;
+}
+input:focus {
+    outline: none;
+}
+input::placeholder {
+    color: rbga(var(--sq-color-primary-rgb, .2));
+}
+
+table {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+    box-shadow: 0 0 .4rem var(--sq-color-primary), inset 0 0 .4rem var(--sq-color-primary);
+}
+
+thead {
+    background-color: var(--sq-color-primary);
+    color: var(--sq-color-primary-contrast);
+    box-shadow: 0 1px .4rem var(--sq-color-primary);
+}
+
+th {
+    text-align: left;
+    text-shadow: 0 0 .2rem;
+    font-weight: normal;
+}
+
+th, td:not(.placeholderRow) {
+    padding: .3rem 1rem .3rem 0;
+    vertical-align: top;
+}
+th:last-child, td:last-child {
+    padding-right: .4rem;
+    text-align: right;
+}
+th:first-child, td:first-child {
+    padding-left: .4rem;
+    padding-right: 1rem;
+    text-align: left;
+}
+
+.textRow {
+    line-height: 1.3;
+    padding-left: .4rem;
+    padding-right: .4rem;
+}
+
+tr, .textRow {
+    transition: background-color .2s ease-in-out, color .2s ease-in-out;
+}
+
+.listBox {
+    border: 2px solid;
+    min-height: 7rem;
+    box-shadow: 0 0 .4rem var(--sq-color-primary), inset 0 0 .4rem var(--sq-color-primary);
+}
+
+.listBox tr:not(:last-child) {
+    height: min-content;
+}
+
+.listBox .buttonRow {
+    padding: .4rem
+}
+
+.textRow-highlight {
+    background-color: var(--sq-color-primary);
+    color: var(--sq-color-primary-contrast);
+    text-shadow: 0 0 .1rem;
+    box-shadow: 0 0 .4rem var(--sq-color-primary);
+}
+
+ion-header, ion-footer, section {
+    padding: 15px;
+}
+section:last-child {
+    padding-bottom: 0;
+}
+
 
 :root {
     --sq-color-primary-contrast: #222922;

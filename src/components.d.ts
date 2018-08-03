@@ -28,17 +28,47 @@ declare global {
 import '@ionic/core';
 
 import {
-  Observable,
-} from 'rxjs/Observable';
-import {
   AppState,
 } from './helpers/models';
 
 declare global {
 
   namespace StencilComponents {
+    interface SqCreateHeroScreen {
+
+    }
+  }
+
+  interface HTMLSqCreateHeroScreenElement extends StencilComponents.SqCreateHeroScreen, HTMLStencilElement {}
+
+  var HTMLSqCreateHeroScreenElement: {
+    prototype: HTMLSqCreateHeroScreenElement;
+    new (): HTMLSqCreateHeroScreenElement;
+  };
+  interface HTMLElementTagNameMap {
+    'sq-create-hero-screen': HTMLSqCreateHeroScreenElement;
+  }
+  interface ElementTagNameMap {
+    'sq-create-hero-screen': HTMLSqCreateHeroScreenElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'sq-create-hero-screen': JSXElements.SqCreateHeroScreenAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface SqCreateHeroScreenAttributes extends HTMLAttributes {
+
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
     interface SqPlayScreen {
-      'appState': Observable<AppState>;
+      'appState': AppState;
     }
   }
 
@@ -61,7 +91,7 @@ declare global {
   }
   namespace JSXElements {
     export interface SqPlayScreenAttributes extends HTMLAttributes {
-      'appState'?: Observable<AppState>;
+      'appState'?: AppState;
       'onTaskModeAction'?: (event: CustomEvent) => void;
     }
   }

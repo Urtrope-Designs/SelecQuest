@@ -8,11 +8,21 @@ export class GameDataManager {
 
     persistAppData(appData$: Observable<AppState>): void {
         appData$.subscribe((data) => {
-            this.dataStore.set(`gameData_${data.hero.name}`, data);
+            if (!!data && !!data.hero) {
+                this.dataStore.set(`gameData_${data.hero.name}`, data);
+            }
         })
     }
 
-    getGameData(heroName: string): Promise<AppState> {
-        return this.dataStore.get(`gameData_${heroName}`);
+    getGameData(heroHash: string): Promise<AppState> {
+        return this.dataStore.get(`gameData_${heroHash}`);
+    }
+
+    setActiveHeroHash(heroHash: string): Promise<any> {
+        return this.dataStore.set('activeHeroHash', heroHash);
+    }
+
+    getActiveHeroHash(): Promise<string> {
+        return this.dataStore.get('activeHeroHash');
     }
 }

@@ -166,3 +166,58 @@ export function getRoughTime(timeSeconds: number): string {
         return Math.floor(timeSeconds / (3600 * 24 * 30 * 12)) + " years";
     }
 }
+
+// function toRoman(n) {
+//     if (!n) return "N";
+//     var s = "";
+//     function _rome(dn,ds) {
+//       if (n >= dn) {
+//         n -= dn;
+//         s += ds;
+//         return true;
+//       } else return false;
+//     }
+//     if (n < 0) {
+//       s = "-";
+//       n = -n;
+//     }
+//     while (_rome(1000,"M")) {0;}
+//     _rome(900,"CM");
+//     _rome(500,"D");
+//     _rome(400,"CD");
+//     while (_rome(100,"C")) {0;}
+//     _rome(90,"XC");
+//     _rome(50,"L");
+//     _rome(40,"XL");
+//     while (_rome(10,"X")) {0;}
+//     _rome(9,"IX");
+//     _rome(5,"V");
+//     _rome(4,"IV");
+//     while (_rome(1,"I")) {0;}
+//     return s;
+//   }
+  
+//   function toArabic(s) {
+//     n = 0;
+//     s = s.toUpperCase();
+//     function _arab(ds,dn) {
+//       if (!Starts(s, ds)) return false;
+//       s = s.substr(ds.length);
+//       n += dn;
+//       return true;
+//     }
+//     while (_arab("M",1000)) {0;}
+//     _arab("CM",900);
+//     _arab("D",500);
+//     _arab("CD",400);
+//     while (_arab("C",100)) {0;}
+//     _arab("XC",90);
+//     _arab("L",50);
+//     _arab("XL",40);
+//     while (_arab("X",10)) {0;}
+//     _arab("IX",9);
+//     _arab("V",5);
+//     _arab("IV",4);
+//     while (_arab("I",1)) {0;}
+//     return n;
+//   }

@@ -7,7 +7,6 @@ import { Subject } from 'rxjs/Subject';
 import { stateFn } from '../../helpers/state-store';
 import { AppState, TaskMode } from '../../helpers/models';
 import { Action, ChangeActiveTaskMode, TaskCompleted } from '../../helpers/actions';
-import { createNewHero } from '../../helpers/hero-manager';
 import { GameDataManager } from '../../services/game-data-manager';
 
 @Component({
@@ -15,12 +14,10 @@ import { GameDataManager } from '../../services/game-data-manager';
     styleUrl: 'sq-app.scss'
 })
 export class SqApp {
-
     @Prop({ connect: 'ion-toast-controller' }) toastCtrl: HTMLIonToastControllerElement;
     @Prop({ context: 'taskMgr'}) taskMgr: {init: (stateStore: Observable<AppState>) => void, getTaskAction$: () => Observable<Action>};
     private actionSubject: Subject<Action> = new Subject<Action>();
-    @State() state: Observable<AppState>;
-    private statePromise: Promise<Observable<AppState>>;
+    @State() state: AppState;
     private gameDataMgr = new GameDataManager();
     
     @Listen('taskAction')
@@ -30,30 +27,6 @@ export class SqApp {
     @Listen('taskModeAction')
     taskModeActionHandler(event: CustomEvent) {
         this.actionSubject.next(new ChangeActiveTaskMode(event.detail));
-    }
-
-    constructor() {
-        this.statePromise = new Promise((resolve, reject) => {
-            this.gameDataMgr.getGameData('Garg')
-                .then((serializedState: AppState) => {
-                    if (!!serializedState && !!serializedState.activeTask) {
-                        const taskTimeRemaining = serializedState.activeTask.taskStartTime + serializedState.activeTask.durationMs - new Date().getTime();
-                        serializedState.activeTask.completionTimeoutId = setTimeout(() => {
-                            this.actionSubject.next(new TaskCompleted(serializedState.activeTask));
-                        }, Math.max(taskTimeRemaining, 10));
-                    } 
-                    return serializedState;
-                })
-                .then(state => {
-                    const initialData = state || { activeTask: null, hasActiveTask: false, hero: createNewHero(), activeTaskMode: TaskMode.LOOTING };
-                    this.state = stateFn(initialData, this.actionSubject.asObservable());
-                    this.gameDataMgr.persistAppData(this.state);
-                    resolve(this.state);
-                })
-                .catch(err => {
-                    reject(err);
-                })
-        });
     }
 
     /*
@@ -78,24 +51,54 @@ export class SqApp {
     }
 
     componentWillLoad() {
-        this.statePromise
-            .then((state) => {
-                this.taskMgr.init(state);
+        this.gameDataMgr.getActiveHeroHash()
+            .then((heroHash: string) => {
+                if (!!heroHash) {
+                    return this.gameDataMgr.getGameData(heroHash)
+                        .then(state => {
+                            if (state == null) {
+                                return DEFAULT_APP_STATE;
+                            } else {
+                                return state;
+                            }
+                        });
+                } else {
+                    return DEFAULT_APP_STATE;
+                }
+            })
+            .then((serializedState: AppState) => {
+                if (!!serializedState && !!serializedState.activeTask) {
+                    const taskTimeRemaining = serializedState.activeTask.taskStartTime + serializedState.activeTask.durationMs - new Date().getTime();
+                    serializedState.activeTask.completionTimeoutId = setTimeout(() => {
+                        this.actionSubject.next(new TaskCompleted(serializedState.activeTask));
+                    }, Math.max(taskTimeRemaining, 10));
+                } 
+                return serializedState;
+            })
+            .then(deserializedState => {
+                const initialData = deserializedState || DEFAULT_APP_STATE;
+                let state$ = stateFn(initialData, this.actionSubject.asObservable());
+                this.gameDataMgr.persistAppData(state$);
+                this.taskMgr.init(state$);
                 this.taskMgr.getTaskAction$().subscribe((taskAction: Action) => {
                     this.actionSubject.next(taskAction);
                 })
-            })
-    }
+
+                state$.subscribe(state => {
+                    this.state = state;
+                });
+            });
+}
 
     render() {
-        if (this.state) {
+        if (!!this.state) {
             return (
                 <ion-app>
                     {
-                        this.state
+                        !this.state.hero
+                        ? <sq-play-screen appState={this.state}></sq-play-screen>
+                        : <sq-create-hero-screen></sq-create-hero-screen>
                     }
-                    <sq-play-screen appState={this.state}>
-                    </sq-play-screen>
                 </ion-app>
             );
         } else {
@@ -107,3 +110,10 @@ export class SqApp {
         }
     }
 }
+
+const DEFAULT_APP_STATE: AppState = {
+    hero: null,
+    activeTask: null,
+    hasActiveTask: false,
+    activeTaskMode: TaskMode.LOOTING,
+};

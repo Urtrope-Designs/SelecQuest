@@ -3,10 +3,10 @@ import { Subject } from 'rxjs/Subject';
 
 import { Task, AppState } from '../helpers/models';
 import { SetActiveTask, TaskCompleted, Action } from '../helpers/actions';
-import { TaskGenerator, PRIORITIZED_TASK_GENERATORS } from '../helpers/task-helper';
+import { TaskGenerator, PRIORITIZED_TASK_GENERATORS } from '../helpers/play-task-helper';
 
 export default (function() {
-    class TaskManager {
+    class PlayTaskManager {
         private taskGenAlgos: TaskGenerator[] = PRIORITIZED_TASK_GENERATORS;
         private stateStore: Observable<AppState>
         public taskAction$ = new Subject<Action>();
@@ -14,7 +14,7 @@ export default (function() {
         init(stateStore: Observable<AppState>) {
             this.stateStore = stateStore;
             this.stateStore.subscribe((state: AppState) => {
-                if (!state.hasActiveTask) {
+                if (!!state && !!state.hero && !state.hasActiveTask) {
                     const curAlgo = this.taskGenAlgos.find((algo: TaskGenerator) => {
                         return algo.shouldRun(state);
                     })
@@ -34,7 +34,7 @@ export default (function() {
         }
     }
     
-    const privateInstance = new TaskManager();
+    const privateInstance = new PlayTaskManager();
 
     const exports = {
         init: (stateStore: Observable<AppState>) => {

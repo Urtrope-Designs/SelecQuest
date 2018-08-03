@@ -1,4 +1,4 @@
-import taskMgr from './task-manager';
+import taskMgr from './play-task-manager';
 
 declare var Context: any;
 
