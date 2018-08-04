@@ -1,5 +1,6 @@
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { STATIC_NAMES, RANDOM_NAME_PARTS } from '../global/config';
+import { Hero } from './models';
 
 export function urlB64ToUint8Array(base64String) {
     const padding = '='.repeat((4 - base64String.length % 4) % 4);
@@ -165,6 +166,12 @@ export function getRoughTime(timeSeconds: number): string {
     else {
         return Math.floor(timeSeconds / (3600 * 24 * 30 * 12)) + " years";
     }
+}
+
+export function generateHeroHashFromHero(heroData: Hero): string {
+    const rawHash = heroData.name + heroData.raceName + heroData.class;
+    const sanitizedHash = rawHash.replace(' ', '');
+    return sanitizedHash;
 }
 
 // function toRoman(n) {

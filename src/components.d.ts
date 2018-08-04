@@ -58,7 +58,7 @@ declare global {
   }
   namespace JSXElements {
     export interface SqCreateHeroScreenAttributes extends HTMLAttributes {
-
+      'onStartNewHero'?: (event: CustomEvent) => void;
     }
   }
 }
@@ -92,6 +92,7 @@ declare global {
   namespace JSXElements {
     export interface SqPlayScreenAttributes extends HTMLAttributes {
       'appState'?: AppState;
+      'onClearAllGameData'?: (event: CustomEvent) => void;
       'onTaskModeAction'?: (event: CustomEvent) => void;
     }
   }

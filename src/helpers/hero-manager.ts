@@ -3,20 +3,20 @@ import { randRange, randFromList, deepCopyObject, randFromListLow, randFromListH
 import { PROLOGUE_ADVENTURE_NAME } from './storyline-helpers';
 import { SPELLS, ABILITIES, IS_DEBUG, WEAPON_MATERIALS, SHEILD_MATERIALS, ARMOR_MATERIALS, EPITHET_DESCRIPTORS, EPITHET_BEING_ALL, TITLE_POSITIONS_ALL, SOBRIQUET_MODIFIERS, SOBRIQUET_NOUN_PORTION, HONORIFIC_TEMPLATES, OFFICE_POSITIONS_ALL, STANDARD_GROUPS_INDEFINITE } from '../global/config';
 
-export function createNewHero(): Hero {
+export function createNewHero(name: string, raceName: string, className: string, stats: HeroStats): Hero {
     const newHero: Hero = {
-        name: 'Garg',
-        raceName: 'Fartling',
-        class: 'Meter Beater',
+        name: name,
+        raceName: raceName,
+        class: className,
         level: 1,
-        str: 10,
-        dex: 10,
-        con: 10,
-        int: 10,
-        wis: 10,
-        cha: 10,
-        maxHp: 10,
-        maxMp: 0,
+        str: stats.str,
+        dex: stats.dex,
+        con: stats.con,
+        int: stats.int,
+        wis: stats.wis,
+        cha: stats.cha,
+        maxHp: randRange(0, 7) + Math.floor(stats.con / 6),
+        maxMp: randRange(0, 7) + Math.floor(stats.int / 6),
         currentXp: 0,
         spells: [],
         abilities: [],

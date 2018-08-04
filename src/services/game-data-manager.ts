@@ -2,6 +2,7 @@ import { AppState } from "../helpers/models";
 import { Observable } from "rxjs/Observable";
 
 import Storage from './storage';
+import { generateHeroHashFromHero } from "../helpers/utils";
 
 export class GameDataManager {
     private dataStore = new Storage();
@@ -9,7 +10,7 @@ export class GameDataManager {
     persistAppData(appData$: Observable<AppState>): void {
         appData$.subscribe((data) => {
             if (!!data && !!data.hero) {
-                this.dataStore.set(`gameData_${data.hero.name}`, data);
+                this.dataStore.set(`gameData_${generateHeroHashFromHero(data.hero)}`, data);
             }
         })
     }
@@ -24,5 +25,9 @@ export class GameDataManager {
 
     getActiveHeroHash(): Promise<string> {
         return this.dataStore.get('activeHeroHash');
+    }
+
+    clearAllData(): Promise<boolean> {
+        return this.dataStore.clear();
     }
 }

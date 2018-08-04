@@ -16,10 +16,10 @@ export class PlayScreen {
     @State() activeTaskProgressMs: number = 0;
     @State() activeVisibleSection: VisibleSection;
     @Event() taskModeAction: EventEmitter;
+    @Event() clearAllGameData: EventEmitter;
 
     @Watch('appState')
     stateHandler(newState: AppState) {
-        console.log('state update:', newState);
         if (newState.hasActiveTask) {
             clearInterval(this.activeTaskProgressInterval);
             this.activeTaskProgressMs = new Date().getTime() - this.appState.activeTask.taskStartTime;
@@ -30,7 +30,6 @@ export class PlayScreen {
     }
 
     componentWillLoad() {
-        console.log('here')
         this.activeVisibleSection = VisibleSection.hero;
     }
 
@@ -54,6 +53,10 @@ export class PlayScreen {
         this.activeVisibleSection = newVisibleSection;
         const contentElem = this.homeEl.querySelector('ion-content');
         contentElem.getScrollElement().scrollToTop(0);
+    }
+
+    newGameButtonClicked() {
+        this.clearAllGameData.emit();
     }
 
     findUpdate(attributeName: string, dataMatch?: (any) => boolean) {
@@ -83,7 +86,10 @@ export class PlayScreen {
             return (
                 <ion-page class='ion-page show-page'>
                     <ion-header>
-                        <h1>SelecQuest</h1>
+                        <div style={{display: 'flex'}}>
+                            <h1>SelecQuest</h1>
+                            <button style={{marginLeft: 'auto'}} onClick={() => this.newGameButtonClicked()}>New Game</button>
+                        </div>
                         <div class="buttonRow">
                             {
                                 Object.keys(VisibleSection).map(sectionName => 

@@ -6,8 +6,9 @@ import { Subject } from 'rxjs/Subject';
 
 import { stateFn } from '../../helpers/state-store';
 import { AppState, TaskMode } from '../../helpers/models';
-import { Action, ChangeActiveTaskMode, TaskCompleted } from '../../helpers/actions';
+import { Action, ChangeActiveTaskMode, TaskCompleted, SetActiveHero } from '../../helpers/actions';
 import { GameDataManager } from '../../services/game-data-manager';
+import { generateHeroHashFromHero } from '../../helpers/utils';
 
 @Component({
     tag: 'sq-app',
@@ -27,6 +28,19 @@ export class SqApp {
     @Listen('taskModeAction')
     taskModeActionHandler(event: CustomEvent) {
         this.actionSubject.next(new ChangeActiveTaskMode(event.detail));
+    }
+    @Listen('startNewHero')
+    startNewHeroHandler(event: CustomEvent) {
+        const newGameState = Object.assign({}, DEFAULT_APP_STATE, {hero: event.detail});
+        this.gameDataMgr.setActiveHeroHash(generateHeroHashFromHero(event.detail));
+        this.actionSubject.next(new SetActiveHero(newGameState))
+    }
+    @Listen('clearAllGameData')
+    clearAllGameDataHandler() {
+        this.gameDataMgr.clearAllData()
+            .then(() => {
+                this.actionSubject.next(new SetActiveHero(DEFAULT_APP_STATE));
+            });
     }
 
     /*
@@ -88,14 +102,14 @@ export class SqApp {
                     this.state = state;
                 });
             });
-}
+    }
 
     render() {
         if (!!this.state) {
             return (
                 <ion-app>
                     {
-                        !this.state.hero
+                        !!this.state.hero
                         ? <sq-play-screen appState={this.state}></sq-play-screen>
                         : <sq-create-hero-screen></sq-create-hero-screen>
                     }

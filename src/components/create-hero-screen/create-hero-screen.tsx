@@ -1,7 +1,8 @@
-import { Component, State } from "@stencil/core";
+import { Component, State, Event, EventEmitter } from "@stencil/core";
 import { HeroStats } from "../../helpers/models";
 import { generateRandomName, randFromList, randRange } from "../../helpers/utils";
 import { RACES, CLASSES } from "../../global/config";
+import { createNewHero } from "../../helpers/hero-manager";
 
 @Component({
     tag: 'sq-create-hero-screen',
@@ -9,6 +10,7 @@ import { RACES, CLASSES } from "../../global/config";
 })
 export class CreateHeroScreen {
     @State() rolledHero: Heroling;
+    @Event() startNewHero: EventEmitter
 
     componentWillLoad() {
         this.rolledHero = {
@@ -36,7 +38,8 @@ export class CreateHeroScreen {
     }
 
     handleSubmit() {
-        console.log('hero complete!', {name: this.rolledHero.name, raceName: this.rolledHero.raceName, className: this.rolledHero.className})
+        const newHero = createNewHero(this.rolledHero.name, this.rolledHero.raceName, this.rolledHero.className, this.rolledHero.rolledStats[this.rolledHero.statsIndex]);
+        this.startNewHero.emit(newHero)
     }
 
     render() {
@@ -114,7 +117,7 @@ export class CreateHeroScreen {
                                 <tr><td>Cha</td><td>{this.rolledHero.rolledStats[this.rolledHero.statsIndex].cha}</td></tr>
                             </tbody>
                         </table>
-                        <div>
+                        <div class="buttonRow">
                             <button class="selected" onClick={() => this.roll()}>Roll</button>
                             <button class="selected" disabled={this.rolledHero.statsIndex==0} onClick={() => this.unroll()}>Unroll</button>
                         </div>

@@ -298,6 +298,7 @@ const FETCH_TARGET_OBJECTS = [
 export const STATIC_NAMES: string[] = [
     'Scutabrix',
     'Crinkle',
+    'Garg',
 ]
 
 export const RANDOM_NAME_PARTS: string[][] = [
@@ -327,6 +328,7 @@ export const CLASSES: string[] = [
     'Metanarc',
     'War Flautist',
     'Sarcasminista',
+    'Meter Beater',
 ]
 
 export const SPELLS: string[] = [
