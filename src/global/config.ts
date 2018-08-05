@@ -1,7 +1,7 @@
 import { TaskTargetType, LootingTarget, GladiatingTarget, CharRace, LeadGatheringTarget, LeadType, LeadTarget, EquipmentMaterial, EquipmentModifier, CharTitlePosition } from "../helpers/models";
 import { makeStringIndefinite, randFromList } from "../helpers/utils";
 
-export const IS_DEBUG = true;
+export const IS_DEBUG = false;
 
 export const STANDARD_GROUPS_INDEFINITE: string[] = [
     'the Thieves Guild',
@@ -299,6 +299,8 @@ export const STATIC_NAMES: string[] = [
     'Scutabrix',
     'Crinkle',
     'Garg',
+    'Swindlefoot',
+    'Melse',
 ]
 
 export const RANDOM_NAME_PARTS: string[][] = [
@@ -319,7 +321,11 @@ export const RACES: CharRace[] = [
     {
         raceName: 'Fartling',
         trophyName: 'cloud',
-    }
+    },
+    {
+        raceName: 'Owl-head',
+        trophyName: 'hoot',
+    },
 ]
 
 export const CLASSES: string[] = [
@@ -329,21 +335,43 @@ export const CLASSES: string[] = [
     'War Flautist',
     'Sarcasminista',
     'Meter Beater',
+    'Chef de Cuisine',
+    'Basher',
+    'Smasher',
+    'Warlock',
+    'Semi-retired Heckler',
 ]
 
 export const SPELLS: string[] = [
+    'Summon Snack',
     'Tonguehairs',
-    'Digest',
-    'Undigest',
-    'Hide Agenda',
-    'Suddenly Sand Wedge',
+    'Eggsmoke',
     'Miasmatic Ward',
+    'Digest',
+    'Trace Outline',
+    'Gamey Aftertaste',
+    'Doubleflush',
+    'Dedandify',
+    'Hide Agenda',
+    'Undigest',
+    'Bisonic Sphere',
+    'Detect Limp',
+    'Suddenly Sand Wedge',
 ]
 
 export const ABILITIES: string[] = [
+    'Left Hook',
+    'Rope Tow',
+    'Jab',
+    'Swingsies',
+    'Uppercut',
     'Twist and Trout',
+    'Rope Climb',
     'Soul Prick',
+    'Half-time March',
     'Imitate Mating Call',
+    'Chondromalacia Patella',
+    'Approach Infinity',
 ]
 
 export const EQUIPMENT_MODIFIERS = {

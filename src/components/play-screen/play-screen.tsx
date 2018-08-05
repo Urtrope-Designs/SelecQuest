@@ -21,16 +21,23 @@ export class PlayScreen {
     @Watch('appState')
     stateHandler(newState: AppState) {
         if (newState.hasActiveTask) {
-            clearInterval(this.activeTaskProgressInterval);
-            this.activeTaskProgressMs = new Date().getTime() - this.appState.activeTask.taskStartTime;
-            this.activeTaskProgressInterval = window.setInterval((activeTask: Task) => {
-                this.activeTaskProgressMs = new Date().getTime() - activeTask.taskStartTime;
-            }, 100, this.appState.activeTask);
+            this._updateTaskTimer();
         }
+    }
+    
+    _updateTaskTimer() {
+        clearInterval(this.activeTaskProgressInterval);
+        this.activeTaskProgressMs = new Date().getTime() - this.appState.activeTask.taskStartTime;
+        this.activeTaskProgressInterval = window.setInterval((activeTask: Task) => {
+            this.activeTaskProgressMs = new Date().getTime() - activeTask.taskStartTime;
+        }, 100, this.appState.activeTask);
     }
 
     componentWillLoad() {
         this.activeVisibleSection = VisibleSection.hero;
+        if (!!this.appState && this.appState.hasActiveTask) {
+            this._updateTaskTimer();
+        }
     }
 
     taskModeButtonClicked(newTaskModeString: TaskMode) {
