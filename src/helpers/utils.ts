@@ -83,7 +83,15 @@ export function makeStringIndefinite(baseString: string, quantity: number): stri
 }
 
 export function makeStringPlural(baseString: string): string {
-    if (doesEndWith(baseString, 'y')) {
+    if (doesEndWith(baseString, 'Bison') || doesEndWith(baseString, 'bison')) {
+        return baseString;
+    }
+    else if (doesEndWith(baseString, 'ooth')) {
+        return baseString.slice(0, baseString.length - 4) + 'eeth';
+    }
+    else if (doesEndWith(baseString, 'ey')) {
+        return baseString + 's';
+    } else if (doesEndWith(baseString, 'y')) {
         return baseString.slice(0, baseString.length - 1) + 'ies';
     }
     else if (doesEndWith(baseString, 'us')) {
@@ -108,6 +116,9 @@ export function makeVerbGerund(baseString: string): string {
 }
 
 export function doesEndWith(baseString: string, ending: string): boolean {
+    if (baseString.length < ending.length) {
+        return false;
+    }
     return baseString.slice(baseString.length - ending.length, baseString.length) == ending;
 }
 
@@ -169,10 +180,11 @@ export function getRoughTime(timeSeconds: number): string {
 }
 
 export function generateHeroHashFromHero(heroData: Hero): string {
-    const rawHash = heroData.name + heroData.raceName + heroData.class;
+    const rawHash = `${heroData.name}${HERO_HASH_NAME_DELIMITER}${heroData.raceName}${heroData.class}`;
     const sanitizedHash = rawHash.replace(' ', '');
     return sanitizedHash;
 }
+export const HERO_HASH_NAME_DELIMITER = '::';
 
 // function toRoman(n) {
 //     if (!n) return "N";

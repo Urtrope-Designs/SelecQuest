@@ -4,6 +4,7 @@ import { PROLOGUE_ADVENTURE_NAME } from './storyline-helpers';
 import { SPELLS, ABILITIES, IS_DEBUG, WEAPON_MATERIALS, SHEILD_MATERIALS, ARMOR_MATERIALS, EPITHET_DESCRIPTORS, EPITHET_BEING_ALL, TITLE_POSITIONS_ALL, SOBRIQUET_MODIFIERS, SOBRIQUET_NOUN_PORTION, HONORIFIC_TEMPLATES, OFFICE_POSITIONS_ALL, STANDARD_GROUPS_INDEFINITE } from '../global/config';
 
 export function createNewHero(name: string, raceName: string, className: string, stats: HeroStats): Hero {
+    const LONG_TERM_LIMIT_FACTOR = 25;
     const newHero: Hero = {
         name: name,
         raceName: raceName,
@@ -63,7 +64,7 @@ export function createNewHero(name: string, raceName: string, className: string,
             if (IS_DEBUG) {
                 return 35;
             } else {
-                return 30 * (this.level + this.int);
+                return LONG_TERM_LIMIT_FACTOR * (this.level + this.int);
             }
         },
         fatigue: 0,
@@ -71,7 +72,7 @@ export function createNewHero(name: string, raceName: string, className: string,
             if (IS_DEBUG) {
                 return 35;
             } else {
-                return 30 * (this.level + this.con);
+                return LONG_TERM_LIMIT_FACTOR * (this.level + this.con);
             }
         },
         socialExposure: 0,
@@ -79,7 +80,7 @@ export function createNewHero(name: string, raceName: string, className: string,
             if (IS_DEBUG) {
                 return 35;
             } else {
-                return 30 * (this.level + this.wis);
+                return LONG_TERM_LIMIT_FACTOR * (this.level + this.wis);
             }
         },
         currentAdventure: IS_DEBUG ? {name: 'Chapter 1', progressRequired: 40} : {name: PROLOGUE_ADVENTURE_NAME, progressRequired: 28},

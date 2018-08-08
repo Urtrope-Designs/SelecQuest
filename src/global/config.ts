@@ -1,7 +1,7 @@
 import { TaskTargetType, LootingTarget, GladiatingTarget, CharRace, LeadGatheringTarget, LeadType, LeadTarget, EquipmentMaterial, EquipmentModifier, CharTitlePosition } from "../helpers/models";
 import { makeStringIndefinite, randFromList } from "../helpers/utils";
 
-export const IS_DEBUG = false;
+export const IS_DEBUG = true;
 
 export const STANDARD_GROUPS_INDEFINITE: string[] = [
     'the Thieves Guild',
@@ -109,12 +109,6 @@ TASK_PREFIX_GOOD_SECOND[TaskTargetType.MONSTER] = [
 export const STANDARD_LOOTING_TARGETS: LootingTarget[] = [
     {
         type: TaskTargetType.LOCATION,
-        name: 'Temple of Scutabrix',
-        level: 1,
-        reward: 'smug Scutabrix idol',
-    },
-    {
-        type: TaskTargetType.LOCATION,
         name: 'Barber Shop',
         level: 1,
         reward: 'barber\'s cleaver',
@@ -160,6 +154,12 @@ export const STANDARD_LOOTING_TARGETS: LootingTarget[] = [
         name: 'Sofa king',
         level: 5,
         reward: 'sofa king cushion',
+    },
+    {
+        type: TaskTargetType.MONSTER,
+        name: 'Ratking',
+        level: 7,
+        reward: 'ratking tooth',
     },
 ];
 

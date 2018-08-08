@@ -179,7 +179,7 @@ export function generateInvestigatingTaskContents(): {taskName: string, leadData
 }
 
 export function getTradeInCostForLevel(level: number): number {
-    return IS_DEBUG ? 25 : 5 * level**2 + 10 * level + 20;
+    return IS_DEBUG ? (10 * level + 4) : (5 * level**2 + 10 * level + 20);
 }
 
 export interface TaskGenerator {

@@ -1,4 +1,5 @@
 import '@ionic/core';
+import 'ionicons';
 
 import { Component, Prop, Listen, State } from '@stencil/core';
 import { Observable } from 'rxjs/Observable';
@@ -9,6 +10,7 @@ import { AppState, TaskMode } from '../../helpers/models';
 import { Action, ChangeActiveTaskMode, TaskCompleted, SetActiveHero } from '../../helpers/actions';
 import { GameDataManager } from '../../services/game-data-manager';
 import { generateHeroHashFromHero } from '../../helpers/utils';
+import { PlayScreen } from '../play-screen/play-screen';
 
 @Component({
     tag: 'sq-app',
@@ -19,7 +21,9 @@ export class SqApp {
     @Prop({ context: 'taskMgr'}) taskMgr: {init: (stateStore: Observable<AppState>) => void, getTaskAction$: () => Observable<Action>};
     private actionSubject: Subject<Action> = new Subject<Action>();
     @State() state: AppState;
+    private availableHeroes: {hash: string, name: string}[];
     private gameDataMgr = new GameDataManager();
+    private playScreen: PlayScreen;
     
     @Listen('taskAction')
     taskActionhandler(event: CustomEvent) {
@@ -33,14 +37,41 @@ export class SqApp {
     startNewHeroHandler(event: CustomEvent) {
         const newGameState = Object.assign({}, DEFAULT_APP_STATE, {hero: event.detail});
         this.gameDataMgr.setActiveHeroHash(generateHeroHashFromHero(event.detail));
-        this.actionSubject.next(new SetActiveHero(newGameState))
+        this.actionSubject.next(new SetActiveHero(newGameState));
+        setTimeout(() => {
+            this._updateAvailableHeroes();
+        }, 10);
     }
     @Listen('clearAllGameData')
     clearAllGameDataHandler() {
-        this.gameDataMgr.clearAllData()
-            .then(() => {
-                this.actionSubject.next(new SetActiveHero(DEFAULT_APP_STATE));
-            });
+        this.actionSubject.next(new SetActiveHero(DEFAULT_APP_STATE));
+        setTimeout(() => {
+            this.gameDataMgr.clearAllData().then(() => {this._updateAvailableHeroes()});
+        }, 10)
+    }
+    @Listen('buildNewHero')
+    buildNewHeroHandler() {
+        this.gameDataMgr.setActiveHeroHash(null);
+        this.actionSubject.next(new SetActiveHero(DEFAULT_APP_STATE));
+    }
+    @Listen('playNewHero')
+    playNewHeroHandler(event: CustomEvent) {
+        this.gameDataMgr.getGameData(event.detail)
+            .then((serializedState) => {
+                const deserializedState = this.hydrateStateTaskTimeout(serializedState) || DEFAULT_APP_STATE;
+                this.actionSubject.next(new SetActiveHero(deserializedState));
+            })
+    }
+    @Listen('deleteHero')
+    deleteHeroHandler(event: CustomEvent) {
+        if (event.detail == generateHeroHashFromHero(this.state.hero)) {
+            this.gameDataMgr.setActiveHeroHash(null);
+            this.actionSubject.next(new SetActiveHero(DEFAULT_APP_STATE));
+        }
+        setTimeout(() => {
+            this.gameDataMgr.deleteGameData(event.detail);
+            this._updateAvailableHeroes();
+        }, 10);
     }
 
     /*
@@ -64,6 +95,15 @@ export class SqApp {
         window.location.reload();
     }
 
+    _updateAvailableHeroes() {
+        this.gameDataMgr.getAvailableHeroHashToNameMapping().then(heroes => {
+            this.availableHeroes = heroes;
+            if (!!this.playScreen) {
+                this.playScreen.availableHeroes = this.availableHeroes;
+            }
+        });
+    }
+
     componentWillLoad() {
         this.gameDataMgr.getActiveHeroHash()
             .then((heroHash: string) => {
@@ -81,13 +121,7 @@ export class SqApp {
                 }
             })
             .then((serializedState: AppState) => {
-                if (!!serializedState && !!serializedState.activeTask) {
-                    const taskTimeRemaining = serializedState.activeTask.taskStartTime + serializedState.activeTask.durationMs - new Date().getTime();
-                    serializedState.activeTask.completionTimeoutId = setTimeout(() => {
-                        this.actionSubject.next(new TaskCompleted(serializedState.activeTask));
-                    }, Math.max(taskTimeRemaining, 10));
-                } 
-                return serializedState;
+                return this.hydrateStateTaskTimeout(serializedState);
             })
             .then(deserializedState => {
                 const initialData = deserializedState || DEFAULT_APP_STATE;
@@ -102,6 +136,18 @@ export class SqApp {
                     this.state = state;
                 });
             });
+
+        this._updateAvailableHeroes();
+    }
+
+    hydrateStateTaskTimeout(state: AppState): AppState {
+        if (!!state && !!state.activeTask) {
+            const taskTimeRemaining = state.activeTask.taskStartTime + state.activeTask.durationMs - new Date().getTime();
+            state.activeTask.completionTimeoutId = setTimeout(() => {
+                this.actionSubject.next(new TaskCompleted(state.activeTask));
+            }, Math.max(taskTimeRemaining, 10));
+        } 
+        return state;
     }
 
     render() {
@@ -110,7 +156,7 @@ export class SqApp {
                 <ion-app>
                     {
                         !!this.state.hero
-                        ? <sq-play-screen appState={this.state}></sq-play-screen>
+                        ? <sq-play-screen appState={this.state} availableHeroes={this.availableHeroes} ref={(el: any) => this.playScreen = el}></sq-play-screen>
                         : <sq-create-hero-screen></sq-create-hero-screen>
                     }
                 </ion-app>

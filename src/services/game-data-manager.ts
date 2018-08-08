@@ -2,21 +2,26 @@ import { AppState } from "../helpers/models";
 import { Observable } from "rxjs/Observable";
 
 import Storage from './storage';
-import { generateHeroHashFromHero } from "../helpers/utils";
+import { generateHeroHashFromHero, HERO_HASH_NAME_DELIMITER } from "../helpers/utils";
 
 export class GameDataManager {
     private dataStore = new Storage();
 
     persistAppData(appData$: Observable<AppState>): void {
+        //todo: return an observable that emits each time datastore.set completes successfully?
         appData$.subscribe((data) => {
             if (!!data && !!data.hero) {
-                this.dataStore.set(`gameData_${generateHeroHashFromHero(data.hero)}`, data);
+                this.dataStore.set(`${GAME_SAVE_PREFIX}${generateHeroHashFromHero(data.hero)}`, data);
             }
         })
     }
 
     getGameData(heroHash: string): Promise<AppState> {
-        return this.dataStore.get(`gameData_${heroHash}`);
+        return this.dataStore.get(`${GAME_SAVE_PREFIX}${heroHash}`);
+    }
+
+    deleteGameData(heroHash: string) {
+        return this.dataStore.remove(`${GAME_SAVE_PREFIX}${heroHash}`);
     }
 
     setActiveHeroHash(heroHash: string): Promise<any> {
@@ -30,4 +35,18 @@ export class GameDataManager {
     clearAllData(): Promise<boolean> {
         return this.dataStore.clear();
     }
+
+    getAvailableHeroHashToNameMapping(): Promise<{hash:string, name: string}[]> {
+        return this.dataStore.keys().then(keys => {
+            return keys
+                .filter(key => {
+                    return key.startsWith(GAME_SAVE_PREFIX);
+                })
+                .map(key => {
+                    return {hash: key.slice(GAME_SAVE_PREFIX.length), name: key.slice(GAME_SAVE_PREFIX.length, key.indexOf(HERO_HASH_NAME_DELIMITER))};
+                })
+        })
+    }
 }
+
+const GAME_SAVE_PREFIX = 'gameData_';

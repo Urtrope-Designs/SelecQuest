@@ -2,7 +2,7 @@ import { Component, Prop, State, Event, EventEmitter, Element, Watch } from '@st
 
 import { AppState, Task, TaskMode, AccoladeType, AffiliationType, CharConnection, CharMembership, CharOffice, Hero } from '../../helpers/models';
 import { getXpRequiredForNextLevel } from '../../helpers/hero-manager';
-import { capitalizeInitial, getRoughTime } from '../../helpers/utils';
+import { capitalizeInitial, getRoughTime, generateHeroHashFromHero } from '../../helpers/utils';
 
 @Component({
     tag: 'sq-play-screen',
@@ -10,18 +10,29 @@ import { capitalizeInitial, getRoughTime } from '../../helpers/utils';
 })
 export class PlayScreen {
     @Prop() appState: AppState;
+    @Prop() availableHeroes: {hash: string, name: string}[];
 
     @Element() homeEl: HTMLElement;
     private activeTaskProgressInterval: number;
     @State() activeTaskProgressMs: number = 0;
     @State() activeVisibleSection: VisibleSection;
+    @State() selectedAvailableHeroHash: string = '';
+    @State() heroHashWeAreWaitingFor: string = '';
     @Event() taskModeAction: EventEmitter;
     @Event() clearAllGameData: EventEmitter;
+    @Event() buildNewHero: EventEmitter;
+    @Event() playNewHero: EventEmitter;
+    @Event() deleteHero: EventEmitter;
 
     @Watch('appState')
     stateHandler(newState: AppState) {
         if (newState.hasActiveTask) {
             this._updateTaskTimer();
+        }
+        if (!!newState.hero && generateHeroHashFromHero(newState.hero) == this.heroHashWeAreWaitingFor) {
+            this.heroHashWeAreWaitingFor = '';
+            this.selectedAvailableHeroHash = '';
+            this.activeVisibleSection = VisibleSection.hero;
         }
     }
     
@@ -62,7 +73,28 @@ export class PlayScreen {
         contentElem.getScrollElement().scrollToTop(0);
     }
 
-    newGameButtonClicked() {
+    setSelectedAvailableHeroHash(newHash: string) {
+        if (this.selectedAvailableHeroHash == newHash) {
+            this.selectedAvailableHeroHash = '';
+        } else {
+            this.selectedAvailableHeroHash = newHash;
+        }
+    }
+
+    newHeroButtonClicked() {
+        this.buildNewHero.emit();
+    }
+
+    playHeroButtonClicked() {
+        this.heroHashWeAreWaitingFor = this.selectedAvailableHeroHash;
+        this.playNewHero.emit(this.selectedAvailableHeroHash);
+    }
+
+    deleteHeroButtonClicked() {
+        this.deleteHero.emit(this.selectedAvailableHeroHash);
+    }
+
+    clearDataButtonClicked() {
         this.clearAllGameData.emit();
     }
 
@@ -93,9 +125,8 @@ export class PlayScreen {
             return (
                 <ion-page class='ion-page show-page'>
                     <ion-header>
-                        <div style={{display: 'flex'}}>
+                        <div>
                             <h1>SelecQuest</h1>
-                            <button style={{marginLeft: 'auto'}} onClick={() => this.newGameButtonClicked()}>New Game</button>
                         </div>
                         <div class="buttonRow">
                             {
@@ -402,7 +433,8 @@ export class PlayScreen {
                                     </tbody>
                                 </table>
                             </section>
-                            : <section>                    
+                            : this.activeVisibleSection == VisibleSection.plot
+                            ? <section>                    
                                 <p>
                                     <div class="textRow">Experience</div>
                                     <sq-progress-bar
@@ -436,6 +468,43 @@ export class PlayScreen {
                                         </tbody>
                                     </table>
                                 </p>
+                            </section>
+                            : <section>
+                                <p>
+                                    <button class="selected" onClick={() => this.newHeroButtonClicked()}>New Hero</button>
+                                </p>
+                                <table class="listBox">
+                                    <thead>
+                                        <tr>
+                                            <th>Available Heroes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            !this.availableHeroes
+                                            ? <tr><td>Loading...</td></tr>
+                                            : this.availableHeroes.map((hero) => 
+                                                <tr {...this.selectedAvailableHeroHash == hero.hash ? {class: 'textRow-highlight'} : {}} onClick={() => this.setSelectedAvailableHeroHash(hero.hash)}><td>{hero.name}</td></tr>
+                                            )
+                                        }
+                                        <tr><td class="placeholderRow"></td></tr>
+                                    </tbody>
+                                </table>
+                                <div class="buttonRow">
+                                    <button 
+                                        disabled={!this.selectedAvailableHeroHash || this.selectedAvailableHeroHash == generateHeroHashFromHero(this.appState.hero) || !!this.heroHashWeAreWaitingFor}
+                                        class="selected"
+                                        onClick={() => this.playHeroButtonClicked()}
+                                    >Play</button>
+                                    <button
+                                        disabled={!this.selectedAvailableHeroHash || !!this.heroHashWeAreWaitingFor}
+                                        class="selected"
+                                        onClick={() => this.deleteHeroButtonClicked()}
+                                    >Delete</button>
+                                </div>
+                                <div style={{textAlign: 'right'}}>
+                                    <button class="selected" onClick={() => this.clearDataButtonClicked()}>Clear All Data</button>
+                                </div>
                             </section>
                         }
                     </ion-content>
@@ -482,4 +551,5 @@ enum VisibleSection {
     social = "Social",
     actions = "Actions",
     plot = "Plot",
+    game = "Game",
 }

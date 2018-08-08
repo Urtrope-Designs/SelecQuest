@@ -26,6 +26,7 @@ declare global {
 }
 
 import '@ionic/core';
+import 'ionicons';
 
 import {
   AppState,
@@ -67,8 +68,42 @@ declare global {
 declare global {
 
   namespace StencilComponents {
+    interface SqGameMenu {
+
+    }
+  }
+
+  interface HTMLSqGameMenuElement extends StencilComponents.SqGameMenu, HTMLStencilElement {}
+
+  var HTMLSqGameMenuElement: {
+    prototype: HTMLSqGameMenuElement;
+    new (): HTMLSqGameMenuElement;
+  };
+  interface HTMLElementTagNameMap {
+    'sq-game-menu': HTMLSqGameMenuElement;
+  }
+  interface ElementTagNameMap {
+    'sq-game-menu': HTMLSqGameMenuElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'sq-game-menu': JSXElements.SqGameMenuAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface SqGameMenuAttributes extends HTMLAttributes {
+
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
     interface SqPlayScreen {
       'appState': AppState;
+      'availableHeroes': {hash: string, name: string}[];
     }
   }
 
@@ -92,7 +127,11 @@ declare global {
   namespace JSXElements {
     export interface SqPlayScreenAttributes extends HTMLAttributes {
       'appState'?: AppState;
+      'availableHeroes'?: {hash: string, name: string}[];
+      'onBuildNewHero'?: (event: CustomEvent) => void;
       'onClearAllGameData'?: (event: CustomEvent) => void;
+      'onDeleteHero'?: (event: CustomEvent) => void;
+      'onPlayNewHero'?: (event: CustomEvent) => void;
       'onTaskModeAction'?: (event: CustomEvent) => void;
     }
   }

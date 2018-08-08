@@ -3,13 +3,13 @@ import CordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
  
 export default class Storage {
  
-    dbPromise;
+    dbPromise: Promise<LocalForage>;
  
     constructor(){
  
         this.dbPromise = new Promise((resolve, reject) => {
  
-            let db;
+            let db: LocalForage;
  
             let config = {
                 name: '_selecqueststorage',
@@ -25,7 +25,6 @@ export default class Storage {
                     resolve(db);
                 })
                 .catch(reason => reject(reason));
- 
         }); 
     }
  
@@ -66,6 +65,10 @@ export default class Storage {
  
     clear(): Promise<any> {
         return this.dbPromise.then(db => db.clear());
+    }
+
+    keys(): Promise<string[]> {
+        return this.dbPromise.then(db => db.keys());
     }
  
 }
