@@ -1,5 +1,4 @@
 import '@ionic/core';
-import 'ionicons';
 
 import { Component, Prop, Listen, State } from '@stencil/core';
 import { Observable } from 'rxjs/Observable';

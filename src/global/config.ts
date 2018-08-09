@@ -226,7 +226,7 @@ export const STANDARD_LEAD_GATHERING_TARGETS: LeadGatheringTarget[] = [
             ...STANDARD_GROUPS_INDEFINITE,
             'three ancient crones',
         ],
-        leadTypes: [LeadType.FETCH],
+        leadTypes: [LeadType.FETCH, LeadType.DELIVER],
     },
     {
         gerundPhrase: 'scouring',
@@ -235,7 +235,7 @@ export const STANDARD_LEAD_GATHERING_TARGETS: LeadGatheringTarget[] = [
             'the latest issue of "Spelunker\'s Booty"',
             'the trash heap behind the inn',
         ],
-        leadTypes: [LeadType.FETCH],
+        leadTypes: [LeadType.SEEK],
     }
 ]
 
@@ -245,6 +245,22 @@ STANDARD_LEAD_TARGETS[LeadType.FETCH] = [
         verb: 'fetch',
         predicateFactory: () => {
             return makeStringIndefinite(randFromList(FETCH_TARGET_OBJECTS), 1);
+        }
+    }
+];
+STANDARD_LEAD_TARGETS[LeadType.DELIVER] = [
+    {
+        verb: 'deliver',
+        predicateFactory: () => {
+            return `this ${randFromList(FETCH_TARGET_OBJECTS)}`;
+        }
+    }
+];
+STANDARD_LEAD_TARGETS[LeadType.SEEK] = [
+    {
+        verb: 'seek',
+        predicateFactory: () => {
+            return `the ${randFromList(SEEK_TARGET_OBJECTS)}`;
         }
     }
 ];
@@ -291,8 +307,25 @@ const FETCH_TARGET_OBJECTS = [
     'nosegay',
     'trinket',
     'credenza',
-    'writ'
+    'writ',
+    //mine
+    'roller skate',
+    'tutleneck',
+    'meat pouch',
+    'leg bag',
+    'pretzel',
 ];
+
+const SEEK_TARGET_OBJECTS = [
+    'Stewboots',
+    'Last Boner in Belfast',
+    'Standard of Mediocrity',
+    'Turgid Trumpet',
+    'Cumberbund of Combobulation',
+    'Secret Source Code',
+    'Colonel\'s Right Recipe',
+    'Fountain of Lamneth',
+]
 
 
 export const STATIC_NAMES: string[] = [
@@ -326,6 +359,10 @@ export const RACES: CharRace[] = [
         raceName: 'Owl-head',
         trophyName: 'hoot',
     },
+    {
+        raceName: 'Half-mermaid',
+        trophyName: 'bident',
+    }
 ]
 
 export const CLASSES: string[] = [
