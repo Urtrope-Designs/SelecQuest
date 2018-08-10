@@ -35,7 +35,7 @@ export class PlayScreen {
             this.activeVisibleSection = VisibleSection.hero;
         }
     }
-    
+
     _updateTaskTimer() {
         clearInterval(this.activeTaskProgressInterval);
         this.activeTaskProgressMs = new Date().getTime() - this.appState.activeTask.taskStartTime;
@@ -120,13 +120,34 @@ export class PlayScreen {
         return `${getRoughTime(timeRemaining)} remaining`
     }
 
+    _textRowScrollHandler(ev: Event) {
+        console.log('scroll event: ', ev);
+        ev.srcElement.setAttribute('scrolled', ev.srcElement.scrollLeft != 0 ? 'true' : 'false');
+    }
+
     render() {
         if (this.appState != null) {
             return (
                 <ion-page class='ion-page show-page'>
                     <ion-header>
-                        <div>
+                        <div class="headlineRow">
+                            <hr/>
                             <h1>SelecQuest</h1>
+                            <hr/>
+                        </div>
+                        <div
+                            class="textRow textRow-scroll"
+                            onScroll={(e) => this._textRowScrollHandler(e)}
+                        >
+                            {this.appState.hero.name}, the {this.appState.hero.raceName} {this.appState.hero.class}
+                        </div>
+                        <div sq-flex style={{alignItems: 'baseline'}} class="textRow">
+                            <div style={{flexShrink: '0'}}>Lvl {this.appState.hero.level}&nbsp;</div>
+                            <sq-progress-bar
+                                totalValue={getXpRequiredForNextLevel(this.appState.hero.level)}
+                                currentValue={this.appState.hero.currentXp}
+                                tapOverlayText={`${getXpRequiredForNextLevel(this.appState.hero.level) - this.appState.hero.currentXp} xp needed`}
+                            ></sq-progress-bar>
                         </div>
                         <div class="buttonRow">
                             {
@@ -251,17 +272,21 @@ export class PlayScreen {
                                 <p>
                                     <div sq-flex class={this.findUpdate('gold') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Gold</span> {this.appState.hero.gold}</div>
                                     <div class="textRow">Market Saturation</div>
-                                    <sq-progress-bar
-                                        totalValue={this.appState.hero.maxMarketSaturation}
-                                        currentValue={this.appState.hero.marketSaturation}
-                                        tapOverlayText={`${Math.floor(100 * this.appState.hero.marketSaturation / this.appState.hero.maxMarketSaturation)}%`}
+                                    <div class="indentRow">
+                                        <sq-progress-bar
+                                            totalValue={this.appState.hero.maxMarketSaturation}
+                                            currentValue={this.appState.hero.marketSaturation}
+                                            tapOverlayText={`${Math.floor(100 * this.appState.hero.marketSaturation / this.appState.hero.maxMarketSaturation)}%`}
                                         ></sq-progress-bar>
+                                    </div>
                                     <div class="textRow">Encumbrance</div>
-                                    <sq-progress-bar
-                                        totalValue={this.appState.hero.maxEncumbrance}
-                                        currentValue={this.appState.hero.loot.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}
-                                        tapOverlayText={`${this.appState.hero.loot.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}/${this.appState.hero.maxEncumbrance}`}
+                                    <div class="indentRow">
+                                        <sq-progress-bar
+                                            totalValue={this.appState.hero.maxEncumbrance}
+                                            currentValue={this.appState.hero.loot.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}
+                                            tapOverlayText={`${this.appState.hero.loot.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}/${this.appState.hero.maxEncumbrance}`}
                                         ></sq-progress-bar>
+                                    </div>
                                 </p>
                                 <table class="listBox">
                                     <thead>
@@ -313,17 +338,21 @@ export class PlayScreen {
                                 <p>
                                     <div sq-flex class={this.findUpdate('renown') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Renown</span> {this.appState.hero.renown}</div>
                                     <div class="textRow">Fatigue</div>
-                                    <sq-progress-bar
-                                        totalValue={this.appState.hero.maxFatigue}
-                                        currentValue={this.appState.hero.fatigue}
-                                        tapOverlayText={`${Math.floor(100 * this.appState.hero.fatigue / this.appState.hero.maxFatigue)}%`}
+                                    <div class="indentRow">
+                                        <sq-progress-bar
+                                            totalValue={this.appState.hero.maxFatigue}
+                                            currentValue={this.appState.hero.fatigue}
+                                            tapOverlayText={`${Math.floor(100 * this.appState.hero.fatigue / this.appState.hero.maxFatigue)}%`}
                                         ></sq-progress-bar>
+                                    </div>
                                     <div class="textRow">Equipment Wear</div>
-                                    <sq-progress-bar
-                                        totalValue={this.appState.hero.maxEquipmentWear}
-                                        currentValue={this.appState.hero.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}
-                                        tapOverlayText={`${this.appState.hero.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}/${this.appState.hero.maxEquipmentWear}`}
+                                    <div class="indentRow">
+                                        <sq-progress-bar
+                                            totalValue={this.appState.hero.maxEquipmentWear}
+                                            currentValue={this.appState.hero.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}
+                                            tapOverlayText={`${this.appState.hero.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}/${this.appState.hero.maxEquipmentWear}`}
                                         ></sq-progress-bar>
+                                    </div>
                                 </p>    
                                 <table class="listBox">
                                     <thead>
@@ -403,17 +432,21 @@ export class PlayScreen {
                                 <p>
                                     <div sq-flex class={this.findUpdate('reputation') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Reputation</span> {this.appState.hero.reputation}</div>
                                     <div class="textRow">Social Exposure</div>
-                                    <sq-progress-bar
-                                        totalValue={this.appState.hero.maxSocialCapital}
-                                        currentValue={this.appState.hero.socialExposure}
-                                        tapOverlayText={`${Math.floor(100 * this.appState.hero.socialExposure / this.appState.hero.maxSocialCapital)}%`}
+                                    <div class="indentRow">
+                                        <sq-progress-bar
+                                            totalValue={this.appState.hero.maxSocialCapital}
+                                            currentValue={this.appState.hero.socialExposure}
+                                            tapOverlayText={`${Math.floor(100 * this.appState.hero.socialExposure / this.appState.hero.maxSocialCapital)}%`}
                                         ></sq-progress-bar>
+                                    </div>
                                     <div class="textRow">Questlog</div>
-                                    <sq-progress-bar
-                                        totalValue={this.appState.hero.maxQuestLogSize}
-                                        currentValue={this.appState.hero.leads.length}
-                                        tapOverlayText={`${this.appState.hero.leads.length}/${this.appState.hero.maxQuestLogSize}`}
-                                    ></sq-progress-bar>
+                                    <div class="indentRow">
+                                        <sq-progress-bar
+                                            totalValue={this.appState.hero.maxQuestLogSize}
+                                            currentValue={this.appState.hero.leads.length}
+                                            tapOverlayText={`${this.appState.hero.leads.length}/${this.appState.hero.maxQuestLogSize}`}
+                                        ></sq-progress-bar>
+                                    </div>
                                 </p>
                                 <table class="listBox">
                                     <thead>
@@ -436,20 +469,14 @@ export class PlayScreen {
                             : this.activeVisibleSection == VisibleSection.plot
                             ? <section>                    
                                 <p>
-                                    <div class="textRow">Experience</div>
-                                    <sq-progress-bar
-                                        totalValue={getXpRequiredForNextLevel(this.appState.hero.level)}
-                                        currentValue={this.appState.hero.currentXp}
-                                        tapOverlayText={`${getXpRequiredForNextLevel(this.appState.hero.level) - this.appState.hero.currentXp} xp needed`}
-                                    ></sq-progress-bar>
-                                </p>
-                                <p>
                                     <div class={this.findUpdate('currentAdventure') ? 'textRow textRow-highlight' : 'textRow'}>{this.appState.hero.currentAdventure.name}</div>
-                                    <sq-progress-bar 
-                                        totalValue={this.appState.hero.currentAdventure.progressRequired}
-                                        currentValue={this.appState.hero.adventureProgress}
-                                        tapOverlayText={PlayScreen._getAdventureTimeRemainingString(this.appState.hero)}
+                                    <div class="indentRow">
+                                        <sq-progress-bar 
+                                            totalValue={this.appState.hero.currentAdventure.progressRequired}
+                                            currentValue={this.appState.hero.adventureProgress}
+                                            tapOverlayText={PlayScreen._getAdventureTimeRemainingString(this.appState.hero)}
                                         ></sq-progress-bar>
+                                    </div>
                                     <table class="listBox">
                                         <thead>
                                             <tr>
@@ -527,14 +554,21 @@ export class PlayScreen {
                         <p>
                             {
                                 !!this.appState.activeTask
-                                ? [<div class="textRow">{this.appState.activeTask.description}...</div>,
-                                <sq-progress-bar
-                                totalValue={this.appState.activeTask.durationMs}
-                                currentValue={this.activeTaskProgressMs}
-                                tapOverlayText={`${Math.floor(100 * this.activeTaskProgressMs / this.appState.activeTask.durationMs)}%`}
-                                ></sq-progress-bar>]
-                                : [<div class="textRow">Loading...</div>,
-                                <sq-progress-bar totalValue={1} currentValue={0}></sq-progress-bar>]
+                                ? [
+                                    <div 
+                                        class="textRow textRow-scroll"
+                                        onScroll={(e) => this._textRowScrollHandler(e)}
+                                    >{this.appState.activeTask.description}&hellip;</div>,
+                                    <div class="indentRow">
+                                        <sq-progress-bar
+                                            totalValue={this.appState.activeTask.durationMs}
+                                            currentValue={this.activeTaskProgressMs}
+                                            tapOverlayText={`${Math.floor(100 * this.activeTaskProgressMs / this.appState.activeTask.durationMs)}%`}
+                                        ></sq-progress-bar>
+                                    </div>
+                                ]
+                                : [<div class="textRow">Loading&hellip;</div>,
+                                <div class="indentRow"><sq-progress-bar totalValue={1} currentValue={0}></sq-progress-bar></div>]
                             }
                         </p>
                     </ion-footer>
