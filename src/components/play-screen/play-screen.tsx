@@ -269,14 +269,6 @@ export class PlayScreen {
                                 </table>
                                 <p>
                                     <div sq-flex class={this.findUpdate('gold') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Gold</span> {this.appState.hero.gold}</div>
-                                    <div class="textRow">Market Saturation</div>
-                                    <div class="indentRow">
-                                        <sq-progress-bar
-                                            totalValue={this.appState.hero.maxMarketSaturation}
-                                            currentValue={this.appState.hero.marketSaturation}
-                                            tapOverlayText={`${Math.floor(100 * this.appState.hero.marketSaturation / this.appState.hero.maxMarketSaturation)}%`}
-                                        ></sq-progress-bar>
-                                    </div>
                                     <div class="textRow">Encumbrance</div>
                                     <div class="indentRow">
                                         <sq-progress-bar
@@ -335,14 +327,6 @@ export class PlayScreen {
                                 </table>
                                 <p>
                                     <div sq-flex class={this.findUpdate('renown') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Renown</span> {this.appState.hero.renown}</div>
-                                    <div class="textRow">Fatigue</div>
-                                    <div class="indentRow">
-                                        <sq-progress-bar
-                                            totalValue={this.appState.hero.maxFatigue}
-                                            currentValue={this.appState.hero.fatigue}
-                                            tapOverlayText={`${Math.floor(100 * this.appState.hero.fatigue / this.appState.hero.maxFatigue)}%`}
-                                        ></sq-progress-bar>
-                                    </div>
                                     <div class="textRow">Equipment Wear</div>
                                     <div class="indentRow">
                                         <sq-progress-bar
@@ -429,14 +413,6 @@ export class PlayScreen {
                                 </table>
                                 <p>
                                     <div sq-flex class={this.findUpdate('reputation') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Reputation</span> {this.appState.hero.reputation}</div>
-                                    <div class="textRow">Social Exposure</div>
-                                    <div class="indentRow">
-                                        <sq-progress-bar
-                                            totalValue={this.appState.hero.maxSocialCapital}
-                                            currentValue={this.appState.hero.socialExposure}
-                                            tapOverlayText={`${Math.floor(100 * this.appState.hero.socialExposure / this.appState.hero.maxSocialCapital)}%`}
-                                        ></sq-progress-bar>
-                                    </div>
                                     <div class="textRow">Questlog</div>
                                     <div class="indentRow">
                                         <sq-progress-bar
@@ -530,22 +506,66 @@ export class PlayScreen {
                             </section>
                         }
                     </ion-content>
-
                     <ion-footer>
-                        {
-                            this.appState.hero.marketSaturation >= this.appState.hero.maxMarketSaturation
-                            ? <div class="textRow"><b>MARKET SATURATED</b></div>
-                            : this.appState.hero.fatigue >= this.appState.hero.maxFatigue
-                                ? <div class="textRow"><b>FATIGUED</b></div>
-                                : this.appState.hero.socialExposure >= this.appState.hero.maxSocialCapital
-                                    ? <div class="textRow"><b>OVEREXPOSED</b></div>
-                                    : <br/>
-                        }
+                        <hr />
                         <div class="buttonRow">
                             <button {...(this.appState.activeTaskMode != TaskMode.LOOTING ? {} : {class: 'selected'})} onClick={ () => this.taskModeButtonClicked(TaskMode.LOOTING)}>Loot</button>
                             <button {...(this.appState.activeTaskMode == TaskMode.GLADIATING ? {class: 'selected'} : {})} onClick={ () => this.taskModeButtonClicked(TaskMode.GLADIATING)}>Gladiate</button>
                             <button {...(this.appState.activeTaskMode == TaskMode.INVESTIGATING ? {class: 'selected'} : {})} onClick={ () => this.taskModeButtonClicked(TaskMode.INVESTIGATING)}>Investigate</button>
                         </div>
+                        {
+                            this.appState.activeTaskMode == TaskMode.LOOTING
+                                ? [
+                                    <div class="textRow">
+                                    {
+                                        this.appState.hero.marketSaturation >= this.appState.hero.maxMarketSaturation 
+                                        ? <b>! MARKET SATURATED !</b>
+                                        : <span>Market Saturation</span>
+                                    }
+                                    </div>,
+                                    <div class="indentRow">
+                                        <sq-progress-bar
+                                            totalValue={this.appState.hero.maxMarketSaturation}
+                                            currentValue={this.appState.hero.marketSaturation}
+                                            tapOverlayText={`${Math.floor(100 * this.appState.hero.marketSaturation / this.appState.hero.maxMarketSaturation)}%`}
+                                        ></sq-progress-bar>
+                                    </div>
+                                ]
+                            : this.appState.activeTaskMode == TaskMode.GLADIATING
+                                ? [
+                                    <div class="textRow">
+                                    {
+                                        this.appState.hero.fatigue >= this.appState.hero.maxFatigue
+                                        ? <b>! FATIGUED !</b>
+                                        : <span>Fatigue</span>
+                                    }
+                                    </div>,
+                                    <div class="indentRow">
+                                        <sq-progress-bar
+                                            totalValue={this.appState.hero.maxFatigue}
+                                            currentValue={this.appState.hero.fatigue}
+                                            tapOverlayText={`${Math.floor(100 * this.appState.hero.fatigue / this.appState.hero.maxFatigue)}%`}
+                                        ></sq-progress-bar>
+                                    </div>
+                                ]
+                            : [
+                                <div class="textRow">
+                                {
+                                    this.appState.hero.socialExposure >= this.appState.hero.maxSocialCapital
+                                    ? <b>! OVEREXPOSED !</b>
+                                    : <span>Social Exposure</span>
+
+                                }
+                                </div>,
+                                <div class="indentRow">
+                                    <sq-progress-bar
+                                        totalValue={this.appState.hero.maxSocialCapital}
+                                        currentValue={this.appState.hero.socialExposure}
+                                        tapOverlayText={`${Math.floor(100 * this.appState.hero.socialExposure / this.appState.hero.maxSocialCapital)}%`}
+                                    ></sq-progress-bar>
+                                </div>
+                            ]
+                        }
                         {
                             !!this.appState.activeTask
                             ? [

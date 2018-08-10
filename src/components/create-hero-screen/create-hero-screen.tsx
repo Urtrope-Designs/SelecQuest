@@ -46,7 +46,11 @@ export class CreateHeroScreen {
         return (
             <ion-page class='ion-page show-page'>
                 <ion-header>
-                    <h1>SelecQuest</h1>
+                    <div class="headlineRow">
+                        <hr/>
+                        <h1>SelecQuest</h1>
+                        <hr/>
+                    </div>
                 </ion-header>
                 <ion-content>
                     <section>

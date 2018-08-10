@@ -48,8 +48,8 @@ h1 {
 hr {
     border-bottom: 2px solid var(--sq-color-primary);
     box-shadow: 0 0 .3rem var(--sq-color-primary);
-    margin-bottom: 2px;
-    margin-top: 5px;
+    margin-bottom: 4px;
+    margin-top: 4px;
 }
 
 p:first-child {
@@ -185,6 +185,9 @@ section:last-child {
 }
 ion-header {
     padding-bottom: 0;
+}
+ion-footer {
+    padding-top: 0;
 }
 
 
