@@ -161,6 +161,7 @@ export class PlayScreen {
                                 )
                             }
                         </div>
+                        <hr/>
                     </ion-header>
                     <ion-content>
                         {
@@ -199,9 +200,6 @@ export class PlayScreen {
                                         <tr {...this.highlightModifiedAttribute('maxMp')}><td>Max MP</td><td>{this.appState.hero.maxMp}</td></tr>
                                     </tbody>
                                 </table>
-                            </section>
-                            : this.activeVisibleSection == VisibleSection.actions
-                            ? <section>
                                 <table class="listBox">
                                     <thead>
                                         <tr>
@@ -245,7 +243,7 @@ export class PlayScreen {
                                     </tbody>
                                 </table>
                             </section>
-                            : this.activeVisibleSection == VisibleSection.inventory
+                            : this.activeVisibleSection == VisibleSection.gear
                             ? <section>
                                 <table class="listBox">
                                     <thead>
@@ -376,7 +374,7 @@ export class PlayScreen {
                                     </tbody>
                                 </table>
                             </section>
-                            : this.activeVisibleSection == VisibleSection.social
+                            : this.activeVisibleSection == VisibleSection.story
                             ? <section>                    
                                 <table class="listBox">
                                     <thead>
@@ -465,9 +463,6 @@ export class PlayScreen {
                                         <tr><td class="placeholderRow"></td></tr>
                                     </tbody>
                                 </table>
-                            </section>
-                            : this.activeVisibleSection == VisibleSection.plot
-                            ? <section>                    
                                 <p>
                                     <div class={this.findUpdate('currentAdventure') ? 'textRow textRow-highlight' : 'textRow'}>{this.appState.hero.currentAdventure.name}</div>
                                     <div class="indentRow">
@@ -477,24 +472,24 @@ export class PlayScreen {
                                             tapOverlayText={PlayScreen._getAdventureTimeRemainingString(this.appState.hero)}
                                         ></sq-progress-bar>
                                     </div>
-                                    <table class="listBox">
-                                        <thead>
-                                            <tr>
-                                                <th>Completed Adventures</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {
-                                                this.appState.hero.completedAdventures.length === 0
-                                                ? <tr><td>[None]</td></tr>
-                                                : this.appState.hero.completedAdventures.map((adventure: string, index, array) => 
-                                                    <tr {...this.findUpdate('completedAdventures') && index == array.length-1 ? {class: 'textRow-highlight'} : {}}><td>{adventure}</td></tr>
-                                                )
-                                            }
-                                            <tr><td class="placeholderRow"></td></tr>
-                                        </tbody>
-                                    </table>
                                 </p>
+                                <table class="listBox">
+                                    <thead>
+                                        <tr>
+                                            <th>Completed Adventures</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            this.appState.hero.completedAdventures.length === 0
+                                            ? <tr><td>[None]</td></tr>
+                                            : this.appState.hero.completedAdventures.map((adventure: string, index, array) => 
+                                                <tr {...this.findUpdate('completedAdventures') && index == array.length-1 ? {class: 'textRow-highlight'} : {}}><td>{adventure}</td></tr>
+                                            )
+                                        }
+                                        <tr><td class="placeholderRow"></td></tr>
+                                    </tbody>
+                                </table>
                             </section>
                             : <section>
                                 <p>
@@ -551,26 +546,24 @@ export class PlayScreen {
                             <button {...(this.appState.activeTaskMode == TaskMode.GLADIATING ? {class: 'selected'} : {})} onClick={ () => this.taskModeButtonClicked(TaskMode.GLADIATING)}>Gladiate</button>
                             <button {...(this.appState.activeTaskMode == TaskMode.INVESTIGATING ? {class: 'selected'} : {})} onClick={ () => this.taskModeButtonClicked(TaskMode.INVESTIGATING)}>Investigate</button>
                         </div>
-                        <p>
-                            {
-                                !!this.appState.activeTask
-                                ? [
-                                    <div 
-                                        class="textRow textRow-scroll"
-                                        onScroll={(e) => this._textRowScrollHandler(e)}
-                                    >{this.appState.activeTask.description}&hellip;</div>,
-                                    <div class="indentRow">
-                                        <sq-progress-bar
-                                            totalValue={this.appState.activeTask.durationMs}
-                                            currentValue={this.activeTaskProgressMs}
-                                            tapOverlayText={`${Math.floor(100 * this.activeTaskProgressMs / this.appState.activeTask.durationMs)}%`}
-                                        ></sq-progress-bar>
-                                    </div>
-                                ]
-                                : [<div class="textRow">Loading&hellip;</div>,
-                                <div class="indentRow"><sq-progress-bar totalValue={1} currentValue={0}></sq-progress-bar></div>]
-                            }
-                        </p>
+                        {
+                            !!this.appState.activeTask
+                            ? [
+                                <div 
+                                    class="textRow textRow-scroll"
+                                    onScroll={(e) => this._textRowScrollHandler(e)}
+                                >{this.appState.activeTask.description}&hellip;</div>,
+                                <div class="indentRow">
+                                    <sq-progress-bar
+                                        totalValue={this.appState.activeTask.durationMs}
+                                        currentValue={this.activeTaskProgressMs}
+                                        tapOverlayText={`${Math.floor(100 * this.activeTaskProgressMs / this.appState.activeTask.durationMs)}%`}
+                                    ></sq-progress-bar>
+                                </div>
+                            ]
+                            : [<div class="textRow">Loading&hellip;</div>,
+                            <div class="indentRow"><sq-progress-bar totalValue={1} currentValue={0}></sq-progress-bar></div>]
+                        }
                     </ion-footer>
                 </ion-page>
             );
@@ -580,10 +573,8 @@ export class PlayScreen {
 
 enum VisibleSection {
     hero = "Hero",
-    inventory = "Inventory",
+    gear = "Gear",
     deeds = "Deeds",
-    social = "Social",
-    actions = "Actions",
-    plot = "Plot",
+    story = "Story",
     game = "Game",
 }
