@@ -10,7 +10,12 @@
 @import "~@ionic/core/css/text-transformation.css";
 
 html {
-    font-size: 18px;
+    font-size: 16px;
+}
+@media (min-width: 360px) {
+    html {
+        font-size: 18px;
+    }
 }
 
 body {

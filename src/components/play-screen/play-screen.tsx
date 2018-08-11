@@ -519,7 +519,7 @@ export class PlayScreen {
                                     <div class="textRow">
                                     {
                                         this.appState.hero.marketSaturation >= this.appState.hero.maxMarketSaturation 
-                                        ? <b>! MARKET SATURATED !</b>
+                                        ? <b style={{display: 'block', textAlign: 'center'}}>&#9733; MARKET SATURATED &#9733;</b>
                                         : <span>Market Saturation</span>
                                     }
                                     </div>,
@@ -536,7 +536,7 @@ export class PlayScreen {
                                     <div class="textRow">
                                     {
                                         this.appState.hero.fatigue >= this.appState.hero.maxFatigue
-                                        ? <b>! FATIGUED !</b>
+                                        ? <b style={{display: 'block', textAlign: 'center'}}>&#9733; FATIGUED &#9733;</b>
                                         : <span>Fatigue</span>
                                     }
                                     </div>,
@@ -552,7 +552,7 @@ export class PlayScreen {
                                 <div class="textRow">
                                 {
                                     this.appState.hero.socialExposure >= this.appState.hero.maxSocialCapital
-                                    ? <b>! OVEREXPOSED !</b>
+                                    ? <b style={{display: 'block', textAlign: 'center'}}>&#9733; OVEREXPOSED &#9733;</b>
                                     : <span>Social Exposure</span>
 
                                 }
