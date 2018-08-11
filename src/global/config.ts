@@ -1,7 +1,7 @@
 import { TaskTargetType, LootingTarget, GladiatingTarget, CharRace, LeadGatheringTarget, LeadType, LeadTarget, EquipmentMaterial, EquipmentModifier, CharTitlePosition } from "../helpers/models";
 import { makeStringIndefinite, randFromList } from "../helpers/utils";
 
-export const IS_DEBUG = false;
+export const IS_DEBUG = true;
 
 export const STANDARD_GROUPS_INDEFINITE: string[] = [
     'the Thieves Guild',
