@@ -26,7 +26,8 @@ export class SqApp {
     
     @Listen('taskAction')
     taskActionhandler(event: CustomEvent) {
-        this.actionSubject.next(event.detail);
+        // this.actionSubject.next(event.detail);
+        this.queueAction(event.detail);
     }
     @Listen('taskModeAction')
     taskModeActionHandler(event: CustomEvent) {
@@ -37,9 +38,9 @@ export class SqApp {
         const newGameState = Object.assign({}, DEFAULT_APP_STATE, {hero: event.detail});
         this.gameDataMgr.setActiveHeroHash(generateHeroHashFromHero(event.detail));
         this.actionSubject.next(new SetActiveHero(newGameState));
-        setTimeout(() => {
+        Promise.resolve().then(() => {
             this._updateAvailableHeroes();
-        }, 10);
+        });
     }
     @Listen('clearAllGameData')
     clearAllGameDataHandler() {
@@ -94,7 +95,7 @@ export class SqApp {
         window.location.reload();
     }
 
-    _updateAvailableHeroes() {
+    private _updateAvailableHeroes() {
         this.gameDataMgr.getAvailableHeroHashToNameMapping().then(heroes => {
             this.availableHeroes = heroes;
             if (!!this.playScreen) {
@@ -124,11 +125,14 @@ export class SqApp {
             })
             .then(deserializedState => {
                 const initialData = deserializedState || DEFAULT_APP_STATE;
+
+                // TODO: wrap this.actionSubject.next() in Promise.resolve().then() call to globally avoid looping issue!
                 let state$ = stateFn(initialData, this.actionSubject.asObservable());
                 this.gameDataMgr.persistAppData(state$);
                 this.taskMgr.init(state$);
                 this.taskMgr.getTaskAction$().subscribe((taskAction: Action) => {
-                    this.actionSubject.next(taskAction);
+                    // this.actionSubject.next(taskAction);
+                    this.queueAction(taskAction);
                 })
 
                 state$.subscribe(state => {
@@ -147,6 +151,12 @@ export class SqApp {
             }, Math.max(taskTimeRemaining, 10));
         } 
         return state;
+    }
+
+    private queueAction(newAction: Action) {
+        Promise.resolve().then(() => {
+            this.actionSubject.next(newAction);
+        })
     }
 
     render() {

@@ -12,6 +12,7 @@ export default (function() {
         public taskAction$ = new Subject<Action>();
 
         init(stateStore: Observable<AppState>) {
+            // TODO: try using RXJS timer() to create an observable that emits every 100 ms; then check if task is done
             this.stateStore = stateStore;
             this.stateStore.subscribe((state: AppState) => {
                 if (!!state && !!state.hero && !state.hasActiveTask) {
@@ -20,11 +21,9 @@ export default (function() {
                     })
                     let newTask = curAlgo.generateTask(state);
             
-                    setTimeout(() => {
-                        newTask.taskStartTime = new Date().getTime();
-                        newTask.completionTimeoutId = setTimeout(this.completeTask.bind(this), newTask.durationMs, newTask);
-                        this.taskAction$.next(new SetActiveTask(newTask));
-                    }, 10)
+                    newTask.taskStartTime = new Date().getTime();
+                    newTask.completionTimeoutId = setTimeout(this.completeTask.bind(this), newTask.durationMs, newTask);
+                    this.taskAction$.next(new SetActiveTask(newTask));
                 }
             });
         }
