@@ -1,5 +1,7 @@
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
+import { timer } from 'rxjs/observable/timer';
+import { withLatestFrom } from 'rxjs/operators';
 
 import { Task, AppState } from '../helpers/models';
 import { SetActiveTask, TaskCompleted, Action } from '../helpers/actions';
@@ -22,10 +24,17 @@ export default (function() {
                     let newTask = curAlgo.generateTask(state);
             
                     newTask.taskStartTime = new Date().getTime();
-                    newTask.completionTimeoutId = setTimeout(this.completeTask.bind(this), newTask.durationMs, newTask);
+                    // newTask.completionTimeoutId = setTimeout(this.completeTask.bind(this), newTask.durationMs, newTask);
                     this.taskAction$.next(new SetActiveTask(newTask));
                 }
             });
+
+            timer(1, 100).pipe(withLatestFrom(stateStore))
+                .subscribe(([_timer, state]) => {
+                    if (!!state && !!state.activeTask && state.activeTask.taskStartTime + state.activeTask.durationMs <= new Date().getTime()) {
+                        this.completeTask(state.activeTask);
+                    }
+                })
         }
 
         private completeTask(completedTask: Task) {

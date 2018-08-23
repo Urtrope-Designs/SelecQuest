@@ -6,7 +6,7 @@ import { Subject } from 'rxjs/Subject';
 
 import { stateFn } from '../../helpers/state-store';
 import { AppState, TaskMode } from '../../helpers/models';
-import { Action, ChangeActiveTaskMode, TaskCompleted, SetActiveHero } from '../../helpers/actions';
+import { Action, ChangeActiveTaskMode, SetActiveHero } from '../../helpers/actions';
 import { GameDataManager } from '../../services/game-data-manager';
 import { generateHeroHashFromHero } from '../../helpers/utils';
 import { PlayScreen } from '../play-screen/play-screen';
@@ -52,9 +52,8 @@ export class SqApp {
     @Listen('playNewHero')
     playNewHeroHandler(event: CustomEvent) {
         this.gameDataMgr.getGameData(event.detail)
-            .then((serializedState) => {
-                const deserializedState = this.hydrateStateTaskTimeout(serializedState) || DEFAULT_APP_STATE;
-                this._queueAction(new SetActiveHero(deserializedState));
+            .then((newHeroState) => {
+                this._queueAction(new SetActiveHero(newHeroState || DEFAULT_APP_STATE));
             })
     }
     @Listen('deleteHero')
@@ -115,11 +114,8 @@ export class SqApp {
                     return DEFAULT_APP_STATE;
                 }
             })
-            .then((serializedState: AppState) => {
-                return this.hydrateStateTaskTimeout(serializedState);
-            })
-            .then(deserializedState => {
-                const initialData = deserializedState || DEFAULT_APP_STATE;
+            .then(state => {
+                const initialData = state || DEFAULT_APP_STATE;
                 let state$ = stateFn(initialData, this.actionSubject.asObservable());
                 this.gameDataMgr.persistAppData(state$);
                 this.taskMgr.init(state$);
@@ -133,16 +129,6 @@ export class SqApp {
             });
 
         this._updateAvailableHeroes();
-    }
-
-    hydrateStateTaskTimeout(state: AppState): AppState {
-        if (!!state && !!state.activeTask) {
-            const taskTimeRemaining = state.activeTask.taskStartTime + state.activeTask.durationMs - new Date().getTime();
-            state.activeTask.completionTimeoutId = setTimeout(() => {
-                this.actionSubject.next(new TaskCompleted(state.activeTask));
-            }, Math.max(taskTimeRemaining, 10));
-        } 
-        return state;
     }
 
     private _queueAction(newAction: Action) {
