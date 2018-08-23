@@ -24,27 +24,22 @@ export class SqApp {
     private gameDataMgr = new GameDataManager();
     private playScreen: PlayScreen;
     
-    @Listen('taskAction')
-    taskActionhandler(event: CustomEvent) {
-        // this.actionSubject.next(event.detail);
-        this.queueAction(event.detail);
-    }
     @Listen('taskModeAction')
     taskModeActionHandler(event: CustomEvent) {
-        this.actionSubject.next(new ChangeActiveTaskMode(event.detail));
+        this._queueAction(new ChangeActiveTaskMode(event.detail));
     }
     @Listen('startNewHero')
     startNewHeroHandler(event: CustomEvent) {
         const newGameState = Object.assign({}, DEFAULT_APP_STATE, {hero: event.detail});
         this.gameDataMgr.setActiveHeroHash(generateHeroHashFromHero(event.detail));
-        this.actionSubject.next(new SetActiveHero(newGameState));
+        this._queueAction(new SetActiveHero(newGameState));
         Promise.resolve().then(() => {
             this._updateAvailableHeroes();
         });
     }
     @Listen('clearAllGameData')
     clearAllGameDataHandler() {
-        this.actionSubject.next(new SetActiveHero(DEFAULT_APP_STATE));
+        this._queueAction(new SetActiveHero(DEFAULT_APP_STATE));
         setTimeout(() => {
             this.gameDataMgr.clearAllData().then(() => {this._updateAvailableHeroes()});
         }, 10)
@@ -52,21 +47,21 @@ export class SqApp {
     @Listen('buildNewHero')
     buildNewHeroHandler() {
         this.gameDataMgr.setActiveHeroHash(null);
-        this.actionSubject.next(new SetActiveHero(DEFAULT_APP_STATE));
+        this._queueAction(new SetActiveHero(DEFAULT_APP_STATE));
     }
     @Listen('playNewHero')
     playNewHeroHandler(event: CustomEvent) {
         this.gameDataMgr.getGameData(event.detail)
             .then((serializedState) => {
                 const deserializedState = this.hydrateStateTaskTimeout(serializedState) || DEFAULT_APP_STATE;
-                this.actionSubject.next(new SetActiveHero(deserializedState));
+                this._queueAction(new SetActiveHero(deserializedState));
             })
     }
     @Listen('deleteHero')
     deleteHeroHandler(event: CustomEvent) {
         if (event.detail == generateHeroHashFromHero(this.state.hero)) {
             this.gameDataMgr.setActiveHeroHash(null);
-            this.actionSubject.next(new SetActiveHero(DEFAULT_APP_STATE));
+            this._queueAction(new SetActiveHero(DEFAULT_APP_STATE));
         }
         setTimeout(() => {
             this.gameDataMgr.deleteGameData(event.detail);
@@ -125,14 +120,11 @@ export class SqApp {
             })
             .then(deserializedState => {
                 const initialData = deserializedState || DEFAULT_APP_STATE;
-
-                // TODO: wrap this.actionSubject.next() in Promise.resolve().then() call to globally avoid looping issue!
                 let state$ = stateFn(initialData, this.actionSubject.asObservable());
                 this.gameDataMgr.persistAppData(state$);
                 this.taskMgr.init(state$);
                 this.taskMgr.getTaskAction$().subscribe((taskAction: Action) => {
-                    // this.actionSubject.next(taskAction);
-                    this.queueAction(taskAction);
+                    this._queueAction(taskAction);
                 })
 
                 state$.subscribe(state => {
@@ -153,7 +145,7 @@ export class SqApp {
         return state;
     }
 
-    private queueAction(newAction: Action) {
+    private _queueAction(newAction: Action) {
         Promise.resolve().then(() => {
             this.actionSubject.next(newAction);
         })
