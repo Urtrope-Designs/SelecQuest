@@ -33,16 +33,16 @@ export class SqApp {
         const newGameState = Object.assign({}, DEFAULT_APP_STATE, {hero: event.detail});
         this.gameDataMgr.setActiveHeroHash(generateHeroHashFromHero(event.detail));
         this._queueAction(new SetActiveHero(newGameState));
-        Promise.resolve().then(() => {
+        setTimeout(() => {
             this._updateAvailableHeroes();
-        });
+        }, 100);
     }
     @Listen('clearAllGameData')
     clearAllGameDataHandler() {
         this._queueAction(new SetActiveHero(DEFAULT_APP_STATE));
         setTimeout(() => {
             this.gameDataMgr.clearAllData().then(() => {this._updateAvailableHeroes()});
-        }, 10)
+        }, 100)
     }
     @Listen('buildNewHero')
     buildNewHeroHandler() {
@@ -54,6 +54,7 @@ export class SqApp {
         this.gameDataMgr.getGameData(event.detail)
             .then((newHeroState) => {
                 this._queueAction(new SetActiveHero(newHeroState || DEFAULT_APP_STATE));
+                this.gameDataMgr.setActiveHeroHash(generateHeroHashFromHero(newHeroState.hero));
             })
     }
     @Listen('deleteHero')
@@ -65,7 +66,7 @@ export class SqApp {
         setTimeout(() => {
             this.gameDataMgr.deleteGameData(event.detail);
             this._updateAvailableHeroes();
-        }, 10);
+        }, 100);
     }
 
     /*
