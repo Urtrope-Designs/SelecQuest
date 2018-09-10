@@ -1,5 +1,5 @@
 import { Hero, HeroModificationType, AccoladeType, AffiliationType, HeroModification, getHeroStatList, HeroStats, CharEquipment, EquipmentType, EquipmentMaterial, CharAccolade, CharAffiliations, CharConnection, CharMembership, CharOffice, CharTitlePosition } from './models';
-import { randRange, randFromList, deepCopyObject, randFromListLow, randFromListHigh, generateRandomName, capitalizeInitial } from './utils';
+import { randRange, randFromList, deepCopyObject, randFromListLow, randFromListHigh, generateRandomName, capitalizeInitial, getIterableEnumKeys } from './utils';
 import { PROLOGUE_ADVENTURE_NAME } from './storyline-helpers';
 import { SPELLS, ABILITIES, IS_DEBUG, WEAPON_MATERIALS, SHEILD_MATERIALS, ARMOR_MATERIALS, EPITHET_DESCRIPTORS, EPITHET_BEING_ALL, TITLE_POSITIONS_ALL, SOBRIQUET_MODIFIERS, SOBRIQUET_NOUN_PORTION, HONORIFIC_TEMPLATES, OFFICE_POSITIONS_ALL, STANDARD_GROUPS_INDEFINITE } from '../global/config';
 
@@ -10,36 +10,14 @@ export function createNewHero(name: string, raceName: string, className: string,
         raceName: raceName,
         class: className,
         level: 1,
-        str: stats.str,
-        dex: stats.dex,
-        con: stats.con,
-        int: stats.int,
-        wis: stats.wis,
-        cha: stats.cha,
+        ...stats,
         maxHp: randRange(0, 7) + Math.floor(stats.con / 6),
         maxMp: randRange(0, 7) + Math.floor(stats.int / 6),
         currentXp: 0,
         spells: [],
         abilities: [],
-        equipment: [
-            {type: EquipmentType.Weapon, description: ''},
-            {type: EquipmentType.Shield, description: ''},
-            {type: EquipmentType.Helm, description: ''},
-            {type: EquipmentType.Hauberk, description: ''},
-            {type: EquipmentType.Brassairts, description: ''},
-            {type: EquipmentType.Vambraces, description: ''},
-            {type: EquipmentType.Gauntlets, description: ''},
-            {type: EquipmentType.Gambeson, description: ''},
-            {type: EquipmentType.Cuisses, description: ''},
-            {type: EquipmentType.Greaves, description: ''},
-            {type: EquipmentType.Sollerets, description: ''},
-        ],
-        accolades: [
-            {type: AccoladeType.Epithets, received: []},
-            {type: AccoladeType.Honorifics, received: []},
-            {type: AccoladeType.Sobriquets, received: []},
-            {type: AccoladeType.Titles, received: []},
-        ],
+        equipment: getIterableEnumKeys(EquipmentType).map(typeKey => ({type: EquipmentType[typeKey], description: ''})),
+        accolades: getIterableEnumKeys(AccoladeType).map(typeKey => ({type: AccoladeType[typeKey], received: []})),
         affiliations: {
             [AffiliationType.CONNECTIONS]: [],
             [AffiliationType.MEMBERSHIPS]: [],
@@ -409,7 +387,7 @@ export function generateNewAccoladeModification(hero: Hero): HeroModification {
 }
 
 function generateRandomAccolade(hero: Hero): CharAccolade {
-    const newAccoladeType = AccoladeType[randFromList(Object.keys(AccoladeType).filter(key => isNaN(+key)))];
+    const newAccoladeType = AccoladeType[randFromList(getIterableEnumKeys(AccoladeType))];
     let newAccoladeDescription = '';
     let exclusions: string = '';
     switch(newAccoladeType) {

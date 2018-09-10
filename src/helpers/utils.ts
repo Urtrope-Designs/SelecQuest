@@ -186,6 +186,10 @@ export function generateHeroHashFromHero(heroData: Hero): string {
 }
 export const HERO_HASH_NAME_DELIMITER = '::';
 
+export function getIterableEnumKeys(requestedEnum: Object) {
+    return Object.keys(requestedEnum).filter(key => isNaN(+key));
+}
+
 // function toRoman(n) {
 //     if (!n) return "N";
 //     var s = "";
