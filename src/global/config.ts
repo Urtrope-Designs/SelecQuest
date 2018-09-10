@@ -1,5 +1,5 @@
 import { TaskTargetType, LootingTarget, GladiatingTarget, CharRace, LeadGatheringTarget, LeadType, LeadTarget, EquipmentMaterial, EquipmentModifier, CharTitlePosition } from "../helpers/models";
-import { makeStringIndefinite, randFromList } from "../helpers/utils";
+import { makeStringIndefinite, randFromList, makeStringPlural } from "../helpers/utils";
 
 export const IS_DEBUG = true;
 
@@ -264,6 +264,23 @@ STANDARD_LEAD_TARGETS[LeadType.SEEK] = [
         }
     }
 ];
+STANDARD_LEAD_TARGETS[LeadType.EXTERMINATE] = [
+    {
+        verb: 'exterminate',
+        predicateFactory: () => {
+            return `the ${makeStringPlural(randFromList(STANDARD_LOOTING_TARGETS.filter(t => t.type === TaskTargetType.MONSTER)).name)}`;
+        }
+    }
+]
+
+STANDARD_LEAD_TARGETS[LeadType.DEFEND] = [
+    {
+        verb: 'defend',
+        predicateFactory: () => {
+            return randFromList(STANDARD_PLACES);
+        }
+    }
+]
 
 const FETCH_TARGET_OBJECTS = [
     'nail',
