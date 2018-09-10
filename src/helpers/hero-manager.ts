@@ -83,7 +83,7 @@ export function createNewHero(name: string, raceName: string, className: string,
                 return LONG_TERM_LIMIT_FACTOR * (this.level + this.wis);
             }
         },
-        currentAdventure: IS_DEBUG ? {name: 'Chapter 1', progressRequired: 40} : {name: PROLOGUE_ADVENTURE_NAME, progressRequired: 28},
+        currentAdventure: IS_DEBUG ? {name: 'Chapter 1', progressRequired: 60} : {name: PROLOGUE_ADVENTURE_NAME, progressRequired: 28},
         completedAdventures: [],
         adventureProgress: 0,
         latestModifications: [],

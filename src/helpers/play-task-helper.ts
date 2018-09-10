@@ -1,8 +1,8 @@
 import { CharLoot, CharTrophy, LootingTarget, GladiatingTarget, TaskTargetType, CharLead, LeadType, LeadTarget, HeroModification, HeroModificationType, TaskMode, AppState, Task } from "./models";
 import { randRange, randSign, randFromList, makeStringIndefinite, generateRandomName, makeVerbGerund, capitalizeInitial } from "./utils";
 import { TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, TASK_GERUNDS, STANDARD_GLADIATING_TARGETS, STANDARD_LOOTING_TARGETS, RACES, CLASSES, STANDARD_LEAD_GATHERING_TARGETS, STANDARD_LEAD_TARGETS, IS_DEBUG, LEAD_GATHERING_TASK_MODIFIERS } from "../global/config";
-import { PROLOGUE_TASKS, PROLOGUE_ADVENTURE_NAME, generateNextAdventureName } from './storyline-helpers';
-import { generateNewEquipmentModification, generateSpellOrAbilityModification, generateNewAccoladeModification, generateNewAffiliationModification } from './hero-manager';
+import { PROLOGUE_TASKS, PROLOGUE_ADVENTURE_NAME, generateNewAdventureResults } from './storyline-helpers';
+import { generateNewEquipmentModification, generateNewAccoladeModification, generateNewAffiliationModification } from './hero-manager';
 
 function determineTaskQuantity(targetLevel: number, taskLevel: number) {
     let quantity = 1;
@@ -781,30 +781,11 @@ const prologueTransitionTaskGen: TaskGenerator = {
     shouldRun: (state: AppState) => {
         return (state.hero.currentAdventure.name == PROLOGUE_ADVENTURE_NAME && state.hero.adventureProgress >= state.hero.currentAdventure.progressRequired);
     },
-    generateTask: (/*state: AppState*/) => {
+    generateTask: (state: AppState) => {
         const newTask: Task = {
             description: 'Loading',
             durationMs: 20,
-            results: [
-                {
-                    type: HeroModificationType.SET,
-                    attributeName: 'currentAdventure',
-                    data: {
-                        name: 'Chapter 1',
-                        progressRequired: 40,
-                    },
-                },
-                {
-                    type: HeroModificationType.SET,
-                    attributeName: 'adventureProgress',
-                    data: 0,
-                },
-                {
-                    type: HeroModificationType.ADD,
-                    attributeName: 'completedAdventures',
-                    data: [PROLOGUE_ADVENTURE_NAME],
-                },
-            ],
+            results: generateNewAdventureResults(state.hero, false),
         };
         return newTask;
     }
@@ -817,29 +798,10 @@ const adventureTransitionTaskGen: TaskGenerator = {
         return (state.hero.adventureProgress >= state.hero.currentAdventure.progressRequired);
     },
     generateTask: (state: AppState) => {
-        const newAdventure = generateNextAdventureName(state.hero.currentAdventure);
-        const completionReward = randRange(0, 1) ? generateNewEquipmentModification(state.hero) : generateSpellOrAbilityModification(state.hero);
         const newTask: Task = {
             description: 'Experiencing an enigmatic and foreboding night vision',
             durationMs: randRange(2, 3) * 1000,
-            results: [
-                {
-                    type: HeroModificationType.SET,
-                    attributeName: 'currentAdventure',
-                    data: newAdventure,
-                },
-                {
-                    type: HeroModificationType.SET,
-                    attributeName: 'adventureProgress',
-                    data: 0,
-                },
-                {
-                    type: HeroModificationType.ADD,
-                    attributeName: 'completedAdventures',
-                    data: [state.hero.currentAdventure.name],
-                },
-                completionReward,
-            ],
+            results: generateNewAdventureResults(state.hero),
         };
         return newTask;
     }

@@ -1,4 +1,7 @@
 import { IS_DEBUG } from "../global/config";
+import { HeroModification, HeroModificationType, Hero } from "./models";
+import { randRange } from "./utils";
+import { generateNewEquipmentModification, generateSpellOrAbilityModification } from "./hero-manager";
 
 export const PROLOGUE_TASKS = [
     {taskDescription: 'Experiencing an enigmatic and foreboding night vision', durationSeconds: 10},
@@ -10,10 +13,35 @@ export const PROLOGUE_TASKS = [
 
 export const PROLOGUE_ADVENTURE_NAME = 'Prologue'
 
-export function generateNextAdventureName(completedAdventure: Adventure): Adventure {
-    const oldChapNum = +completedAdventure.name.match(/\d+$/)[0] || 0;
+export function generateNextAdventure(completedAdventure: Adventure): Adventure {
+    const oldChapNumMatch = completedAdventure.name.match(/\d+$/);
+    const oldChapNum = !!oldChapNumMatch ? +oldChapNumMatch[0] : 0;
     const newChapDuration = IS_DEBUG ? 60 : (60 * 60 * (1 + 5 * oldChapNum + 1));
     return {name: `Chapter ${oldChapNum + 1}`, progressRequired: newChapDuration};
+}
+
+export function generateNewAdventureResults(currentHero: Hero, includeReward: boolean = true): HeroModification[] {
+    let results = [
+        {
+            type: HeroModificationType.SET,
+            attributeName: 'currentAdventure',
+            data: generateNextAdventure(currentHero.currentAdventure),
+        },
+        {
+            type: HeroModificationType.SET,
+            attributeName: 'adventureProgress',
+            data: 0,
+        },
+        {
+            type: HeroModificationType.ADD,
+            attributeName: 'completedAdventures',
+            data: [PROLOGUE_ADVENTURE_NAME],
+        },
+    ];
+    if (includeReward) {
+        results.push(randRange(0, 1) ? generateNewEquipmentModification(currentHero) : generateSpellOrAbilityModification(currentHero));
+    }
+    return results;
 }
 
 export interface Adventure {
