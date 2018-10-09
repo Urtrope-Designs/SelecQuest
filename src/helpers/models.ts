@@ -2,7 +2,6 @@ import { Adventure } from "./storyline-helpers";
 
 /** Task related */
 export interface Task {
-    completionTimeoutId?: any;
     taskStartTime?: number;
     description: string;
     durationMs: number;
@@ -89,12 +88,12 @@ export enum AffiliationType {
 }
 
 export class HeroStats {
-    'str': number = 0;
-    'dex': number = 0;
-    'con': number = 0;
-    'int': number = 0;
-    'wis': number = 0;
-    'cha': number = 0;
+    str: number = 0;
+    dex: number = 0;
+    con: number = 0;
+    int: number = 0;
+    wis: number = 0;
+    cha: number = 0;
 }
 
 const charStats = new HeroStats();

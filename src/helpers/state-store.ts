@@ -13,9 +13,6 @@ function activeTask(initState: Task, actions: Observable<Action>) {
             if (action.actionType === ActionType.SetActiveTask) {
                 return (action as SetActiveTask).newTask;
             } else if (action.actionType === ActionType.SetActiveHero) {
-                if (!!state) {
-                    clearTimeout(state.completionTimeoutId);
-                }
                 return (action as SetActiveHero).newGameState.activeTask;
             }
             else {

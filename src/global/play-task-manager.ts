@@ -1,7 +1,8 @@
 import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
 import { timer } from 'rxjs/observable/timer';
 import { withLatestFrom } from 'rxjs/operators';
+import { Subscription } from 'rxjs/Subscription';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { Task, AppState } from '../helpers/models';
 import { SetActiveTask, TaskCompleted, Action } from '../helpers/actions';
@@ -10,11 +11,15 @@ import { TaskGenerator, PRIORITIZED_TASK_GENERATORS } from '../helpers/play-task
 export default (function() {
     class PlayTaskManager {
         private taskGenAlgos: TaskGenerator[] = PRIORITIZED_TASK_GENERATORS;
-        private stateStore: Observable<AppState>
-        public taskAction$ = new Subject<Action>();
+        private stateStore: Observable<AppState>;
+        private stateStoreSub: Subscription;
+        private taskWatchTimerSub: Subscription;
+        public taskAction$ = new BehaviorSubject<Action>(null);
 
-        init(stateStore: Observable<AppState>) {
-            // TODO: try using RXJS timer() to create an observable that emits every 100 ms; then check if task is done
+        init(stateStore: Observable<AppState>, emulateTaskTimeGap: boolean = false) {
+            if (!!this.stateStoreSub) {
+                this.stateStoreSub.unsubscribe();
+            }
             this.stateStore = stateStore;
             this.stateStore.subscribe((state: AppState) => {
                 if (!!state && !!state.hero && !state.hasActiveTask) {
@@ -22,19 +27,45 @@ export default (function() {
                         return algo.shouldRun(state);
                     })
                     let newTask = curAlgo.generateTask(state);
-            
-                    newTask.taskStartTime = new Date().getTime();
-                    // newTask.completionTimeoutId = setTimeout(this.completeTask.bind(this), newTask.durationMs, newTask);
+                    console.log('new')
+                    if (emulateTaskTimeGap && !!state.activeTask) {
+                        newTask.taskStartTime = state.activeTask.taskStartTime + state.activeTask.durationMs;
+                    } else {
+                        newTask.taskStartTime = new Date().getTime();
+                    }
                     this.taskAction$.next(new SetActiveTask(newTask));
+                }
+                else if (emulateTaskTimeGap && !!state && !!state.activeTask) {
+                    if (!this.isTaskCompleted(state.activeTask)) {
+                        emulateTaskTimeGap = false;
+                        this.startTaskWatchTimer();
+                        console.log('just once!')
+                    } else {
+                        this.completeTask(state.activeTask);
+                        console.log('many');
+                    }
                 }
             });
 
-            timer(1, 100).pipe(withLatestFrom(stateStore))
+            if (!emulateTaskTimeGap) {
+                this.startTaskWatchTimer();
+            }
+        }
+
+        private startTaskWatchTimer() {
+            if (!!this.taskWatchTimerSub) {
+                this.taskWatchTimerSub.unsubscribe();
+            }
+            timer(1, 100).pipe(withLatestFrom(this.stateStore))
                 .subscribe(([_timer, state]) => {
-                    if (!!state && !!state.activeTask && state.activeTask.taskStartTime + state.activeTask.durationMs <= new Date().getTime()) {
+                    if (!!state && !!state.activeTask && this.isTaskCompleted(state.activeTask)) {
                         this.completeTask(state.activeTask);
                     }
                 })
+        }
+
+        private isTaskCompleted(task: Task): boolean {
+            return (!!task && task.taskStartTime + task.durationMs <= new Date().getTime());
         }
 
         private completeTask(completedTask: Task) {
@@ -45,8 +76,8 @@ export default (function() {
     const privateInstance = new PlayTaskManager();
 
     const exports = {
-        init: (stateStore: Observable<AppState>) => {
-            privateInstance.init(stateStore);
+        init: (stateStore: Observable<AppState>, emulateTaskTimeGap: boolean = false) => {
+            privateInstance.init(stateStore, emulateTaskTimeGap);
         },
         getTaskAction$: () => {
             return privateInstance.taskAction$.asObservable();

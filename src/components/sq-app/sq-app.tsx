@@ -17,7 +17,7 @@ import { PlayScreen } from '../play-screen/play-screen';
 })
 export class SqApp {
     @Prop({ connect: 'ion-toast-controller' }) toastCtrl: HTMLIonToastControllerElement;
-    @Prop({ context: 'taskMgr'}) taskMgr: {init: (stateStore: Observable<AppState>) => void, getTaskAction$: () => Observable<Action>};
+    @Prop({ context: 'taskMgr'}) taskMgr: {init: (stateStore: Observable<AppState>, emulateTaskTimeGap?: boolean) => void, getTaskAction$: () => Observable<Action>};
     private actionSubject: Subject<Action> = new Subject<Action>();
     @State() state: AppState;
     private availableHeroes: {hash: string, name: string}[];
@@ -118,8 +118,8 @@ export class SqApp {
             .then(state => {
                 const initialData = state || DEFAULT_APP_STATE;
                 let state$ = stateFn(initialData, this.actionSubject.asObservable());
-                this.gameDataMgr.persistAppData(state$);
-                this.taskMgr.init(state$);
+                state$ = this.gameDataMgr.persistAppData(state$);
+                this.taskMgr.init(state$, true);
                 this.taskMgr.getTaskAction$().subscribe((taskAction: Action) => {
                     this._queueAction(taskAction);
                 })
@@ -133,9 +133,13 @@ export class SqApp {
     }
 
     private _queueAction(newAction: Action) {
-        Promise.resolve().then(() => {
-            this.actionSubject.next(newAction);
-        })
+        console.log('queueing action')
+        if (newAction != null) {
+            Promise.resolve().then(() => {
+                console.log(newAction);
+                this.actionSubject.next(newAction);
+            })
+        }
     }
 
     render() {

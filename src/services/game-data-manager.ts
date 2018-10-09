@@ -1,5 +1,6 @@
 import { AppState } from "../helpers/models";
 import { Observable } from "rxjs/Observable";
+import { tap } from "rxjs/operators";
 
 import Storage from './storage';
 import { generateHeroHashFromHero, HERO_HASH_NAME_DELIMITER } from "../helpers/utils";
@@ -7,13 +8,15 @@ import { generateHeroHashFromHero, HERO_HASH_NAME_DELIMITER } from "../helpers/u
 export class GameDataManager {
     private dataStore = new Storage();
 
-    persistAppData(appData$: Observable<AppState>): void {
+    persistAppData(appData$: Observable<AppState>): Observable<AppState> {
         //todo: return an observable that emits each time datastore.set completes successfully?
-        appData$.subscribe((data) => {
-            if (!!data && !!data.hero) {
-                this.dataStore.set(`${GAME_SAVE_PREFIX}${generateHeroHashFromHero(data.hero)}`, data);
-            }
-        })
+        return appData$.pipe(
+            tap((data) => {
+                if (!!data && !!data.hero) {
+                    this.dataStore.set(`${GAME_SAVE_PREFIX}${generateHeroHashFromHero(data.hero)}`, data);
+                }
+            })
+        );
     }
 
     getGameData(heroHash: string): Promise<AppState> {
