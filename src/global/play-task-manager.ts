@@ -29,7 +29,9 @@ export default (function() {
                     let newTask = curAlgo.generateTask(state);
                     console.log('new')
                     if (emulateTaskTimeGap && !!state.activeTask) {
-                        newTask.taskStartTime = state.activeTask.taskStartTime + state.activeTask.durationMs;
+                        const twentyFourHoursAgo = new Date().getTime() - (1000 * 60 * 60 * 24);
+                        const minStartTime = Math.max(state.activeTask.taskStartTime, twentyFourHoursAgo);
+                        newTask.taskStartTime = minStartTime + state.activeTask.durationMs;
                     } else {
                         newTask.taskStartTime = new Date().getTime();
                     }
