@@ -27,7 +27,6 @@ export default (function() {
                         return algo.shouldRun(state);
                     })
                     let newTask = curAlgo.generateTask(state);
-                    console.log('new')
                     if (emulateTaskTimeGap && !!state.activeTask) {
                         const twentyFourHoursAgo = new Date().getTime() - (1000 * 60 * 60 * 24);
                         const minStartTime = Math.max(state.activeTask.taskStartTime, twentyFourHoursAgo);
@@ -41,10 +40,8 @@ export default (function() {
                     if (!this.isTaskCompleted(state.activeTask)) {
                         emulateTaskTimeGap = false;
                         this.startTaskWatchTimer();
-                        console.log('just once!')
                     } else {
                         this.completeTask(state.activeTask);
-                        console.log('many');
                     }
                 }
             });

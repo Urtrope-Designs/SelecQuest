@@ -121,7 +121,6 @@ export class PlayScreen {
     }
 
     _textRowScrollHandler(ev: Event) {
-        console.log('scroll event: ', ev);
         ev.srcElement.setAttribute('scrolled', ev.srcElement.scrollLeft != 0 ? 'true' : 'false');
     }
 

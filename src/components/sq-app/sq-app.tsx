@@ -1,4 +1,5 @@
 import '@ionic/core';
+import 'ionicons';
 
 import { Component, Prop, Listen, State } from '@stencil/core';
 import { Observable } from 'rxjs/Observable';
@@ -119,7 +120,7 @@ export class SqApp {
                 const initialData = state || DEFAULT_APP_STATE;
                 let state$ = stateFn(initialData, this.actionSubject.asObservable());
                 state$ = this.gameDataMgr.persistAppData(state$);
-                this.taskMgr.init(state$, true);
+                this.taskMgr.init(state$, false);
                 this.taskMgr.getTaskAction$().subscribe((taskAction: Action) => {
                     this._queueAction(taskAction);
                 })
@@ -133,10 +134,8 @@ export class SqApp {
     }
 
     private _queueAction(newAction: Action) {
-        console.log('queueing action')
         if (newAction != null) {
             Promise.resolve().then(() => {
-                console.log(newAction);
                 this.actionSubject.next(newAction);
             })
         }
