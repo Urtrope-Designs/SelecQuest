@@ -1,6 +1,6 @@
 import { Component, Prop, State, Event, EventEmitter, Element, Watch } from '@stencil/core';
 
-import { AppState, Task, TaskMode, AccoladeType, AffiliationType, CharConnection, CharMembership, CharOffice, Hero } from '../../helpers/models';
+import { AppState, Task, TaskMode, AccoladeType, Hero, CharAffiliation } from '../../helpers/models';
 import { getXpRequiredForNextLevel } from '../../helpers/hero-manager';
 import { capitalizeInitial, getRoughTime, generateHeroHashFromHero } from '../../helpers/utils';
 
@@ -363,62 +363,45 @@ export class PlayScreen {
                                 <table class="listBox">
                                     <thead>
                                         <tr>
-                                            <th>Affiliations</th>
+                                            <th style={{width: "50%"}}>Connections</th>
+                                            <th>Group</th>
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        {
+                                            this.appState.hero.affiliations.length <= 0
+                                            ? <tr><td colSpan={2}>[None]</td></tr>
+                                            : this.appState.hero.affiliations
+                                                .map((affiliation: CharAffiliation) => 
+                                                    <tr {...this.findUpdate('affiliations', (data: CharAffiliation) => data.connection != null && data.groupName == affiliation.groupName) ? {class: 'textRow-highlight'} : {}}>
+                                                        <td>{affiliation.connection.personName}, the {affiliation.connection.personTitle}</td>
+                                                        <td>{capitalizeInitial(affiliation.groupName)}</td>
+                                                    </tr>
+                                                )
+                                        }
+                                        <tr><td colSpan={2} class="placeholderRow"></td></tr>
+                                    </tbody>
+                                </table>
+                                <table class="listBox">
+                                    <thead>
                                         <tr>
-                                            <td>{AffiliationType.CONNECTIONS}
-                                            {
-                                                this.appState.hero.affiliations[AffiliationType.CONNECTIONS].length <= 0
-                                                ? <span>[None]</span>
-                                                : {}
-                                            }
-                                            </td>
+                                            <th style={{width: "40%"}}>Memberships</th>
+                                            <th>Office</th>
                                         </tr>
+                                    </thead>
+                                    <tbody>
                                         {
-                                            this.appState.hero.affiliations[AffiliationType.CONNECTIONS]
-                                                .map((connection: CharConnection, index, array) => 
-                                                    <tr {...this.findUpdate('leads', (data) => data == AffiliationType.CONNECTIONS) && index == array.length-1 ? {class: 'textRow-highlight'} : {}}>
-                                                        <td class="listBox__overflowRowData">{connection.affiliatedPersonName}, {connection.affiliatedPersonTitle} for {connection.affiliatedGroupName}</td>
+                                            this.appState.hero.affiliations.filter(a => a.office != null).length <= 0
+                                            ? <tr><td colSpan={2}>[None]</td></tr>
+                                            : this.appState.hero.affiliations.filter(a => a.office != null)
+                                                .map((affiliation: CharAffiliation) => 
+                                                    <tr {...this.findUpdate('affiliations', (data: CharAffiliation) => data.office != null && data.groupName == affiliation.groupName) ? {class: 'textRow-highlight'} : {}}>
+                                                        <td>{capitalizeInitial(affiliation.groupName)}</td>
+                                                        <td>{affiliation.office}</td>
                                                     </tr>
                                                 )
                                         }
-                                        <tr>
-                                            <td>{AffiliationType.MEMBERSHIPS}
-                                            {
-                                                this.appState.hero.affiliations[AffiliationType.MEMBERSHIPS].length <= 0
-                                                ? <spawnSync>[None]</spawnSync>
-                                                : {}
-                                            }
-                                            </td>
-                                        </tr>
-                                        {
-                                            this.appState.hero.affiliations[AffiliationType.MEMBERSHIPS]
-                                                .map((membership: CharMembership, index, array) => 
-                                                    <tr {...this.findUpdate('leads', (data) => data == AffiliationType.MEMBERSHIPS) && index == array.length-1 ? {class: 'textRow-highlight'} : {}}>
-                                                        <td class="listBox__overflowRowData">{capitalizeInitial(membership.affiliatedGroupName)}</td>
-                                                    </tr>
-                                                )
-                                        }
-                                        <tr {...this.highlightModifiedAttribute('affiliations', AffiliationType.OFFICES)}>
-                                            <td>{AffiliationType.OFFICES}
-                                            {
-                                                this.appState.hero.affiliations[AffiliationType.OFFICES].length <= 0
-                                                ? <span>[None]</span>
-                                                : {}
-                                            }
-                                            </td>
-                                        </tr>
-                                        {
-                                            this.appState.hero.affiliations[AffiliationType.OFFICES]
-                                                .map((office: CharOffice, index, array) => 
-                                                    <tr {...this.findUpdate('leads', (data) => data == AffiliationType.OFFICES) && index == array.length-1 ? {class: 'textRow-highlight'} : {}}>
-                                                        <td class="listBox__overflowRowData">{office.officeTitleDescription} for {office.affiliatedGroupName}</td>
-                                                    </tr>
-                                                )
-                                        }
-                                        <tr><td class="placeholderRow"></td></tr>
+                                        <tr><td colSpan={2} class="placeholderRow"></td></tr>
                                     </tbody>
                                 </table>
                                 <p>

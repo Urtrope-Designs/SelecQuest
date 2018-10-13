@@ -770,14 +770,18 @@ export const HONORIFIC_TEMPLATES: string[] = [
 ]
 
 export const OFFICE_POSITIONS_ALL: string[] = [
+    'Noob',
+    'Pawn',
+    'Lackey',
+    'Patsy',
+    'Court Jester',
+    'Mascot',
     'Treasurer',
+    'Artist-in-Residence',
+    'Reconnoitrer',
+    'Striker',
+    'Speaker',
     'Captain',
     'Director',
     'Messiah',
-    'Striker',
-    'Court Jester',
-    'Artist-in-Residence',
-    'Speaker',
-    'Mascot',
-    'Reconnoitrer',
 ]

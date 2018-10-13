@@ -1,4 +1,4 @@
-import { Hero, HeroModificationType, AccoladeType, AffiliationType, HeroModification, getHeroStatList, HeroStats, CharEquipment, EquipmentType, EquipmentMaterial, CharAccolade, CharAffiliations, CharConnection, CharMembership, CharOffice, CharTitlePosition } from './models';
+import { Hero, HeroModificationType, AccoladeType, HeroModification, getHeroStatList, HeroStats, CharEquipment, EquipmentType, EquipmentMaterial, CharAccolade, CharAffiliation, CharConnection, CharTitlePosition } from './models';
 import { randRange, randFromList, deepCopyObject, randFromListLow, randFromListHigh, generateRandomName, capitalizeInitial, getIterableEnumKeys } from './utils';
 import { PROLOGUE_ADVENTURE_NAME } from './storyline-helpers';
 import { SPELLS, ABILITIES, IS_DEBUG, WEAPON_MATERIALS, SHEILD_MATERIALS, ARMOR_MATERIALS, EPITHET_DESCRIPTORS, EPITHET_BEING_ALL, TITLE_POSITIONS_ALL, SOBRIQUET_MODIFIERS, SOBRIQUET_NOUN_PORTION, HONORIFIC_TEMPLATES, OFFICE_POSITIONS_ALL, STANDARD_GROUPS_INDEFINITE } from '../global/config';
@@ -24,11 +24,7 @@ export function createNewHero(name: string, raceName: string, className: string,
         abilities: [],
         equipment: getIterableEnumKeys(EquipmentType).map(typeKey => ({type: EquipmentType[typeKey], description: ''})),
         accolades: getIterableEnumKeys(AccoladeType).map(typeKey => ({type: AccoladeType[typeKey], received: []})),
-        affiliations: {
-            [AffiliationType.CONNECTIONS]: [],
-            [AffiliationType.MEMBERSHIPS]: [],
-            [AffiliationType.OFFICES]: [],
-        },
+        affiliations: [],
         get maxEncumbrance() {return this.str + 10},
         get maxEquipmentWear() {return this.dex + 10},
         get maxQuestLogSize() {return this.int + 10},
@@ -173,11 +169,18 @@ export function applyHeroModifications(baseChar: Hero, heroMods: HeroModificatio
                 break;
                 case HeroModificationType.ADD_AFFILIATION:
                 /* affiliations */
-                result.data.map((newAffiliation: AffiliationGenerationData) => {
-                    let curAffiliationType = newChar.affiliations[newAffiliation.type];
-                    (curAffiliationType as any[]).push(newAffiliation.object);
+                result.data.map((newAffiliation: CharAffiliation) => {
+                    if (newAffiliation.connection != null) {
+                        newChar.affiliations.push(newAffiliation);
+                    }
+                    if (newAffiliation.office != null) {
+                        const existingAffiliation: CharAffiliation = newChar.affiliations.find(a => {
+                            return a.groupName == newAffiliation.groupName;
+                        });
+                        existingAffiliation.office = newAffiliation.office;
+                    }
 
-                    newChar.latestModifications.push({attributeName: result.attributeName, data: newAffiliation.type});
+                    newChar.latestModifications.push({attributeName: result.attributeName, data: newAffiliation});
                 })
                 break;
         }
@@ -497,130 +500,100 @@ export function generateNewAffiliationModification(hero: Hero): HeroModification
     return mod;
 }
 
-interface AffiliationGenerationData {
-    type: AffiliationType,
-    object: CharConnection | CharMembership | CharOffice
-}
+function generateRandomAffiliation(hero: Hero): CharAffiliation {
+    let newAffiliationData: CharAffiliation;
 
-function generateRandomAffiliation(hero: Hero): AffiliationGenerationData {
-    let newAffiliationData: {type: AffiliationType, object: CharConnection | CharMembership | CharOffice};
-
-    if (hero.affiliations[AffiliationType.OFFICES].length >= STANDARD_GROUPS_INDEFINITE.length) {
-        // add a random non-duplicate Office for any Group with which the Hero has a Membership
-        newAffiliationData = generateRandomNonDupOfficeObject(hero.affiliations);
-    } else {
-        let newAffiliationFactories: ((existingAffiliations: CharAffiliations) => AffiliationGenerationData)[] = [];
-        if (hero.affiliations[AffiliationType.CONNECTIONS].length < STANDARD_GROUPS_INDEFINITE.length) {
-            newAffiliationFactories.push(generateRandomDistinctConnection);
-        }
-        if (hero.affiliations[AffiliationType.MEMBERSHIPS].length < hero.affiliations[AffiliationType.CONNECTIONS].length) {
-            newAffiliationFactories.push(generateRandomDistinctMembership);
-        }
-        if (hero.affiliations[AffiliationType.OFFICES].length < hero.affiliations[AffiliationType.MEMBERSHIPS].length) {
-            newAffiliationFactories.push(generateRandomDistinctOffice);
-        }
-
-        
-        let selectedFactory = randFromList(newAffiliationFactories);
-        newAffiliationData = selectedFactory(hero.affiliations);
+    let newAffiliationFactories: ((existingAffiliations: CharAffiliation[]) => CharAffiliation)[] = [];
+    if (hero.affiliations.length < STANDARD_GROUPS_INDEFINITE.length) {
+        newAffiliationFactories.push(generateRandomDistinctConnection);
+        newAffiliationFactories.push(generateRandomDistinctConnection); // double the odds
     }
+    if (hero.affiliations.some(a => a.office == null)) {
+        newAffiliationFactories.push(generateRandomDistinctMembership);
+        newAffiliationFactories.push(generateRandomDistinctMembership); // double the odds
+    }
+    if (hero.affiliations.some(a => isNonNullNonHighestOffice(a.office))) {
+        newAffiliationFactories.push(generateRandomDistinctHigherOffice);
+    }
+
+    
+    let selectedFactory = randFromList(newAffiliationFactories);
+    newAffiliationData = selectedFactory(hero.affiliations);
 
     return newAffiliationData;
 }
 
-function generateRandomDistinctConnection(existingAffiliations: CharAffiliations): {type: AffiliationType, object: CharConnection} {
+const nullAffiliation: CharAffiliation = {
+    groupName: null,
+    connection: null,
+    office: null,
+}
+
+function generateRandomDistinctConnection(existingAffiliations: CharAffiliation[]): CharAffiliation {
     const availableDistinctGroups: string[] = STANDARD_GROUPS_INDEFINITE.filter((groupName: string) => {
-        return existingAffiliations[AffiliationType.CONNECTIONS].map(connection => connection.affiliatedGroupName).indexOf(groupName) === -1;
+        return !existingAffiliations.some(a => a.groupName == groupName);
     });
 
     if (availableDistinctGroups.length === 0) {
-        const nullConnection: CharConnection = {
-            affiliatedPersonName: null,
-            affiliatedPersonTitle: null,
-            affiliatedGroupName: null,
-        }
-        return {type: AffiliationType.CONNECTIONS, object: nullConnection};
+        return nullAffiliation;
     }
     
     const newConnectionName = generateRandomName();
-    const newConnectionTitle = randFromList(OFFICE_POSITIONS_ALL);
+    const newConnectionTitle = randFromList(OFFICE_POSITIONS_ALL.slice(1));
     const newGroupName = randFromList(availableDistinctGroups);
     const newConnection: CharConnection = {
-        affiliatedPersonName: newConnectionName,
-        affiliatedPersonTitle: newConnectionTitle,
-        affiliatedGroupName: newGroupName,
+        personName: newConnectionName,
+        personTitle: newConnectionTitle,
     }
-    const returnData = {
-        type: AffiliationType.CONNECTIONS,
-        object: newConnection,
+    const returnData: CharAffiliation = {
+        groupName: newGroupName,
+        connection: newConnection,
+        office: null,
     }
     return returnData;
 }
 
-function generateRandomDistinctMembership(existingAffiliations: CharAffiliations): {type: AffiliationType, object: CharMembership} {
-    const availableMembershipGroups: string[] = existingAffiliations[AffiliationType.CONNECTIONS].map(connection => connection.affiliatedGroupName).filter((groupName: string) => {
-        return existingAffiliations[AffiliationType.MEMBERSHIPS].map(membership => membership.affiliatedGroupName).indexOf(groupName) === -1;
-    });
+function generateRandomDistinctMembership(existingAffiliations: CharAffiliation[]): CharAffiliation {
+    // list of all groups we have a connection with but don't currently have membership (ie, an office)
+    const availableMembershipGroups: string[] = existingAffiliations.filter(a => a.office == null).map(a => a.groupName);
 
     if (availableMembershipGroups.length === 0) {
-        return {type: AffiliationType.MEMBERSHIPS, object: {affiliatedGroupName: null}};
+        return nullAffiliation;
     }
 
     const newMembershipGroupName = randFromList(availableMembershipGroups);
-    const newMembership: CharMembership = {
-        affiliatedGroupName: newMembershipGroupName,
-    };
-    const returnData = {
-        type: AffiliationType.MEMBERSHIPS,
-        object: newMembership,
+    const newOffice = OFFICE_POSITIONS_ALL[0];
+    const returnData: CharAffiliation = {
+        groupName: newMembershipGroupName,
+        office: newOffice,
+        connection: null,
     }
     return returnData;
 }
 
-function generateRandomDistinctOffice(existingAffiliations: CharAffiliations): {type: AffiliationType, object: CharOffice} {
-    const availableOfficeGroups: string[] = existingAffiliations[AffiliationType.MEMBERSHIPS].map(membership => membership.affiliatedGroupName).filter((groupName: string) => {
-        return existingAffiliations[AffiliationType.OFFICES].map(office => office.affiliatedGroupName).indexOf(groupName) === -1;
-    })
-    
+function generateRandomDistinctHigherOffice(existingAffiliations: CharAffiliation[]): CharAffiliation {
+    // list of all groups with a non-null office that is also not the highest office
+    const availableOfficeGroups: string[] = existingAffiliations.filter(a => isNonNullNonHighestOffice(a.office)).map(a => a.groupName);
     if (availableOfficeGroups.length === 0) {
-        const nullOffice: CharOffice = {
-            officeTitleDescription: null,
-            affiliatedGroupName: null,
-        }
-        return {type: AffiliationType.OFFICES, object: nullOffice};
+        return nullAffiliation;
     }
-    
-    const position = randFromList(OFFICE_POSITIONS_ALL);
     const group = randFromList(availableOfficeGroups);
-    const officeObj: CharOffice = {
-        officeTitleDescription: position,
-        affiliatedGroupName: group,
-    }
-    const returnData = {
-        type: AffiliationType.OFFICES,
-        object: officeObj,
+    
+    const existingAffiliation: CharAffiliation = existingAffiliations.find(a => a.groupName == group);
+    // list of all positions higher than currently "held" office, non-dup with the same group's Connection
+    const availableOfficePositions: string[] = OFFICE_POSITIONS_ALL.slice(OFFICE_POSITIONS_ALL.indexOf(existingAffiliation.office) + 1).filter(o => {
+            return o != existingAffiliation.connection.personTitle;
+        });
+    
+    const newOffice = randFromListLow(availableOfficePositions, 3);
+    const returnData: CharAffiliation = {
+        groupName: group,
+        office: newOffice,
+        connection: null,
     }
     return returnData;
 }
 
-function generateRandomNonDupOfficeObject(existingAffiliations: CharAffiliations): {type: AffiliationType, object: CharOffice} {
-    const group = randFromList(STANDARD_GROUPS_INDEFINITE);
-    const existingOfficesForGroup: string[] = existingAffiliations[AffiliationType.OFFICES]
-        .filter(office => office.affiliatedGroupName == group)
-        .map(office => office.officeTitleDescription);
-    const availableGroupOffices: string[] = OFFICE_POSITIONS_ALL.filter((office: string) => {
-        return existingOfficesForGroup.indexOf(office) === -1;
-    })
-
-    const position = randFromList(availableGroupOffices);
-    const officeObj: CharOffice = {
-        officeTitleDescription: position,
-        affiliatedGroupName: group,
-    }
-    
-    const returnData = {
-        type: AffiliationType.OFFICES,
-        object: officeObj,
-    }
-    return returnData;
+function isNonNullNonHighestOffice(officeName: string) {
+    return !!officeName && OFFICE_POSITIONS_ALL.indexOf(officeName) < (OFFICE_POSITIONS_ALL.length - 1)
 }

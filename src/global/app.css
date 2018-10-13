@@ -182,11 +182,6 @@ tr, .textRow {
     padding: .4rem
 }
 
-.listBox td.listBox__overflowRowData {
-    text-align: right;
-    padding: .1rem .4rem .1rem 2rem;
-}
-
 ion-header, ion-footer, section {
     padding: 12px 15px;
 }

@@ -81,12 +81,6 @@ export enum HeroModificationType {
     REMOVE_QUANTITY,
 }
 
-export enum AffiliationType {
-    CONNECTIONS = 'Connections',
-    MEMBERSHIPS = 'Memberships',
-    OFFICES = 'Offices',
-}
-
 export class HeroStats {
     str: number = 0;
     dex: number = 0;
@@ -121,7 +115,7 @@ export interface Hero extends HeroStats {
     abilities: CharAbility[]; 
     equipment: CharEquipment[];
     accolades: CharAccolade[];
-    affiliations: CharAffiliations;
+    affiliations: CharAffiliation[];
     maxEncumbrance: number;
     maxEquipmentWear: number;
     maxQuestLogSize: number;
@@ -168,25 +162,15 @@ export interface CharAccolade {
     received: string[],
 };
 
-export interface CharAffiliations {
-    [AffiliationType.CONNECTIONS]: CharConnection[],
-    [AffiliationType.MEMBERSHIPS]: CharMembership[],
-    [AffiliationType.OFFICES]: CharOffice[],
-};
+export interface CharAffiliation {
+    groupName: string,
+    connection: CharConnection,
+    office: string,
+}
 
 export interface CharConnection {
-    affiliatedPersonName: string,
-    affiliatedPersonTitle: string,
-    affiliatedGroupName: string,
-}
-
-export interface CharMembership {
-    affiliatedGroupName: string,
-}
-
-export interface CharOffice {
-    officeTitleDescription: string,
-    affiliatedGroupName: string,
+    personName: string,
+    personTitle: string,
 }
 
 export interface CharLoot {
