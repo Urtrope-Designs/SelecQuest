@@ -35,7 +35,7 @@ export function generateNewAdventureResults(currentHero: Hero, includeReward: bo
         {
             type: HeroModificationType.ADD,
             attributeName: 'completedAdventures',
-            data: [PROLOGUE_ADVENTURE_NAME],
+            data: [currentHero.currentAdventure.name],
         },
     ];
     if (includeReward) {
