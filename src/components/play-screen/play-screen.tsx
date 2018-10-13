@@ -385,7 +385,7 @@ export class PlayScreen {
                                 <table class="listBox">
                                     <thead>
                                         <tr>
-                                            <th style={{width: "40%"}}>Memberships</th>
+                                            <th style={{width: "50%"}}>Memberships</th>
                                             <th>Office</th>
                                         </tr>
                                     </thead>
