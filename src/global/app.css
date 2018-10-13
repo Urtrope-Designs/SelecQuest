@@ -29,6 +29,12 @@ body {
     background-color: var(--sq-color-primary-contrast);
 }
 
+ion-app {
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 h1, h2, h3, h4, h5, p, button, div, input {
     font-family: 'bitwise', sans-serif;
     font-family: 'whitrabt', sans-serif;
