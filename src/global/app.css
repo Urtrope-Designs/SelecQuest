@@ -2,7 +2,7 @@
 
 @import "~@ionic/core/css/normalize.css";
 @import "~@ionic/core/css/structure.css";
-@import "~@ionic/core/css/colors.css";
+@import "~@ionic/core/css/core.css";
 
 @import "~@ionic/core/css/padding.css";
 @import "~@ionic/core/css/float-elements.css";
@@ -178,6 +178,9 @@ tr, .textRow {
     border: 2px solid;
     min-height: 7rem;
     box-shadow: 0 0 .4rem var(--sq-color-primary), inset 0 0 .4rem var(--sq-color-primary);
+    font-family: 'bitwise', sans-serif;
+    font-family: 'whitrabt', sans-serif;
+    font-family: '7_12', monospace;
 }
 
 .listBox tr:not(:last-child) {

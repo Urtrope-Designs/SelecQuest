@@ -14,18 +14,15 @@
     "test.watch": "jest --watch"
   },
   "dependencies": {
-    "@ionic/core": "4.0.0-alpha.11",
-    "@stencil/core": "0.10.7",
-    "@stencil/sass": "0.0.5",
+    "@ionic/core": "^4.0.0-rc.2",
+    "@stencil/core": "^0.16.4",
+    "@stencil/sass": "^0.1.1",
     "localforage": "^1.7.2",
     "localforage-cordovasqlitedriver": "^1.7.0",
     "npm": "^6.1.0",
     "rxjs": "^5.5.6"
   },
-  "devDependencies": {
-    "@types/jest": "23.3.0",
-    "jest": "23.4.1"
-  },
+  "devDependencies": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ionic-team/stencil-app-starter.git"

@@ -1,12 +1,10 @@
-const sass = require('@stencil/sass');
+import { Config } from '@stencil/core';
+import { sass } from '@stencil/sass';
 
-exports.config = {
+export const config: Config = {
   outputTargets: [
     {
       type: 'www',
-      serviceWorker: {
-        swSrc: 'src/sw.js'
-      }
     }
   ],
   globalScript: 'src/global/index.ts',

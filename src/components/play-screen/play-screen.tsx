@@ -1,4 +1,4 @@
-import { Component, Prop, State, Event, EventEmitter, Element, Watch } from '@stencil/core';
+import { Component, Prop, State, Event, EventEmitter, Element, Watch, ComponentInterface } from '@stencil/core';
 
 import { AppState, Task, TaskMode, AccoladeType, Hero, CharAffiliation } from '../../helpers/models';
 import { getXpRequiredForNextLevel } from '../../helpers/hero-manager';
@@ -69,8 +69,8 @@ export class PlayScreen {
 
     visibleSectionButtonClicked(newVisibleSection: VisibleSection) {
         this.activeVisibleSection = newVisibleSection;
-        const contentElem = this.homeEl.querySelector('ion-content');
-        contentElem.getScrollElement().scrollToTop(0);
+        const contentElem: ComponentInterface = this.homeEl.querySelector('ion-content');
+        contentElem.scrollToTop(0);
     }
 
     setSelectedAvailableHeroHash(newHash: string) {

@@ -21,12 +21,12 @@ sq-progress-bar {
             
         }
         
-        &[overlay-active=true]  {
+        &[overlay-active]  {
             .progressBar_inner {
                 opacity: .4;
             }
         }
-        &[overlay-active=false] {
+        &:not([overlay-active]) {
             .tapOverlay{
                 display: none;
             }
