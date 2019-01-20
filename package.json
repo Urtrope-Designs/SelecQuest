@@ -1,8 +1,10 @@
 {
-  "name": "SelecQuest",
+  "name": "selecquest",
   "private": true,
   "version": "0.0.3",
+  "author": "Urtrope Designs",
   "description": "SelecQuest",
+  "license": "MIT",
   "files": [
     "dist/"
   ],
@@ -10,8 +12,8 @@
     "build": "stencil build",
     "devWithSW": "stencil build --dev --service-worker --watch --serve",
     "start": "stencil build --dev --watch --serve",
-    "test": "jest",
-    "test.watch": "jest --watch"
+    "test": "stencil test --spec --e2e",
+    "test.watch": "stencil test --spec --e2e --watch"
   },
   "dependencies": {
     "@ionic/core": "^4.0.0-rc.2",
@@ -22,28 +24,12 @@
     "npm": "^6.1.0",
     "rxjs": "^5.5.6"
   },
-  "devDependencies": {},
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ionic-team/stencil-app-starter.git"
-  },
-  "author": "Ionic Team",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/ionic-team/stencil"
-  },
-  "homepage": "https://github.com/ionic-team/stencil",
-  "jest": {
-    "transform": {
-      "^.+\\.(ts|tsx)$": "<rootDir>/node_modules/@stencil/core/testing/jest.preprocessor.js"
-    },
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(tsx?|jsx?)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "json",
-      "jsx"
-    ]
+  "devDependencies": {
+    "@types/jest": "23.3.13",
+    "@types/puppeteer": "1.6.4",
+    "jest": "23.6.0",
+    "jest-cli": "23.6.0",
+    "puppeteer": "1.8.0",
+    "workbox-build": "3.4.1"
   }
 }
