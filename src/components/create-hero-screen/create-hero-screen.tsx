@@ -1,7 +1,6 @@
-import { Component, State, Event, EventEmitter } from "@stencil/core";
-import { HeroStats } from "../../helpers/models";
+import { Component, State, Event, EventEmitter, Prop } from "@stencil/core";
+import { HeroStats, CharRace } from "../../helpers/models";
 import { generateRandomName, randFromList, randRange } from "../../helpers/utils";
-import { RACES, CLASSES } from "../../global/config";
 import { createNewHero } from "../../helpers/hero-manager";
 
 @Component({
@@ -9,14 +8,16 @@ import { createNewHero } from "../../helpers/hero-manager";
     styleUrl: 'create-hero-screen.scss',
 })
 export class CreateHeroScreen {
+    @Prop() charRaces: CharRace[] = [];
+    @Prop() charClasses: string[] = [];
     @State() rolledHero: Heroling;
-    @Event() startNewHero: EventEmitter
+    @Event() startNewHero: EventEmitter;
 
     componentWillLoad() {
         this.rolledHero = {
             name: generateRandomName(),
-            raceName: randFromList(RACES).raceName,
-            className: randFromList(CLASSES),
+            raceName: randFromList(this.charRaces).raceName,
+            className: randFromList(this.charClasses),
             rolledStats: [generateRandomStats()],
             statsIndex: 0,
         }
@@ -75,7 +76,7 @@ export class CreateHeroScreen {
                             <div class="textRow textRow-highlight">Race</div>
                             <div class="buttonRow">
                                 {
-                                    RACES.map(race => 
+                                    this.charRaces.map(race => 
                                         <button 
                                             {...(this.rolledHero.raceName == race.raceName ? {class: 'selected'} : {})}
                                             onClick={ () => this.handleChange('raceName', race.raceName)}
@@ -92,7 +93,7 @@ export class CreateHeroScreen {
                             <div class="textRow textRow-highlight">Class</div>
                             <div class="buttonRow">
                                 {
-                                    CLASSES.map(className => 
+                                    this.charClasses.map(className => 
                                         <button 
                                             {...(this.rolledHero.className == className ? {class: 'selected'} : {})}
                                             onClick={ () => this.handleChange('className', className)}
@@ -133,7 +134,6 @@ export class CreateHeroScreen {
                     </section>
                 </ion-content>
             </ion-page>
-                        
         );
     }
 }

@@ -8,6 +8,7 @@ import { Action, ChangeActiveTaskMode, SetActiveHero } from '../../helpers/actio
 import { GameDataManager } from '../../services/game-data-manager';
 import { generateHeroHashFromHero } from '../../helpers/utils';
 import { PlayScreen } from '../play-screen/play-screen';
+import { RACES, CLASSES } from '../../global/config';
 
 @Component({
     tag: 'sq-app',
@@ -123,7 +124,7 @@ export class SqApp {
                     {
                         !!this.state.hero
                         ? <sq-play-screen appState={this.state} availableHeroes={this.availableHeroes} ref={(el: any) => this.playScreen = el}></sq-play-screen>
-                        : <sq-create-hero-screen></sq-create-hero-screen>
+                        : <sq-create-hero-screen charRaces={RACES} charClasses={CLASSES}></sq-create-hero-screen>
                     }
                 </ion-app>
             );
