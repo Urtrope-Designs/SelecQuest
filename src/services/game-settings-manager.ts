@@ -17,61 +17,29 @@ export class GameSettingsManager {
     async init(availableGameSettingFiles: string[]) {
         this.availableGameSettings = new Map<string, GameSetting>();
         for (let file of availableGameSettingFiles) {
-            const nextGameSetting = new GameSetting(await this.loadGameSettingFile(file + '.ts'));
+            const nextGameSetting = new GameSetting(await this.loadGameSettingFile(file + '.json'));
             this.availableGameSettings.set(nextGameSetting.gameSettingId, nextGameSetting);
         }
 
         return true;
     }
 
-    private async loadGameSettingFile(_filename: string): Promise<GameSettingConfig> {
-        return Promise.resolve({
-            gameSettingId: '1',
-            gameSettingName: 'Fantasy',
-            charRaces: [
-                {
-                    raceName: 'Demimutant',
-                    trophyName: 'genome'
-                },
-                {
-                    raceName: 'Werefellow',
-                    trophyName: 'bowler hat'
-                },
-                {
-                    raceName: 'Fartling',
-                    trophyName: 'cloud'
-                },
-                {
-                    raceName: 'Owl-head',
-                    trophyName: 'hoot'
-                },
-                {
-                    raceName: 'Half-mermaid',
-                    trophyName: 'bident'
+    private async loadGameSettingFile(filename: string): Promise<GameSettingConfig> {
+        return new Promise((resolve, reject) => {
+            let req = new XMLHttpRequest();
+            req.addEventListener('load', () => {
+                if (req.status === 200) {
+                    console.log('xhr response: ', req.response);
+                    resolve(req.response);
+                } else {
+                    console.log('xhr error!');
+                    reject(req.status)
                 }
-            ],
-            charClasses: [
-                'Veg Crisper',
-                'Cat-caller',
-                'Metanarc',
-                'War Flautist',
-                'Sarcasminista',
-                'Meter Beater',
-                'Chef de Cuisine',
-                'Basher',
-                'Smasher',
-                'Warlock',
-                'Semi-retired Heckler'
-            ],
-            statNames: [
-                'str',
-                'dex',
-                'con',
-                'int',
-                'wis',
-                'cha'
-            ]
-        });
+            });
+            req.open('GET', '/assets/game-settings/' + filename);
+            req.responseType = 'json';
+            req.send();
+        })
     }
 
     getAvailableGameSettingNames(): string[] {

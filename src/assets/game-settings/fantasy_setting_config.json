@@ -1,0 +1,47 @@
+{
+    "gameSettingId": "1",
+    "gameSettingName": "Fantasy",
+    "charRaces": [
+        {
+            "raceName": "Demimutant",
+            "trophyName": "genome"
+        },
+        {
+            "raceName": "Werefellow",
+            "trophyName": "bowler hat"
+        },
+        {
+            "raceName": "Fartling",
+            "trophyName": "cloud"
+        },
+        {
+            "raceName": "Owl-head",
+            "trophyName": "hoot"
+        },
+        {
+            "raceName": "Half-mermaid",
+            "trophyName": "bident"
+        }
+    ],
+    "charClasses": [
+        "Veg Crisper",
+        "Cat-caller",
+        "Metanarc",
+        "War Flautist",
+        "Sarcasminista",
+        "Meter Beater",
+        "Chef de Cuisine",
+        "Basher",
+        "Smasher",
+        "Warlock",
+        "Semi-retired Heckler"
+    ],
+    "statNames": [
+        "str",
+        "dex",
+        "con",
+        "int",
+        "wis",
+        "cha"
+    ]
+}
