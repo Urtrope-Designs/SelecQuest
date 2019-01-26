@@ -1,4 +1,4 @@
-import { TaskTargetType, LootingTarget, GladiatingTarget, CharRace, LeadGatheringTarget, LeadType, LeadTarget, EquipmentMaterial, EquipmentModifier, CharTitlePosition } from "../helpers/models";
+import { TaskTargetType, LootingTarget, GladiatingTarget, CharRace, LeadGatheringTarget, LeadType, LeadTarget, EquipmentMaterial, EquipmentModifier, CharTitlePosition } from "../models/models";
 import { makeStringIndefinite, randFromList, makeStringPlural } from "../helpers/utils";
 
 export const IS_DEBUG = true;

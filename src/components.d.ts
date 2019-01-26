@@ -11,19 +11,13 @@ import '@ionic/core';
 import 'ionicons';
 import {
   AppState,
-  CharRace,
-} from './helpers/models';
+} from './models/models';
 
 
 export namespace Components {
 
-  interface SqCreateHeroScreen {
-    'charClasses': string[];
-    'charRaces': CharRace[];
-  }
+  interface SqCreateHeroScreen {}
   interface SqCreateHeroScreenAttributes extends StencilHTMLAttributes {
-    'charClasses'?: string[];
-    'charRaces'?: CharRace[];
     'onStartNewHero'?: (event: CustomEvent) => void;
   }
 

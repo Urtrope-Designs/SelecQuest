@@ -3,12 +3,12 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
 import { stateFn } from '../../helpers/state-store';
-import { AppState, TaskMode } from '../../helpers/models';
+import { AppState, TaskMode } from '../../models/models';
 import { Action, ChangeActiveTaskMode, SetActiveHero } from '../../helpers/actions';
 import { GameDataManager } from '../../services/game-data-manager';
 import { generateHeroHashFromHero } from '../../helpers/utils';
 import { PlayScreen } from '../play-screen/play-screen';
-import { RACES, CLASSES } from '../../global/config';
+import { GameSettingsManager } from '../../services/game-settings-manager';
 
 @Component({
     tag: 'sq-app',
@@ -76,7 +76,9 @@ export class SqApp {
         });
     }
 
-    componentWillLoad() {
+    async componentWillLoad() {
+        // todo: probably need to pull available Game Setting names from gameDataMgr eventually
+        await GameSettingsManager.getInstance().init(['fantasy_setting_config']);
         this.gameDataMgr.getActiveHeroHash()
             .then((heroHash: string) => {
                 if (!!heroHash) {
@@ -107,6 +109,7 @@ export class SqApp {
             });
 
         this._updateAvailableHeroes();
+        return;
     }
 
     private _queueAction(newAction: Action) {
@@ -124,7 +127,7 @@ export class SqApp {
                     {
                         !!this.state.hero
                         ? <sq-play-screen appState={this.state} availableHeroes={this.availableHeroes} ref={(el: any) => this.playScreen = el}></sq-play-screen>
-                        : <sq-create-hero-screen charRaces={RACES} charClasses={CLASSES}></sq-create-hero-screen>
+                        : <sq-create-hero-screen></sq-create-hero-screen>
                     }
                 </ion-app>
             );

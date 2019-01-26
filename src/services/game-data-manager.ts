@@ -1,4 +1,4 @@
-import { AppState } from "../helpers/models";
+import { AppState } from "../models/models";
 import { Observable } from "rxjs/Observable";
 import { tap } from "rxjs/operators";
 

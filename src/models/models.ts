@@ -1,4 +1,4 @@
-import { Adventure } from "./storyline-helpers";
+import { Adventure } from "../helpers/storyline-helpers";
 
 /** Task related */
 export interface Task {

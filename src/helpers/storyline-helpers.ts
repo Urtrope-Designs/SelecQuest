@@ -1,5 +1,5 @@
 import { IS_DEBUG } from "../global/config";
-import { HeroModification, HeroModificationType, Hero } from "./models";
+import { HeroModification, HeroModificationType, Hero } from "../models/models";
 import { randRange } from "./utils";
 import { generateNewEquipmentModification, generateSpellOrAbilityModification } from "./hero-manager";
 

@@ -1,4 +1,4 @@
-import { Task, TaskMode, AppState } from "./models";
+import { Task, TaskMode, AppState } from "../models/models";
 
 export enum ActionType {
     SetActiveTask,

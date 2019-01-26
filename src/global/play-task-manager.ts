@@ -4,7 +4,7 @@ import { withLatestFrom } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-import { Task, AppState } from '../helpers/models';
+import { Task, AppState } from '../models/models';
 import { SetActiveTask, TaskCompleted, Action } from '../helpers/actions';
 import { TaskGenerator, PRIORITIZED_TASK_GENERATORS } from '../helpers/play-task-helper';
 

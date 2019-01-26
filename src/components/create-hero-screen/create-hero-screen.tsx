@@ -1,19 +1,31 @@
-import { Component, State, Event, EventEmitter, Prop } from "@stencil/core";
-import { HeroStats, CharRace } from "../../helpers/models";
-import { generateRandomName, randFromList, randRange } from "../../helpers/utils";
+import { Component, State, Event, EventEmitter } from "@stencil/core";
+import { HeroStats, CharRace } from "../../models/models";
+import { generateRandomName, randFromList, randRange, capitalizeInitial } from "../../helpers/utils";
 import { createNewHero } from "../../helpers/hero-manager";
+import { GameSettingsManager } from '../../services/game-settings-manager';
+import { GameSetting } from "../../helpers/game-setting";
 
 @Component({
     tag: 'sq-create-hero-screen',
     styleUrl: 'create-hero-screen.scss',
 })
 export class CreateHeroScreen {
-    @Prop() charRaces: CharRace[] = [];
-    @Prop() charClasses: string[] = [];
-    @State() rolledHero: Heroling;
     @Event() startNewHero: EventEmitter;
+    @State() availableGameSettings: GameSetting[];
+    @State() rolledHero: Heroling;
+    @State() selectedGameSetting: GameSetting;
+    private get charRaces(): CharRace[] {
+        return this.selectedGameSetting.charRaces;
+    }
+    private get charClasses(): string[] {
+        return this.selectedGameSetting.charClasses;
+    }
+    private get statNames(): string[] {
+        return this.selectedGameSetting.statNames;
+    }
 
     componentWillLoad() {
+        this.initGameSettings();
         this.rolledHero = {
             name: generateRandomName(),
             raceName: randFromList(this.charRaces).raceName,
@@ -21,6 +33,12 @@ export class CreateHeroScreen {
             rolledStats: [generateRandomStats()],
             statsIndex: 0,
         }
+    }
+
+    private initGameSettings() {
+        const gameSettingsMgr = GameSettingsManager.getInstance();
+        this.availableGameSettings = gameSettingsMgr.getAllGameSettings();
+        this.selectedGameSetting = this.availableGameSettings[0];
     }
 
     roll() {
@@ -114,12 +132,11 @@ export class CreateHeroScreen {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr><td>Str</td><td>{this.rolledHero.rolledStats[this.rolledHero.statsIndex].str}</td></tr>
-                                <tr><td>Dex</td><td>{this.rolledHero.rolledStats[this.rolledHero.statsIndex].dex}</td></tr>
-                                <tr><td>Con</td><td>{this.rolledHero.rolledStats[this.rolledHero.statsIndex].con}</td></tr>
-                                <tr><td>Wis</td><td>{this.rolledHero.rolledStats[this.rolledHero.statsIndex].wis}</td></tr>
-                                <tr><td>Int</td><td>{this.rolledHero.rolledStats[this.rolledHero.statsIndex].int}</td></tr>
-                                <tr><td>Cha</td><td>{this.rolledHero.rolledStats[this.rolledHero.statsIndex].cha}</td></tr>
+                                {
+                                    this.statNames.map(statName =>
+                                        <tr><td>{capitalizeInitial(statName)}</td><td>{this.rolledHero.rolledStats[this.rolledHero.statsIndex][statName]}</td></tr>
+                                    )
+                                }
                             </tbody>
                         </table>
                         <div class="buttonRow">
