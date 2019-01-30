@@ -73,6 +73,7 @@ export enum HeroModificationType {
     SET,
     SET_EQUIPMENT,
     ADD,
+    ADD_STAT,
     ADD_QUANTITY,
     ADD_RANK,
     ADD_ACCOLADE,
@@ -81,25 +82,31 @@ export enum HeroModificationType {
     REMOVE_QUANTITY,
 }
 
-export class HeroStats {
-    str: number = 0;
-    dex: number = 0;
-    con: number = 0;
-    int: number = 0;
-    wis: number = 0;
-    cha: number = 0;
+// export class HeroStats {
+//     str: number = 0;
+//     dex: number = 0;
+//     con: number = 0;
+//     int: number = 0;
+//     wis: number = 0;
+//     cha: number = 0;
+// }
+
+// const charStats = new HeroStats();
+// export function getHeroStatList(): string[] {
+//     return Object.keys(charStats);
+// }
+
+export interface CharStat {
+    name: string,
+    value: number,
 }
 
-const charStats = new HeroStats();
-export function getHeroStatList(): string[] {
-    return Object.keys(charStats);
-}
-
-export interface Hero extends HeroStats {
+export interface Hero {
     name: string;
     raceName: string;
     class: string;
     level: number;
+    stats: CharStat[];
     /* stats inherited from HeroStats */
     // str: number;
     // dex: number;
@@ -140,6 +147,7 @@ export interface Hero extends HeroStats {
     completedAdventures: string[];
     adventureProgress: number;
     latestModifications: {attributeName: string, data: any}[];
+    gameSettingId: string;
 }
 
 export interface CharSpell {

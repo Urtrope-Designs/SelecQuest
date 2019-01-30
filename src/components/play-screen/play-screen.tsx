@@ -1,6 +1,6 @@
 import { Component, Prop, State, Event, EventEmitter, Element, Watch } from '@stencil/core';
 
-import { AppState, Task, TaskMode, AccoladeType, Hero, CharAffiliation } from '../../models/models';
+import { AppState, Task, TaskMode, AccoladeType, Hero, CharAffiliation, CharStat } from '../../models/models';
 import { getXpRequiredForNextLevel } from '../../helpers/hero-manager';
 import { capitalizeInitial, getRoughTime, generateHeroHashFromHero } from '../../helpers/utils';
 
@@ -18,11 +18,11 @@ export class PlayScreen {
     @State() activeVisibleSection: VisibleSection;
     @State() selectedAvailableHeroHash: string = '';
     @State() heroHashWeAreWaitingFor: string = '';
-    @Event() taskModeAction: EventEmitter;
+    @Event() taskModeAction: EventEmitter<TaskMode>;
     @Event() clearAllGameData: EventEmitter;
     @Event() buildNewHero: EventEmitter;
-    @Event() playNewHero: EventEmitter;
-    @Event() deleteHero: EventEmitter;
+    @Event() playNewHero: EventEmitter<string>;
+    @Event() deleteHero: EventEmitter<string>;
 
     @Watch('appState')
     stateHandler(newState: AppState) {
@@ -52,7 +52,7 @@ export class PlayScreen {
     }
 
     taskModeButtonClicked(newTaskModeString: TaskMode) {
-        let newTaskMode;
+        let newTaskMode: TaskMode;
         switch(newTaskModeString) {
             case TaskMode.LOOTING:
                 newTaskMode = TaskMode.LOOTING;
@@ -189,12 +189,14 @@ export class PlayScreen {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr {...this.highlightModifiedAttribute('str')}><td>Str</td><td>{this.appState.hero.str}</td></tr>
-                                        <tr {...this.highlightModifiedAttribute('dex')}><td>Dex</td><td>{this.appState.hero.dex}</td></tr>
-                                        <tr {...this.highlightModifiedAttribute('con')}><td>Con</td><td>{this.appState.hero.con}</td></tr>
-                                        <tr {...this.highlightModifiedAttribute('wis')}><td>Wis</td><td>{this.appState.hero.wis}</td></tr>
-                                        <tr {...this.highlightModifiedAttribute('int')}><td>Int</td><td>{this.appState.hero.int}</td></tr>
-                                        <tr {...this.highlightModifiedAttribute('cha')}><td>Cha</td><td>{this.appState.hero.cha}</td></tr>
+                                        {
+                                            this.appState.hero.stats.map((stat: CharStat) =>
+                                                <tr {...(this.highlightModifiedAttribute('stats', stat.name))}>
+                                                    <td>{capitalizeInitial(stat.name)}</td>
+                                                    <td>{stat.value}</td>
+                                                </tr>
+                                            )
+                                        }
                                         <tr {...this.highlightModifiedAttribute('maxHp')}><td>Max HP</td><td>{this.appState.hero.maxHp}</td></tr>
                                         <tr {...this.highlightModifiedAttribute('maxMp')}><td>Max MP</td><td>{this.appState.hero.maxMp}</td></tr>
                                     </tbody>

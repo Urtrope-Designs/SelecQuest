@@ -10,7 +10,14 @@ import '@stencil/core';
 import '@ionic/core';
 import 'ionicons';
 import {
+  EventEmitter,
+} from '@stencil/core';
+import {
+  HeroInitData,
+} from './models/hero-models';
+import {
   AppState,
+  TaskMode,
 } from './models/models';
 
 
@@ -18,7 +25,7 @@ export namespace Components {
 
   interface SqCreateHeroScreen {}
   interface SqCreateHeroScreenAttributes extends StencilHTMLAttributes {
-    'onStartNewHero'?: (event: CustomEvent) => void;
+    'onStartNewHero'?: (event: CustomEvent<HeroInitData>) => void;
   }
 
   interface SqPlayScreen {
@@ -30,9 +37,9 @@ export namespace Components {
     'availableHeroes'?: {hash: string, name: string}[];
     'onBuildNewHero'?: (event: CustomEvent) => void;
     'onClearAllGameData'?: (event: CustomEvent) => void;
-    'onDeleteHero'?: (event: CustomEvent) => void;
-    'onPlayNewHero'?: (event: CustomEvent) => void;
-    'onTaskModeAction'?: (event: CustomEvent) => void;
+    'onDeleteHero'?: (event: CustomEvent<string>) => void;
+    'onPlayNewHero'?: (event: CustomEvent<string>) => void;
+    'onTaskModeAction'?: (event: CustomEvent<TaskMode>) => void;
   }
 
   interface SqProgressBar {

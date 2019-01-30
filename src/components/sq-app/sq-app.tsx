@@ -9,6 +9,8 @@ import { GameDataManager } from '../../services/game-data-manager';
 import { generateHeroHashFromHero } from '../../helpers/utils';
 import { PlayScreen } from '../play-screen/play-screen';
 import { GameSettingsManager } from '../../services/game-settings-manager';
+import { HeroInitData } from '../../models/hero-models';
+import { createNewHero } from '../../helpers/hero-manager';
 
 @Component({
     tag: 'sq-app',
@@ -27,9 +29,10 @@ export class SqApp {
         this._queueAction(new ChangeActiveTaskMode(event.detail));
     }
     @Listen('startNewHero')
-    startNewHeroHandler(event: CustomEvent) {
-        const newGameState = Object.assign({}, DEFAULT_APP_STATE, {hero: event.detail});
-        this.gameDataMgr.setActiveHeroHash(generateHeroHashFromHero(event.detail));
+    startNewHeroHandler(event: CustomEvent<HeroInitData>) {
+        const newHero = createNewHero(event.detail);
+        const newGameState = Object.assign({}, DEFAULT_APP_STATE, {hero: newHero});
+        this.gameDataMgr.setActiveHeroHash(generateHeroHashFromHero(newHero));
         this._queueAction(new SetActiveHero(newGameState));
         setTimeout(() => {
             this._updateAvailableHeroes();

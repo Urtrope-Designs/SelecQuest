@@ -1,16 +1,16 @@
 import { Component, State, Event, EventEmitter } from "@stencil/core";
-import { HeroStats, CharRace } from "../../models/models";
+import { CharStat, CharRace } from "../../models/models";
 import { generateRandomName, randFromList, randRange, capitalizeInitial } from "../../helpers/utils";
-import { createNewHero } from "../../helpers/hero-manager";
 import { GameSettingsManager } from '../../services/game-settings-manager';
 import { GameSetting } from "../../helpers/game-setting";
+import { HeroInitData } from "../../models/hero-models";
 
 @Component({
     tag: 'sq-create-hero-screen',
     styleUrl: 'create-hero-screen.scss',
 })
 export class CreateHeroScreen {
-    @Event() startNewHero: EventEmitter;
+    @Event() startNewHero: EventEmitter<HeroInitData>;
     @State() availableGameSettings: GameSetting[];
     @State() rolledHero: Heroling;
     @State() selectedGameSetting: GameSetting;
@@ -24,25 +24,29 @@ export class CreateHeroScreen {
         return this.selectedGameSetting.statNames;
     }
 
-    componentWillLoad() {
-        this.initGameSettings();
+    async componentWillLoad() {
+        await this.initGameSettings();
         this.rolledHero = {
             name: generateRandomName(),
             raceName: randFromList(this.charRaces).raceName,
             className: randFromList(this.charClasses),
-            rolledStats: [generateRandomStats()],
+            rolledStats: [this.generateRandomStats()],
             statsIndex: 0,
         }
+
+        return Promise.resolve(true);
     }
 
-    private initGameSettings() {
+    private async initGameSettings() {
         const gameSettingsMgr = GameSettingsManager.getInstance();
-        this.availableGameSettings = gameSettingsMgr.getAllGameSettings();
+        this.availableGameSettings = await gameSettingsMgr.getAllGameSettings();
         this.selectedGameSetting = this.availableGameSettings[0];
+
+        return Promise.resolve(true);
     }
 
     roll() {
-        this.handleChange('rolledStats', [...this.rolledHero.rolledStats, generateRandomStats()]);
+        this.handleChange('rolledStats', [...this.rolledHero.rolledStats, this.generateRandomStats()]);
         this.handleChange('statsIndex', this.rolledHero.rolledStats.length - 1);
     }
 
@@ -57,8 +61,22 @@ export class CreateHeroScreen {
     }
 
     handleSubmit() {
-        const newHero = createNewHero(this.rolledHero.name, this.rolledHero.raceName, this.rolledHero.className, this.rolledHero.rolledStats[this.rolledHero.statsIndex]);
+        const newHero: HeroInitData = {
+            name: this.rolledHero.name,
+            raceName: this.rolledHero.raceName,
+            className: this.rolledHero.className,
+            stats: this.rolledHero.rolledStats[this.rolledHero.statsIndex],
+            gameSettingId: this.selectedGameSetting.gameSettingId,
+        }
         this.startNewHero.emit(newHero)
+    }
+
+    private generateRandomStats(): CharStat[] {
+        let stats = [];
+        for (let stat of this.statNames) {
+            stats.push({name: stat, value: randRange(1, 6) + randRange(1, 6) + randRange(1, 6)});
+        }
+        return stats;
     }
 
     render() {
@@ -133,8 +151,8 @@ export class CreateHeroScreen {
                             </thead>
                             <tbody>
                                 {
-                                    this.statNames.map(statName =>
-                                        <tr><td>{capitalizeInitial(statName)}</td><td>{this.rolledHero.rolledStats[this.rolledHero.statsIndex][statName]}</td></tr>
+                                    this.rolledHero.rolledStats[this.rolledHero.statsIndex].map((stat: CharStat) =>
+                                        <tr><td>{capitalizeInitial(stat.name)}</td><td>{stat.value}</td></tr>
                                     )
                                 }
                             </tbody>
@@ -159,14 +177,6 @@ interface Heroling {
     name: string;
     raceName: string;
     className: string;
-    rolledStats: HeroStats[];
+    rolledStats: CharStat[][];
     statsIndex: number,
-}
-
-function generateRandomStats(): HeroStats {
-    let stats = new HeroStats();
-    for (let stat in stats) {
-        stats[stat] = randRange(1, 6) + randRange(1, 6) + randRange(1, 6);
-    }
-    return stats;
 }
