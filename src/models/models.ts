@@ -82,21 +82,7 @@ export enum HeroModificationType {
     REMOVE_QUANTITY,
 }
 
-// export class HeroStats {
-//     str: number = 0;
-//     dex: number = 0;
-//     con: number = 0;
-//     int: number = 0;
-//     wis: number = 0;
-//     cha: number = 0;
-// }
-
-// const charStats = new HeroStats();
-// export function getHeroStatList(): string[] {
-//     return Object.keys(charStats);
-// }
-
-export interface CharStat {
+export interface HeroStat {
     name: string,
     value: number,
 }
@@ -106,7 +92,7 @@ export interface Hero {
     raceName: string;
     class: string;
     level: number;
-    stats: CharStat[];
+    stats: HeroStat[];
     /* stats inherited from HeroStats */
     // str: number;
     // dex: number;
@@ -118,11 +104,11 @@ export interface Hero {
     maxHp: number;
     maxMp: number;
     currentXp: number;
-    spells: CharSpell[]; 
-    abilities: CharAbility[]; 
-    equipment: CharEquipment[];
-    accolades: CharAccolade[];
-    affiliations: CharAffiliation[];
+    spells: HeroSpell[]; 
+    abilities: HeroAbility[]; 
+    equipment: HeroEquipment[];
+    accolades: HeroAccolade[];
+    affiliations: HeroAffiliation[];
     maxEncumbrance: number;
     maxEquipmentWear: number;
     maxQuestLogSize: number;
@@ -131,9 +117,9 @@ export interface Hero {
     spentRenown: number;
     reputation: number;
     spentReputation: number;
-    loot: CharLoot[];
-    trophies: CharTrophy[];
-    leads: CharLead[];
+    loot: HeroLoot[];
+    trophies: HeroTrophy[];
+    leads: HeroLead[];
     isInLootSelloffMode: boolean;
     isInTrophyBoastingMode: boolean;
     isInLeadFollowingMode: boolean;
@@ -150,50 +136,50 @@ export interface Hero {
     gameSettingId: string;
 }
 
-export interface CharSpell {
+export interface HeroSpell {
     name: string,
     rank: number,
 };
 
-export interface CharAbility {
+export interface HeroAbility {
     name: string,
     rank: number,
 };
 
-export interface CharEquipment {
+export interface HeroEquipment {
     type: EquipmentType,
     description: string,
 };
 
-export interface CharAccolade {
+export interface HeroAccolade {
     type: AccoladeType,
     received: string[],
 };
 
-export interface CharAffiliation {
+export interface HeroAffiliation {
     groupName: string,
-    connection: CharConnection,
+    connection: HeroConnection,
     office: string,
 }
 
-export interface CharConnection {
+export interface HeroConnection {
     personName: string,
     personTitle: string,
 }
 
-export interface CharLoot {
+export interface HeroLoot {
     name: string,
     quantity: number,
     value: number,
 };
 
-export interface CharTrophy {
+export interface HeroTrophy {
     name: string,
     quantity: number,
     value: number,
 };
 
-export interface CharLead {
+export interface HeroLead {
     questlogName: string,
     taskName: string,
     value: number,
@@ -229,7 +215,7 @@ export interface AppState {
     activeTaskMode: TaskMode
 }
 
-export interface CharRace {
+export interface HeroRace {
     raceName: string,
     trophyName: string,
 }
@@ -245,7 +231,7 @@ export interface EquipmentMaterial {
     modifierList: EquipmentModifier[],
 }
 
-export interface CharTitlePosition {
+export interface HeroTitlePosition {
     description: string,
     titleObjectList: string[],
 }

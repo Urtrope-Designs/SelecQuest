@@ -1,6 +1,6 @@
 import { Component, Prop, State, Event, EventEmitter, Element, Watch } from '@stencil/core';
 
-import { AppState, Task, TaskMode, AccoladeType, Hero, CharAffiliation, CharStat } from '../../models/models';
+import { AppState, Task, TaskMode, AccoladeType, Hero, HeroAffiliation, HeroStat } from '../../models/models';
 import { getXpRequiredForNextLevel } from '../../helpers/hero-manager';
 import { capitalizeInitial, getRoughTime, generateHeroHashFromHero } from '../../helpers/utils';
 
@@ -190,7 +190,7 @@ export class PlayScreen {
                                     </thead>
                                     <tbody>
                                         {
-                                            this.appState.hero.stats.map((stat: CharStat) =>
+                                            this.appState.hero.stats.map((stat: HeroStat) =>
                                                 <tr {...(this.highlightModifiedAttribute('stats', stat.name))}>
                                                     <td>{capitalizeInitial(stat.name)}</td>
                                                     <td>{stat.value}</td>
@@ -374,8 +374,8 @@ export class PlayScreen {
                                             this.appState.hero.affiliations.length <= 0
                                             ? <tr><td colSpan={2}>[None]</td></tr>
                                             : this.appState.hero.affiliations
-                                                .map((affiliation: CharAffiliation) => 
-                                                    <tr {...this.findUpdate('affiliations', (data: CharAffiliation) => data.connection != null && data.groupName == affiliation.groupName) ? {class: 'textRow-highlight'} : {}}>
+                                                .map((affiliation: HeroAffiliation) => 
+                                                    <tr {...this.findUpdate('affiliations', (data: HeroAffiliation) => data.connection != null && data.groupName == affiliation.groupName) ? {class: 'textRow-highlight'} : {}}>
                                                         <td>{affiliation.connection.personName}, the {affiliation.connection.personTitle}</td>
                                                         <td>{capitalizeInitial(affiliation.groupName)}</td>
                                                     </tr>
@@ -396,8 +396,8 @@ export class PlayScreen {
                                             this.appState.hero.affiliations.filter(a => a.office != null).length <= 0
                                             ? <tr><td colSpan={2}>[None]</td></tr>
                                             : this.appState.hero.affiliations.filter(a => a.office != null)
-                                                .map((affiliation: CharAffiliation) => 
-                                                    <tr {...this.findUpdate('affiliations', (data: CharAffiliation) => data.office != null && data.groupName == affiliation.groupName) ? {class: 'textRow-highlight'} : {}}>
+                                                .map((affiliation: HeroAffiliation) => 
+                                                    <tr {...this.findUpdate('affiliations', (data: HeroAffiliation) => data.office != null && data.groupName == affiliation.groupName) ? {class: 'textRow-highlight'} : {}}>
                                                         <td>{capitalizeInitial(affiliation.groupName)}</td>
                                                         <td>{affiliation.office}</td>
                                                     </tr>

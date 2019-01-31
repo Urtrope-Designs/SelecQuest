@@ -1,5 +1,5 @@
 import { Component, State, Event, EventEmitter } from "@stencil/core";
-import { CharStat, CharRace } from "../../models/models";
+import { HeroStat, HeroRace } from "../../models/models";
 import { generateRandomName, randFromList, randRange, capitalizeInitial } from "../../helpers/utils";
 import { GameSettingsManager } from '../../services/game-settings-manager';
 import { GameSetting } from "../../helpers/game-setting";
@@ -14,11 +14,11 @@ export class CreateHeroScreen {
     @State() availableGameSettings: GameSetting[];
     @State() rolledHero: Heroling;
     @State() selectedGameSetting: GameSetting;
-    private get charRaces(): CharRace[] {
-        return this.selectedGameSetting.charRaces;
+    private get heroRaces(): HeroRace[] {
+        return this.selectedGameSetting.heroRaces;
     }
-    private get charClasses(): string[] {
-        return this.selectedGameSetting.charClasses;
+    private get heroClasses(): string[] {
+        return this.selectedGameSetting.heroClasses;
     }
     private get statNames(): string[] {
         return this.selectedGameSetting.statNames;
@@ -28,8 +28,8 @@ export class CreateHeroScreen {
         await this.initGameSettings();
         this.rolledHero = {
             name: generateRandomName(),
-            raceName: randFromList(this.charRaces).raceName,
-            className: randFromList(this.charClasses),
+            raceName: randFromList(this.heroRaces).raceName,
+            className: randFromList(this.heroClasses),
             rolledStats: [this.generateRandomStats()],
             statsIndex: 0,
         }
@@ -71,7 +71,7 @@ export class CreateHeroScreen {
         this.startNewHero.emit(newHero)
     }
 
-    private generateRandomStats(): CharStat[] {
+    private generateRandomStats(): HeroStat[] {
         let stats = [];
         for (let stat of this.statNames) {
             stats.push({name: stat, value: randRange(1, 6) + randRange(1, 6) + randRange(1, 6)});
@@ -112,7 +112,7 @@ export class CreateHeroScreen {
                             <div class="textRow textRow-highlight">Race</div>
                             <div class="buttonRow">
                                 {
-                                    this.charRaces.map(race => 
+                                    this.heroRaces.map(race => 
                                         <button 
                                             {...(this.rolledHero.raceName == race.raceName ? {class: 'selected'} : {})}
                                             onClick={ () => this.handleChange('raceName', race.raceName)}
@@ -129,7 +129,7 @@ export class CreateHeroScreen {
                             <div class="textRow textRow-highlight">Class</div>
                             <div class="buttonRow">
                                 {
-                                    this.charClasses.map(className => 
+                                    this.heroClasses.map(className => 
                                         <button 
                                             {...(this.rolledHero.className == className ? {class: 'selected'} : {})}
                                             onClick={ () => this.handleChange('className', className)}
@@ -151,7 +151,7 @@ export class CreateHeroScreen {
                             </thead>
                             <tbody>
                                 {
-                                    this.rolledHero.rolledStats[this.rolledHero.statsIndex].map((stat: CharStat) =>
+                                    this.rolledHero.rolledStats[this.rolledHero.statsIndex].map((stat: HeroStat) =>
                                         <tr><td>{capitalizeInitial(stat.name)}</td><td>{stat.value}</td></tr>
                                     )
                                 }
@@ -177,6 +177,6 @@ interface Heroling {
     name: string;
     raceName: string;
     className: string;
-    rolledStats: CharStat[][];
+    rolledStats: HeroStat[][];
     statsIndex: number,
 }

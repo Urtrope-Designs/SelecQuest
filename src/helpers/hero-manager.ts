@@ -1,4 +1,4 @@
-import { Hero, HeroModificationType, AccoladeType, HeroModification, CharEquipment, EquipmentType, EquipmentMaterial, CharAccolade, CharAffiliation, CharConnection, CharTitlePosition, CharStat } from '../models/models';
+import { Hero, HeroModificationType, AccoladeType, HeroModification, HeroEquipment, EquipmentType, EquipmentMaterial, HeroAccolade, HeroAffiliation, HeroConnection, HeroTitlePosition, HeroStat } from '../models/models';
 import { randRange, randFromList, deepCopyObject, randFromListLow, randFromListHigh, generateRandomName, capitalizeInitial, getIterableEnumKeys } from './utils';
 import { PROLOGUE_ADVENTURE_NAME } from './storyline-helpers';
 import { SPELLS, ABILITIES, IS_DEBUG, WEAPON_MATERIALS, SHEILD_MATERIALS, ARMOR_MATERIALS, EPITHET_DESCRIPTORS, EPITHET_BEING_ALL, TITLE_POSITIONS_ALL, SOBRIQUET_MODIFIERS, SOBRIQUET_NOUN_PORTION, HONORIFIC_TEMPLATES, OFFICE_POSITIONS_ALL, STANDARD_GROUPS_INDEFINITE } from '../global/config';
@@ -76,11 +76,11 @@ export function createNewHero(heroling: HeroInitData): Hero {
     return newHero;
 }
 
-export function applyHeroModifications(baseChar: Hero, heroMods: HeroModification[], resetModsList = true): Hero {
-    let newChar: Hero = deepCopyObject(baseChar);         // need to deep clone rather than using Object.assign() or spread operator
+export function applyHeroModifications(baseHero: Hero, heroMods: HeroModification[], resetModsList = true): Hero {
+    let newHero: Hero = deepCopyObject(baseHero);         // need to deep clone rather than using Object.assign() or spread operator
     
     if (resetModsList) {
-        newChar.latestModifications = [];
+        newHero.latestModifications = [];
     }
 
     const applyNameValue = (valueAttributeName: string) => {
@@ -109,103 +109,103 @@ export function applyHeroModifications(baseChar: Hero, heroMods: HeroModificatio
             case HeroModificationType.INCREASE:
                 /* level, stats, maxHp, maxMp, currentXp, gold, renown, spentRenown, reputation, spentReputation,
                 marketSaturation, fatigue, socialExposure, adventureProgress */
-                newChar.latestModifications.push({attributeName: result.attributeName, data: null});
+                newHero.latestModifications.push({attributeName: result.attributeName, data: null});
                 // fallthrough
             case HeroModificationType.DECREASE:
                 /* gold, marketSaturation, fatigue, socialExposure */
-                newChar[result.attributeName] += result.data;
+                newHero[result.attributeName] += result.data;
                 break;
             case HeroModificationType.SET:
                 /* currentXp, isInLootSelloffMode, isInTrophyBoastingMode, isInLeadFollowingMode, currentAdventure, adventureProgress */
-                newChar[result.attributeName] = result.data;
-                newChar.latestModifications.push({attributeName: result.attributeName, data: null});
+                newHero[result.attributeName] = result.data;
+                newHero.latestModifications.push({attributeName: result.attributeName, data: null});
                 break;
             case HeroModificationType.SET_EQUIPMENT:
                 /* equipment */
-                result.data.map((equip: CharEquipment) => {
-                    const existingEquipment = newChar[result.attributeName].find(e => {
+                result.data.map((equip: HeroEquipment) => {
+                    const existingEquipment = newHero[result.attributeName].find(e => {
                         return e.type == equip.type;
                     })
                     existingEquipment.description = equip.description;
-                    newChar.latestModifications.push({attributeName: result.attributeName, data: equip.type});
+                    newHero.latestModifications.push({attributeName: result.attributeName, data: equip.type});
                 })
                 break;
             case HeroModificationType.ADD_STAT:
                 /* stats */
-                applyNameValue('value')(newChar, result);
+                applyNameValue('value')(newHero, result);
             case HeroModificationType.ADD_RANK:
                 /* spells, abilities */
-                applyNameValue('rank')(newChar, result);
+                applyNameValue('rank')(newHero, result);
                 break;
             case HeroModificationType.ADD_QUANTITY:
                 /* loot, trophies */
-                applyNameValue('quantity')(newChar, result);
+                applyNameValue('quantity')(newHero, result);
                 break;
             case HeroModificationType.REMOVE_QUANTITY:
             case HeroModificationType.REMOVE:
                 /* loot, trophies, leads */
                 for (let item of result.data) {
-                    let existingItemIndex = newChar[result.attributeName].findIndex((i) => {
+                    let existingItemIndex = newHero[result.attributeName].findIndex((i) => {
                         return item.name == i.name;
                     });
                     if (existingItemIndex != -1) {
-                        newChar[result.attributeName].splice(existingItemIndex, 1);
+                        newHero[result.attributeName].splice(existingItemIndex, 1);
                     }
                 }
                 break;
             case HeroModificationType.ADD:
                 /* leads, completedAdventures */
-                newChar[result.attributeName] = newChar[result.attributeName].concat(result.data);
-                newChar.latestModifications.push({attributeName: result.attributeName, data: null});
+                newHero[result.attributeName] = newHero[result.attributeName].concat(result.data);
+                newHero.latestModifications.push({attributeName: result.attributeName, data: null});
                 break;
             case HeroModificationType.ADD_ACCOLADE:
                 /* accolades */
-                result.data.map((newAccolade: CharAccolade) => {
-                    const existingAccolade: CharAccolade = newChar[result.attributeName].find(a => {
+                result.data.map((newAccolade: HeroAccolade) => {
+                    const existingAccolade: HeroAccolade = newHero[result.attributeName].find(a => {
                         return a.type == newAccolade.type;
                     })
                     existingAccolade.received = existingAccolade.received.concat(newAccolade.received);
                     if (existingAccolade.received.length > 3) {
                         existingAccolade.received.splice(0, existingAccolade.received.length - 3);
                     }
-                    newChar.latestModifications.push({attributeName: result.attributeName, data: newAccolade.type});
+                    newHero.latestModifications.push({attributeName: result.attributeName, data: newAccolade.type});
                 })
                 break;
             case HeroModificationType.ADD_AFFILIATION:
                 /* affiliations */
-                result.data.map((newAffiliation: CharAffiliation) => {
+                result.data.map((newAffiliation: HeroAffiliation) => {
                     if (newAffiliation.connection != null) {
-                        newChar.affiliations.push(newAffiliation);
+                        newHero.affiliations.push(newAffiliation);
                     }
                     if (newAffiliation.office != null) {
-                        const existingAffiliation: CharAffiliation = newChar.affiliations.find(a => {
+                        const existingAffiliation: HeroAffiliation = newHero.affiliations.find(a => {
                             return a.groupName == newAffiliation.groupName;
                         });
                         existingAffiliation.office = newAffiliation.office;
                     }
                     
-                    newChar.latestModifications.push({attributeName: result.attributeName, data: newAffiliation});
+                    newHero.latestModifications.push({attributeName: result.attributeName, data: newAffiliation});
                 })
                 break;
         }
     }
     
-    return newChar;
+    return newHero;
 }
 
 export function updateHeroState(hero: Hero): Hero {
-    let newChar = deepCopyObject(hero);          // need to deep clone rather than using Object.assign() or spread operator
+    let newHero = deepCopyObject(hero);          // need to deep clone rather than using Object.assign() or spread operator
     
-    newChar.marketSaturation = Math.min(newChar.marketSaturation, newChar.maxMarketSaturation);
-    newChar.marketSaturation = Math.max(newChar.marketSaturation, 0);
-    newChar.fatigue = Math.min(newChar.fatigue, newChar.maxFatigue);
-    newChar.fatigue = Math.max(newChar.fatigue, 0);
-    newChar.socialExposure = Math.min(newChar.socialExposure, newChar.maxSocialCapital);
-    newChar.socialExposure = Math.max(newChar.socialExposure, 0);
-    newChar.adventureProgress = Math.min(newChar.adventureProgress, newChar.currentAdventure.progressRequired);
-    newChar.adventureProgress = Math.max(newChar.adventureProgress, 0);
+    newHero.marketSaturation = Math.min(newHero.marketSaturation, newHero.maxMarketSaturation);
+    newHero.marketSaturation = Math.max(newHero.marketSaturation, 0);
+    newHero.fatigue = Math.min(newHero.fatigue, newHero.maxFatigue);
+    newHero.fatigue = Math.max(newHero.fatigue, 0);
+    newHero.socialExposure = Math.min(newHero.socialExposure, newHero.maxSocialCapital);
+    newHero.socialExposure = Math.max(newHero.socialExposure, 0);
+    newHero.adventureProgress = Math.min(newHero.adventureProgress, newHero.currentAdventure.progressRequired);
+    newHero.adventureProgress = Math.max(newHero.adventureProgress, 0);
     
-    return newChar;
+    return newHero;
 }
 
 export function getXpRequiredForNextLevel(curLevel: number): number {
@@ -265,7 +265,7 @@ export function getLevelUpModifications(hero: Hero): HeroModification[] {
     return levelMods;
 }
 
-function selectLevelBonusStatIndex(heroStats: CharStat[]): number {
+function selectLevelBonusStatIndex(heroStats: HeroStat[]): number {
     let selectedStatIndex: number;
     selectedStatIndex = randRange(0,5);
     
@@ -335,7 +335,7 @@ export function generateNewEquipmentModification(hero: Hero): HeroModification {
     return mod;
 }
 
-function generateRandomEquipment(targetLevel: number): CharEquipment {
+function generateRandomEquipment(targetLevel: number): HeroEquipment {
     //     randomly pick equipment type
     const newEquipmentType: EquipmentType = EquipmentType[randFromList(Object.keys(EquipmentType))];
     // 2. randomly pick 5 items of selected equipment type, & pick the one closest to hero level
@@ -399,7 +399,7 @@ export function generateNewAccoladeModification(hero: Hero): HeroModification {
     return mod;
 }
 
-function generateRandomAccolade(hero: Hero): CharAccolade {
+function generateRandomAccolade(hero: Hero): HeroAccolade {
     const newAccoladeType = AccoladeType[randFromList(getIterableEnumKeys(AccoladeType))];
     let newAccoladeDescription = '';
     let exclusions: string = '';
@@ -445,7 +445,7 @@ function generateRandomEpithetDescription(exclusions: string) {
     return epithetDescription;
 };
 function generateRandomTitleDescription(exclusions: string) {
-    let titlePosition: CharTitlePosition;
+    let titlePosition: HeroTitlePosition;
     let titleObject: string;
     do {
         titlePosition = randFromList(TITLE_POSITIONS_ALL);
@@ -504,10 +504,10 @@ export function generateNewAffiliationModification(hero: Hero): HeroModification
     return mod;
 }
 
-function generateRandomAffiliation(hero: Hero): CharAffiliation {
-    let newAffiliationData: CharAffiliation;
+function generateRandomAffiliation(hero: Hero): HeroAffiliation {
+    let newAffiliationData: HeroAffiliation;
 
-    let newAffiliationFactories: ((existingAffiliations: CharAffiliation[]) => CharAffiliation)[] = [];
+    let newAffiliationFactories: ((existingAffiliations: HeroAffiliation[]) => HeroAffiliation)[] = [];
     if (hero.affiliations.length < STANDARD_GROUPS_INDEFINITE.length) {
         newAffiliationFactories.push(generateRandomDistinctConnection);
         newAffiliationFactories.push(generateRandomDistinctConnection); // double the odds
@@ -527,13 +527,13 @@ function generateRandomAffiliation(hero: Hero): CharAffiliation {
     return newAffiliationData;
 }
 
-const nullAffiliation: CharAffiliation = {
+const nullAffiliation: HeroAffiliation = {
     groupName: null,
     connection: null,
     office: null,
 }
 
-function generateRandomDistinctConnection(existingAffiliations: CharAffiliation[]): CharAffiliation {
+function generateRandomDistinctConnection(existingAffiliations: HeroAffiliation[]): HeroAffiliation {
     const availableDistinctGroups: string[] = STANDARD_GROUPS_INDEFINITE.filter((groupName: string) => {
         return !existingAffiliations.some(a => a.groupName == groupName);
     });
@@ -545,11 +545,11 @@ function generateRandomDistinctConnection(existingAffiliations: CharAffiliation[
     const newConnectionName = generateRandomName();
     const newConnectionTitle = randFromList(OFFICE_POSITIONS_ALL.slice(1));
     const newGroupName = randFromList(availableDistinctGroups);
-    const newConnection: CharConnection = {
+    const newConnection: HeroConnection = {
         personName: newConnectionName,
         personTitle: newConnectionTitle,
     }
-    const returnData: CharAffiliation = {
+    const returnData: HeroAffiliation = {
         groupName: newGroupName,
         connection: newConnection,
         office: null,
@@ -557,7 +557,7 @@ function generateRandomDistinctConnection(existingAffiliations: CharAffiliation[
     return returnData;
 }
 
-function generateRandomDistinctMembership(existingAffiliations: CharAffiliation[]): CharAffiliation {
+function generateRandomDistinctMembership(existingAffiliations: HeroAffiliation[]): HeroAffiliation {
     // list of all groups we have a connection with but don't currently have membership (ie, an office)
     const availableMembershipGroups: string[] = existingAffiliations.filter(a => a.office == null).map(a => a.groupName);
 
@@ -567,7 +567,7 @@ function generateRandomDistinctMembership(existingAffiliations: CharAffiliation[
 
     const newMembershipGroupName = randFromList(availableMembershipGroups);
     const newOffice = OFFICE_POSITIONS_ALL[0];
-    const returnData: CharAffiliation = {
+    const returnData: HeroAffiliation = {
         groupName: newMembershipGroupName,
         office: newOffice,
         connection: null,
@@ -575,7 +575,7 @@ function generateRandomDistinctMembership(existingAffiliations: CharAffiliation[
     return returnData;
 }
 
-function generateRandomDistinctHigherOffice(existingAffiliations: CharAffiliation[]): CharAffiliation {
+function generateRandomDistinctHigherOffice(existingAffiliations: HeroAffiliation[]): HeroAffiliation {
     // list of all groups with a non-null office that is also not the highest office
     const availableOfficeGroups: string[] = existingAffiliations.filter(a => isNonNullNonHighestOffice(a.office)).map(a => a.groupName);
     if (availableOfficeGroups.length === 0) {
@@ -583,14 +583,14 @@ function generateRandomDistinctHigherOffice(existingAffiliations: CharAffiliatio
     }
     const group = randFromList(availableOfficeGroups);
     
-    const existingAffiliation: CharAffiliation = existingAffiliations.find(a => a.groupName == group);
+    const existingAffiliation: HeroAffiliation = existingAffiliations.find(a => a.groupName == group);
     // list of all positions higher than currently "held" office, non-dup with the same group's Connection
     const availableOfficePositions: string[] = OFFICE_POSITIONS_ALL.slice(OFFICE_POSITIONS_ALL.indexOf(existingAffiliation.office) + 1).filter(o => {
             return o != existingAffiliation.connection.personTitle;
         });
     
     const newOffice = randFromListLow(availableOfficePositions, 3);
-    const returnData: CharAffiliation = {
+    const returnData: HeroAffiliation = {
         groupName: group,
         office: newOffice,
         connection: null,

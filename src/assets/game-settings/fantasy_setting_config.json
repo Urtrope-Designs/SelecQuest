@@ -1,7 +1,7 @@
 {
     "gameSettingId": "1",
     "gameSettingName": "Fantasy",
-    "charRaces": [
+    "heroRaces": [
         {
             "raceName": "Demimutant",
             "trophyName": "genome"
@@ -23,7 +23,7 @@
             "trophyName": "bident"
         }
     ],
-    "charClasses": [
+    "heroClasses": [
         "Veg Crisper",
         "Cat-caller",
         "Metanarc",

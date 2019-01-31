@@ -1,9 +1,9 @@
-import { CharStat } from "./models";
+import { HeroStat } from "./models";
 
 export interface HeroInitData {
     name: string;
     raceName: string;
     className: string;
-    stats: CharStat[];
+    stats: HeroStat[];
     gameSettingId: string;
 }

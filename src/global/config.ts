@@ -1,4 +1,4 @@
-import { TaskTargetType, LootingTarget, GladiatingTarget, CharRace, LeadGatheringTarget, LeadType, LeadTarget, EquipmentMaterial, EquipmentModifier, CharTitlePosition } from "../models/models";
+import { TaskTargetType, LootingTarget, GladiatingTarget, HeroRace, LeadGatheringTarget, LeadType, LeadTarget, EquipmentMaterial, EquipmentModifier, HeroTitlePosition } from "../models/models";
 import { makeStringIndefinite, randFromList, makeStringPlural } from "../helpers/utils";
 
 export const IS_DEBUG = true;
@@ -359,7 +359,7 @@ export const RANDOM_NAME_PARTS: string[][] = [
     ['b', 'ck', 'd', 'g', 'k', 'm', 'n', 'p', 't', 'v', 'x', 'z'],
 ]
 
-export const RACES: CharRace[] = [
+export const RACES: HeroRace[] = [
     {
         raceName: 'Demimutant',
         trophyName: 'genome',
@@ -708,7 +708,7 @@ export const TITLE_OBJECTS: string[] = [
     'Fecklessness',
 ]
 
-export const TITLE_POSITIONS_ALL: CharTitlePosition[] = [
+export const TITLE_POSITIONS_ALL: HeroTitlePosition[] = [
     {
         description: 'Vice-corporal',
         titleObjectList: [...STANDARD_PLACES, ...TITLE_OBJECTS],

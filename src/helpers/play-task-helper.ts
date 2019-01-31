@@ -1,4 +1,4 @@
-import { CharLoot, CharTrophy, LootingTarget, GladiatingTarget, TaskTargetType, CharLead, LeadType, LeadTarget, HeroModification, HeroModificationType, TaskMode, AppState, Task } from "../models/models";
+import { HeroLoot, HeroTrophy, LootingTarget, GladiatingTarget, TaskTargetType, HeroLead, LeadType, LeadTarget, HeroModification, HeroModificationType, TaskMode, AppState, Task } from "../models/models";
 import { randRange, randSign, randFromList, makeStringIndefinite, generateRandomName, makeVerbGerund, capitalizeInitial } from "./utils";
 import { TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, TASK_GERUNDS, STANDARD_GLADIATING_TARGETS, STANDARD_LOOTING_TARGETS, RACES, CLASSES, STANDARD_LEAD_GATHERING_TARGETS, STANDARD_LEAD_TARGETS, IS_DEBUG, LEAD_GATHERING_TASK_MODIFIERS } from "../global/config";
 import { PROLOGUE_TASKS, PROLOGUE_ADVENTURE_NAME, generateNewAdventureResults } from './storyline-helpers';
@@ -47,9 +47,9 @@ function applyTaskNameModifiers(targetLevel: number, taskTarget: LootingTarget):
     return taskName;
 }
 
-function randomizeTargetLevel(charLevel: number): number {
-    let targetLevel = charLevel;
-    for (let i = charLevel; i >= 1; --i) {
+function randomizeTargetLevel(heroLevel: number): number {
+    let targetLevel = heroLevel;
+    for (let i = heroLevel; i >= 1; --i) {
         if (randRange(1, 5) <= 2)
             targetLevel += randSign();
         }
@@ -77,9 +77,9 @@ function randomizeTargetFromList(targetLevel: number, targetOptions: LootingTarg
 }
 
 //logic stolen pretty much directly from PQ
-export function generateLootingTaskContentsFromLevel(level: number): {taskName: string, taskLevel: number, lootData: CharLoot[]} {
+export function generateLootingTaskContentsFromLevel(level: number): {taskName: string, taskLevel: number, lootData: HeroLoot[]} {
     let taskName = '';
-    let lootData: CharLoot[] = [];
+    let lootData: HeroLoot[] = [];
 
     let targetLevel = randomizeTargetLevel(level);
 
@@ -102,9 +102,9 @@ export function generateLootingTaskContentsFromLevel(level: number): {taskName: 
     return {taskName: taskName, taskLevel: targetLevel * quantity, lootData: lootData};
 }
 
-export function generateGladiatingTaskContentsFromLevel(level: number): {taskName: string, taskLevel: number, trophyData: CharTrophy[]} {
+export function generateGladiatingTaskContentsFromLevel(level: number): {taskName: string, taskLevel: number, trophyData: HeroTrophy[]} {
     let taskName = '';
-    let trophyData: CharTrophy[] = [];
+    let trophyData: HeroTrophy[] = [];
 
     let targetLevel = randomizeTargetLevel(level);
     let taskLevel = targetLevel;
@@ -155,7 +155,7 @@ export function generateGladiatingTaskContentsFromLevel(level: number): {taskNam
     return {taskName: taskName, taskLevel: taskLevel, trophyData: trophyData};
 }
 
-export function generateInvestigatingTaskContents(): {taskName: string, leadData: CharLead[]} {
+export function generateInvestigatingTaskContents(): {taskName: string, leadData: HeroLead[]} {
     let investigatingTaskName = '';
     let leadData = [];
 
@@ -167,7 +167,7 @@ export function generateInvestigatingTaskContents(): {taskName: string, leadData
     const leadTarget: LeadTarget = randFromList(STANDARD_LEAD_TARGETS[leadTargetType]);
 
     const leadPredicate = leadTarget.predicateFactory.apply(null);
-    const lead: CharLead = {
+    const lead: HeroLead = {
         questlogName: capitalizeInitial(`${leadTarget.verb} ${leadPredicate}`),
         taskName: capitalizeInitial(`${makeVerbGerund(leadTarget.verb)} ${leadPredicate}`),
         value: 1,
