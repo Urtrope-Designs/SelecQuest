@@ -80,6 +80,7 @@ export enum HeroModificationType {
     ADD_AFFILIATION,
     REMOVE,
     REMOVE_QUANTITY,
+    SET_TEARDOWN_MODE,
 }
 
 export interface HeroStat {
@@ -120,9 +121,10 @@ export interface Hero {
     loot: HeroLoot[];
     trophies: HeroTrophy[];
     leads: HeroLead[];
-    isInLootSelloffMode: boolean;
-    isInTrophyBoastingMode: boolean;
-    isInLeadFollowingMode: boolean;
+    isInTeardownMode: boolean[];
+    // isInLootSelloffMode: boolean;
+    // isInTrophyBoastingMode: boolean;
+    // isInLeadFollowingMode: boolean;
     marketSaturation: number;
     maxMarketSaturation: number;
     fatigue: number;

@@ -247,9 +247,9 @@ const triggerSelloffTaskGen: TaskGenerator = {
             durationMs: 4 * 1000,
             results: [
                 {
-                    type: HeroModificationType.SET,
-                    attributeName: 'isInLootSelloffMode',
-                    data: true,
+                    type: HeroModificationType.SET_TEARDOWN_MODE,
+                    attributeName: 'isInTeardownMode',
+                    data: [{index: TaskMode.LOOTING, value: true}],
                 }
             ]
         }
@@ -260,8 +260,8 @@ const triggerSelloffTaskGen: TaskGenerator = {
 
 const selloffTaskGen: TaskGenerator = {
     priority: 3,
-    shouldRun: (state: AppState) => {
-        return state.activeTaskMode == TaskMode.LOOTING && state.hero.isInLootSelloffMode;
+    shouldRun: (_state: AppState) => {
+        return true;
     },
     generateTask: (state: AppState, _gameSetting: GameSetting) => {
         const sellItem = state.hero.loot[0];
@@ -306,9 +306,9 @@ const selloffTaskGen: TaskGenerator = {
                 durationMs: 10,
                 results: [
                     {
-                        type: HeroModificationType.SET,
-                        attributeName: 'isInLootSelloffMode',
-                        data: false,
+                        type: HeroModificationType.SET_TEARDOWN_MODE,
+                        attributeName: 'isInTeardownMode',
+                        data: [{index: TaskMode.LOOTING, value: false}],
                     }
                 ],
             }
@@ -320,10 +320,6 @@ const selloffTaskGen: TaskGenerator = {
 const endSelloffTaskGen: TaskGenerator = {
     priority: 4,
     shouldRun: (state: AppState) => {
-        if (state.activeTaskMode !== TaskMode.LOOTING || !state.hero.isInLootSelloffMode) {
-            return false;
-        }
-
         const currentEncumbrance = state.hero.loot.reduce((prevVal, curVal) => {
             return prevVal + curVal.quantity;
         }, 0);
@@ -335,9 +331,9 @@ const endSelloffTaskGen: TaskGenerator = {
             durationMs: 4 * 1000,
             results: [
                 {
-                    type: HeroModificationType.SET,
-                    attributeName: 'isInLootSelloffMode',
-                    data: false,
+                    type: HeroModificationType.SET_TEARDOWN_MODE,
+                    attributeName: 'isInTeardownMode',
+                    data: [{index: TaskMode.LOOTING, value: false}],
                 }
             ]
         }
@@ -349,10 +345,6 @@ const endSelloffTaskGen: TaskGenerator = {
 const purchaseEquipmentTaskGen: TaskGenerator = {
     priority: 5,
     shouldRun: (state: AppState) => {
-        if (state.activeTaskMode !== TaskMode.LOOTING || !state.hero.isInLootSelloffMode) {
-            return false;
-        }
-
         const currentEncumbrance = state.hero.loot.reduce((prevVal, curVal) => {
             return prevVal + curVal.quantity;
         }, 0);
@@ -379,8 +371,8 @@ const purchaseEquipmentTaskGen: TaskGenerator = {
 
 const gladiatingTaskGen: TaskGenerator = {
     priority: 1,
-    shouldRun: (state: AppState) => {
-        return state.activeTaskMode == TaskMode.GLADIATING;
+    shouldRun: (_state: AppState) => {
+        return true;
     },
     generateTask: (state: AppState, _gameSetting: GameSetting) => {
         const {taskName, taskLevel, trophyData} = generateGladiatingTaskContentsFromLevel(state.hero.level);
@@ -446,9 +438,9 @@ const triggerBoastingTaskGen: TaskGenerator = {
             durationMs: 4 * 1000,
             results: [
                 {
-                    type: HeroModificationType.SET,
-                    attributeName: 'isInTrophyBoastingMode',
-                    data: true,
+                    type: HeroModificationType.SET_TEARDOWN_MODE,
+                    attributeName: 'isInTeardownMode',
+                    data: [{index: TaskMode.GLADIATING, value: true}],
                 }
             ]
         }
@@ -459,8 +451,8 @@ const triggerBoastingTaskGen: TaskGenerator = {
 
 const boastingTaskGen: TaskGenerator = {
     priority: 3,
-    shouldRun: (state: AppState) => {
-        return state.activeTaskMode === TaskMode.GLADIATING && state.hero.isInTrophyBoastingMode;
+    shouldRun: (_state: AppState) => {
+        return true;
     },
     generateTask: (state: AppState, _gameSetting: GameSetting) => {
         const boastItem = state.hero.trophies[0];
@@ -500,9 +492,9 @@ const boastingTaskGen: TaskGenerator = {
                 durationMs: 10,
                 results: [
                     {
-                        type: HeroModificationType.SET,
-                        attributeName: 'isInTrophyBoastingMode',
-                        data: false,
+                        type: HeroModificationType.SET_TEARDOWN_MODE,
+                        attributeName: 'isInTeardownMode',
+                        data: [{index: TaskMode.GLADIATING, value: false}],
                     },
                 ],
             }
@@ -514,10 +506,6 @@ const boastingTaskGen: TaskGenerator = {
 const endBoastingTaskGen: TaskGenerator = {
     priority: 4,
     shouldRun: (state: AppState) => {
-        if (state.activeTaskMode !== TaskMode.GLADIATING || !state.hero.isInTrophyBoastingMode) {
-            return false;
-        }
-
         const currentEquipmentIntegrity = state.hero.trophies.reduce((prevVal, curVal) => {
             return prevVal + curVal.quantity;
         }, 0);
@@ -529,9 +517,9 @@ const endBoastingTaskGen: TaskGenerator = {
             durationMs: 4 * 1000,
             results: [
                 {
-                    type: HeroModificationType.SET,
-                    attributeName: 'isInTrophyBoastingMode',
-                    data: false,
+                    type: HeroModificationType.SET_TEARDOWN_MODE,
+                    attributeName: 'isInTeardownMode',
+                    data: [{index: TaskMode.GLADIATING, value: false}],
                 }
             ]
         }
@@ -543,10 +531,6 @@ const endBoastingTaskGen: TaskGenerator = {
 const earnAccoladeTaskGen: TaskGenerator = {
     priority: 5,
     shouldRun: (state: AppState) => {
-        if (state.activeTaskMode !== TaskMode.GLADIATING || !state.hero.isInTrophyBoastingMode) {
-            return false;
-        }
-
         const currentEquipmentIntegrity = state.hero.trophies.reduce((prevVal, curVal) => {
             return prevVal + curVal.quantity;
         }, 0);
@@ -572,8 +556,8 @@ const earnAccoladeTaskGen: TaskGenerator = {
 
 const investigatingTaskGen: TaskGenerator = {
     priority: 1,
-    shouldRun: (state: AppState) => {
-        return state.activeTaskMode == TaskMode.INVESTIGATING;
+    shouldRun: (_state: AppState) => {
+        return true;
     },
     generateTask: (_state: AppState, _gameSetting: GameSetting) => {
         const {taskName, leadData} = generateInvestigatingTaskContents();
@@ -611,9 +595,9 @@ const triggerLeadFollowingTaskGen: TaskGenerator = {
             durationMs: 4 * 1000,
             results: [
                 {
-                    type: HeroModificationType.SET,
-                    attributeName: 'isInLeadFollowingMode',
-                    data: true,
+                    type: HeroModificationType.SET_TEARDOWN_MODE,
+                    attributeName: 'isInTeardownMode',
+                    data: [{index: TaskMode.INVESTIGATING, value: true}],
                 }
             ]
         }
@@ -624,8 +608,8 @@ const triggerLeadFollowingTaskGen: TaskGenerator = {
 
 const leadFollowingTaskGen: TaskGenerator = {
     priority: 3,
-    shouldRun: (state: AppState) => {
-        return state.activeTaskMode === TaskMode.INVESTIGATING && state.hero.isInLeadFollowingMode;
+    shouldRun: (_state: AppState) => {
+        return true;
     },
     generateTask: (state: AppState, _gameSetting: GameSetting) => {
         const leadToFollow = state.hero.leads[0];
@@ -683,9 +667,9 @@ const leadFollowingTaskGen: TaskGenerator = {
                 durationMs: 10,
                 results: [
                     {
-                        type: HeroModificationType.SET,
-                        attributeName: 'isInLeadFollowingMode',
-                        data: false,
+                        type: HeroModificationType.SET_TEARDOWN_MODE,
+                        attributeName: 'isInTeardownMode',
+                        data: [{index: TaskMode.INVESTIGATING, value: false}],
                     },
                 ],
             }
@@ -697,10 +681,6 @@ const leadFollowingTaskGen: TaskGenerator = {
 const endLeadFollowingTaskGen: TaskGenerator = {
     priority: 4,
     shouldRun: (state: AppState) => {
-        if (state.activeTaskMode !== TaskMode.INVESTIGATING || !state.hero.isInLeadFollowingMode) {
-            return false;
-        }
-
         return state.hero.leads.length <= 0;
     },
     generateTask: (_state: AppState, _gameSetting: GameSetting) => {
@@ -709,9 +689,9 @@ const endLeadFollowingTaskGen: TaskGenerator = {
             durationMs: 4 * 1000,
             results: [
                 {
-                    type: HeroModificationType.SET,
-                    attributeName: 'isInLeadFollowingMode',
-                    data: false,
+                    type: HeroModificationType.SET_TEARDOWN_MODE,
+                    attributeName: 'isInTeardownMode',
+                    data: [{index: TaskMode.INVESTIGATING, value: false}],
                 }
             ]
         }
@@ -723,10 +703,6 @@ const endLeadFollowingTaskGen: TaskGenerator = {
 const gainAffiliationTaskGen: TaskGenerator = {
     priority: 5,
     shouldRun: (state: AppState) => {
-        if (state.activeTaskMode !== TaskMode.INVESTIGATING || !state.hero.isInLeadFollowingMode) {
-            return false;
-        }
-
         return state.hero.leads.length <= 0 && (state.hero.reputation - state.hero.spentReputation) >= getTradeInCostForLevel(state.hero.level);
     },
     generateTask: (state: AppState, _gameSetting: GameSetting) => {
@@ -850,14 +826,8 @@ export function selectNextTaskGenerator(state: AppState): TaskGenerator {
     let nextTaskGenerator: TaskGenerator;
     nextTaskGenerator = PRIORITIZED_TASK_GENERATORS.coreTaskGenerators.find(taskGen => taskGen.shouldRun(state));
 
-    // todo: fix this once "teardownMode" is genericized
-    let isTeardownMode: boolean[] = [];
-    isTeardownMode[0] = state.hero.isInLootSelloffMode;
-    isTeardownMode[1] = state.hero.isInTrophyBoastingMode;
-    isTeardownMode[2] = state.hero.isInLeadFollowingMode;
-
     if (!nextTaskGenerator) {
-        const taskGeneratorsForState = PRIORITIZED_TASK_GENERATORS.adventuringModeTaskGenerators[state.activeTaskMode][+isTeardownMode[state.activeTaskMode]];
+        const taskGeneratorsForState = PRIORITIZED_TASK_GENERATORS.adventuringModeTaskGenerators[state.activeTaskMode][+state.hero.isInTeardownMode[state.activeTaskMode]];
         nextTaskGenerator = taskGeneratorsForState.find(taskGen => taskGen.shouldRun(state));
     }
 

@@ -1,4 +1,4 @@
-import { Hero, HeroModificationType, AccoladeType, HeroModification, HeroEquipment, EquipmentType, EquipmentMaterial, HeroAccolade, HeroAffiliation, HeroConnection, HeroTitlePosition, HeroStat } from '../models/models';
+import { Hero, HeroModificationType, AccoladeType, HeroModification, HeroEquipment, EquipmentType, EquipmentMaterial, HeroAccolade, HeroAffiliation, HeroConnection, HeroTitlePosition, HeroStat, TaskMode } from '../models/models';
 import { randRange, randFromList, deepCopyObject, randFromListLow, randFromListHigh, generateRandomName, capitalizeInitial, getIterableEnumKeys } from './utils';
 import { PROLOGUE_ADVENTURE_NAME } from './storyline-helpers';
 import { SPELLS, ABILITIES, IS_DEBUG, WEAPON_MATERIALS, SHEILD_MATERIALS, ARMOR_MATERIALS, EPITHET_DESCRIPTORS, EPITHET_BEING_ALL, TITLE_POSITIONS_ALL, SOBRIQUET_MODIFIERS, SOBRIQUET_NOUN_PORTION, HONORIFIC_TEMPLATES, OFFICE_POSITIONS_ALL, STANDARD_GROUPS_INDEFINITE } from '../global/config';
@@ -39,9 +39,7 @@ export function createNewHero(heroling: HeroInitData): Hero {
         loot: [],
         trophies: [],
         leads: [],
-        isInLootSelloffMode: true,
-        isInTrophyBoastingMode: true,
-        isInLeadFollowingMode: true,
+        isInTeardownMode: [true, true, true],
         marketSaturation: 0,
         get maxMarketSaturation() {
             if (IS_DEBUG) {
@@ -185,6 +183,12 @@ export function applyHeroModifications(baseHero: Hero, heroMods: HeroModificatio
                     }
                     
                     newHero.latestModifications.push({attributeName: result.attributeName, data: newAffiliation});
+                })
+                break;
+            case HeroModificationType.SET_TEARDOWN_MODE:
+                /* teardown modes */
+                result.data.forEach((teardownUpdate: {index: TaskMode, value: boolean}) => {
+                    newHero.isInTeardownMode[teardownUpdate.index] = teardownUpdate.value;
                 })
                 break;
         }
