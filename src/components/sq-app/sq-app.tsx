@@ -17,7 +17,7 @@ import { createNewHero } from '../../helpers/hero-manager';
     styleUrl: 'sq-app.scss'
 })
 export class SqApp {
-    @Prop({ context: 'taskMgr'}) taskMgr: {init: (stateStore: Observable<AppState>, emulateTaskTimeGap?: boolean) => void, getTaskAction$: () => Observable<Action>};
+    @Prop({ context: 'taskMgr'}) taskMgr: {init: (stateStore: Observable<AppState>, gameSettingsMgr: GameSettingsManager, emulateTaskTimeGap?: boolean) => void, getTaskAction$: () => Observable<Action>};
     private actionSubject: Subject<Action> = new Subject<Action>();
     @State() state: AppState;
     private availableHeroes: {hash: string, name: string}[];
@@ -101,7 +101,7 @@ export class SqApp {
                 const initialData = state || DEFAULT_APP_STATE;
                 let state$ = stateFn(initialData, this.actionSubject.asObservable());
                 state$ = this.gameDataMgr.persistAppData(state$);
-                this.taskMgr.init(state$, false);
+                this.taskMgr.init(state$, GameSettingsManager.getInstance(), false);
                 this.taskMgr.getTaskAction$().subscribe((taskAction: Action) => {
                     this._queueAction(taskAction);
                 })

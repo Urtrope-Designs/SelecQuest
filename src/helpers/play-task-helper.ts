@@ -3,6 +3,8 @@ import { randRange, randSign, randFromList, makeStringIndefinite, generateRandom
 import { TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, TASK_GERUNDS, STANDARD_GLADIATING_TARGETS, STANDARD_LOOTING_TARGETS, RACES, CLASSES, STANDARD_LEAD_GATHERING_TARGETS, STANDARD_LEAD_TARGETS, IS_DEBUG, LEAD_GATHERING_TASK_MODIFIERS } from "../global/config";
 import { PROLOGUE_TASKS, PROLOGUE_ADVENTURE_NAME, generateNewAdventureResults } from './storyline-helpers';
 import { generateNewEquipmentModification, generateNewAccoladeModification, generateNewAffiliationModification } from './hero-manager';
+import { GameSetting } from "./game-setting";
+import { GameTaskGeneratorList, TaskGenerator } from "../models/task-models";
 
 function determineTaskQuantity(targetLevel: number, taskLevel: number) {
     let quantity = 1;
@@ -182,18 +184,12 @@ export function getTradeInCostForLevel(level: number): number {
     return IS_DEBUG ? (10 * level + 4) : (5 * level**2 + 10 * level + 20);
 }
 
-export interface TaskGenerator {
-    priority: number;
-    shouldRun: (state: AppState) => boolean;
-    generateTask: (state: AppState) => Task;
-}
-
 const lootingTaskGen: TaskGenerator = {
     priority: 0,
-    shouldRun: (/*state: AppState*/) => {
+    shouldRun: (_state: AppState) => {
         return true;
     },
-    generateTask: (state: AppState) => {
+    generateTask: (state: AppState, _gameSetting: GameSetting) => {
         const {taskName, taskLevel, lootData} = generateLootingTaskContentsFromLevel(state.hero.level);
         const durationSeconds = Math.floor(6 * taskLevel / state.hero.level);
         const isMarketSaturated = state.hero.marketSaturation >= state.hero.maxMarketSaturation;
@@ -245,7 +241,7 @@ const triggerSelloffTaskGen: TaskGenerator = {
         }, 0);
         return currentEncumbrance >= state.hero.maxEncumbrance;
     },
-    generateTask: (/*state: AppState*/) => {
+    generateTask: (_state: AppState, _gameSetting: GameSetting) => {
         const newTask: Task = {
             description: 'Heading to market to pawn your loot',
             durationMs: 4 * 1000,
@@ -267,7 +263,7 @@ const selloffTaskGen: TaskGenerator = {
     shouldRun: (state: AppState) => {
         return state.activeTaskMode == TaskMode.LOOTING && state.hero.isInLootSelloffMode;
     },
-    generateTask: (state: AppState) => {
+    generateTask: (state: AppState, _gameSetting: GameSetting) => {
         const sellItem = state.hero.loot[0];
         if (!!sellItem) {
             const isMarketSaturated = state.hero.marketSaturation >= state.hero.maxMarketSaturation;
@@ -333,7 +329,7 @@ const endSelloffTaskGen: TaskGenerator = {
         }, 0);
         return currentEncumbrance <= 0;
     },
-    generateTask: (/*state: AppState*/) => {
+    generateTask: (_state: AppState, _gameSetting: GameSetting) => {
         const newTask: Task = {
             description: 'Heading out to find some swag',
             durationMs: 4 * 1000,
@@ -363,7 +359,7 @@ const purchaseEquipmentTaskGen: TaskGenerator = {
         const minGold = getTradeInCostForLevel(state.hero.level);
         return currentEncumbrance <= 0 && state.hero.gold >= minGold;
     },
-    generateTask: (state: AppState) => {
+    generateTask: (state: AppState, _gameSetting: GameSetting) => {
         const newEquipmentMod = generateNewEquipmentModification(state.hero);
         const newTask: Task = {
             description: 'Negotiating the purchase of better equipment',
@@ -386,7 +382,7 @@ const gladiatingTaskGen: TaskGenerator = {
     shouldRun: (state: AppState) => {
         return state.activeTaskMode == TaskMode.GLADIATING;
     },
-    generateTask: (state: AppState) => {
+    generateTask: (state: AppState, _gameSetting: GameSetting) => {
         const {taskName, taskLevel, trophyData} = generateGladiatingTaskContentsFromLevel(state.hero.level);
         const durationSeconds = Math.floor(6 * taskLevel / state.hero.level);
         const isFatigued = state.hero.fatigue >= state.hero.maxFatigue;
@@ -444,7 +440,7 @@ const triggerBoastingTaskGen: TaskGenerator = {
         }, 0);
         return currentEquipmentWear >= state.hero.maxEquipmentWear;
     },
-    generateTask: (/*state: AppState*/) => {
+    generateTask: (_state: AppState, _gameSetting: GameSetting) => {
         const newTask: Task = {
             description: 'Heading to the nearest inn to boast of your recent deeds while your armor is repaired',
             durationMs: 4 * 1000,
@@ -466,7 +462,7 @@ const boastingTaskGen: TaskGenerator = {
     shouldRun: (state: AppState) => {
         return state.activeTaskMode === TaskMode.GLADIATING && state.hero.isInTrophyBoastingMode;
     },
-    generateTask: (state: AppState) => {
+    generateTask: (state: AppState, _gameSetting: GameSetting) => {
         const boastItem = state.hero.trophies[0];
         if (!!boastItem) {
             const isFatigued = state.hero.fatigue >= state.hero.maxFatigue;
@@ -527,7 +523,7 @@ const endBoastingTaskGen: TaskGenerator = {
         }, 0);
         return currentEquipmentIntegrity <= 0;
     },
-    generateTask: (/*state: AppState*/) => {
+    generateTask: (_state: AppState, _gameSetting: GameSetting) => {
         const newTask: Task = {
             description: 'Heading off in search of glory',
             durationMs: 4 * 1000,
@@ -556,7 +552,7 @@ const earnAccoladeTaskGen: TaskGenerator = {
         }, 0);
         return currentEquipmentIntegrity <= 0 && (state.hero.renown - state.hero.spentRenown) >= getTradeInCostForLevel(state.hero.level);
     },
-    generateTask: (state: AppState) => {
+    generateTask: (state: AppState, _gameSetting: GameSetting) => {
         const newAccoladeMod = generateNewAccoladeModification(state.hero);
         const newTask: Task = {
             description: 'Being honored for your glorious achievements',
@@ -579,7 +575,7 @@ const investigatingTaskGen: TaskGenerator = {
     shouldRun: (state: AppState) => {
         return state.activeTaskMode == TaskMode.INVESTIGATING;
     },
-    generateTask: (/*state: AppState*/) => {
+    generateTask: (_state: AppState, _gameSetting: GameSetting) => {
         const {taskName, leadData} = generateInvestigatingTaskContents();
         const durationSeconds = 1;
 
@@ -609,7 +605,7 @@ const triggerLeadFollowingTaskGen: TaskGenerator = {
 
         return state.hero.leads.length >= state.hero.maxQuestLogSize;
     },
-    generateTask: (/*state: AppState*/) => {
+    generateTask: (_state: AppState, _gameSetting: GameSetting) => {
         const newTask: Task = {
             description: 'Organizing your Questlog',
             durationMs: 4 * 1000,
@@ -631,7 +627,7 @@ const leadFollowingTaskGen: TaskGenerator = {
     shouldRun: (state: AppState) => {
         return state.activeTaskMode === TaskMode.INVESTIGATING && state.hero.isInLeadFollowingMode;
     },
-    generateTask: (state: AppState) => {
+    generateTask: (state: AppState, _gameSetting: GameSetting) => {
         const leadToFollow = state.hero.leads[0];
         if (!!leadToFollow) {
             const isOverexposed = state.hero.socialExposure >= state.hero.maxSocialCapital;
@@ -707,7 +703,7 @@ const endLeadFollowingTaskGen: TaskGenerator = {
 
         return state.hero.leads.length <= 0;
     },
-    generateTask: (/*state: AppState*/) => {
+    generateTask: (_state: AppState, _gameSetting: GameSetting) => {
         const newTask: Task = {
             description: `Rooting out some ${randFromList(LEAD_GATHERING_TASK_MODIFIERS)} leads`,
             durationMs: 4 * 1000,
@@ -733,7 +729,7 @@ const gainAffiliationTaskGen: TaskGenerator = {
 
         return state.hero.leads.length <= 0 && (state.hero.reputation - state.hero.spentReputation) >= getTradeInCostForLevel(state.hero.level);
     },
-    generateTask: (state: AppState) => {
+    generateTask: (state: AppState, _gameSetting: GameSetting) => {
         const newAffiliationMod = generateNewAffiliationModification(state.hero);
         const newTask: Task = {
             description: 'Solidifying a new connection',
@@ -757,7 +753,7 @@ const prologueTaskGen: TaskGenerator = {
     shouldRun: (state: AppState) => {
         return state.hero.currentAdventure.name == PROLOGUE_ADVENTURE_NAME;
     },
-    generateTask: (/*state: AppState*/) => {
+    generateTask: (_state: AppState, _gameSetting: GameSetting) => {
         const curPrologueTask = PROLOGUE_TASKS[prologueInc];
         prologueInc += 1;
         prologueInc = Math.min(prologueInc, PROLOGUE_TASKS.length-1);
@@ -781,7 +777,7 @@ const prologueTransitionTaskGen: TaskGenerator = {
     shouldRun: (state: AppState) => {
         return (state.hero.currentAdventure.name == PROLOGUE_ADVENTURE_NAME && state.hero.adventureProgress >= state.hero.currentAdventure.progressRequired);
     },
-    generateTask: (state: AppState) => {
+    generateTask: (state: AppState, _gameSetting: GameSetting) => {
         const newTask: Task = {
             description: 'Loading',
             durationMs: 20,
@@ -797,7 +793,7 @@ const adventureTransitionTaskGen: TaskGenerator = {
     shouldRun: (state: AppState) => {
         return (state.hero.adventureProgress >= state.hero.currentAdventure.progressRequired);
     },
-    generateTask: (state: AppState) => {
+    generateTask: (state: AppState, _gameSetting: GameSetting) => {
         const newTask: Task = {
             description: 'Experiencing an enigmatic and foreboding night vision',
             durationMs: randRange(2, 3) * 1000,
@@ -807,25 +803,63 @@ const adventureTransitionTaskGen: TaskGenerator = {
     }
 };
 
-export const PRIORITIZED_TASK_GENERATORS = [
-    lootingTaskGen,
-    triggerSelloffTaskGen,
-    selloffTaskGen,
-    endSelloffTaskGen,
-    purchaseEquipmentTaskGen,
-    gladiatingTaskGen,
-    triggerBoastingTaskGen,
-    boastingTaskGen,
-    endBoastingTaskGen,
-    earnAccoladeTaskGen,
-    investigatingTaskGen,
-    triggerLeadFollowingTaskGen,
-    leadFollowingTaskGen,
-    endLeadFollowingTaskGen,
-    gainAffiliationTaskGen,
-    prologueTaskGen,
-    prologueTransitionTaskGen,
-    adventureTransitionTaskGen,
-].sort((a, b) => {
-    return b.priority - a.priority;
-});
+const PRIORITIZED_TASK_GENERATORS: GameTaskGeneratorList = {
+    coreTaskGenerators: [
+        prologueTransitionTaskGen,
+        prologueTaskGen,
+        adventureTransitionTaskGen,
+    ],
+    adventuringModeTaskGenerators: [
+        [           // Adventuring Mode 0
+            [       // teardownMode[0] == false
+                triggerSelloffTaskGen,
+                lootingTaskGen,
+            ],
+            [       // teardownMode[0] == true
+                purchaseEquipmentTaskGen,
+                endSelloffTaskGen,
+                selloffTaskGen,
+            ],
+        ],
+        [           // Adventuring Mode 1
+            [       // teardownMode[1] == false
+                triggerBoastingTaskGen,
+                gladiatingTaskGen,
+            ],
+            [       // teardownMode[1] == true
+                earnAccoladeTaskGen,
+                endBoastingTaskGen,
+                boastingTaskGen,
+            ],
+        ],
+        [           // Adventuring Mode 2
+            [       // teardownMode[2] == false
+                triggerLeadFollowingTaskGen,
+                investigatingTaskGen,
+            ],
+            [       // teardownMode[2] == true
+                gainAffiliationTaskGen,
+                endLeadFollowingTaskGen,
+                leadFollowingTaskGen,
+            ]
+        ]
+    ]
+}
+
+export function selectNextTaskGenerator(state: AppState): TaskGenerator {
+    let nextTaskGenerator: TaskGenerator;
+    nextTaskGenerator = PRIORITIZED_TASK_GENERATORS.coreTaskGenerators.find(taskGen => taskGen.shouldRun(state));
+
+    // todo: fix this once "teardownMode" is genericized
+    let isTeardownMode: boolean[] = [];
+    isTeardownMode[0] = state.hero.isInLootSelloffMode;
+    isTeardownMode[1] = state.hero.isInTrophyBoastingMode;
+    isTeardownMode[2] = state.hero.isInLeadFollowingMode;
+
+    if (!nextTaskGenerator) {
+        const taskGeneratorsForState = PRIORITIZED_TASK_GENERATORS.adventuringModeTaskGenerators[state.activeTaskMode][+isTeardownMode[state.activeTaskMode]];
+        nextTaskGenerator = taskGeneratorsForState.find(taskGen => taskGen.shouldRun(state));
+    }
+
+    return nextTaskGenerator;
+}
