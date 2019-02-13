@@ -185,7 +185,6 @@ export function getTradeInCostForLevel(level: number): number {
 }
 
 const lootingTaskGen: TaskGenerator = {
-    priority: 0,
     shouldRun: (_state: AppState) => {
         return true;
     },
@@ -230,7 +229,6 @@ const lootingTaskGen: TaskGenerator = {
 };
 
 const triggerSelloffTaskGen: TaskGenerator = {
-    priority: 2,
     shouldRun: (state: AppState) => {
         if (state.activeTaskMode !== TaskMode.LOOTING) {
             return false;
@@ -259,7 +257,6 @@ const triggerSelloffTaskGen: TaskGenerator = {
 };
 
 const selloffTaskGen: TaskGenerator = {
-    priority: 3,
     shouldRun: (_state: AppState) => {
         return true;
     },
@@ -318,7 +315,6 @@ const selloffTaskGen: TaskGenerator = {
 };
 
 const endSelloffTaskGen: TaskGenerator = {
-    priority: 4,
     shouldRun: (state: AppState) => {
         const currentEncumbrance = state.hero.loot.reduce((prevVal, curVal) => {
             return prevVal + curVal.quantity;
@@ -343,7 +339,6 @@ const endSelloffTaskGen: TaskGenerator = {
 };
 
 const purchaseEquipmentTaskGen: TaskGenerator = {
-    priority: 5,
     shouldRun: (state: AppState) => {
         const currentEncumbrance = state.hero.loot.reduce((prevVal, curVal) => {
             return prevVal + curVal.quantity;
@@ -370,7 +365,6 @@ const purchaseEquipmentTaskGen: TaskGenerator = {
 };
 
 const gladiatingTaskGen: TaskGenerator = {
-    priority: 1,
     shouldRun: (_state: AppState) => {
         return true;
     },
@@ -421,7 +415,6 @@ const gladiatingTaskGen: TaskGenerator = {
 };
 
 const triggerBoastingTaskGen: TaskGenerator = {
-    priority: 2,
     shouldRun: (state: AppState) => {
         if (state.activeTaskMode !== TaskMode.GLADIATING) {
             return false;
@@ -450,7 +443,6 @@ const triggerBoastingTaskGen: TaskGenerator = {
 };
 
 const boastingTaskGen: TaskGenerator = {
-    priority: 3,
     shouldRun: (_state: AppState) => {
         return true;
     },
@@ -504,7 +496,6 @@ const boastingTaskGen: TaskGenerator = {
 };
 
 const endBoastingTaskGen: TaskGenerator = {
-    priority: 4,
     shouldRun: (state: AppState) => {
         const currentEquipmentIntegrity = state.hero.trophies.reduce((prevVal, curVal) => {
             return prevVal + curVal.quantity;
@@ -529,7 +520,6 @@ const endBoastingTaskGen: TaskGenerator = {
 };
 
 const earnAccoladeTaskGen: TaskGenerator = {
-    priority: 5,
     shouldRun: (state: AppState) => {
         const currentEquipmentIntegrity = state.hero.trophies.reduce((prevVal, curVal) => {
             return prevVal + curVal.quantity;
@@ -555,7 +545,6 @@ const earnAccoladeTaskGen: TaskGenerator = {
 };
 
 const investigatingTaskGen: TaskGenerator = {
-    priority: 1,
     shouldRun: (_state: AppState) => {
         return true;
     },
@@ -581,7 +570,6 @@ const investigatingTaskGen: TaskGenerator = {
 };
 
 const triggerLeadFollowingTaskGen: TaskGenerator = {
-    priority: 2,
     shouldRun: (state: AppState) => {
         if (state.activeTaskMode !== TaskMode.INVESTIGATING) {
             return false;
@@ -607,7 +595,6 @@ const triggerLeadFollowingTaskGen: TaskGenerator = {
 };
 
 const leadFollowingTaskGen: TaskGenerator = {
-    priority: 3,
     shouldRun: (_state: AppState) => {
         return true;
     },
@@ -679,7 +666,6 @@ const leadFollowingTaskGen: TaskGenerator = {
 };
 
 const endLeadFollowingTaskGen: TaskGenerator = {
-    priority: 4,
     shouldRun: (state: AppState) => {
         return state.hero.leads.length <= 0;
     },
@@ -701,7 +687,6 @@ const endLeadFollowingTaskGen: TaskGenerator = {
 };
 
 const gainAffiliationTaskGen: TaskGenerator = {
-    priority: 5,
     shouldRun: (state: AppState) => {
         return state.hero.leads.length <= 0 && (state.hero.reputation - state.hero.spentReputation) >= getTradeInCostForLevel(state.hero.level);
     },
@@ -725,7 +710,6 @@ const gainAffiliationTaskGen: TaskGenerator = {
 
 let prologueInc = 0;
 const prologueTaskGen: TaskGenerator = {
-    priority: 6,
     shouldRun: (state: AppState) => {
         return state.hero.currentAdventure.name == PROLOGUE_ADVENTURE_NAME;
     },
@@ -749,7 +733,6 @@ const prologueTaskGen: TaskGenerator = {
 }
 
 const prologueTransitionTaskGen: TaskGenerator = {
-    priority: 7,
     shouldRun: (state: AppState) => {
         return (state.hero.currentAdventure.name == PROLOGUE_ADVENTURE_NAME && state.hero.adventureProgress >= state.hero.currentAdventure.progressRequired);
     },
@@ -765,7 +748,6 @@ const prologueTransitionTaskGen: TaskGenerator = {
 
 
 const adventureTransitionTaskGen: TaskGenerator = {
-    priority: 6,
     shouldRun: (state: AppState) => {
         return (state.hero.adventureProgress >= state.hero.currentAdventure.progressRequired);
     },

@@ -7,7 +7,6 @@ export interface GameTaskGeneratorList {
 }
 
 export interface TaskGenerator {
-    priority: number;
     shouldRun: (state: AppState) => boolean;
     generateTask: (state: AppState, gameSetting: GameSetting) => Task;
 }
