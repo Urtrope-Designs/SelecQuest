@@ -102,8 +102,8 @@ export interface Hero {
     // wis: number;
     // cha: number;
     /* end stats */
-    maxHp: number;
-    maxMp: number;
+    maxHealthStat: HeroStat;
+    maxMagicStat: HeroStat;
     currentXp: number;
     spells: HeroSpell[]; 
     abilities: HeroAbility[]; 

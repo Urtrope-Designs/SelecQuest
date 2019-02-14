@@ -30,7 +30,7 @@ export class SqApp {
     }
     @Listen('startNewHero')
     startNewHeroHandler(event: CustomEvent<HeroInitData>) {
-        const newHero = createNewHero(event.detail);
+        const newHero = createNewHero(event.detail, GameSettingsManager.getInstance().getGameSettingById(event.detail.gameSettingId));
         const newGameState = Object.assign({}, DEFAULT_APP_STATE, {hero: newHero});
         this.gameDataMgr.setActiveHeroHash(generateHeroHashFromHero(newHero));
         this._queueAction(new SetActiveHero(newGameState));

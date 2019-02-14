@@ -7,6 +7,11 @@ export class GameSetting {
     readonly heroRaces: HeroRace[];
     readonly heroClasses: string[];
     readonly statNames: string[];
+    readonly healthStatName: string;            // 1-8 chars
+    readonly healthBaseStatIndex: number;                // number between 0 and 5 inclusive
+    readonly magicStatName: string;                      // 1-8 chars
+    readonly magicBaseStatIndex: number;                 // number between 0 and 5 inclusive
+
 
     constructor(config: GameSettingConfig) {
         // todo: TYPE CHECK THE CONFIG, and handle any problems
@@ -15,5 +20,9 @@ export class GameSetting {
         this.heroRaces = config.heroRaces;
         this.heroClasses = config.heroClasses;
         this.statNames = config.statNames;
+        this.healthStatName = config.healthStatName;
+        this.healthBaseStatIndex = config.healthBaseStatIndex;
+        this.magicStatName = config.magicStatName;
+        this.magicBaseStatIndex = config.magicBaseStatIndex;
     }
 }

@@ -197,8 +197,14 @@ export class PlayScreen {
                                                 </tr>
                                             )
                                         }
-                                        <tr {...this.highlightModifiedAttribute('maxHp')}><td>Max HP</td><td>{this.appState.hero.maxHp}</td></tr>
-                                        <tr {...this.highlightModifiedAttribute('maxMp')}><td>Max MP</td><td>{this.appState.hero.maxMp}</td></tr>
+                                        <tr {...this.highlightModifiedAttribute('maxHealthStat')}>
+                                            <td>Max {this.appState.hero.maxHealthStat.name}</td>
+                                            <td>{this.appState.hero.maxHealthStat.value}</td>
+                                        </tr>
+                                        <tr {...this.highlightModifiedAttribute('maxMagicStat')}>
+                                            <td>Max {this.appState.hero.maxMagicStat.name}</td>
+                                            <td>{this.appState.hero.maxMagicStat.value}</td>
+                                        </tr>
                                     </tbody>
                                 </table>
                                 <table class="listBox">

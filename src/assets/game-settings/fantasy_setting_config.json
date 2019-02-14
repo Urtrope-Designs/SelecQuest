@@ -43,5 +43,9 @@
         "int",
         "wis",
         "cha"
-    ]
+    ],
+    "healthStatName": "HP",
+    "healthBaseStatIndex": 2,
+    "magicStatName": "MP",
+    "magicBaseStatIndex": 3
 }

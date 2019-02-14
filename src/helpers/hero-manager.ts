@@ -4,8 +4,9 @@ import { PROLOGUE_ADVENTURE_NAME } from './storyline-helpers';
 import { SPELLS, ABILITIES, IS_DEBUG, WEAPON_MATERIALS, SHEILD_MATERIALS, ARMOR_MATERIALS, EPITHET_DESCRIPTORS, EPITHET_BEING_ALL, TITLE_POSITIONS_ALL, SOBRIQUET_MODIFIERS, SOBRIQUET_NOUN_PORTION, HONORIFIC_TEMPLATES, OFFICE_POSITIONS_ALL, STANDARD_GROUPS_INDEFINITE } from '../global/config';
 import { GameSettingsManager } from '../services/game-settings-manager';
 import { HeroInitData } from '../models/hero-models';
+import { GameSetting } from './game-setting';
 
-export function createNewHero(heroling: HeroInitData): Hero {
+export function createNewHero(heroling: HeroInitData, gameSetting: GameSetting): Hero {
     const LONG_TERM_LIMIT_FACTOR = 25;
     const newHero: Hero = {
         name: heroling.name,
@@ -20,8 +21,8 @@ export function createNewHero(heroling: HeroInitData): Hero {
         // int: stats.int,
         // wis: stats.wis,
         // cha: stats.cha,
-        maxHp: randRange(0, 7) + Math.floor(heroling.stats[2].value / 6),
-        maxMp: randRange(0, 7) + Math.floor(heroling.stats[3].value / 6),
+        maxHealthStat: {name: gameSetting.healthStatName, value: randRange(0, 7) + Math.floor(heroling.stats[gameSetting.healthBaseStatIndex].value / 6)},
+        maxMagicStat: {name: gameSetting.magicStatName, value: randRange(0, 7) + Math.floor(heroling.stats[gameSetting.magicBaseStatIndex].value / 6)},
         currentXp: 0,
         spells: [],
         abilities: [],
@@ -84,9 +85,14 @@ export function applyHeroModifications(baseHero: Hero, heroMods: HeroModificatio
     const applyNameValue = (valueAttributeName: string) => {
         return (heroToMod: Hero, mod: HeroModification) => {
             for (let item of mod.data) {
-                let existingItem = heroToMod[mod.attributeName].find((i) => {
-                    return item.name == i.name;
-                });
+                let existingItem: any;
+                if (Array.isArray(heroToMod[mod.attributeName])) {
+                    existingItem = heroToMod[mod.attributeName].find((i) => {
+                        return item.name == i.name;
+                    });
+                } else {
+                    existingItem = heroToMod[mod.attributeName];
+                }
                 if (!!existingItem) {
                     existingItem[valueAttributeName] += item[valueAttributeName];
                     if (existingItem[valueAttributeName] < 1) {
@@ -105,7 +111,7 @@ export function applyHeroModifications(baseHero: Hero, heroMods: HeroModificatio
     for (let result of heroMods) {
         switch(result.type) {
             case HeroModificationType.INCREASE:
-                /* level, stats, maxHp, maxMp, currentXp, gold, renown, spentRenown, reputation, spentReputation,
+                /* level, currentXp, gold, renown, spentRenown, reputation, spentReputation,
                 marketSaturation, fatigue, socialExposure, adventureProgress */
                 newHero.latestModifications.push({attributeName: result.attributeName, data: null});
                 // fallthrough
@@ -129,7 +135,7 @@ export function applyHeroModifications(baseHero: Hero, heroMods: HeroModificatio
                 })
                 break;
             case HeroModificationType.ADD_STAT:
-                /* stats */
+                /* stats, maxHealthStat, maxMagicStat */
                 applyNameValue('value')(newHero, result);
             case HeroModificationType.ADD_RANK:
                 /* spells, abilities */
@@ -233,6 +239,8 @@ export function hasHeroReachedNextLevel(hero: Hero): boolean {
 }
 
 export function getLevelUpModifications(hero: Hero): HeroModification[] {
+    const curGameSetting = GameSettingsManager.getInstance().getGameSettingById(hero.gameSettingId);
+
     let levelMods = [];
     
     levelMods.push({
@@ -246,14 +254,20 @@ export function getLevelUpModifications(hero: Hero): HeroModification[] {
         data: 0,
     })
     levelMods.push({
-        type: HeroModificationType.INCREASE,
-        attributeName: 'maxHp',
-        data: Math.floor(hero.stats[2].value / 3) + 1 + randRange(0, 3),
+        type: HeroModificationType.ADD_STAT,
+        attributeName: 'maxHealthStat',
+        data: [{
+            name: curGameSetting.healthStatName,
+            value: Math.floor(hero.stats[curGameSetting.healthBaseStatIndex].value / 3) + 1 + randRange(0, 3)
+        }],
     });
     levelMods.push({
-        type: HeroModificationType.INCREASE,
-        attributeName: 'maxMp',
-        data: Math.floor(hero.stats[3].value / 3 ) + 1 + randRange(0, 3),
+        type: HeroModificationType.ADD_STAT,
+        attributeName: 'maxMagicStat',
+        data:[{
+            name: curGameSetting.magicStatName,
+            value: Math.floor(hero.stats[curGameSetting.magicBaseStatIndex].value / 3 ) + 1 + randRange(0, 3)
+        }],
     })
     const winStat1 = selectLevelBonusStatIndex(hero.stats);
     const winStat2 = selectLevelBonusStatIndex(hero.stats);
