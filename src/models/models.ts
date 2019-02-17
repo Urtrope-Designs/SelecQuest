@@ -1,4 +1,5 @@
 import { Adventure } from "../helpers/storyline-helpers";
+import { HeroAbilityType } from "./hero-models";
 
 /** Task related */
 export interface Task {
@@ -105,8 +106,8 @@ export interface Hero {
     maxHealthStat: HeroStat;
     maxMagicStat: HeroStat;
     currentXp: number;
-    spells: HeroSpell[]; 
-    abilities: HeroAbility[]; 
+    abilities: HeroAbilityType[];
+    
     equipment: HeroEquipment[];
     accolades: HeroAccolade[];
     affiliations: HeroAffiliation[];
@@ -137,16 +138,6 @@ export interface Hero {
     latestModifications: {attributeName: string, data: any}[];
     gameSettingId: string;
 }
-
-export interface HeroSpell {
-    name: string,
-    rank: number,
-};
-
-export interface HeroAbility {
-    name: string,
-    rank: number,
-};
 
 export interface HeroEquipment {
     type: EquipmentType,

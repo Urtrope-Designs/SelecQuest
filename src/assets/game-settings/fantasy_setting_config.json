@@ -47,5 +47,45 @@
     "healthStatName": "HP",
     "healthBaseStatIndex": 2,
     "magicStatName": "MP",
-    "magicBaseStatIndex": 3
+    "magicBaseStatIndex": 3,
+    "abilityTypes": [
+        {
+            "displayName": "spells",
+            "baseStatIndex": 3,
+            "availableValues": [
+                "Summon Snack",
+                "Tonguehairs",
+                "Eggsmoke",
+                "Miasmatic Ward",
+                "Digest",
+                "Trace Outline",
+                "Gamey Aftertaste",
+                "Doubleflush",
+                "Dedandify",
+                "Hide Agenda",
+                "Undigest",
+                "Bisonic Sphere",
+                "Detect Limp",
+                "Suddenly Sand Wedge"
+            ]
+        },
+        {
+            "displayName": "skills",
+            "baseStatIndex": 1,
+            "availableValues": [
+                "Left Hook",
+                "Rope Tow",
+                "Jab",
+                "Swingsies",
+                "Uppercut",
+                "Twist and Trout",
+                "Rope Climb",
+                "Soul Prick",
+                "Half-time March",
+                "Imitate Mating Call",
+                "Chondromalacia Patella",
+                "Approach Infinity"
+            ]
+        }
+    ]
 }

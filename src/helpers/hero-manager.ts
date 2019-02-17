@@ -1,9 +1,9 @@
 import { Hero, HeroModificationType, AccoladeType, HeroModification, HeroEquipment, EquipmentType, EquipmentMaterial, HeroAccolade, HeroAffiliation, HeroConnection, HeroTitlePosition, HeroStat, TaskMode } from '../models/models';
 import { randRange, randFromList, deepCopyObject, randFromListLow, randFromListHigh, generateRandomName, capitalizeInitial, getIterableEnumKeys } from './utils';
 import { PROLOGUE_ADVENTURE_NAME } from './storyline-helpers';
-import { SPELLS, ABILITIES, IS_DEBUG, WEAPON_MATERIALS, SHEILD_MATERIALS, ARMOR_MATERIALS, EPITHET_DESCRIPTORS, EPITHET_BEING_ALL, TITLE_POSITIONS_ALL, SOBRIQUET_MODIFIERS, SOBRIQUET_NOUN_PORTION, HONORIFIC_TEMPLATES, OFFICE_POSITIONS_ALL, STANDARD_GROUPS_INDEFINITE } from '../global/config';
+import { IS_DEBUG, WEAPON_MATERIALS, SHEILD_MATERIALS, ARMOR_MATERIALS, EPITHET_DESCRIPTORS, EPITHET_BEING_ALL, TITLE_POSITIONS_ALL, SOBRIQUET_MODIFIERS, SOBRIQUET_NOUN_PORTION, HONORIFIC_TEMPLATES, OFFICE_POSITIONS_ALL, STANDARD_GROUPS_INDEFINITE } from '../global/config';
 import { GameSettingsManager } from '../services/game-settings-manager';
-import { HeroInitData } from '../models/hero-models';
+import { HeroInitData, HeroAbilityType, HeroAbility } from '../models/hero-models';
 import { GameSetting } from './game-setting';
 
 export function createNewHero(heroling: HeroInitData, gameSetting: GameSetting): Hero {
@@ -24,8 +24,7 @@ export function createNewHero(heroling: HeroInitData, gameSetting: GameSetting):
         maxHealthStat: {name: gameSetting.healthStatName, value: randRange(0, 7) + Math.floor(heroling.stats[gameSetting.healthBaseStatIndex].value / 6)},
         maxMagicStat: {name: gameSetting.magicStatName, value: randRange(0, 7) + Math.floor(heroling.stats[gameSetting.magicBaseStatIndex].value / 6)},
         currentXp: 0,
-        spells: [],
-        abilities: [],
+        abilities: gameSetting.abilityTypes.map(aT => {return {name: aT.displayName, received: []}}),
         equipment: getIterableEnumKeys(EquipmentType).map(typeKey => ({type: EquipmentType[typeKey], description: ''})),
         accolades: getIterableEnumKeys(AccoladeType).map(typeKey => ({type: AccoladeType[typeKey], received: []})),
         affiliations: [],
@@ -137,9 +136,19 @@ export function applyHeroModifications(baseHero: Hero, heroMods: HeroModificatio
             case HeroModificationType.ADD_STAT:
                 /* stats, maxHealthStat, maxMagicStat */
                 applyNameValue('value')(newHero, result);
+                break;
             case HeroModificationType.ADD_RANK:
-                /* spells, abilities */
-                applyNameValue('rank')(newHero, result);
+                /* abilities */
+                const existingAbilityType: HeroAbilityType = newHero.abilities.find(a => a.name == result.data.name);
+                result.data.received.forEach((ability: HeroAbility) => {
+                    const existingItem = existingAbilityType.received.find((eA: HeroAbility) => eA.name == ability.name);
+                    if (!existingItem) {
+                        existingAbilityType.received.push(ability);
+                    } else {
+                        existingItem.rank += ability.rank;
+                    }
+                });
+                newHero.latestModifications.push(result);
                 break;
             case HeroModificationType.ADD_QUANTITY:
                 /* loot, trophies */
@@ -278,7 +287,7 @@ export function getLevelUpModifications(hero: Hero): HeroModification[] {
     } else {
         levelMods.push(generateStatModification([{name: winStat1Name, value: 1}, {name: winStat2Name, value: 1}]));
     }
-    levelMods.push(generateSpellOrAbilityModification(hero));
+    levelMods.push(generateAbilityModification(hero));
     
     return levelMods;
 }
@@ -315,27 +324,24 @@ function generateStatModification(modData: {name: string, value: number}[]): Her
     return mod;
 }
 
-export function generateSpellOrAbilityModification(hero: Hero, modValue: number = 1): HeroModification {
-    let attributeName = '';
-    let affectingStatIndex = -1;
-    let optionList = [];
-    let dataObj = {name: '', rank: modValue};
-    if (randRange(0, 1)) {
-        attributeName = 'spells';
-        affectingStatIndex = 3;
-        optionList = SPELLS;
-    } else {
-        attributeName = 'abilities';
-        affectingStatIndex = 4;
-        optionList = ABILITIES;
-    }
+export function generateAbilityModification(hero: Hero, modValue: number = 1): HeroModification {
+    const curGameSetting = GameSettingsManager.getInstance().getGameSettingById(hero.gameSettingId);
+    const newAbilityType = randFromList(curGameSetting.abilityTypes);
     // pick a spell/ability early in the list, weighted toward 0
-    dataObj.name = randFromListLow(optionList, 2, hero.level + hero.stats[affectingStatIndex].value);
+    const dataObj: HeroAbilityType = {
+        name: newAbilityType.displayName,
+        received: [
+            {
+                name: randFromListLow(newAbilityType.availableValues, 2, hero.level + hero.stats[newAbilityType.baseStatIndex].value),
+                rank: modValue
+            }
+        ]
+    };
     
     const mod: HeroModification = {
         type: HeroModificationType.ADD_RANK,
-        attributeName: attributeName,
-        data: [dataObj],
+        attributeName: 'abilities',
+        data: dataObj,
     }
     
     return mod;

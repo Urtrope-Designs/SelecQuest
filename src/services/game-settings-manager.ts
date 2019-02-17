@@ -1,4 +1,4 @@
-import { GameSettingConfig } from "../models/game-setting-config";
+import { GameSettingConfig } from "../models/game-setting-models";
 import { GameSetting } from "../helpers/game-setting";
 
 export class GameSettingsManager {

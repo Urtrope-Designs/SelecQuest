@@ -1,7 +1,7 @@
 import { IS_DEBUG } from "../global/config";
 import { HeroModification, HeroModificationType, Hero } from "../models/models";
 import { randRange } from "./utils";
-import { generateNewEquipmentModification, generateSpellOrAbilityModification } from "./hero-manager";
+import { generateNewEquipmentModification, generateAbilityModification } from "./hero-manager";
 
 export const PROLOGUE_TASKS = [
     {taskDescription: 'Experiencing an enigmatic and foreboding night vision', durationSeconds: 10},
@@ -39,7 +39,7 @@ export function generateNewAdventureResults(currentHero: Hero, includeReward: bo
         },
     ];
     if (includeReward) {
-        results.push(randRange(0, 1) ? generateNewEquipmentModification(currentHero) : generateSpellOrAbilityModification(currentHero));
+        results.push(randRange(0, 1) ? generateNewEquipmentModification(currentHero) : generateAbilityModification(currentHero));
     }
     return results;
 }

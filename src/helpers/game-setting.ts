@@ -1,5 +1,6 @@
-import { GameSettingConfig } from "../models/game-setting-config";
+import { GameSettingConfig } from "../models/game-setting-models";
 import { HeroRace } from "../models/models";
+import { AbilityType } from "../models/game-setting-models";
 
 export class GameSetting {
     readonly gameSettingId: string;
@@ -11,6 +12,7 @@ export class GameSetting {
     readonly healthBaseStatIndex: number;                // number between 0 and 5 inclusive
     readonly magicStatName: string;                      // 1-8 chars
     readonly magicBaseStatIndex: number;                 // number between 0 and 5 inclusive
+    readonly abilityTypes: AbilityType[];
 
 
     constructor(config: GameSettingConfig) {
@@ -24,5 +26,6 @@ export class GameSetting {
         this.healthBaseStatIndex = config.healthBaseStatIndex;
         this.magicStatName = config.magicStatName;
         this.magicBaseStatIndex = config.magicBaseStatIndex;
+        this.abilityTypes = config.abilityTypes;
     }
 }

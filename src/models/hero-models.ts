@@ -7,3 +7,13 @@ export interface HeroInitData {
     stats: HeroStat[];
     gameSettingId: string;
 }
+
+export interface HeroAbilityType {
+    name: string;
+    received: HeroAbility[];
+}
+
+export interface HeroAbility {
+    name: string,
+    rank: number,
+};

@@ -3,6 +3,7 @@ import { Component, Prop, State, Event, EventEmitter, Element, Watch } from '@st
 import { AppState, Task, TaskMode, AccoladeType, Hero, HeroAffiliation, HeroStat } from '../../models/models';
 import { getXpRequiredForNextLevel } from '../../helpers/hero-manager';
 import { capitalizeInitial, getRoughTime, generateHeroHashFromHero } from '../../helpers/utils';
+import { HeroAbilityType, HeroAbility } from '../../models/hero-models';
 
 @Component({
     tag: 'sq-play-screen',
@@ -207,48 +208,31 @@ export class PlayScreen {
                                         </tr>
                                     </tbody>
                                 </table>
-                                <table class="listBox">
-                                    <thead>
-                                        <tr>
-                                            <th style={{width: "65%"}}>Spells</th>
-                                            <th>Rank</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            this.appState.hero.spells.length == 0 
-                                            ? <tr><td colSpan={2}>[None]</td></tr>    
-                                            : this.appState.hero.spells.map((spell) => 
-                                            <tr {...(this.highlightModifiedAttribute('spells', spell.name))}>
-                                                        <td>{spell.name}</td>
-                                                        <td>{spell.rank}</td>
-                                                    </tr>
-                                                )
-                                        }
-                                        <tr><td colSpan={2} class="placeholderRow"></td></tr>
-                                    </tbody>
-                                </table>
-                                <table class="listBox">
-                                    <thead>
-                                        <tr>
-                                            <th style={{width: "65%"}}>Abilities</th>
-                                            <th>Rank</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            this.appState.hero.abilities.length == 0 
-                                            ? <tr><td colSpan={2}>[None]</td></tr>    
-                                            : this.appState.hero.abilities.map((ability) => 
-                                            <tr {...(this.highlightModifiedAttribute('abilities', ability.name))}>
-                                                        <td>{ability.name}</td>
-                                                        <td>{ability.rank}</td>
-                                                    </tr>
-                                                )
-                                        }
-                                        <tr><td colSpan={2} class="placeholderRow"></td></tr>
-                                    </tbody>
-                                </table>
+                                {
+                                    this.appState.hero.abilities.map((abilityType: HeroAbilityType) =>
+                                        <table class="listBox">
+                                            <thead>
+                                                <tr>
+                                                    <th style={{width: "65%"}}>{capitalizeInitial(abilityType.name)}</th>
+                                                    <th>Rank</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    abilityType.received.length == 0
+                                                    ? <tr><td colSpan={2}>[None]</td></tr>
+                                                    : abilityType.received.map((ability: HeroAbility) =>
+                                                        <tr {...(this.highlightOrNot(this.findUpdate('abilities', ((data: HeroAbilityType) => data.name == abilityType.name && data.received.some(a => a.name == ability.name)))))}>
+                                                            <td>{ability.name}</td>
+                                                            <td>{ability.rank}</td>
+                                                        </tr>
+                                                    )
+                                                }
+                                                <tr><td colSpan={2} class="placeholderRow"></td></tr>
+                                            </tbody>
+                                        </table>
+                                    )
+                                }
                             </section>
                             : this.activeVisibleSection == VisibleSection.gear
                             ? <section>

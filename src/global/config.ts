@@ -396,38 +396,6 @@ export const CLASSES: string[] = [
     'Semi-retired Heckler',
 ]
 
-export const SPELLS: string[] = [
-    'Summon Snack',
-    'Tonguehairs',
-    'Eggsmoke',
-    'Miasmatic Ward',
-    'Digest',
-    'Trace Outline',
-    'Gamey Aftertaste',
-    'Doubleflush',
-    'Dedandify',
-    'Hide Agenda',
-    'Undigest',
-    'Bisonic Sphere',
-    'Detect Limp',
-    'Suddenly Sand Wedge',
-]
-
-export const ABILITIES: string[] = [
-    'Left Hook',
-    'Rope Tow',
-    'Jab',
-    'Swingsies',
-    'Uppercut',
-    'Twist and Trout',
-    'Rope Climb',
-    'Soul Prick',
-    'Half-time March',
-    'Imitate Mating Call',
-    'Chondromalacia Patella',
-    'Approach Infinity',
-]
-
 export const EQUIPMENT_MODIFIERS = {
     offense: [
         {

@@ -10,4 +10,11 @@ export interface GameSettingConfig {
     healthBaseStatIndex: number,    // number between 0 and 5 inclusive
     magicStatName: string,          // 1-8 chars
     magicBaseStatIndex: number,     // number between 0 and 5 inclusive
+    abilityTypes: AbilityType[],
+}
+
+export interface AbilityType {
+    displayName: string;
+    baseStatIndex: number;
+    availableValues: string[];
 }
