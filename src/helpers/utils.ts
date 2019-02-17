@@ -190,35 +190,48 @@ export function getIterableEnumKeys(requestedEnum: Object) {
     return Object.keys(requestedEnum).filter(key => isNaN(+key));
 }
 
-// function toRoman(n) {
-//     if (!n) return "N";
-//     var s = "";
-//     function _rome(dn,ds) {
-//       if (n >= dn) {
-//         n -= dn;
-//         s += ds;
-//         return true;
-//       } else return false;
-//     }
-//     if (n < 0) {
-//       s = "-";
-//       n = -n;
-//     }
-//     while (_rome(1000,"M")) {0;}
-//     _rome(900,"CM");
-//     _rome(500,"D");
-//     _rome(400,"CD");
-//     while (_rome(100,"C")) {0;}
-//     _rome(90,"XC");
-//     _rome(50,"L");
-//     _rome(40,"XL");
-//     while (_rome(10,"X")) {0;}
-//     _rome(9,"IX");
-//     _rome(5,"V");
-//     _rome(4,"IV");
-//     while (_rome(1,"I")) {0;}
-//     return s;
-//   }
+export function toRoman(n: number) {
+    if (!n) {
+        return "N";
+    }
+
+    let s = "";
+    function _rome(dn: number, ds: string) {
+      if (n >= dn) {
+        n -= dn;
+        s += ds;
+        return true;
+      } else {
+        return false;
+      }
+    }
+    if (n < 0) {
+      s = "-";
+      n = -n;
+    }
+    while (_rome(1000,"M")) {
+        0;
+    }
+    _rome(900,"CM");
+    _rome(500,"D");
+    _rome(400,"CD");
+    while (_rome(100,"C")) {
+        0;
+    }
+    _rome(90,"XC");
+    _rome(50,"L");
+    _rome(40,"XL");
+    while (_rome(10,"X")) {
+        0;
+    }
+    _rome(9,"IX");
+    _rome(5,"V");
+    _rome(4,"IV");
+    while (_rome(1,"I")) {
+        0;
+    }
+    return s;
+  }
   
 //   function toArabic(s) {
 //     n = 0;

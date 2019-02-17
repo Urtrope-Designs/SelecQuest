@@ -2,7 +2,7 @@ import { Component, Prop, State, Event, EventEmitter, Element, Watch } from '@st
 
 import { AppState, Task, TaskMode, AccoladeType, Hero, HeroAffiliation, HeroStat } from '../../models/models';
 import { getXpRequiredForNextLevel } from '../../helpers/hero-manager';
-import { capitalizeInitial, getRoughTime, generateHeroHashFromHero } from '../../helpers/utils';
+import { capitalizeInitial, getRoughTime, generateHeroHashFromHero, toRoman } from '../../helpers/utils';
 import { HeroAbilityType, HeroAbility } from '../../models/hero-models';
 
 @Component({
@@ -224,7 +224,7 @@ export class PlayScreen {
                                                     : abilityType.received.map((ability: HeroAbility) =>
                                                         <tr {...(this.highlightOrNot(this.findUpdate('abilities', ((data: HeroAbilityType) => data.name == abilityType.name && data.received.some(a => a.name == ability.name)))))}>
                                                             <td>{ability.name}</td>
-                                                            <td>{ability.rank}</td>
+                                                            <td>{toRoman(ability.rank)}</td>
                                                         </tr>
                                                     )
                                                 }
