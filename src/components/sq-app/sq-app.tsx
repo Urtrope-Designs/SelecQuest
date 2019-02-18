@@ -10,7 +10,7 @@ import { generateHeroHashFromHero } from '../../helpers/utils';
 import { PlayScreen } from '../play-screen/play-screen';
 import { GameSettingsManager } from '../../services/game-settings-manager';
 import { HeroInitData } from '../../models/hero-models';
-import { createNewHero } from '../../helpers/hero-manager';
+import { HeroManager } from '../../services/hero-manager';
 
 @Component({
     tag: 'sq-app',
@@ -22,6 +22,7 @@ export class SqApp {
     @State() state: AppState;
     private availableHeroes: {hash: string, name: string}[];
     private gameDataMgr = new GameDataManager();
+    private heroMgr: HeroManager;
     private playScreen: PlayScreen;
     
     @Listen('taskModeAction')
@@ -30,7 +31,7 @@ export class SqApp {
     }
     @Listen('startNewHero')
     startNewHeroHandler(event: CustomEvent<HeroInitData>) {
-        const newHero = createNewHero(event.detail, GameSettingsManager.getInstance().getGameSettingById(event.detail.gameSettingId));
+        const newHero = this.heroMgr.createNewHero(event.detail);
         const newGameState = Object.assign({}, DEFAULT_APP_STATE, {hero: newHero});
         this.gameDataMgr.setActiveHeroHash(generateHeroHashFromHero(newHero));
         this._queueAction(new SetActiveHero(newGameState));
@@ -82,6 +83,7 @@ export class SqApp {
     async componentWillLoad() {
         // todo: probably need to pull available Game Setting names from gameDataMgr eventually
         await GameSettingsManager.getInstance().init(['fantasy_setting_config']);
+        this.heroMgr = new HeroManager(GameSettingsManager.getInstance());
         this.gameDataMgr.getActiveHeroHash()
             .then((heroHash: string) => {
                 if (!!heroHash) {

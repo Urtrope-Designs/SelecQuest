@@ -4,7 +4,7 @@ import { scan } from 'rxjs/operators/scan';
 import { map } from 'rxjs/operators/map';
 import { Action, SetActiveTask, TaskCompleted, ChangeActiveTaskMode, ActionType, SetActiveHero } from './actions';
 import { Task, AppState, Hero, TaskMode } from '../models/models';
-import { applyHeroModifications, updateHeroState, hasHeroReachedNextLevel, getLevelUpModifications } from './hero-manager';
+import { applyHeroModifications, updateHeroState, hasHeroReachedNextLevel, getLevelUpModifications } from '../services/hero-manager';
 import { wrapIntoBehavior } from './utils';
 
 function activeTask(initState: Task, actions: Observable<Action>) {

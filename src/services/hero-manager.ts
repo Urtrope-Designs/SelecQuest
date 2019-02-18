@@ -1,77 +1,84 @@
 import { Hero, HeroModificationType, AccoladeType, HeroModification, HeroEquipment, EquipmentType, EquipmentMaterial, HeroAccolade, HeroAffiliation, HeroConnection, HeroTitlePosition, HeroStat, TaskMode } from '../models/models';
-import { randRange, randFromList, deepCopyObject, randFromListLow, randFromListHigh, generateRandomName, capitalizeInitial, getIterableEnumKeys } from './utils';
-import { PROLOGUE_ADVENTURE_NAME } from './storyline-helpers';
+import { randRange, randFromList, deepCopyObject, randFromListLow, randFromListHigh, generateRandomName, capitalizeInitial, getIterableEnumKeys } from '../helpers/utils';
+import { PROLOGUE_ADVENTURE_NAME } from '../helpers/storyline-helpers';
 import { IS_DEBUG, WEAPON_MATERIALS, SHEILD_MATERIALS, ARMOR_MATERIALS, EPITHET_DESCRIPTORS, EPITHET_BEING_ALL, TITLE_POSITIONS_ALL, SOBRIQUET_MODIFIERS, SOBRIQUET_NOUN_PORTION, HONORIFIC_TEMPLATES, OFFICE_POSITIONS_ALL, STANDARD_GROUPS_INDEFINITE } from '../global/config';
-import { GameSettingsManager } from '../services/game-settings-manager';
+import { GameSettingsManager } from './game-settings-manager';
 import { HeroInitData, HeroAbilityType, HeroAbility } from '../models/hero-models';
-import { GameSetting } from './game-setting';
+import { GameSetting } from '../helpers/game-setting';
 
-export function createNewHero(heroling: HeroInitData, gameSetting: GameSetting): Hero {
-    const LONG_TERM_LIMIT_FACTOR = 25;
-    const newHero: Hero = {
-        name: heroling.name,
-        raceName: heroling.raceName,
-        class: heroling.className,
-        level: 1,
-        stats: heroling.stats,
-        /* can't use spread operator for these, TS compilation of that happens to break getters below... */
-        // str: stats.str,
-        // dex: stats.dex,
-        // con: stats.con,
-        // int: stats.int,
-        // wis: stats.wis,
-        // cha: stats.cha,
-        maxHealthStat: {name: gameSetting.healthStatName, value: randRange(0, 7) + Math.floor(heroling.stats[gameSetting.healthBaseStatIndex].value / 6)},
-        maxMagicStat: {name: gameSetting.magicStatName, value: randRange(0, 7) + Math.floor(heroling.stats[gameSetting.magicBaseStatIndex].value / 6)},
-        currentXp: 0,
-        abilities: gameSetting.abilityTypes.map(aT => {return {name: aT.displayName, received: []}}),
-        equipment: getIterableEnumKeys(EquipmentType).map(typeKey => ({type: EquipmentType[typeKey], description: ''})),
-        accolades: getIterableEnumKeys(AccoladeType).map(typeKey => ({type: AccoladeType[typeKey], received: []})),
-        affiliations: [],
-        get maxEncumbrance() {return this.stats[0].value + 10},
-        get maxEquipmentWear() {return this.stats[1].value + 10},
-        get maxQuestLogSize() {return this.stats[3].value + 10},
-        gold: 0,
-        renown: 0,
-        spentRenown: 0,
-        reputation: 0,
-        spentReputation: 0,
-        loot: [],
-        trophies: [],
-        leads: [],
-        isInTeardownMode: [true, true, true],
-        marketSaturation: 0,
-        get maxMarketSaturation() {
-            if (IS_DEBUG) {
-                return 35;
-            } else {
-                return LONG_TERM_LIMIT_FACTOR * (this.level + this.stats[3].value);
-            }
-        },
-        fatigue: 0,
-        get maxFatigue() {
-            if (IS_DEBUG) {
-                return 35;
-            } else {
-                return LONG_TERM_LIMIT_FACTOR * (this.level + this.stats[2].value);
-            }
-        },
-        socialExposure: 0,
-        get maxSocialCapital() {
-            if (IS_DEBUG) {
-                return 35;
-            } else {
-                return LONG_TERM_LIMIT_FACTOR * (this.level + this.stats[4].value);
-            }
-        },
-        currentAdventure: IS_DEBUG ? {name: 'Chapter 1', progressRequired: 60} : {name: PROLOGUE_ADVENTURE_NAME, progressRequired: 28},
-        completedAdventures: [],
-        adventureProgress: 0,
-        latestModifications: [],
-        gameSettingId: heroling.gameSettingId,
+export class HeroManager {
+
+    constructor(private gameSettingsMgr: GameSettingsManager) {
     }
-    
-    return newHero;
+
+    public createNewHero(heroling: HeroInitData): Hero {
+        const gameSetting: GameSetting = this.gameSettingsMgr.getGameSettingById(heroling.gameSettingId);
+        const LONG_TERM_LIMIT_FACTOR = 25;
+        const newHero: Hero = {
+            name: heroling.name,
+            raceName: heroling.raceName,
+            class: heroling.className,
+            level: 1,
+            stats: heroling.stats,
+            /* can't use spread operator for these, TS compilation of that happens to break getters below... */
+            // str: stats.str,
+            // dex: stats.dex,
+            // con: stats.con,
+            // int: stats.int,
+            // wis: stats.wis,
+            // cha: stats.cha,
+            maxHealthStat: {name: gameSetting.healthStatName, value: randRange(0, 7) + Math.floor(heroling.stats[gameSetting.healthBaseStatIndex].value / 6)},
+            maxMagicStat: {name: gameSetting.magicStatName, value: randRange(0, 7) + Math.floor(heroling.stats[gameSetting.magicBaseStatIndex].value / 6)},
+            currentXp: 0,
+            abilities: gameSetting.abilityTypes.map(aT => {return {name: aT.displayName, received: []}}),
+            equipment: getIterableEnumKeys(EquipmentType).map(typeKey => ({type: EquipmentType[typeKey], description: ''})),
+            accolades: getIterableEnumKeys(AccoladeType).map(typeKey => ({type: AccoladeType[typeKey], received: []})),
+            affiliations: [],
+            get maxEncumbrance() {return this.stats[0].value + 10},
+            get maxEquipmentWear() {return this.stats[1].value + 10},
+            get maxQuestLogSize() {return this.stats[3].value + 10},
+            gold: 0,
+            renown: 0,
+            spentRenown: 0,
+            reputation: 0,
+            spentReputation: 0,
+            loot: [],
+            trophies: [],
+            leads: [],
+            isInTeardownMode: [true, true, true],
+            marketSaturation: 0,
+            get maxMarketSaturation() {
+                if (IS_DEBUG) {
+                    return 35;
+                } else {
+                    return LONG_TERM_LIMIT_FACTOR * (this.level + this.stats[3].value);
+                }
+            },
+            fatigue: 0,
+            get maxFatigue() {
+                if (IS_DEBUG) {
+                    return 35;
+                } else {
+                    return LONG_TERM_LIMIT_FACTOR * (this.level + this.stats[2].value);
+                }
+            },
+            socialExposure: 0,
+            get maxSocialCapital() {
+                if (IS_DEBUG) {
+                    return 35;
+                } else {
+                    return LONG_TERM_LIMIT_FACTOR * (this.level + this.stats[4].value);
+                }
+            },
+            currentAdventure: IS_DEBUG ? {name: 'Chapter 1', progressRequired: 60} : {name: PROLOGUE_ADVENTURE_NAME, progressRequired: 28},
+            completedAdventures: [],
+            adventureProgress: 0,
+            latestModifications: [],
+            gameSettingId: heroling.gameSettingId,
+        }
+        
+        return newHero;
+    }
 }
 
 export function applyHeroModifications(baseHero: Hero, heroMods: HeroModification[], resetModsList = true): Hero {

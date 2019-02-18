@@ -1,7 +1,7 @@
 import { IS_DEBUG } from "../global/config";
 import { HeroModification, HeroModificationType, Hero } from "../models/models";
 import { randRange } from "./utils";
-import { generateNewEquipmentModification, generateAbilityModification } from "./hero-manager";
+import { generateNewEquipmentModification, generateAbilityModification } from "../services/hero-manager";
 
 export const PROLOGUE_TASKS = [
     {taskDescription: 'Experiencing an enigmatic and foreboding night vision', durationSeconds: 10},

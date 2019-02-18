@@ -1,7 +1,7 @@
 import { Component, Prop, State, Event, EventEmitter, Element, Watch } from '@stencil/core';
 
 import { AppState, Task, TaskMode, AccoladeType, Hero, HeroAffiliation, HeroStat } from '../../models/models';
-import { getXpRequiredForNextLevel } from '../../helpers/hero-manager';
+import { getXpRequiredForNextLevel } from '../../services/hero-manager';
 import { capitalizeInitial, getRoughTime, generateHeroHashFromHero, toRoman } from '../../helpers/utils';
 import { HeroAbilityType, HeroAbility } from '../../models/hero-models';
 
