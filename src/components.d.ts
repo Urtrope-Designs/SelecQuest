@@ -10,6 +10,9 @@ import '@stencil/core';
 import '@ionic/core';
 import 'ionicons';
 import {
+  GameSettingsManager,
+} from './services/game-settings-manager';
+import {
   EventEmitter,
 } from '@stencil/core';
 import {
@@ -23,8 +26,11 @@ import {
 
 export namespace Components {
 
-  interface SqCreateHeroScreen {}
+  interface SqCreateHeroScreen {
+    'gameSettingsMgr': GameSettingsManager;
+  }
   interface SqCreateHeroScreenAttributes extends StencilHTMLAttributes {
+    'gameSettingsMgr'?: GameSettingsManager;
     'onStartNewHero'?: (event: CustomEvent<HeroInitData>) => void;
   }
 

@@ -91,9 +91,7 @@ export class HeroManager {
         return newHero;
     }
 
-    private applyHeroModifications(baseHero: Hero, heroMods: HeroModification[], resetModsList = true): Hero {
-        let newHero: Hero = deepCopyObject(baseHero);         // need to deep clone rather than using Object.assign() or spread operator
-        
+    private applyHeroModifications(newHero: Hero, heroMods: HeroModification[], resetModsList = true): Hero {
         if (resetModsList) {
             newHero.latestModifications = [];
         }

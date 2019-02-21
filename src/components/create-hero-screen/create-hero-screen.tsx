@@ -1,4 +1,4 @@
-import { Component, State, Event, EventEmitter } from "@stencil/core";
+import { Component, State, Event, EventEmitter, Prop } from "@stencil/core";
 import { HeroStat, HeroRace } from "../../models/models";
 import { generateRandomName, randFromList, randRange, capitalizeInitial } from "../../helpers/utils";
 import { GameSettingsManager } from '../../services/game-settings-manager';
@@ -10,6 +10,7 @@ import { HeroInitData } from "../../models/hero-models";
     styleUrl: 'create-hero-screen.scss',
 })
 export class CreateHeroScreen {
+    @Prop() gameSettingsMgr: GameSettingsManager;
     @Event() startNewHero: EventEmitter<HeroInitData>;
     @State() availableGameSettings: GameSetting[];
     @State() rolledHero: Heroling;
@@ -38,8 +39,7 @@ export class CreateHeroScreen {
     }
 
     private async initGameSettings() {
-        const gameSettingsMgr = GameSettingsManager.getInstance();
-        this.availableGameSettings = await gameSettingsMgr.getAllGameSettings();
+        this.availableGameSettings = await this.gameSettingsMgr.getAllGameSettings();
         this.selectedGameSetting = this.availableGameSettings[0];
 
         return Promise.resolve(true);

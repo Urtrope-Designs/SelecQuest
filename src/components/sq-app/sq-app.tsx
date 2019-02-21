@@ -85,8 +85,8 @@ export class SqApp {
 
     async componentWillLoad() {
         // todo: probably need to pull available Game Setting names from gameDataMgr eventually
-        await GameSettingsManager.getInstance().init(['fantasy_setting_config']);
-        this.gameSettingsMgr = GameSettingsManager.getInstance();
+        this.gameSettingsMgr = new GameSettingsManager();
+        await this.gameSettingsMgr.init(['fantasy_setting_config']);
         this.heroMgr = new HeroManager(this.gameSettingsMgr);
         this.gameDataMgr.getActiveHeroHash()
             .then((heroHash: string) => {
@@ -107,7 +107,7 @@ export class SqApp {
                 const initialData = state || DEFAULT_APP_STATE;
                 let state$ = stateFn(initialData, this.actionSubject.asObservable());
                 state$ = this.gameDataMgr.persistAppData(state$);
-                this.taskMgr.init(state$, GameSettingsManager.getInstance(), this.heroMgr, false);
+                this.taskMgr.init(state$, this.gameSettingsMgr, this.heroMgr, false);
                 this.taskMgr.getTaskAction$().subscribe((taskAction: Action) => {
                     this._queueAction(taskAction);
                 })
@@ -136,7 +136,7 @@ export class SqApp {
                     {
                         !!this.state.hero
                         ? <sq-play-screen appState={this.state} availableHeroes={this.availableHeroes} ref={(el: any) => this.playScreen = el}></sq-play-screen>
-                        : <sq-create-hero-screen></sq-create-hero-screen>
+                        : <sq-create-hero-screen gameSettingsMgr={this.gameSettingsMgr}></sq-create-hero-screen>
                     }
                 </ion-app>
             );

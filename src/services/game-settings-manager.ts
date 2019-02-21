@@ -2,17 +2,9 @@ import { GameSettingConfig } from "../models/game-setting-models";
 import { GameSetting } from "../helpers/game-setting";
 
 export class GameSettingsManager {
-    private static instance: GameSettingsManager;
     private availableGameSettings: Map<string, GameSetting>;
 
-    private constructor() {}
-
-    static getInstance() {
-        if (!GameSettingsManager.instance) {
-            GameSettingsManager.instance = new GameSettingsManager();
-        }
-        return GameSettingsManager.instance;
-    }
+    constructor() {}
 
     async init(availableGameSettingFiles: string[]) {
         this.availableGameSettings = new Map<string, GameSetting>();
