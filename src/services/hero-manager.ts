@@ -3,7 +3,7 @@ import { randRange, randFromList, deepCopyObject, randFromListLow, randFromListH
 import { PROLOGUE_ADVENTURE_NAME } from '../helpers/storyline-helpers';
 import { IS_DEBUG, WEAPON_MATERIALS, SHEILD_MATERIALS, ARMOR_MATERIALS, EPITHET_DESCRIPTORS, EPITHET_BEING_ALL, TITLE_POSITIONS_ALL, SOBRIQUET_MODIFIERS, SOBRIQUET_NOUN_PORTION, HONORIFIC_TEMPLATES, OFFICE_POSITIONS_ALL, STANDARD_GROUPS_INDEFINITE } from '../global/config';
 import { GameSettingsManager } from './game-settings-manager';
-import { HeroInitData, HeroAbilityType, HeroAbility } from '../models/hero-models';
+import { HeroInitData, HeroAbilityType, HeroAbility, Adventure } from '../models/hero-models';
 import { GameSetting } from '../helpers/game-setting';
 
 export class HeroManager {
@@ -79,260 +79,302 @@ export class HeroManager {
         
         return newHero;
     }
-}
 
-export function applyHeroModifications(baseHero: Hero, heroMods: HeroModification[], resetModsList = true): Hero {
-    let newHero: Hero = deepCopyObject(baseHero);         // need to deep clone rather than using Object.assign() or spread operator
-    
-    if (resetModsList) {
-        newHero.latestModifications = [];
+    public applyHeroTaskUpdates(baseHero: Hero, heroMods: HeroModification[]): Hero {
+        let newHero: Hero = deepCopyObject(baseHero);         // need to deep clone rather than using Object.assign() or spread operator
+        newHero = this.applyHeroModifications(newHero, heroMods);
+        newHero = this.updateHeroState(newHero);
+        if (HeroManager.hasHeroReachedNextLevel(newHero)) {
+            const levelUpMods = this.generateLevelUpModifications(newHero)
+            newHero = this.applyHeroModifications(newHero, levelUpMods, false);
+        }
+        return newHero;
     }
 
-    const applyNameValue = (valueAttributeName: string) => {
-        return (heroToMod: Hero, mod: HeroModification) => {
-            for (let item of mod.data) {
-                let existingItem: any;
-                if (Array.isArray(heroToMod[mod.attributeName])) {
-                    existingItem = heroToMod[mod.attributeName].find((i) => {
-                        return item.name == i.name;
-                    });
-                } else {
-                    existingItem = heroToMod[mod.attributeName];
-                }
-                if (!!existingItem) {
-                    existingItem[valueAttributeName] += item[valueAttributeName];
-                    if (existingItem[valueAttributeName] < 1) {
-                        const existingItemIndex = heroToMod[mod.attributeName].indexOf(existingItem)
-                        heroToMod[mod.attributeName].splice(existingItemIndex, 1);
-                    }
-                } else {
-                    heroToMod[mod.attributeName].push(item);
-                }
-                heroToMod.latestModifications.push({attributeName: mod.attributeName, data: item.name})
-            }
+    private applyHeroModifications(baseHero: Hero, heroMods: HeroModification[], resetModsList = true): Hero {
+        let newHero: Hero = deepCopyObject(baseHero);         // need to deep clone rather than using Object.assign() or spread operator
         
+        if (resetModsList) {
+            newHero.latestModifications = [];
         }
-    }
     
-    for (let result of heroMods) {
-        switch(result.type) {
-            case HeroModificationType.INCREASE:
-                /* level, currentXp, gold, renown, spentRenown, reputation, spentReputation,
-                marketSaturation, fatigue, socialExposure, adventureProgress */
-                newHero.latestModifications.push({attributeName: result.attributeName, data: null});
-                // fallthrough
-            case HeroModificationType.DECREASE:
-                /* gold, marketSaturation, fatigue, socialExposure */
-                newHero[result.attributeName] += result.data;
-                break;
-            case HeroModificationType.SET:
-                /* currentXp, isInLootSelloffMode, isInTrophyBoastingMode, isInLeadFollowingMode, currentAdventure, adventureProgress */
-                newHero[result.attributeName] = result.data;
-                newHero.latestModifications.push({attributeName: result.attributeName, data: null});
-                break;
-            case HeroModificationType.SET_EQUIPMENT:
-                /* equipment */
-                result.data.map((equip: HeroEquipment) => {
-                    const existingEquipment = newHero[result.attributeName].find(e => {
-                        return e.type == equip.type;
-                    })
-                    existingEquipment.description = equip.description;
-                    newHero.latestModifications.push({attributeName: result.attributeName, data: equip.type});
-                })
-                break;
-            case HeroModificationType.ADD_STAT:
-                /* stats, maxHealthStat, maxMagicStat */
-                applyNameValue('value')(newHero, result);
-                break;
-            case HeroModificationType.ADD_RANK:
-                /* abilities */
-                const existingAbilityType: HeroAbilityType = newHero.abilities.find(a => a.name == result.data.name);
-                result.data.received.forEach((ability: HeroAbility) => {
-                    const existingItem = existingAbilityType.received.find((eA: HeroAbility) => eA.name == ability.name);
-                    if (!existingItem) {
-                        existingAbilityType.received.push(ability);
-                    } else {
-                        existingItem.rank += ability.rank;
-                    }
-                });
-                newHero.latestModifications.push(result);
-                break;
-            case HeroModificationType.ADD_QUANTITY:
-                /* loot, trophies */
-                applyNameValue('quantity')(newHero, result);
-                break;
-            case HeroModificationType.REMOVE_QUANTITY:
-            case HeroModificationType.REMOVE:
-                /* loot, trophies, leads */
-                for (let item of result.data) {
-                    let existingItemIndex = newHero[result.attributeName].findIndex((i) => {
-                        return item.name == i.name;
-                    });
-                    if (existingItemIndex != -1) {
-                        newHero[result.attributeName].splice(existingItemIndex, 1);
-                    }
-                }
-                break;
-            case HeroModificationType.ADD:
-                /* leads, completedAdventures */
-                newHero[result.attributeName] = newHero[result.attributeName].concat(result.data);
-                newHero.latestModifications.push({attributeName: result.attributeName, data: null});
-                break;
-            case HeroModificationType.ADD_ACCOLADE:
-                /* accolades */
-                result.data.map((newAccolade: HeroAccolade) => {
-                    const existingAccolade: HeroAccolade = newHero[result.attributeName].find(a => {
-                        return a.type == newAccolade.type;
-                    })
-                    existingAccolade.received = existingAccolade.received.concat(newAccolade.received);
-                    if (existingAccolade.received.length > 3) {
-                        existingAccolade.received.splice(0, existingAccolade.received.length - 3);
-                    }
-                    newHero.latestModifications.push({attributeName: result.attributeName, data: newAccolade.type});
-                })
-                break;
-            case HeroModificationType.ADD_AFFILIATION:
-                /* affiliations */
-                result.data.map((newAffiliation: HeroAffiliation) => {
-                    if (newAffiliation.connection != null) {
-                        newHero.affiliations.push(newAffiliation);
-                    }
-                    if (newAffiliation.office != null) {
-                        const existingAffiliation: HeroAffiliation = newHero.affiliations.find(a => {
-                            return a.groupName == newAffiliation.groupName;
+        const applyNameValue = (valueAttributeName: string) => {
+            return (heroToMod: Hero, mod: HeroModification) => {
+                for (let item of mod.data) {
+                    let existingItem: any;
+                    if (Array.isArray(heroToMod[mod.attributeName])) {
+                        existingItem = heroToMod[mod.attributeName].find((i) => {
+                            return item.name == i.name;
                         });
-                        existingAffiliation.office = newAffiliation.office;
+                    } else {
+                        existingItem = heroToMod[mod.attributeName];
                     }
-                    
-                    newHero.latestModifications.push({attributeName: result.attributeName, data: newAffiliation});
-                })
-                break;
-            case HeroModificationType.SET_TEARDOWN_MODE:
-                /* teardown modes */
-                result.data.forEach((teardownUpdate: {index: TaskMode, value: boolean}) => {
-                    newHero.isInTeardownMode[teardownUpdate.index] = teardownUpdate.value;
-                })
-                break;
+                    if (!!existingItem) {
+                        existingItem[valueAttributeName] += item[valueAttributeName];
+                        if (existingItem[valueAttributeName] < 1) {
+                            const existingItemIndex = heroToMod[mod.attributeName].indexOf(existingItem)
+                            heroToMod[mod.attributeName].splice(existingItemIndex, 1);
+                        }
+                    } else {
+                        heroToMod[mod.attributeName].push(item);
+                    }
+                    heroToMod.latestModifications.push({attributeName: mod.attributeName, data: item.name})
+                }
+            
+            }
+        }
+        
+        for (let result of heroMods) {
+            switch(result.type) {
+                case HeroModificationType.INCREASE:
+                    /* level, currentXp, gold, renown, spentRenown, reputation, spentReputation,
+                    marketSaturation, fatigue, socialExposure, adventureProgress */
+                    newHero.latestModifications.push({attributeName: result.attributeName, data: null});
+                    // fallthrough
+                case HeroModificationType.DECREASE:
+                    /* gold, marketSaturation, fatigue, socialExposure */
+                    newHero[result.attributeName] += result.data;
+                    break;
+                case HeroModificationType.SET:
+                    /* currentXp, isInLootSelloffMode, isInTrophyBoastingMode, isInLeadFollowingMode, currentAdventure, adventureProgress */
+                    newHero[result.attributeName] = result.data;
+                    newHero.latestModifications.push({attributeName: result.attributeName, data: null});
+                    break;
+                case HeroModificationType.SET_EQUIPMENT:
+                    /* equipment */
+                    result.data.map((equip: HeroEquipment) => {
+                        const existingEquipment = newHero[result.attributeName].find(e => {
+                            return e.type == equip.type;
+                        })
+                        existingEquipment.description = equip.description;
+                        newHero.latestModifications.push({attributeName: result.attributeName, data: equip.type});
+                    })
+                    break;
+                case HeroModificationType.ADD_STAT:
+                    /* stats, maxHealthStat, maxMagicStat */
+                    applyNameValue('value')(newHero, result);
+                    break;
+                case HeroModificationType.ADD_RANK:
+                    /* abilities */
+                    const existingAbilityType: HeroAbilityType = newHero.abilities.find(a => a.name == result.data.name);
+                    result.data.received.forEach((ability: HeroAbility) => {
+                        const existingItem = existingAbilityType.received.find((eA: HeroAbility) => eA.name == ability.name);
+                        if (!existingItem) {
+                            existingAbilityType.received.push(ability);
+                        } else {
+                            existingItem.rank += ability.rank;
+                        }
+                    });
+                    newHero.latestModifications.push(result);
+                    break;
+                case HeroModificationType.ADD_QUANTITY:
+                    /* loot, trophies */
+                    applyNameValue('quantity')(newHero, result);
+                    break;
+                case HeroModificationType.REMOVE_QUANTITY:
+                case HeroModificationType.REMOVE:
+                    /* loot, trophies, leads */
+                    for (let item of result.data) {
+                        let existingItemIndex = newHero[result.attributeName].findIndex((i) => {
+                            return item.name == i.name;
+                        });
+                        if (existingItemIndex != -1) {
+                            newHero[result.attributeName].splice(existingItemIndex, 1);
+                        }
+                    }
+                    break;
+                case HeroModificationType.ADD:
+                    /* leads, completedAdventures */
+                    newHero[result.attributeName] = newHero[result.attributeName].concat(result.data);
+                    newHero.latestModifications.push({attributeName: result.attributeName, data: null});
+                    break;
+                case HeroModificationType.ADD_ACCOLADE:
+                    /* accolades */
+                    result.data.map((newAccolade: HeroAccolade) => {
+                        const existingAccolade: HeroAccolade = newHero[result.attributeName].find(a => {
+                            return a.type == newAccolade.type;
+                        })
+                        existingAccolade.received = existingAccolade.received.concat(newAccolade.received);
+                        if (existingAccolade.received.length > 3) {
+                            existingAccolade.received.splice(0, existingAccolade.received.length - 3);
+                        }
+                        newHero.latestModifications.push({attributeName: result.attributeName, data: newAccolade.type});
+                    })
+                    break;
+                case HeroModificationType.ADD_AFFILIATION:
+                    /* affiliations */
+                    result.data.map((newAffiliation: HeroAffiliation) => {
+                        if (newAffiliation.connection != null) {
+                            newHero.affiliations.push(newAffiliation);
+                        }
+                        if (newAffiliation.office != null) {
+                            const existingAffiliation: HeroAffiliation = newHero.affiliations.find(a => {
+                                return a.groupName == newAffiliation.groupName;
+                            });
+                            existingAffiliation.office = newAffiliation.office;
+                        }
+                        
+                        newHero.latestModifications.push({attributeName: result.attributeName, data: newAffiliation});
+                    })
+                    break;
+                case HeroModificationType.SET_TEARDOWN_MODE:
+                    /* teardown modes */
+                    result.data.forEach((teardownUpdate: {index: TaskMode, value: boolean}) => {
+                        newHero.isInTeardownMode[teardownUpdate.index] = teardownUpdate.value;
+                    })
+                    break;
+            }
+        }
+        
+        return newHero;
+    }
+
+    private updateHeroState(hero: Hero): Hero {
+        let newHero = deepCopyObject(hero);          // need to deep clone rather than using Object.assign() or spread operator
+        
+        newHero.marketSaturation = Math.min(newHero.marketSaturation, newHero.maxMarketSaturation);
+        newHero.marketSaturation = Math.max(newHero.marketSaturation, 0);
+        newHero.fatigue = Math.min(newHero.fatigue, newHero.maxFatigue);
+        newHero.fatigue = Math.max(newHero.fatigue, 0);
+        newHero.socialExposure = Math.min(newHero.socialExposure, newHero.maxSocialCapital);
+        newHero.socialExposure = Math.max(newHero.socialExposure, 0);
+        newHero.adventureProgress = Math.min(newHero.adventureProgress, newHero.currentAdventure.progressRequired);
+        newHero.adventureProgress = Math.max(newHero.adventureProgress, 0);
+        
+        return newHero;
+    }
+    
+    static getXpRequiredForNextLevel(curLevel: number): number {
+        let xpRequired = 0;
+        
+        if (IS_DEBUG) {
+            xpRequired = 30;
+        } else {
+            xpRequired = 20 * (curLevel + 1) * 60;
+        }
+        
+        return xpRequired;
+    }
+    
+    static hasHeroReachedNextLevel(hero: Hero): boolean {
+        if (hero.currentXp >= HeroManager.getXpRequiredForNextLevel(hero.level)) {
+            return true;
+        } else {
+            return false;
         }
     }
     
-    return newHero;
-}
-
-export function updateHeroState(hero: Hero): Hero {
-    let newHero = deepCopyObject(hero);          // need to deep clone rather than using Object.assign() or spread operator
+    private generateLevelUpModifications(hero: Hero): HeroModification[] {
+        const curGameSetting = this.gameSettingsMgr.getGameSettingById(hero.gameSettingId);
     
-    newHero.marketSaturation = Math.min(newHero.marketSaturation, newHero.maxMarketSaturation);
-    newHero.marketSaturation = Math.max(newHero.marketSaturation, 0);
-    newHero.fatigue = Math.min(newHero.fatigue, newHero.maxFatigue);
-    newHero.fatigue = Math.max(newHero.fatigue, 0);
-    newHero.socialExposure = Math.min(newHero.socialExposure, newHero.maxSocialCapital);
-    newHero.socialExposure = Math.max(newHero.socialExposure, 0);
-    newHero.adventureProgress = Math.min(newHero.adventureProgress, newHero.currentAdventure.progressRequired);
-    newHero.adventureProgress = Math.max(newHero.adventureProgress, 0);
-    
-    return newHero;
-}
-
-export function getXpRequiredForNextLevel(curLevel: number): number {
-    let xpRequired = 0;
-    
-    if (IS_DEBUG) {
-        xpRequired = 30;
-    } else {
-        xpRequired = 20 * (curLevel + 1) * 60;
-    }
-    
-    return xpRequired;
-}
-
-export function hasHeroReachedNextLevel(hero: Hero): boolean {
-    if (hero.currentXp >= getXpRequiredForNextLevel(hero.level)) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-export function getLevelUpModifications(hero: Hero): HeroModification[] {
-    const curGameSetting = GameSettingsManager.getInstance().getGameSettingById(hero.gameSettingId);
-
-    let levelMods = [];
-    
-    levelMods.push({
-        type: HeroModificationType.INCREASE,
-        attributeName: 'level',
-        data: 1,
-    });
-    levelMods.push({
-        type: HeroModificationType.SET,
-        attributeName: 'currentXp',
-        data: 0,
-    })
-    levelMods.push({
-        type: HeroModificationType.ADD_STAT,
-        attributeName: 'maxHealthStat',
-        data: [{
-            name: curGameSetting.healthStatName,
-            value: Math.floor(hero.stats[curGameSetting.healthBaseStatIndex].value / 3) + 1 + randRange(0, 3)
-        }],
-    });
-    levelMods.push({
-        type: HeroModificationType.ADD_STAT,
-        attributeName: 'maxMagicStat',
-        data:[{
-            name: curGameSetting.magicStatName,
-            value: Math.floor(hero.stats[curGameSetting.magicBaseStatIndex].value / 3 ) + 1 + randRange(0, 3)
-        }],
-    })
-    const winStat1 = selectLevelBonusStatIndex(hero.stats);
-    const winStat2 = selectLevelBonusStatIndex(hero.stats);
-    const winStat1Name = GameSettingsManager.getInstance().getGameSettingById(hero.gameSettingId).statNames[winStat1];
-    const winStat2Name = GameSettingsManager.getInstance().getGameSettingById(hero.gameSettingId).statNames[winStat2];
-    if (winStat1 === winStat2) {
-        levelMods.push(generateStatModification([{name: winStat1Name, value: 2}]));
-    } else {
-        levelMods.push(generateStatModification([{name: winStat1Name, value: 1}, {name: winStat2Name, value: 1}]));
-    }
-    levelMods.push(generateAbilityModification(hero));
-    
-    return levelMods;
-}
-
-function selectLevelBonusStatIndex(heroStats: HeroStat[]): number {
-    let selectedStatIndex: number;
-    selectedStatIndex = randRange(0,5);
-    
-    if (randRange(0, 1)) {
-        // Favor the best stat so it will tend to clump
-        let i = 0;
-        heroStats.forEach(stat => {
-            i += stat.value ** 2;
-        })
-        i = randRange(0, i-1);
-        heroStats.some((stat, index) => {
-            selectedStatIndex = index;
-            i -= stat.value ** 2;
-            if (i < 0) {
-                return true;
-            }
+        let levelMods = [];
+        
+        levelMods.push({
+            type: HeroModificationType.INCREASE,
+            attributeName: 'level',
+            data: 1,
         });
+        levelMods.push({
+            type: HeroModificationType.SET,
+            attributeName: 'currentXp',
+            data: 0,
+        })
+        levelMods.push({
+            type: HeroModificationType.ADD_STAT,
+            attributeName: 'maxHealthStat',
+            data: [{
+                name: curGameSetting.healthStatName,
+                value: Math.floor(hero.stats[curGameSetting.healthBaseStatIndex].value / 3) + 1 + randRange(0, 3)
+            }],
+        });
+        levelMods.push({
+            type: HeroModificationType.ADD_STAT,
+            attributeName: 'maxMagicStat',
+            data:[{
+                name: curGameSetting.magicStatName,
+                value: Math.floor(hero.stats[curGameSetting.magicBaseStatIndex].value / 3 ) + 1 + randRange(0, 3)
+            }],
+        })
+        const winStat1 = this.selectLevelBonusStatIndex(hero.stats);
+        const winStat2 = this.selectLevelBonusStatIndex(hero.stats);
+        const winStat1Name = curGameSetting.statNames[winStat1];
+        const winStat2Name = curGameSetting.statNames[winStat2];
+        if (winStat1 === winStat2) {
+            levelMods.push(this.generateStatModification([{name: winStat1Name, value: 2}]));
+        } else {
+            levelMods.push(this.generateStatModification([{name: winStat1Name, value: 1}, {name: winStat2Name, value: 1}]));
+        }
+        levelMods.push(generateAbilityModification(hero, curGameSetting));
+        
+        return levelMods;
     }
     
-    return selectedStatIndex;
-}
-
-function generateStatModification(modData: {name: string, value: number}[]): HeroModification {
-    const mod: HeroModification = {
-        type: HeroModificationType.ADD_STAT,
-        attributeName: 'stats',
-        data: modData,
+    private selectLevelBonusStatIndex(heroStats: HeroStat[]): number {
+        let selectedStatIndex: number;
+        selectedStatIndex = randRange(0, heroStats.length-1);
+        
+        if (randRange(0, 1)) {
+            // Favor the best stat so it will tend to clump
+            let i = 0;
+            heroStats.forEach(stat => {
+                i += stat.value ** 2;
+            })
+            i = randRange(0, i-1);
+            heroStats.some((stat, index) => {
+                selectedStatIndex = index;
+                i -= stat.value ** 2;
+                if (i < 0) {
+                    return true;
+                }
+            });
+        }
+        
+        return selectedStatIndex;
     }
-    return mod;
+    
+    private generateStatModification(modData: {name: string, value: number}[]): HeroModification {
+        const mod: HeroModification = {
+            type: HeroModificationType.ADD_STAT,
+            attributeName: 'stats',
+            data: modData,
+        }
+        return mod;
+    }
 }
 
-export function generateAbilityModification(hero: Hero, modValue: number = 1): HeroModification {
-    const curGameSetting = GameSettingsManager.getInstance().getGameSettingById(hero.gameSettingId);
+function generateNextAdventure(completedAdventure: Adventure): Adventure {
+    const oldChapNumMatch = completedAdventure.name.match(/\d+$/);
+    const oldChapNum = !!oldChapNumMatch ? +oldChapNumMatch[0] : 0;
+    const newChapDuration = IS_DEBUG ? 60 : (60 * 60 * (1 + 5 * oldChapNum + 1));
+    return {name: `Chapter ${oldChapNum + 1}`, progressRequired: newChapDuration};
+}
+
+export function generateNewAdventureResults(currentHero: Hero, curGameSetting: GameSetting, includeReward: boolean = true): HeroModification[] {
+    let results = [
+        {
+            type: HeroModificationType.SET,
+            attributeName: 'currentAdventure',
+            data: generateNextAdventure(currentHero.currentAdventure),
+        },
+        {
+            type: HeroModificationType.SET,
+            attributeName: 'adventureProgress',
+            data: 0,
+        },
+        {
+            type: HeroModificationType.ADD,
+            attributeName: 'completedAdventures',
+            data: [currentHero.currentAdventure.name],
+        },
+    ];
+    if (includeReward) {
+        results.push(randRange(0, 1) ? generateNewEquipmentModification(currentHero, curGameSetting) : generateAbilityModification(currentHero, curGameSetting));
+    }
+    return results;
+}
+
+
+export function generateAbilityModification(hero: Hero, curGameSetting: GameSetting, modValue: number = 1): HeroModification {
     const newAbilityType = randFromList(curGameSetting.abilityTypes);
     // pick a spell/ability early in the list, weighted toward 0
     const dataObj: HeroAbilityType = {
@@ -354,7 +396,7 @@ export function generateAbilityModification(hero: Hero, modValue: number = 1): H
     return mod;
 }
 
-export function generateNewEquipmentModification(hero: Hero): HeroModification {
+export function generateNewEquipmentModification(hero: Hero, _curGameSetting: GameSetting): HeroModification {
     const newEquipmentData = generateRandomEquipment(hero.level);
     
     const mod: HeroModification = {

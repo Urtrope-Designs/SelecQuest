@@ -1,8 +1,8 @@
 import { HeroLoot, HeroTrophy, LootingTarget, GladiatingTarget, TaskTargetType, HeroLead, LeadType, LeadTarget, HeroModification, HeroModificationType, TaskMode, AppState, Task } from "../models/models";
 import { randRange, randSign, randFromList, makeStringIndefinite, generateRandomName, makeVerbGerund, capitalizeInitial } from "./utils";
 import { TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, TASK_GERUNDS, STANDARD_GLADIATING_TARGETS, STANDARD_LOOTING_TARGETS, RACES, CLASSES, STANDARD_LEAD_GATHERING_TARGETS, STANDARD_LEAD_TARGETS, IS_DEBUG, LEAD_GATHERING_TASK_MODIFIERS } from "../global/config";
-import { PROLOGUE_TASKS, PROLOGUE_ADVENTURE_NAME, generateNewAdventureResults } from './storyline-helpers';
-import { generateNewEquipmentModification, generateNewAccoladeModification, generateNewAffiliationModification } from '../services/hero-manager';
+import { PROLOGUE_TASKS, PROLOGUE_ADVENTURE_NAME } from './storyline-helpers';
+import { generateNewEquipmentModification, generateNewAccoladeModification, generateNewAffiliationModification, generateNewAdventureResults } from '../services/hero-manager';
 import { GameSetting } from "./game-setting";
 import { GameTaskGeneratorList, TaskGenerator } from "../models/task-models";
 
@@ -346,8 +346,8 @@ const purchaseEquipmentTaskGen: TaskGenerator = {
         const minGold = getTradeInCostForLevel(state.hero.level);
         return currentEncumbrance <= 0 && state.hero.gold >= minGold;
     },
-    generateTask: (state: AppState, _gameSetting: GameSetting) => {
-        const newEquipmentMod = generateNewEquipmentModification(state.hero);
+    generateTask: (state: AppState, gameSetting: GameSetting) => {
+        const newEquipmentMod = generateNewEquipmentModification(state.hero, gameSetting);
         const newTask: Task = {
             description: 'Negotiating the purchase of better equipment',
             durationMs: 5 * 1000,
@@ -736,11 +736,11 @@ const prologueTransitionTaskGen: TaskGenerator = {
     shouldRun: (state: AppState) => {
         return (state.hero.currentAdventure.name == PROLOGUE_ADVENTURE_NAME && state.hero.adventureProgress >= state.hero.currentAdventure.progressRequired);
     },
-    generateTask: (state: AppState, _gameSetting: GameSetting) => {
+    generateTask: (state: AppState, gameSetting: GameSetting) => {
         const newTask: Task = {
             description: 'Loading',
             durationMs: 20,
-            results: generateNewAdventureResults(state.hero, false),
+            results: generateNewAdventureResults(state.hero, gameSetting, false),
         };
         return newTask;
     }
@@ -751,11 +751,11 @@ const adventureTransitionTaskGen: TaskGenerator = {
     shouldRun: (state: AppState) => {
         return (state.hero.adventureProgress >= state.hero.currentAdventure.progressRequired);
     },
-    generateTask: (state: AppState, _gameSetting: GameSetting) => {
+    generateTask: (state: AppState, gameSetting: GameSetting) => {
         const newTask: Task = {
             description: 'Experiencing an enigmatic and foreboding night vision',
             durationMs: randRange(2, 3) * 1000,
-            results: generateNewAdventureResults(state.hero),
+            results: generateNewAdventureResults(state.hero, gameSetting),
         };
         return newTask;
     }

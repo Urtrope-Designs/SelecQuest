@@ -1,7 +1,7 @@
 import { Component, Prop, State, Event, EventEmitter, Element, Watch } from '@stencil/core';
 
 import { AppState, Task, TaskMode, AccoladeType, Hero, HeroAffiliation, HeroStat } from '../../models/models';
-import { getXpRequiredForNextLevel } from '../../services/hero-manager';
+import { HeroManager } from '../../services/hero-manager';
 import { capitalizeInitial, getRoughTime, generateHeroHashFromHero, toRoman } from '../../helpers/utils';
 import { HeroAbilityType, HeroAbility } from '../../models/hero-models';
 
@@ -144,9 +144,9 @@ export class PlayScreen {
                         <div sq-flex style={{alignItems: 'baseline'}} class="textRow">
                             <div style={{flexShrink: '0'}}>Lvl {this.appState.hero.level}&nbsp;</div>
                             <sq-progress-bar
-                                totalValue={getXpRequiredForNextLevel(this.appState.hero.level)}
+                                totalValue={HeroManager.getXpRequiredForNextLevel(this.appState.hero.level)}
                                 currentValue={this.appState.hero.currentXp}
-                                tapOverlayText={`${getXpRequiredForNextLevel(this.appState.hero.level) - this.appState.hero.currentXp} xp needed`}
+                                tapOverlayText={`${HeroManager.getXpRequiredForNextLevel(this.appState.hero.level) - this.appState.hero.currentXp} xp needed`}
                             ></sq-progress-bar>
                         </div>
                         <div class="buttonRow">

@@ -4,7 +4,6 @@ import { scan } from 'rxjs/operators/scan';
 import { map } from 'rxjs/operators/map';
 import { Action, SetActiveTask, TaskCompleted, ChangeActiveTaskMode, ActionType, SetActiveHero } from './actions';
 import { Task, AppState, Hero, TaskMode } from '../models/models';
-import { applyHeroModifications, updateHeroState, hasHeroReachedNextLevel, getLevelUpModifications } from '../services/hero-manager';
 import { wrapIntoBehavior } from './utils';
 
 function activeTask(initState: Task, actions: Observable<Action>) {
@@ -44,16 +43,12 @@ function hasActiveTask(initState: boolean, actions: Observable<Action>): Observa
 function hero(initState: Hero, actions: Observable<Action>): Observable<Hero> {
     return actions.pipe(
         scan((state: Hero, action: Action) => {
-            if (action.actionType === ActionType.TaskCompleted) {
-                const updatedHero = applyHeroModifications(state, (action as TaskCompleted).completedTask.results);
-                const stateCheckedHero = updateHeroState(updatedHero);
-                const levelCheckedHero = (hasHeroReachedNextLevel(stateCheckedHero)
-                    ? applyHeroModifications(stateCheckedHero, getLevelUpModifications(stateCheckedHero), false)
-                    : stateCheckedHero);
-                return levelCheckedHero;
+            if (action instanceof TaskCompleted) {
+                const updatedHero = action.heroManager.applyHeroTaskUpdates(state, action.completedTask.results);
+                return updatedHero;
             }
-            else if (action.actionType === ActionType.SetActiveHero) {
-                return (action as SetActiveHero).newGameState.hero;
+            else if (action instanceof SetActiveHero) {
+                return action.newGameState.hero;
             }
             else {
                 return state;

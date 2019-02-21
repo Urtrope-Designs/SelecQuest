@@ -1,5 +1,4 @@
-import { Adventure } from "../helpers/storyline-helpers";
-import { HeroAbilityType } from "./hero-models";
+import { HeroAbilityType, Adventure } from "./hero-models";
 
 /** Task related */
 export interface Task {

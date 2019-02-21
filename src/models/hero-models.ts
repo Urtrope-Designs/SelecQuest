@@ -6,14 +6,19 @@ export interface HeroInitData {
     className: string;
     stats: HeroStat[];
     gameSettingId: string;
-}
+};
 
 export interface HeroAbilityType {
     name: string;
     received: HeroAbility[];
-}
+};
 
 export interface HeroAbility {
     name: string,
     rank: number,
+};
+
+export interface Adventure {
+    name: string,
+    progressRequired: number,
 };
