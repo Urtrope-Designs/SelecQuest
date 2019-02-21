@@ -17,12 +17,15 @@ import { HeroManager } from '../../services/hero-manager';
     styleUrl: 'sq-app.scss'
 })
 export class SqApp {
-    @Prop({ context: 'taskMgr'}) taskMgr: {init: (stateStore: Observable<AppState>, gameSettingsMgr: GameSettingsManager, heroMgr: HeroManager, emulateTaskTimeGap?: boolean) => void, getTaskAction$: () => Observable<Action>};
     private actionSubject: Subject<Action> = new Subject<Action>();
     @State() state: AppState;
     private availableHeroes: {hash: string, name: string}[];
+    
+    @Prop({ context: 'taskMgr'}) taskMgr: {init: (stateStore: Observable<AppState>, gameSettingsMgr: GameSettingsManager, heroMgr: HeroManager, emulateTaskTimeGap?: boolean) => void, getTaskAction$: () => Observable<Action>};
     private gameDataMgr = new GameDataManager();
     private heroMgr: HeroManager;
+    private gameSettingsMgr: GameSettingsManager;
+
     private playScreen: PlayScreen;
     
     @Listen('taskModeAction')
@@ -83,7 +86,8 @@ export class SqApp {
     async componentWillLoad() {
         // todo: probably need to pull available Game Setting names from gameDataMgr eventually
         await GameSettingsManager.getInstance().init(['fantasy_setting_config']);
-        this.heroMgr = new HeroManager(GameSettingsManager.getInstance());
+        this.gameSettingsMgr = GameSettingsManager.getInstance();
+        this.heroMgr = new HeroManager(this.gameSettingsMgr);
         this.gameDataMgr.getActiveHeroHash()
             .then((heroHash: string) => {
                 if (!!heroHash) {

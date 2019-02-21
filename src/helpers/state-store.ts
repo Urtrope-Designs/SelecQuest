@@ -43,12 +43,12 @@ function hasActiveTask(initState: boolean, actions: Observable<Action>): Observa
 function hero(initState: Hero, actions: Observable<Action>): Observable<Hero> {
     return actions.pipe(
         scan((state: Hero, action: Action) => {
-            if (action instanceof TaskCompleted) {
-                const updatedHero = action.heroManager.applyHeroTaskUpdates(state, action.completedTask.results);
+            if (action.actionType == ActionType.TaskCompleted) {
+                const updatedHero = (action as TaskCompleted).heroManager.applyHeroTaskUpdates(state, (action as TaskCompleted).completedTask.results);
                 return updatedHero;
             }
-            else if (action instanceof SetActiveHero) {
-                return action.newGameState.hero;
+            else if (action.actionType == ActionType.SetActiveHero) {
+                return (action as SetActiveHero).newGameState.hero;
             }
             else {
                 return state;
