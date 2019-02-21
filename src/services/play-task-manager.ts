@@ -7,8 +7,8 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Task, AppState } from '../models/models';
 import { SetActiveTask, TaskCompleted, Action } from '../helpers/actions';
 import { selectNextTaskGenerator } from '../helpers/play-task-helper';
-import { GameSettingsManager } from '../services/game-settings-manager';
-import { HeroManager } from '../services/hero-manager';
+import { GameSettingsManager } from './game-settings-manager';
+import { HeroManager } from './hero-manager';
 
 export default (function() {
     class PlayTaskManager {
