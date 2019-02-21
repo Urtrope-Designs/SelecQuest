@@ -11,6 +11,7 @@ import { PlayScreen } from '../play-screen/play-screen';
 import { GameSettingsManager } from '../../services/game-settings-manager';
 import { HeroInitData } from '../../models/hero-models';
 import { HeroManager } from '../../services/hero-manager';
+import { PlayTaskGenerator } from '../../services/play-task-generator';
 
 @Component({
     tag: 'sq-app',
@@ -21,10 +22,11 @@ export class SqApp {
     @State() state: AppState;
     private availableHeroes: {hash: string, name: string}[];
     
-    @Prop({ context: 'taskMgr'}) taskMgr: {init: (stateStore: Observable<AppState>, gameSettingsMgr: GameSettingsManager, heroMgr: HeroManager, emulateTaskTimeGap?: boolean) => void, getTaskAction$: () => Observable<Action>};
+    @Prop({ context: 'taskMgr'}) taskMgr: {init: (stateStore: Observable<AppState>, gameSettingsMgr: GameSettingsManager, heroMgr: HeroManager, taskGenerator: PlayTaskGenerator, emulateTaskTimeGap?: boolean) => void, getTaskAction$: () => Observable<Action>};
     private gameDataMgr = new GameDataManager();
     private heroMgr: HeroManager;
     private gameSettingsMgr: GameSettingsManager;
+    private taskGenerator: PlayTaskGenerator;
 
     private playScreen: PlayScreen;
     
@@ -89,6 +91,7 @@ export class SqApp {
         await this.gameSettingsMgr.init(['fantasy_setting_config']);
 
         this.heroMgr = new HeroManager(this.gameSettingsMgr);
+        this.taskGenerator = new PlayTaskGenerator(this.gameSettingsMgr);
         this.gameDataMgr.getActiveHeroHash()
             .then((heroHash: string) => {
                 if (!!heroHash) {
@@ -108,7 +111,7 @@ export class SqApp {
                 const initialData = state || DEFAULT_APP_STATE;
                 let state$ = stateFn(initialData, this.actionSubject.asObservable());
                 state$ = this.gameDataMgr.persistAppData(state$);
-                this.taskMgr.init(state$, this.gameSettingsMgr, this.heroMgr, false);
+                this.taskMgr.init(state$, this.gameSettingsMgr, this.heroMgr, this.taskGenerator, false);
                 this.taskMgr.getTaskAction$().subscribe((taskAction: Action) => {
                     this._queueAction(taskAction);
                 })
