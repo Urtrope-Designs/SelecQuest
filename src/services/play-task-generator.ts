@@ -1,24 +1,201 @@
 import { TaskGenerator, GameTaskGeneratorList } from "../models/task-models";
-import { AppState, HeroModification, HeroModificationType, TaskMode, Task } from "../models/models";
-import { generateLootingTaskContentsFromLevel, getTradeInCostForLevel, generateGladiatingTaskContentsFromLevel, generateInvestigatingTaskContents } from "../global/play-task-helper";
-import { makeStringIndefinite, randRange, randFromList } from "../global/utils";
+import { AppState, HeroModification, HeroModificationType, TaskMode, Task, LootingTarget, TaskTargetType, GladiatingTarget, HeroLead, LeadType, LeadTarget, HeroTrophy, HeroLoot } from "../models/models";
+import { makeStringIndefinite, randRange, randFromList, randSign, capitalizeInitial, makeVerbGerund, generateRandomName } from "../global/utils";
 import { generateNewEquipmentModification, generateNewAccoladeModification, generateNewAffiliationModification, generateNewAdventureResults } from "./hero-manager";
-import { LEAD_GATHERING_TASK_MODIFIERS } from "../global/config";
+import { LEAD_GATHERING_TASK_MODIFIERS, TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, TASK_GERUNDS, STANDARD_GLADIATING_TARGETS, STANDARD_LOOTING_TARGETS, RACES, CLASSES, STANDARD_LEAD_GATHERING_TARGETS, STANDARD_LEAD_TARGETS, IS_DEBUG } from "../global/config";
 import { PROLOGUE_TASKS, PROLOGUE_ADVENTURE_NAME } from "../global/storyline-helpers";
 import { GameSettingsManager } from "./game-settings-manager";
 
 export class PlayTaskGenerator {
 
     constructor(private gameSettingsMgr: GameSettingsManager) {
-
     }
+
+    static determineTaskQuantity(targetLevel: number, taskLevel: number) {
+        let quantity = 1;
+        if (targetLevel - taskLevel > 10) {
+            // target level is too low. multiply...
+            quantity = Math.floor((targetLevel + randRange(0, taskLevel - 1)) / Math.max(taskLevel, 1));
+            if (quantity < 1) {
+                quantity = 1;
+            }
+        }
+        return quantity
+    }
+
+    static applyTaskNameModifiers(targetLevel: number, taskTarget: LootingTarget): string {
+        let taskName = taskTarget.name;
+        const NEEDS_PREFIX_SEPARATOR = taskTarget.type == TaskTargetType.LOCATION || taskTarget.type == TaskTargetType.TRIAL;
+    
+        if ((targetLevel - taskTarget.level) <= -10) {
+            taskName = TASK_PREFIX_MINIMAL[taskTarget.type] + ' ' + taskName;
+        } else if ((targetLevel - taskTarget.level) < -5) {
+            const firstPrefix = randFromList(TASK_PREFIX_BAD_FIRST[taskTarget.type]);
+            const secondPrefix = randFromList(TASK_PREFIX_BAD_SECOND[taskTarget.type]);
+            const prefixSeparator = NEEDS_PREFIX_SEPARATOR ? ', ' : ' ';
+            taskName = firstPrefix + prefixSeparator + secondPrefix + ' ' + taskName;
+        } else if (((targetLevel - taskTarget.level) < 0) && (randRange(0, 1))) {
+            taskName = randFromList(TASK_PREFIX_BAD_FIRST[taskTarget.type]) + ' ' + taskName;
+        } else if (((targetLevel - taskTarget.level) < 0)) {
+            taskName = randFromList(TASK_PREFIX_BAD_SECOND[taskTarget.type]) + ' ' + taskName;
+        } else if ((targetLevel - taskTarget.level) >= 10) {
+            taskName = TASK_PREFIX_MAXIMAL[taskTarget.type] + ' ' + taskName;
+        } else if ((targetLevel - taskTarget.level) > 5) {
+            const firstPrefix = randFromList(TASK_PREFIX_GOOD_FIRST[taskTarget.type]);
+            const secondPrefix = randFromList(TASK_PREFIX_GOOD_SECOND[taskTarget.type]);
+            const prefixSeparator = NEEDS_PREFIX_SEPARATOR ? ', ' : ' ';
+            taskName = firstPrefix + prefixSeparator + secondPrefix + ' ' + taskName;
+        } else if (((targetLevel - taskTarget.level) > 0) && (randRange(0, 1))) {
+            taskName = randFromList(TASK_PREFIX_GOOD_FIRST[taskTarget.type]) + ' ' + taskName;
+        } else if (((targetLevel - taskTarget.level) > 0)) {
+            taskName = randFromList(TASK_PREFIX_GOOD_SECOND[taskTarget.type]) + ' ' + taskName;
+        }
+    
+        return taskName;
+    }
+
+    static randomizeTargetLevel(heroLevel: number): number {
+        let targetLevel = heroLevel;
+        for (let i = heroLevel; i >= 1; --i) {
+            if (randRange(1, 5) <= 2)
+                targetLevel += randSign();
+            }
+        if (targetLevel < 1) {
+            targetLevel = 1;
+        } 
+    
+        return targetLevel;
+    }
+
+    /** select target with level closest to the targetLevel out of random selection of targets */
+    static randomizeTargetFromList(targetLevel: number, targetOptions: LootingTarget[] | GladiatingTarget[], numIterations: number = 6): LootingTarget | GladiatingTarget {
+        if (numIterations < 1) {
+            numIterations = 1;
+        }
+        let target = randFromList(targetOptions);
+        for (let i = 0; i < numIterations - 1; i++) {
+            let newTarget = randFromList(targetOptions);
+            if (Math.abs(targetLevel - target.level) < Math.abs(targetLevel - newTarget.level)) {
+                target = newTarget;
+            }
+        }
+
+        return target;
+    }
+
+    //logic stolen pretty much directly from PQ
+    generateLootingTaskContentsFromLevel(level: number): {taskName: string, taskLevel: number, lootData: HeroLoot[]} {
+        let taskName = '';
+        let lootData: HeroLoot[] = [];
+
+        let targetLevel = PlayTaskGenerator.randomizeTargetLevel(level);
+
+        let lootTarget = PlayTaskGenerator.randomizeTargetFromList(targetLevel, STANDARD_LOOTING_TARGETS, 6);
+
+        let quantity = PlayTaskGenerator.determineTaskQuantity(targetLevel, lootTarget.level);
+
+        targetLevel = Math.floor(targetLevel / quantity);
+    
+        taskName = PlayTaskGenerator.applyTaskNameModifiers(targetLevel, lootTarget);
+
+        taskName = TASK_GERUNDS[lootTarget.type] + ' ' + makeStringIndefinite(taskName, quantity);
+
+        lootData.push({
+            name: lootTarget.reward,
+            quantity: 1,
+            value: 1,
+        });
+
+        return {taskName: taskName, taskLevel: targetLevel * quantity, lootData: lootData};
+    }
+
+    generateGladiatingTaskContentsFromLevel(level: number): {taskName: string, taskLevel: number, trophyData: HeroTrophy[]} {
+        let taskName = '';
+        let trophyData: HeroTrophy[] = [];
+
+        let targetLevel = PlayTaskGenerator.randomizeTargetLevel(level);
+        let taskLevel = targetLevel;
+
+        if (randRange(0, 1)) {
+            // dueling task
+            let foeLevel = PlayTaskGenerator.randomizeTargetLevel(level);
+            let foeRace = randFromList(RACES);
+            let foeClass = randFromList(CLASSES);
+            let quantity = PlayTaskGenerator.determineTaskQuantity(targetLevel, foeLevel);
+            if (quantity === 1) {
+                let foeName = generateRandomName();
+                taskName = `${TASK_GERUNDS[TaskTargetType.DUEL]} ${foeName}, the ${foeRace.raceName} ${foeClass}`;
+            }
+            else {
+                taskName = TASK_GERUNDS[TaskTargetType.DUEL] + ' ' + makeStringIndefinite(`level ${foeLevel} ${foeRace.raceName} ${foeClass}`, quantity);
+            }
+            taskLevel = foeLevel * quantity;
+            
+            trophyData.push({
+                name: foeRace.raceName + ' ' + foeRace.trophyName,
+                quantity: 1,
+                value: 1,
+            })
+
+        } else {
+            // trial task
+            let gladiatingTarget;
+            gladiatingTarget = PlayTaskGenerator.randomizeTargetFromList(targetLevel, STANDARD_GLADIATING_TARGETS, 6);
+            
+            let quantity = PlayTaskGenerator.determineTaskQuantity(targetLevel, gladiatingTarget.level);
+            targetLevel = Math.floor(targetLevel / quantity);
+        
+            // todo: need to either fit trials into the mould of this function, or create a new function/modify the old one.
+            taskName = PlayTaskGenerator.applyTaskNameModifiers(targetLevel, gladiatingTarget);
+        
+            taskName = TASK_GERUNDS[gladiatingTarget.type] + ' ' + makeStringIndefinite(taskName, quantity);
+
+            taskLevel = targetLevel * quantity;
+
+            trophyData.push({
+                name: capitalizeInitial(gladiatingTarget.reward),
+                quantity: 1,
+                value: 1,
+            });
+        }
+
+        return {taskName: taskName, taskLevel: taskLevel, trophyData: trophyData};
+    }
+
+    generateInvestigatingTaskContents(): {taskName: string, leadData: HeroLead[]} {
+        let investigatingTaskName = '';
+        let leadData = [];
+
+        const investigatingTarget = randFromList(STANDARD_LEAD_GATHERING_TARGETS);
+
+        investigatingTaskName = capitalizeInitial(`${investigatingTarget.gerundPhrase} ${randFromList(investigatingTarget.predicateOptions)}`);
+
+        const leadTargetType: LeadType = randFromList(investigatingTarget.leadTypes);
+        const leadTarget: LeadTarget = randFromList(STANDARD_LEAD_TARGETS[leadTargetType]);
+
+        const leadPredicate = leadTarget.predicateFactory.apply(null);
+        const lead: HeroLead = {
+            questlogName: capitalizeInitial(`${leadTarget.verb} ${leadPredicate}`),
+            taskName: capitalizeInitial(`${makeVerbGerund(leadTarget.verb)} ${leadPredicate}`),
+            value: 1,
+        }
+
+        leadData.push(lead);
+
+        return {taskName: investigatingTaskName, leadData: leadData};
+    }
+
+
+    static getTradeInCostForLevel(level: number): number {
+        return IS_DEBUG ? (10 * level + 4) : (5 * level**2 + 10 * level + 20);
+    }    
 
     lootingTaskGen: TaskGenerator = {
         shouldRun: (_state: AppState) => {
             return true;
         },
         generateTask: (state: AppState) => {
-            const {taskName, taskLevel, lootData} = generateLootingTaskContentsFromLevel(state.hero.level);
+            const {taskName, taskLevel, lootData} = this.generateLootingTaskContentsFromLevel(state.hero.level);
             const durationSeconds = Math.floor(6 * taskLevel / state.hero.level);
             const isMarketSaturated = state.hero.marketSaturation >= state.hero.maxMarketSaturation;
             const results: HeroModification[] = [
@@ -172,7 +349,7 @@ export class PlayTaskGenerator {
             const currentEncumbrance = state.hero.loot.reduce((prevVal, curVal) => {
                 return prevVal + curVal.quantity;
             }, 0);
-            const minGold = getTradeInCostForLevel(state.hero.level);
+            const minGold = PlayTaskGenerator.getTradeInCostForLevel(state.hero.level);
             return currentEncumbrance <= 0 && state.hero.gold >= minGold;
         },
         generateTask: (state: AppState) => {
@@ -185,7 +362,7 @@ export class PlayTaskGenerator {
                     {
                         type: HeroModificationType.DECREASE,
                         attributeName: 'gold',
-                        data: -getTradeInCostForLevel(state.hero.level),
+                        data: -PlayTaskGenerator.getTradeInCostForLevel(state.hero.level),
                     },
                 ]
             }
@@ -198,7 +375,7 @@ export class PlayTaskGenerator {
             return true;
         },
         generateTask: (state: AppState) => {
-            const {taskName, taskLevel, trophyData} = generateGladiatingTaskContentsFromLevel(state.hero.level);
+            const {taskName, taskLevel, trophyData} = this.generateGladiatingTaskContentsFromLevel(state.hero.level);
             const durationSeconds = Math.floor(6 * taskLevel / state.hero.level);
             const isFatigued = state.hero.fatigue >= state.hero.maxFatigue;
             const results: HeroModification[] = [
@@ -353,7 +530,7 @@ export class PlayTaskGenerator {
             const currentEquipmentIntegrity = state.hero.trophies.reduce((prevVal, curVal) => {
                 return prevVal + curVal.quantity;
             }, 0);
-            return currentEquipmentIntegrity <= 0 && (state.hero.renown - state.hero.spentRenown) >= getTradeInCostForLevel(state.hero.level);
+            return currentEquipmentIntegrity <= 0 && (state.hero.renown - state.hero.spentRenown) >= PlayTaskGenerator.getTradeInCostForLevel(state.hero.level);
         },
         generateTask: (state: AppState) => {
             const newAccoladeMod = generateNewAccoladeModification(state.hero);
@@ -365,7 +542,7 @@ export class PlayTaskGenerator {
                     {
                         type: HeroModificationType.INCREASE,
                         attributeName: 'spentRenown',
-                        data: getTradeInCostForLevel(state.hero.level),
+                        data: PlayTaskGenerator.getTradeInCostForLevel(state.hero.level),
                     },
                 ]
             }
@@ -378,7 +555,7 @@ export class PlayTaskGenerator {
             return true;
         },
         generateTask: (_state: AppState) => {
-            const {taskName, leadData} = generateInvestigatingTaskContents();
+            const {taskName, leadData} = this.generateInvestigatingTaskContents();
             const durationSeconds = 1;
     
             const results: HeroModification[] = [
@@ -517,7 +694,7 @@ export class PlayTaskGenerator {
     
     gainAffiliationTaskGen: TaskGenerator = {
         shouldRun: (state: AppState) => {
-            return state.hero.leads.length <= 0 && (state.hero.reputation - state.hero.spentReputation) >= getTradeInCostForLevel(state.hero.level);
+            return state.hero.leads.length <= 0 && (state.hero.reputation - state.hero.spentReputation) >= PlayTaskGenerator.getTradeInCostForLevel(state.hero.level);
         },
         generateTask: (state: AppState) => {
             const newAffiliationMod = generateNewAffiliationModification(state.hero);
@@ -529,7 +706,7 @@ export class PlayTaskGenerator {
                     {
                         type: HeroModificationType.INCREASE,
                         attributeName: 'spentReputation',
-                        data: getTradeInCostForLevel(state.hero.level),
+                        data: PlayTaskGenerator.getTradeInCostForLevel(state.hero.level),
                     },
                 ]
             }
