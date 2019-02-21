@@ -6,13 +6,11 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { Task, AppState } from '../models/models';
 import { SetActiveTask, TaskCompleted, Action } from '../global/actions';
-import { GameSettingsManager } from './game-settings-manager';
 import { HeroManager } from './hero-manager';
 import { PlayTaskGenerator } from './play-task-generator';
 
 export default (function() {
     class PlayTaskManager {
-        private gameSettingsMgr: GameSettingsManager;
         private heroMgr: HeroManager;
         private taskGenerator: PlayTaskGenerator;
         private stateStore: Observable<AppState>;
@@ -20,8 +18,7 @@ export default (function() {
         private taskWatchTimerSub: Subscription;
         public taskAction$ = new BehaviorSubject<Action>(null);
 
-        init(stateStore: Observable<AppState>, gameSettingsMgr: GameSettingsManager, heroMgr: HeroManager, taskGenerator: PlayTaskGenerator, emulateTaskTimeGap: boolean = false) {
-            this.gameSettingsMgr = gameSettingsMgr;
+        init(stateStore: Observable<AppState>, heroMgr: HeroManager, taskGenerator: PlayTaskGenerator, emulateTaskTimeGap: boolean = false) {
             this.heroMgr = heroMgr;
             this.taskGenerator = taskGenerator;
             if (!!this.stateStoreSub) {                 // TODO: fix #18
@@ -50,9 +47,8 @@ export default (function() {
         }
 
         private constructNextTask(state: AppState, emulateTaskTimeGap: boolean): Task {
-            const curGameSetting = this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId);
             const curTaskGenerator = this.taskGenerator.selectNextTaskGenerator(state);
-            let newTask = curTaskGenerator.generateTask(state, curGameSetting);
+            let newTask = curTaskGenerator.generateTask(state);
 
             if (emulateTaskTimeGap && !!state.activeTask) {
                 const twentyFourHoursAgo = new Date().getTime() - (1000 * 60 * 60 * 24);
@@ -89,8 +85,8 @@ export default (function() {
     const privateInstance = new PlayTaskManager();
 
     const exports = {
-        init: (stateStore: Observable<AppState>, gameSettingsMgr: GameSettingsManager, heroMgr: HeroManager, taskGenerator: PlayTaskGenerator, emulateTaskTimeGap: boolean = false) => {
-            privateInstance.init(stateStore, gameSettingsMgr, heroMgr, taskGenerator, emulateTaskTimeGap);
+        init: (stateStore: Observable<AppState>, heroMgr: HeroManager, taskGenerator: PlayTaskGenerator, emulateTaskTimeGap: boolean = false) => {
+            privateInstance.init(stateStore, heroMgr, taskGenerator, emulateTaskTimeGap);
         },
         getTaskAction$: () => {
             return privateInstance.taskAction$.asObservable();

@@ -1,6 +1,5 @@
 import { TaskGenerator, GameTaskGeneratorList } from "../models/task-models";
 import { AppState, HeroModification, HeroModificationType, TaskMode, Task } from "../models/models";
-import { GameSetting } from "../global/game-setting";
 import { generateLootingTaskContentsFromLevel, getTradeInCostForLevel, generateGladiatingTaskContentsFromLevel, generateInvestigatingTaskContents } from "../global/play-task-helper";
 import { makeStringIndefinite, randRange, randFromList } from "../global/utils";
 import { generateNewEquipmentModification, generateNewAccoladeModification, generateNewAffiliationModification, generateNewAdventureResults } from "./hero-manager";
@@ -18,7 +17,7 @@ export class PlayTaskGenerator {
         shouldRun: (_state: AppState) => {
             return true;
         },
-        generateTask: (state: AppState, _gameSetting: GameSetting) => {
+        generateTask: (state: AppState) => {
             const {taskName, taskLevel, lootData} = generateLootingTaskContentsFromLevel(state.hero.level);
             const durationSeconds = Math.floor(6 * taskLevel / state.hero.level);
             const isMarketSaturated = state.hero.marketSaturation >= state.hero.maxMarketSaturation;
@@ -69,7 +68,7 @@ export class PlayTaskGenerator {
             }, 0);
             return currentEncumbrance >= state.hero.maxEncumbrance;
         },
-        generateTask: (_state: AppState, _gameSetting: GameSetting) => {
+        generateTask: (_state: AppState) => {
             const newTask: Task = {
                 description: 'Heading to market to pawn your loot',
                 durationMs: 4 * 1000,
@@ -90,7 +89,7 @@ export class PlayTaskGenerator {
         shouldRun: (_state: AppState) => {
             return true;
         },
-        generateTask: (state: AppState, _gameSetting: GameSetting) => {
+        generateTask: (state: AppState) => {
             const sellItem = state.hero.loot[0];
             if (!!sellItem) {
                 const isMarketSaturated = state.hero.marketSaturation >= state.hero.maxMarketSaturation;
@@ -151,7 +150,7 @@ export class PlayTaskGenerator {
             }, 0);
             return currentEncumbrance <= 0;
         },
-        generateTask: (_state: AppState, _gameSetting: GameSetting) => {
+        generateTask: (_state: AppState) => {
             const newTask: Task = {
                 description: 'Heading out to find some swag',
                 durationMs: 4 * 1000,
@@ -176,7 +175,7 @@ export class PlayTaskGenerator {
             const minGold = getTradeInCostForLevel(state.hero.level);
             return currentEncumbrance <= 0 && state.hero.gold >= minGold;
         },
-        generateTask: (state: AppState, _gameSetting: GameSetting) => {
+        generateTask: (state: AppState) => {
             const newEquipmentMod = generateNewEquipmentModification(state.hero, this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId));
             const newTask: Task = {
                 description: 'Negotiating the purchase of better equipment',
@@ -198,7 +197,7 @@ export class PlayTaskGenerator {
         shouldRun: (_state: AppState) => {
             return true;
         },
-        generateTask: (state: AppState, _gameSetting: GameSetting) => {
+        generateTask: (state: AppState) => {
             const {taskName, taskLevel, trophyData} = generateGladiatingTaskContentsFromLevel(state.hero.level);
             const durationSeconds = Math.floor(6 * taskLevel / state.hero.level);
             const isFatigued = state.hero.fatigue >= state.hero.maxFatigue;
@@ -255,7 +254,7 @@ export class PlayTaskGenerator {
             }, 0);
             return currentEquipmentWear >= state.hero.maxEquipmentWear;
         },
-        generateTask: (_state: AppState, _gameSetting: GameSetting) => {
+        generateTask: (_state: AppState) => {
             const newTask: Task = {
                 description: 'Heading to the nearest inn to boast of your recent deeds while your armor is repaired',
                 durationMs: 4 * 1000,
@@ -276,7 +275,7 @@ export class PlayTaskGenerator {
         shouldRun: (_state: AppState) => {
             return true;
         },
-        generateTask: (state: AppState, _gameSetting: GameSetting) => {
+        generateTask: (state: AppState) => {
             const boastItem = state.hero.trophies[0];
             if (!!boastItem) {
                 const isFatigued = state.hero.fatigue >= state.hero.maxFatigue;
@@ -332,7 +331,7 @@ export class PlayTaskGenerator {
             }, 0);
             return currentEquipmentIntegrity <= 0;
         },
-        generateTask: (_state: AppState, _gameSetting: GameSetting) => {
+        generateTask: (_state: AppState) => {
             const newTask: Task = {
                 description: 'Heading off in search of glory',
                 durationMs: 4 * 1000,
@@ -356,7 +355,7 @@ export class PlayTaskGenerator {
             }, 0);
             return currentEquipmentIntegrity <= 0 && (state.hero.renown - state.hero.spentRenown) >= getTradeInCostForLevel(state.hero.level);
         },
-        generateTask: (state: AppState, _gameSetting: GameSetting) => {
+        generateTask: (state: AppState) => {
             const newAccoladeMod = generateNewAccoladeModification(state.hero);
             const newTask: Task = {
                 description: 'Being honored for your glorious achievements',
@@ -378,7 +377,7 @@ export class PlayTaskGenerator {
         shouldRun: (_state: AppState) => {
             return true;
         },
-        generateTask: (_state: AppState, _gameSetting: GameSetting) => {
+        generateTask: (_state: AppState) => {
             const {taskName, leadData} = generateInvestigatingTaskContents();
             const durationSeconds = 1;
     
@@ -407,7 +406,7 @@ export class PlayTaskGenerator {
     
             return state.hero.leads.length >= state.hero.maxQuestLogSize;
         },
-        generateTask: (_state: AppState, _gameSetting: GameSetting) => {
+        generateTask: (_state: AppState) => {
             const newTask: Task = {
                 description: 'Organizing your Questlog',
                 durationMs: 4 * 1000,
@@ -428,7 +427,7 @@ export class PlayTaskGenerator {
         shouldRun: (_state: AppState) => {
             return true;
         },
-        generateTask: (state: AppState, _gameSetting: GameSetting) => {
+        generateTask: (state: AppState) => {
             const leadToFollow = state.hero.leads[0];
             if (!!leadToFollow) {
                 const isOverexposed = state.hero.socialExposure >= state.hero.maxSocialCapital;
@@ -499,7 +498,7 @@ export class PlayTaskGenerator {
         shouldRun: (state: AppState) => {
             return state.hero.leads.length <= 0;
         },
-        generateTask: (_state: AppState, _gameSetting: GameSetting) => {
+        generateTask: (_state: AppState) => {
             const newTask: Task = {
                 description: `Rooting out some ${randFromList(LEAD_GATHERING_TASK_MODIFIERS)} leads`,
                 durationMs: 4 * 1000,
@@ -520,7 +519,7 @@ export class PlayTaskGenerator {
         shouldRun: (state: AppState) => {
             return state.hero.leads.length <= 0 && (state.hero.reputation - state.hero.spentReputation) >= getTradeInCostForLevel(state.hero.level);
         },
-        generateTask: (state: AppState, _gameSetting: GameSetting) => {
+        generateTask: (state: AppState) => {
             const newAffiliationMod = generateNewAffiliationModification(state.hero);
             const newTask: Task = {
                 description: 'Solidifying a new connection',
@@ -543,7 +542,7 @@ export class PlayTaskGenerator {
         shouldRun: (state: AppState) => {
             return state.hero.currentAdventure.name == PROLOGUE_ADVENTURE_NAME;
         },
-        generateTask: (_state: AppState, _gameSetting: GameSetting) => {
+        generateTask: (_state: AppState) => {
             const curPrologueTask = PROLOGUE_TASKS[this.prologueInc];
             this.prologueInc += 1;
             this.prologueInc = Math.min(this.prologueInc, PROLOGUE_TASKS.length-1);
@@ -566,7 +565,7 @@ export class PlayTaskGenerator {
         shouldRun: (state: AppState) => {
             return (state.hero.currentAdventure.name == PROLOGUE_ADVENTURE_NAME && state.hero.adventureProgress >= state.hero.currentAdventure.progressRequired);
         },
-        generateTask: (state: AppState, _gameSetting: GameSetting) => {
+        generateTask: (state: AppState) => {
             const newTask: Task = {
                 description: 'Loading',
                 durationMs: 20,
@@ -581,7 +580,7 @@ export class PlayTaskGenerator {
         shouldRun: (state: AppState) => {
             return (state.hero.adventureProgress >= state.hero.currentAdventure.progressRequired);
         },
-        generateTask: (state: AppState, _gameSetting: GameSetting) => {
+        generateTask: (state: AppState) => {
             const newTask: Task = {
                 description: 'Experiencing an enigmatic and foreboding night vision',
                 durationMs: randRange(2, 3) * 1000,

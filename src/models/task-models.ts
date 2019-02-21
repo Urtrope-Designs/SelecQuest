@@ -1,5 +1,4 @@
 import { AppState, Task } from "./models";
-import { GameSetting } from "../global/game-setting";
 
 export interface GameTaskGeneratorList {
     coreTaskGenerators: TaskGenerator[],
@@ -8,5 +7,5 @@ export interface GameTaskGeneratorList {
 
 export interface TaskGenerator {
     shouldRun: (state: AppState) => boolean;
-    generateTask: (state: AppState, gameSetting: GameSetting) => Task;
+    generateTask: (state: AppState) => Task;
 }
