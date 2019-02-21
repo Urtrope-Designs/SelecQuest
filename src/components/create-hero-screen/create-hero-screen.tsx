@@ -1,8 +1,8 @@
 import { Component, State, Event, EventEmitter, Prop } from "@stencil/core";
 import { HeroStat, HeroRace } from "../../models/models";
-import { generateRandomName, randFromList, randRange, capitalizeInitial } from "../../helpers/utils";
+import { generateRandomName, randFromList, randRange, capitalizeInitial } from "../../global/utils";
 import { GameSettingsManager } from '../../services/game-settings-manager';
-import { GameSetting } from "../../helpers/game-setting";
+import { GameSetting } from "../../global/game-setting";
 import { HeroInitData } from "../../models/hero-models";
 
 @Component({

@@ -1,10 +1,10 @@
 import { Hero, HeroModificationType, AccoladeType, HeroModification, HeroEquipment, EquipmentType, EquipmentMaterial, HeroAccolade, HeroAffiliation, HeroConnection, HeroTitlePosition, HeroStat, TaskMode } from '../models/models';
-import { randRange, randFromList, deepCopyObject, randFromListLow, randFromListHigh, generateRandomName, capitalizeInitial, getIterableEnumKeys } from '../helpers/utils';
-import { PROLOGUE_ADVENTURE_NAME } from '../helpers/storyline-helpers';
+import { randRange, randFromList, deepCopyObject, randFromListLow, randFromListHigh, generateRandomName, capitalizeInitial, getIterableEnumKeys } from '../global/utils';
+import { PROLOGUE_ADVENTURE_NAME } from '../global/storyline-helpers';
 import { IS_DEBUG, WEAPON_MATERIALS, SHEILD_MATERIALS, ARMOR_MATERIALS, EPITHET_DESCRIPTORS, EPITHET_BEING_ALL, TITLE_POSITIONS_ALL, SOBRIQUET_MODIFIERS, SOBRIQUET_NOUN_PORTION, HONORIFIC_TEMPLATES, OFFICE_POSITIONS_ALL, STANDARD_GROUPS_INDEFINITE } from '../global/config';
 import { GameSettingsManager } from './game-settings-manager';
 import { HeroInitData, HeroAbilityType, HeroAbility, Adventure } from '../models/hero-models';
-import { GameSetting } from '../helpers/game-setting';
+import { GameSetting } from '../global/game-setting';
 
 export class HeroManager {
 

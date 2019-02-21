@@ -1,6 +1,6 @@
 import { HeroLoot, HeroTrophy, LootingTarget, GladiatingTarget, TaskTargetType, HeroLead, LeadType, LeadTarget, HeroModification, HeroModificationType, TaskMode, AppState, Task } from "../models/models";
 import { randRange, randSign, randFromList, makeStringIndefinite, generateRandomName, makeVerbGerund, capitalizeInitial } from "./utils";
-import { TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, TASK_GERUNDS, STANDARD_GLADIATING_TARGETS, STANDARD_LOOTING_TARGETS, RACES, CLASSES, STANDARD_LEAD_GATHERING_TARGETS, STANDARD_LEAD_TARGETS, IS_DEBUG, LEAD_GATHERING_TASK_MODIFIERS } from "../global/config";
+import { TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, TASK_GERUNDS, STANDARD_GLADIATING_TARGETS, STANDARD_LOOTING_TARGETS, RACES, CLASSES, STANDARD_LEAD_GATHERING_TARGETS, STANDARD_LEAD_TARGETS, IS_DEBUG, LEAD_GATHERING_TASK_MODIFIERS } from "./config";
 import { PROLOGUE_TASKS, PROLOGUE_ADVENTURE_NAME } from './storyline-helpers';
 import { generateNewEquipmentModification, generateNewAccoladeModification, generateNewAffiliationModification, generateNewAdventureResults } from '../services/hero-manager';
 import { GameSetting } from "./game-setting";

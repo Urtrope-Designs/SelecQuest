@@ -4,9 +4,9 @@ import { Subject } from 'rxjs/Subject';
 
 import { stateFn } from '../../global/state-store';
 import { AppState, TaskMode } from '../../models/models';
-import { Action, ChangeActiveTaskMode, SetActiveHero } from '../../helpers/actions';
+import { Action, ChangeActiveTaskMode, SetActiveHero } from '../../global/actions';
 import { GameDataManager } from '../../services/game-data-manager';
-import { generateHeroHashFromHero } from '../../helpers/utils';
+import { generateHeroHashFromHero } from '../../global/utils';
 import { PlayScreen } from '../play-screen/play-screen';
 import { GameSettingsManager } from '../../services/game-settings-manager';
 import { HeroInitData } from '../../models/hero-models';

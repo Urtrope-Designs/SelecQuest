@@ -5,8 +5,8 @@ import { Subscription } from 'rxjs/Subscription';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { Task, AppState } from '../models/models';
-import { SetActiveTask, TaskCompleted, Action } from '../helpers/actions';
-import { selectNextTaskGenerator } from '../helpers/play-task-helper';
+import { SetActiveTask, TaskCompleted, Action } from '../global/actions';
+import { selectNextTaskGenerator } from '../global/play-task-helper';
 import { GameSettingsManager } from './game-settings-manager';
 import { HeroManager } from './hero-manager';
 

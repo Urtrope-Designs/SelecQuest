@@ -3,7 +3,7 @@ import { Observable } from "rxjs/Observable";
 import { tap } from "rxjs/operators";
 
 import Storage from './storage';
-import { generateHeroHashFromHero, HERO_HASH_NAME_DELIMITER } from "../helpers/utils";
+import { generateHeroHashFromHero, HERO_HASH_NAME_DELIMITER } from "../global/utils";
 
 export class GameDataManager {
     private dataStore = new Storage();

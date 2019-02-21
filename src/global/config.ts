@@ -1,5 +1,5 @@
 import { TaskTargetType, LootingTarget, GladiatingTarget, HeroRace, LeadGatheringTarget, LeadType, LeadTarget, EquipmentMaterial, EquipmentModifier, HeroTitlePosition } from "../models/models";
-import { makeStringIndefinite, randFromList, makeStringPlural } from "../helpers/utils";
+import { makeStringIndefinite, randFromList, makeStringPlural } from "./utils";
 
 export const IS_DEBUG = true;
 

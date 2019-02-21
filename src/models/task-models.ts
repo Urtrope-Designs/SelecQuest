@@ -1,5 +1,5 @@
 import { AppState, Task } from "./models";
-import { GameSetting } from "../helpers/game-setting";
+import { GameSetting } from "../global/game-setting";
 
 export interface GameTaskGeneratorList {
     coreTaskGenerators: TaskGenerator[],

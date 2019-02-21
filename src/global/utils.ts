@@ -1,5 +1,5 @@
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { STATIC_NAMES, RANDOM_NAME_PARTS } from '../global/config';
+import { STATIC_NAMES, RANDOM_NAME_PARTS } from './config';
 import { Hero } from '../models/models';
 
 export function urlB64ToUint8Array(base64String) {

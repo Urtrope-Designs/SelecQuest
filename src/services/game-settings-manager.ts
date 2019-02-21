@@ -1,5 +1,5 @@
 import { GameSettingConfig } from "../models/game-setting-models";
-import { GameSetting } from "../helpers/game-setting";
+import { GameSetting } from "../global/game-setting";
 
 export class GameSettingsManager {
     private availableGameSettings: Map<string, GameSetting>;

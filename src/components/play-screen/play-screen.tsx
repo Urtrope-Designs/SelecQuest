@@ -2,7 +2,7 @@ import { Component, Prop, State, Event, EventEmitter, Element, Watch } from '@st
 
 import { AppState, Task, TaskMode, AccoladeType, Hero, HeroAffiliation, HeroStat } from '../../models/models';
 import { HeroManager } from '../../services/hero-manager';
-import { capitalizeInitial, getRoughTime, generateHeroHashFromHero, toRoman } from '../../helpers/utils';
+import { capitalizeInitial, getRoughTime, generateHeroHashFromHero, toRoman } from '../../global/utils';
 import { HeroAbilityType, HeroAbility } from '../../models/hero-models';
 
 @Component({
