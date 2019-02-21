@@ -2,7 +2,7 @@ import { Component, Prop, Listen, State } from '@stencil/core';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
-import { stateFn } from '../../helpers/state-store';
+import { stateFn } from '../../global/state-store';
 import { AppState, TaskMode } from '../../models/models';
 import { Action, ChangeActiveTaskMode, SetActiveHero } from '../../helpers/actions';
 import { GameDataManager } from '../../services/game-data-manager';
@@ -87,6 +87,7 @@ export class SqApp {
         // todo: probably need to pull available Game Setting names from gameDataMgr eventually
         this.gameSettingsMgr = new GameSettingsManager();
         await this.gameSettingsMgr.init(['fantasy_setting_config']);
+
         this.heroMgr = new HeroManager(this.gameSettingsMgr);
         this.gameDataMgr.getActiveHeroHash()
             .then((heroHash: string) => {

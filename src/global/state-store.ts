@@ -2,9 +2,9 @@ import { Observable } from 'rxjs/Observable';
 import { zip } from 'rxjs/observable/zip';
 import { scan } from 'rxjs/operators/scan';
 import { map } from 'rxjs/operators/map';
-import { Action, SetActiveTask, TaskCompleted, ChangeActiveTaskMode, ActionType, SetActiveHero } from './actions';
+import { Action, SetActiveTask, TaskCompleted, ChangeActiveTaskMode, ActionType, SetActiveHero } from '../helpers/actions';
 import { Task, AppState, Hero, TaskMode } from '../models/models';
-import { wrapIntoBehavior } from './utils';
+import { wrapIntoBehavior } from '../helpers/utils';
 
 function activeTask(initState: Task, actions: Observable<Action>) {
     return actions.pipe(
