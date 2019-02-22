@@ -12,6 +12,7 @@ import { GameSettingsManager } from '../../services/game-settings-manager';
 import { HeroInitData } from '../../models/hero-models';
 import { HeroManager } from '../../services/hero-manager';
 import { PlayTaskGenerator } from '../../services/play-task-generator';
+import { PlayTaskResultGenerator } from '../../services/play-task-result-generator';
 
 @Component({
     tag: 'sq-app',
@@ -27,6 +28,7 @@ export class SqApp {
     private heroMgr: HeroManager;
     private gameSettingsMgr: GameSettingsManager;
     private taskGenerator: PlayTaskGenerator;
+    private taskResultGenerator: PlayTaskResultGenerator;
 
     private playScreen: PlayScreen;
     
@@ -91,7 +93,8 @@ export class SqApp {
         await this.gameSettingsMgr.init(['fantasy_setting_config']);
 
         this.heroMgr = new HeroManager(this.gameSettingsMgr);
-        this.taskGenerator = new PlayTaskGenerator(this.gameSettingsMgr);
+        this.taskResultGenerator = new PlayTaskResultGenerator(this.gameSettingsMgr);
+        this.taskGenerator = new PlayTaskGenerator(this.taskResultGenerator);
         this.gameDataMgr.getActiveHeroHash()
             .then((heroHash: string) => {
                 if (!!heroHash) {

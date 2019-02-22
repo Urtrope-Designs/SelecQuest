@@ -1,14 +1,15 @@
 import { TaskGenerator, GameTaskGeneratorList } from "../models/task-models";
 import { AppState, HeroModification, HeroModificationType, TaskMode, Task, LootingTarget, TaskTargetType, GladiatingTarget, HeroLead, LeadType, LeadTarget, HeroTrophy, HeroLoot } from "../models/models";
 import { makeStringIndefinite, randRange, randFromList, randSign, capitalizeInitial, makeVerbGerund, generateRandomName } from "../global/utils";
-import { generateNewEquipmentModification, generateNewAccoladeModification, generateNewAffiliationModification, generateNewAdventureResults } from "./hero-manager";
 import { LEAD_GATHERING_TASK_MODIFIERS, TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, TASK_GERUNDS, STANDARD_GLADIATING_TARGETS, STANDARD_LOOTING_TARGETS, RACES, CLASSES, STANDARD_LEAD_GATHERING_TARGETS, STANDARD_LEAD_TARGETS, IS_DEBUG } from "../global/config";
 import { PROLOGUE_TASKS, PROLOGUE_ADVENTURE_NAME } from "../global/storyline-helpers";
-import { GameSettingsManager } from "./game-settings-manager";
+import { PlayTaskResultGenerator } from "./play-task-result-generator";
 
 export class PlayTaskGenerator {
 
-    constructor(private gameSettingsMgr: GameSettingsManager) {
+    constructor(
+        private taskResultGenerator: PlayTaskResultGenerator,
+        ) {
     }
 
     static determineTaskQuantity(targetLevel: number, taskLevel: number) {
@@ -353,7 +354,7 @@ export class PlayTaskGenerator {
             return currentEncumbrance <= 0 && state.hero.gold >= minGold;
         },
         generateTask: (state: AppState) => {
-            const newEquipmentMod = generateNewEquipmentModification(state.hero, this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId));
+            const newEquipmentMod = this.taskResultGenerator.generateNewEquipmentModification(state.hero);
             const newTask: Task = {
                 description: 'Negotiating the purchase of better equipment',
                 durationMs: 5 * 1000,
@@ -533,7 +534,7 @@ export class PlayTaskGenerator {
             return currentEquipmentIntegrity <= 0 && (state.hero.renown - state.hero.spentRenown) >= PlayTaskGenerator.getTradeInCostForLevel(state.hero.level);
         },
         generateTask: (state: AppState) => {
-            const newAccoladeMod = generateNewAccoladeModification(state.hero);
+            const newAccoladeMod = this.taskResultGenerator.generateNewAccoladeModification(state.hero);
             const newTask: Task = {
                 description: 'Being honored for your glorious achievements',
                 durationMs: 5 * 1000,
@@ -697,7 +698,7 @@ export class PlayTaskGenerator {
             return state.hero.leads.length <= 0 && (state.hero.reputation - state.hero.spentReputation) >= PlayTaskGenerator.getTradeInCostForLevel(state.hero.level);
         },
         generateTask: (state: AppState) => {
-            const newAffiliationMod = generateNewAffiliationModification(state.hero);
+            const newAffiliationMod = this.taskResultGenerator.generateNewAffiliationModification(state.hero);
             const newTask: Task = {
                 description: 'Solidifying a new connection',
                 durationMs: 5 * 1000,
@@ -746,7 +747,7 @@ export class PlayTaskGenerator {
             const newTask: Task = {
                 description: 'Loading',
                 durationMs: 20,
-                results: generateNewAdventureResults(state.hero, this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId), false),
+                results: this.taskResultGenerator.generateNewAdventureResults(state.hero, false),
             };
             return newTask;
         }
@@ -761,7 +762,7 @@ export class PlayTaskGenerator {
             const newTask: Task = {
                 description: 'Experiencing an enigmatic and foreboding night vision',
                 durationMs: randRange(2, 3) * 1000,
-                results: generateNewAdventureResults(state.hero, this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId)),
+                results: this.taskResultGenerator.generateNewAdventureResults(state.hero),
             };
             return newTask;
         }
