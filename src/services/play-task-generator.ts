@@ -12,6 +12,11 @@ export class PlayTaskGenerator {
         ) {
     }
 
+    public generateNextTask(state: AppState): Task {
+        const nextTaskGen = this.selectNextTaskGenerator(state);
+        return nextTaskGen.generateTask(state);
+    }
+
     static determineTaskQuantity(targetLevel: number, taskLevel: number) {
         let quantity = 1;
         if (targetLevel - taskLevel > 10) {
@@ -85,7 +90,7 @@ export class PlayTaskGenerator {
     }
 
     //logic stolen pretty much directly from PQ
-    generateLootingTaskContentsFromLevel(level: number): {taskName: string, taskLevel: number, lootData: HeroLoot[]} {
+    private generateLootingTaskContentsFromLevel(level: number): {taskName: string, taskLevel: number, lootData: HeroLoot[]} {
         let taskName = '';
         let lootData: HeroLoot[] = [];
 
@@ -110,7 +115,7 @@ export class PlayTaskGenerator {
         return {taskName: taskName, taskLevel: targetLevel * quantity, lootData: lootData};
     }
 
-    generateGladiatingTaskContentsFromLevel(level: number): {taskName: string, taskLevel: number, trophyData: HeroTrophy[]} {
+    private generateGladiatingTaskContentsFromLevel(level: number): {taskName: string, taskLevel: number, trophyData: HeroTrophy[]} {
         let taskName = '';
         let trophyData: HeroTrophy[] = [];
 
@@ -163,7 +168,7 @@ export class PlayTaskGenerator {
         return {taskName: taskName, taskLevel: taskLevel, trophyData: trophyData};
     }
 
-    generateInvestigatingTaskContents(): {taskName: string, leadData: HeroLead[]} {
+    private generateInvestigatingTaskContents(): {taskName: string, leadData: HeroLead[]} {
         let investigatingTaskName = '';
         let leadData = [];
 
@@ -811,7 +816,7 @@ export class PlayTaskGenerator {
         ]
     }
     
-    public selectNextTaskGenerator(state: AppState): TaskGenerator {
+    private selectNextTaskGenerator(state: AppState): TaskGenerator {
         let nextTaskGenerator: TaskGenerator;
         nextTaskGenerator = this.prioritizedTaskGenerators.coreTaskGenerators.find(taskGen => taskGen.shouldRun(state));
     

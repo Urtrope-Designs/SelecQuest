@@ -47,8 +47,7 @@ export default (function() {
         }
 
         private constructNextTask(state: AppState, emulateTaskTimeGap: boolean): Task {
-            const curTaskGenerator = this.taskGenerator.selectNextTaskGenerator(state);
-            let newTask = curTaskGenerator.generateTask(state);
+            const newTask = this.taskGenerator.generateNextTask(state);
 
             if (emulateTaskTimeGap && !!state.activeTask) {
                 const twentyFourHoursAgo = new Date().getTime() - (1000 * 60 * 60 * 24);
