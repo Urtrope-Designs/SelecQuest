@@ -6,20 +6,17 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { Task, AppState } from '../models/models';
 import { SetActiveTask, TaskCompleted, Action } from '../global/actions';
-import { HeroManager } from './hero-manager';
 import { PlayTaskGenerator } from './play-task-generator';
 
 export default (function() {
     class PlayTaskManager {
-        private heroMgr: HeroManager;
         private taskGenerator: PlayTaskGenerator;
         private stateStore: Observable<AppState>;
         private stateStoreSub: Subscription;
         private taskWatchTimerSub: Subscription;
         public taskAction$ = new BehaviorSubject<Action>(null);
 
-        init(stateStore: Observable<AppState>, heroMgr: HeroManager, taskGenerator: PlayTaskGenerator, emulateTaskTimeGap: boolean = false) {
-            this.heroMgr = heroMgr;
+        init(stateStore: Observable<AppState>, taskGenerator: PlayTaskGenerator, emulateTaskTimeGap: boolean = false) {
             this.taskGenerator = taskGenerator;
             if (!!this.stateStoreSub) {                 // TODO: fix #18
                 this.stateStoreSub.unsubscribe();
@@ -77,15 +74,15 @@ export default (function() {
         }
 
         private completeTask(completedTask: Task) {
-            this.taskAction$.next(new TaskCompleted(completedTask, this.heroMgr));
+            this.taskAction$.next(new TaskCompleted(completedTask));
         }
     }
     
     const privateInstance = new PlayTaskManager();
 
     const exports = {
-        init: (stateStore: Observable<AppState>, heroMgr: HeroManager, taskGenerator: PlayTaskGenerator, emulateTaskTimeGap: boolean = false) => {
-            privateInstance.init(stateStore, heroMgr, taskGenerator, emulateTaskTimeGap);
+        init: (stateStore: Observable<AppState>, taskGenerator: PlayTaskGenerator, emulateTaskTimeGap: boolean = false) => {
+            privateInstance.init(stateStore, taskGenerator, emulateTaskTimeGap);
         },
         getTaskAction$: () => {
             return privateInstance.taskAction$.asObservable();

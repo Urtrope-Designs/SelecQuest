@@ -44,7 +44,7 @@ function hero(initState: Hero, actions: Observable<Action>): Observable<Hero> {
     return actions.pipe(
         scan((state: Hero, action: Action) => {
             if (action.actionType == ActionType.TaskCompleted) {
-                const updatedHero = (action as TaskCompleted).heroManager.applyHeroTaskUpdates(state, (action as TaskCompleted).completedTask.results);
+                const updatedHero = (action as TaskCompleted).completedTask.resultingHero;
                 return updatedHero;
             }
             else if (action.actionType == ActionType.SetActiveHero) {

@@ -23,7 +23,7 @@ export class SqApp {
     @State() state: AppState;
     private availableHeroes: {hash: string, name: string}[];
     
-    @Prop({ context: 'taskMgr'}) taskMgr: {init: (stateStore: Observable<AppState>, heroMgr: HeroManager, taskGenerator: PlayTaskGenerator, emulateTaskTimeGap?: boolean) => void, getTaskAction$: () => Observable<Action>};
+    @Prop({ context: 'taskMgr'}) taskMgr: {init: (stateStore: Observable<AppState>, taskGenerator: PlayTaskGenerator, emulateTaskTimeGap?: boolean) => void, getTaskAction$: () => Observable<Action>};
     private gameDataMgr = new GameDataManager();
     private heroMgr: HeroManager;
     private gameSettingsMgr: GameSettingsManager;
@@ -94,7 +94,7 @@ export class SqApp {
 
         this.heroMgr = new HeroManager(this.gameSettingsMgr);
         this.taskResultGenerator = new PlayTaskResultGenerator(this.gameSettingsMgr);
-        this.taskGenerator = new PlayTaskGenerator(this.taskResultGenerator);
+        this.taskGenerator = new PlayTaskGenerator(this.taskResultGenerator, this.heroMgr);
         this.gameDataMgr.getActiveHeroHash()
             .then((heroHash: string) => {
                 if (!!heroHash) {
@@ -114,7 +114,7 @@ export class SqApp {
                 const initialData = state || DEFAULT_APP_STATE;
                 let state$ = stateFn(initialData, this.actionSubject.asObservable());
                 state$ = this.gameDataMgr.persistAppData(state$);
-                this.taskMgr.init(state$, this.heroMgr, this.taskGenerator, false);
+                this.taskMgr.init(state$, this.taskGenerator, false);
                 this.taskMgr.getTaskAction$().subscribe((taskAction: Action) => {
                     this._queueAction(taskAction);
                 })

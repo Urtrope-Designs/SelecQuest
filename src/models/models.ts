@@ -5,7 +5,7 @@ export interface Task {
     taskStartTime?: number;
     description: string;
     durationMs: number;
-    results: HeroModification[];
+    resultingHero: Hero;
 }
 
 export enum TaskMode {

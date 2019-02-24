@@ -4,17 +4,21 @@ import { makeStringIndefinite, randRange, randFromList, randSign, capitalizeInit
 import { LEAD_GATHERING_TASK_MODIFIERS, TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, TASK_GERUNDS, STANDARD_GLADIATING_TARGETS, STANDARD_LOOTING_TARGETS, RACES, CLASSES, STANDARD_LEAD_GATHERING_TARGETS, STANDARD_LEAD_TARGETS, IS_DEBUG } from "../global/config";
 import { PROLOGUE_TASKS, PROLOGUE_ADVENTURE_NAME } from "../global/storyline-helpers";
 import { PlayTaskResultGenerator } from "./play-task-result-generator";
+import { HeroManager } from "./hero-manager";
 
 export class PlayTaskGenerator {
 
     constructor(
         private taskResultGenerator: PlayTaskResultGenerator,
+        private heroMgr: HeroManager,
         ) {
     }
 
     public generateNextTask(state: AppState): Task {
         const nextTaskGen = this.selectNextTaskGenerator(state);
-        return nextTaskGen.generateTask(state);
+        const nextTask = nextTaskGen.generateTask(state);
+
+        return nextTask;
     }
 
     static determineTaskQuantity(targetLevel: number, taskLevel: number) {
@@ -204,7 +208,7 @@ export class PlayTaskGenerator {
             const {taskName, taskLevel, lootData} = this.generateLootingTaskContentsFromLevel(state.hero.level);
             const durationSeconds = Math.floor(6 * taskLevel / state.hero.level);
             const isMarketSaturated = state.hero.marketSaturation >= state.hero.maxMarketSaturation;
-            const results: HeroModification[] = [
+            const modifications: HeroModification[] = [
                 {
                     type: HeroModificationType.ADD_QUANTITY,
                     attributeName: 'loot',
@@ -230,11 +234,13 @@ export class PlayTaskGenerator {
                     attributeName: 'adventureProgress',
                     data: (Math.ceil(durationSeconds / (isMarketSaturated ? 2 : 1))),
                 },
-            ]
-            const newTask = {
+            ];
+
+            const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
+            const newTask: Task = {
                 description: taskName,
                 durationMs: durationSeconds * 1000,
-                results: results
+                resultingHero: updatedHero
             };
             return newTask;
         },
@@ -251,17 +257,19 @@ export class PlayTaskGenerator {
             }, 0);
             return currentEncumbrance >= state.hero.maxEncumbrance;
         },
-        generateTask: (_state: AppState) => {
+        generateTask: (state: AppState) => {
+            const modifications = [
+                {
+                    type: HeroModificationType.SET_TEARDOWN_MODE,
+                    attributeName: 'isInTeardownMode',
+                    data: [{index: TaskMode.LOOTING, value: true}],
+                }
+            ];
+            const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
             const newTask: Task = {
                 description: 'Heading to market to pawn your loot',
                 durationMs: 4 * 1000,
-                results: [
-                    {
-                        type: HeroModificationType.SET_TEARDOWN_MODE,
-                        attributeName: 'isInTeardownMode',
-                        data: [{index: TaskMode.LOOTING, value: true}],
-                    }
-                ]
+                resultingHero: updatedHero,
             }
     
             return newTask;
@@ -285,7 +293,7 @@ export class PlayTaskGenerator {
                         value: 0
                     }
                 ];
-                const results: HeroModification[] = [
+                const modifications: HeroModification[] = [
                     {
                         type: HeroModificationType.REMOVE,
                         attributeName: 'loot',
@@ -302,24 +310,27 @@ export class PlayTaskGenerator {
                         data: sellQuantity,
                     },
                 ]
+                const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
     
-                const newTask = {
+                const newTask: Task = {
                     description: 'Selling ' + makeStringIndefinite(sellItem.name, sellItem.quantity),
                     durationMs: 1000,
-                    results: results,
+                    resultingHero: updatedHero,
                 }
                 return newTask;
             } else {
-                const newTask = {
+                const modifications = [
+                    {
+                        type: HeroModificationType.SET_TEARDOWN_MODE,
+                        attributeName: 'isInTeardownMode',
+                        data: [{index: TaskMode.LOOTING, value: false}],
+                    }
+                ];
+                const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
+                const newTask: Task = {
                     description: 'Cleanup',
                     durationMs: 10,
-                    results: [
-                        {
-                            type: HeroModificationType.SET_TEARDOWN_MODE,
-                            attributeName: 'isInTeardownMode',
-                            data: [{index: TaskMode.LOOTING, value: false}],
-                        }
-                    ],
+                    resultingHero: updatedHero,
                 }
                 return newTask;
             }
@@ -333,17 +344,19 @@ export class PlayTaskGenerator {
             }, 0);
             return currentEncumbrance <= 0;
         },
-        generateTask: (_state: AppState) => {
+        generateTask: (state: AppState) => {
+            const modifications = [
+                {
+                    type: HeroModificationType.SET_TEARDOWN_MODE,
+                    attributeName: 'isInTeardownMode',
+                    data: [{index: TaskMode.LOOTING, value: false}],
+                }
+            ];
+            const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
             const newTask: Task = {
                 description: 'Heading out to find some swag',
                 durationMs: 4 * 1000,
-                results: [
-                    {
-                        type: HeroModificationType.SET_TEARDOWN_MODE,
-                        attributeName: 'isInTeardownMode',
-                        data: [{index: TaskMode.LOOTING, value: false}],
-                    }
-                ]
+                resultingHero: updatedHero
             }
     
             return newTask;
@@ -360,17 +373,19 @@ export class PlayTaskGenerator {
         },
         generateTask: (state: AppState) => {
             const newEquipmentMod = this.taskResultGenerator.generateNewEquipmentModification(state.hero);
+            const modifications = [
+                newEquipmentMod,
+                {
+                    type: HeroModificationType.DECREASE,
+                    attributeName: 'gold',
+                    data: -PlayTaskGenerator.getTradeInCostForLevel(state.hero.level),
+                },
+            ];
+            const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
             const newTask: Task = {
                 description: 'Negotiating the purchase of better equipment',
                 durationMs: 5 * 1000,
-                results: [
-                    newEquipmentMod,
-                    {
-                        type: HeroModificationType.DECREASE,
-                        attributeName: 'gold',
-                        data: -PlayTaskGenerator.getTradeInCostForLevel(state.hero.level),
-                    },
-                ]
+                resultingHero: updatedHero, 
             }
             return newTask;
         },
@@ -384,7 +399,7 @@ export class PlayTaskGenerator {
             const {taskName, taskLevel, trophyData} = this.generateGladiatingTaskContentsFromLevel(state.hero.level);
             const durationSeconds = Math.floor(6 * taskLevel / state.hero.level);
             const isFatigued = state.hero.fatigue >= state.hero.maxFatigue;
-            const results: HeroModification[] = [
+            const modifications: HeroModification[] = [
                 {
                     type: HeroModificationType.ADD_QUANTITY,
                     attributeName: 'trophies',
@@ -416,11 +431,11 @@ export class PlayTaskGenerator {
                     data: (Math.ceil(durationSeconds / (isFatigued ? 2 : 1))),
                 },
             ]
-    
-            const newTask = {
+            const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
+            const newTask: Task = {
                 description: taskName,
                 durationMs: durationSeconds * 1000,
-                results: results
+                resultingHero: updatedHero,
             };
             return newTask;
         }
@@ -437,17 +452,19 @@ export class PlayTaskGenerator {
             }, 0);
             return currentEquipmentWear >= state.hero.maxEquipmentWear;
         },
-        generateTask: (_state: AppState) => {
+        generateTask: (state: AppState) => {
+            const modifications = [
+                {
+                    type: HeroModificationType.SET_TEARDOWN_MODE,
+                    attributeName: 'isInTeardownMode',
+                    data: [{index: TaskMode.GLADIATING, value: true}],
+                }
+            ];
+            const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
             const newTask: Task = {
                 description: 'Heading to the nearest inn to boast of your recent deeds while your armor is repaired',
                 durationMs: 4 * 1000,
-                results: [
-                    {
-                        type: HeroModificationType.SET_TEARDOWN_MODE,
-                        attributeName: 'isInTeardownMode',
-                        data: [{index: TaskMode.GLADIATING, value: true}],
-                    }
-                ]
+                resultingHero: updatedHero,
             }
     
             return newTask;
@@ -471,7 +488,7 @@ export class PlayTaskGenerator {
                         value: 0
                     }
                 ];
-                const results: HeroModification[] = [
+                const modifications: HeroModification[] = [
                     {
                         type: HeroModificationType.REMOVE,
                         attributeName: 'trophies',
@@ -482,25 +499,28 @@ export class PlayTaskGenerator {
                         attributeName: 'renown',
                         data: renownValue,
                     },
-                ]
+                ];
+                const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
                 
-                const newTask = {
+                const newTask: Task = {
                     description: 'Boasting of ' + makeStringIndefinite(boastItem.name, boastQuantity),
                     durationMs: 1000,
-                    results: results,
+                    resultingHero: updatedHero,
                 }
                 return newTask;
             } else {
-                const newTask = {
+                const modifications = [
+                    {
+                        type: HeroModificationType.SET_TEARDOWN_MODE,
+                        attributeName: 'isInTeardownMode',
+                        data: [{index: TaskMode.GLADIATING, value: false}],
+                    },
+                ];
+                const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
+                const newTask: Task = {
                     description: 'Cleanup',
                     durationMs: 10,
-                    results: [
-                        {
-                            type: HeroModificationType.SET_TEARDOWN_MODE,
-                            attributeName: 'isInTeardownMode',
-                            data: [{index: TaskMode.GLADIATING, value: false}],
-                        },
-                    ],
+                    resultingHero: updatedHero,
                 }
                 return newTask;
             }
@@ -514,18 +534,20 @@ export class PlayTaskGenerator {
             }, 0);
             return currentEquipmentIntegrity <= 0;
         },
-        generateTask: (_state: AppState) => {
+        generateTask: (state: AppState) => {
+            const modifications = [
+                {
+                    type: HeroModificationType.SET_TEARDOWN_MODE,
+                    attributeName: 'isInTeardownMode',
+                    data: [{index: TaskMode.GLADIATING, value: false}],
+                }
+            ];
+            const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
             const newTask: Task = {
                 description: 'Heading off in search of glory',
                 durationMs: 4 * 1000,
-                results: [
-                    {
-                        type: HeroModificationType.SET_TEARDOWN_MODE,
-                        attributeName: 'isInTeardownMode',
-                        data: [{index: TaskMode.GLADIATING, value: false}],
-                    }
-                ]
-            }
+                resultingHero: updatedHero,
+            };
     
             return newTask;
         }
@@ -540,18 +562,20 @@ export class PlayTaskGenerator {
         },
         generateTask: (state: AppState) => {
             const newAccoladeMod = this.taskResultGenerator.generateNewAccoladeModification(state.hero);
+            const modifications = [
+                newAccoladeMod,
+                {
+                    type: HeroModificationType.INCREASE,
+                    attributeName: 'spentRenown',
+                    data: PlayTaskGenerator.getTradeInCostForLevel(state.hero.level),
+                },
+            ];
+            const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
             const newTask: Task = {
                 description: 'Being honored for your glorious achievements',
                 durationMs: 5 * 1000,
-                results: [
-                    newAccoladeMod,
-                    {
-                        type: HeroModificationType.INCREASE,
-                        attributeName: 'spentRenown',
-                        data: PlayTaskGenerator.getTradeInCostForLevel(state.hero.level),
-                    },
-                ]
-            }
+                resultingHero: updatedHero,
+            };
             return newTask;
         },
     };
@@ -560,22 +584,23 @@ export class PlayTaskGenerator {
         shouldRun: (_state: AppState) => {
             return true;
         },
-        generateTask: (_state: AppState) => {
+        generateTask: (state: AppState) => {
             const {taskName, leadData} = this.generateInvestigatingTaskContents();
             const durationSeconds = 1;
     
-            const results: HeroModification[] = [
+            const modifications: HeroModification[] = [
                 {
                     type: HeroModificationType.ADD,
                     attributeName: 'leads',
                     data: leadData,
                 },
-            ]
+            ];
+            const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
             
-            const newTask = {
+            const newTask: Task = {
                 description: taskName,
                 durationMs: durationSeconds * 1000,
-                results: results
+                resultingHero: updatedHero,
             };
             return newTask;
         }
@@ -589,18 +614,21 @@ export class PlayTaskGenerator {
     
             return state.hero.leads.length >= state.hero.maxQuestLogSize;
         },
-        generateTask: (_state: AppState) => {
+        generateTask: (state: AppState) => {
+            const modifications = [
+                {
+                    type: HeroModificationType.SET_TEARDOWN_MODE,
+                    attributeName: 'isInTeardownMode',
+                    data: [{index: TaskMode.INVESTIGATING, value: true}],
+                }
+            ];
+            const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
+
             const newTask: Task = {
                 description: 'Organizing your Questlog',
                 durationMs: 4 * 1000,
-                results: [
-                    {
-                        type: HeroModificationType.SET_TEARDOWN_MODE,
-                        attributeName: 'isInTeardownMode',
-                        data: [{index: TaskMode.INVESTIGATING, value: true}],
-                    }
-                ]
-            }
+                resultingHero: updatedHero,
+            };
     
             return newTask;
         }
@@ -616,7 +644,7 @@ export class PlayTaskGenerator {
                 const isOverexposed = state.hero.socialExposure >= state.hero.maxSocialCapital;
                 const reputationValue = Math.ceil((leadToFollow.value * state.hero.level) / (isOverexposed ? 2 : 1));
                 const durationSeconds = randRange(5, 8);
-                const results: HeroModification[] = [
+                const modifications: HeroModification[] = [
                     {
                         type: HeroModificationType.REMOVE,
                         attributeName: 'leads',
@@ -652,25 +680,28 @@ export class PlayTaskGenerator {
                         attributeName: 'adventureProgress',
                         data: (Math.ceil(durationSeconds / (isOverexposed ? 2 : 1))),
                     },
-                ]
+                ];
+                const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
                 
-                const newTask = {
+                const newTask: Task = {
                     description: leadToFollow.taskName,
                     durationMs: durationSeconds * 1000,
-                    results: results,
-                }
+                    resultingHero: updatedHero,
+                };
                 return newTask;
             } else {
-                const newTask = {
+                const modifications = [
+                    {
+                        type: HeroModificationType.SET_TEARDOWN_MODE,
+                        attributeName: 'isInTeardownMode',
+                        data: [{index: TaskMode.INVESTIGATING, value: false}],
+                    },
+                ];
+                const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
+                const newTask: Task = {
                     description: 'Cleanup',
                     durationMs: 10,
-                    results: [
-                        {
-                            type: HeroModificationType.SET_TEARDOWN_MODE,
-                            attributeName: 'isInTeardownMode',
-                            data: [{index: TaskMode.INVESTIGATING, value: false}],
-                        },
-                    ],
+                    resultingHero: updatedHero,
                 }
                 return newTask;
             }
@@ -681,18 +712,20 @@ export class PlayTaskGenerator {
         shouldRun: (state: AppState) => {
             return state.hero.leads.length <= 0;
         },
-        generateTask: (_state: AppState) => {
+        generateTask: (state: AppState) => {
+            const modifications = [
+                {
+                    type: HeroModificationType.SET_TEARDOWN_MODE,
+                    attributeName: 'isInTeardownMode',
+                    data: [{index: TaskMode.INVESTIGATING, value: false}],
+                }
+            ];
+            const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
             const newTask: Task = {
                 description: `Rooting out some ${randFromList(LEAD_GATHERING_TASK_MODIFIERS)} leads`,
                 durationMs: 4 * 1000,
-                results: [
-                    {
-                        type: HeroModificationType.SET_TEARDOWN_MODE,
-                        attributeName: 'isInTeardownMode',
-                        data: [{index: TaskMode.INVESTIGATING, value: false}],
-                    }
-                ]
-            }
+                resultingHero: updatedHero,
+            };
     
             return newTask;
         }
@@ -704,18 +737,20 @@ export class PlayTaskGenerator {
         },
         generateTask: (state: AppState) => {
             const newAffiliationMod = this.taskResultGenerator.generateNewAffiliationModification(state.hero);
+            const modifications = [
+                newAffiliationMod,
+                {
+                    type: HeroModificationType.INCREASE,
+                    attributeName: 'spentReputation',
+                    data: PlayTaskGenerator.getTradeInCostForLevel(state.hero.level),
+                },
+            ];
+            const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
             const newTask: Task = {
                 description: 'Solidifying a new connection',
                 durationMs: 5 * 1000,
-                results: [
-                    newAffiliationMod,
-                    {
-                        type: HeroModificationType.INCREASE,
-                        attributeName: 'spentReputation',
-                        data: PlayTaskGenerator.getTradeInCostForLevel(state.hero.level),
-                    },
-                ]
-            }
+                resultingHero: updatedHero,
+            };
             return newTask;
         },
     };
@@ -725,20 +760,22 @@ export class PlayTaskGenerator {
         shouldRun: (state: AppState) => {
             return state.hero.currentAdventure.name == PROLOGUE_ADVENTURE_NAME;
         },
-        generateTask: (_state: AppState) => {
+        generateTask: (state: AppState) => {
             const curPrologueTask = PROLOGUE_TASKS[this.prologueInc];
             this.prologueInc += 1;
             this.prologueInc = Math.min(this.prologueInc, PROLOGUE_TASKS.length-1);
+            const modifications = [
+                {
+                    type: HeroModificationType.INCREASE,
+                    attributeName: 'adventureProgress',
+                    data: curPrologueTask.durationSeconds,
+                },
+            ];
+            const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
             const newTask: Task = {
                 description: curPrologueTask.taskDescription,
                 durationMs: curPrologueTask.durationSeconds * 1000,
-                results: [
-                    {
-                        type: HeroModificationType.INCREASE,
-                        attributeName: 'adventureProgress',
-                        data: curPrologueTask.durationSeconds,
-                    },
-                ],
+                resultingHero: updatedHero,
             };
             return newTask;
         },
@@ -749,10 +786,12 @@ export class PlayTaskGenerator {
             return (state.hero.currentAdventure.name == PROLOGUE_ADVENTURE_NAME && state.hero.adventureProgress >= state.hero.currentAdventure.progressRequired);
         },
         generateTask: (state: AppState) => {
+            const modifications = this.taskResultGenerator.generateNewAdventureResults(state.hero, false);
+            const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
             const newTask: Task = {
                 description: 'Loading',
                 durationMs: 20,
-                results: this.taskResultGenerator.generateNewAdventureResults(state.hero, false),
+                resultingHero: updatedHero,
             };
             return newTask;
         }
@@ -764,10 +803,12 @@ export class PlayTaskGenerator {
             return (state.hero.adventureProgress >= state.hero.currentAdventure.progressRequired);
         },
         generateTask: (state: AppState) => {
+            const modifications = this.taskResultGenerator.generateNewAdventureResults(state.hero);
+            const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
             const newTask: Task = {
                 description: 'Experiencing an enigmatic and foreboding night vision',
                 durationMs: randRange(2, 3) * 1000,
-                results: this.taskResultGenerator.generateNewAdventureResults(state.hero),
+                resultingHero: updatedHero,
             };
             return newTask;
         }
