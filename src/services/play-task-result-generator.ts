@@ -36,12 +36,13 @@ export class PlayTaskResultGenerator {
             },
         ];
         if (includeReward) {
-            results.push(randRange(0, 1) ? this.generateNewEquipmentModification(currentHero) : this.generateAbilityModification(currentHero, curGameSetting));
+            results.push(randRange(0, 1) ? this.generateNewEquipmentModification(currentHero) : this.generateAbilityModification(currentHero));
         }
         return results;
     }
     
-    private generateAbilityModification(hero: Hero, curGameSetting: GameSetting, modValue: number = 1): HeroModification {
+    private generateAbilityModification(hero: Hero, modValue: number = 1): HeroModification {
+        const curGameSetting = this.gameSettingsMgr.getGameSettingById(hero.gameSettingId);
         const newAbilityType = randFromList(curGameSetting.abilityTypes);
         // pick a spell/ability early in the list, weighted toward 0
         const dataObj: HeroAbilityType = {
@@ -377,7 +378,7 @@ export class PlayTaskResultGenerator {
         } else {
             levelMods.push(this.generateStatModification([{name: winStat1Name, value: 1}, {name: winStat2Name, value: 1}]));
         }
-        levelMods.push(this.generateAbilityModification(hero, curGameSetting));
+        levelMods.push(this.generateAbilityModification(hero));
         
         return levelMods;
     }
