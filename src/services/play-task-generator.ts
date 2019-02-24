@@ -1,5 +1,5 @@
 import { TaskGenerator, GameTaskGeneratorList } from "../models/task-models";
-import { AppState, HeroModification, HeroModificationType, TaskMode, Task, LootingTarget, TaskTargetType, GladiatingTarget, HeroLead, LeadType, LeadTarget, HeroTrophy, HeroLoot } from "../models/models";
+import { AppState, HeroModification, HeroModificationType, TaskMode, Task, LootingTarget, TaskTargetType, GladiatingTarget, HeroLead, LeadType, LeadTarget, HeroTrophy, HeroLoot, Hero } from "../models/models";
 import { makeStringIndefinite, randRange, randFromList, randSign, capitalizeInitial, makeVerbGerund, generateRandomName } from "../global/utils";
 import { LEAD_GATHERING_TASK_MODIFIERS, TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, TASK_GERUNDS, STANDARD_GLADIATING_TARGETS, STANDARD_LOOTING_TARGETS, RACES, CLASSES, STANDARD_LEAD_GATHERING_TARGETS, STANDARD_LEAD_TARGETS, IS_DEBUG } from "../global/config";
 import { PROLOGUE_TASKS, PROLOGUE_ADVENTURE_NAME } from "../global/storyline-helpers";
@@ -198,7 +198,16 @@ export class PlayTaskGenerator {
 
     static getTradeInCostForLevel(level: number): number {
         return IS_DEBUG ? (10 * level + 4) : (5 * level**2 + 10 * level + 20);
-    }    
+    }
+
+    private generateResultingHero(baseHero: Hero, modifications: HeroModification[]): Hero {
+        let updatedHero: Hero = this.heroMgr.applyHeroTaskUpdates(baseHero, modifications);
+        if (HeroManager.hasHeroReachedNextLevel(updatedHero)) {
+            const levelUpMods = this.taskResultGenerator.generateLevelUpModifications(updatedHero)
+            updatedHero = this.heroMgr.applyHeroModifications(updatedHero, levelUpMods, false);
+        }
+        return updatedHero;
+    }
 
     lootingTaskGen: TaskGenerator = {
         shouldRun: (_state: AppState) => {
@@ -236,7 +245,7 @@ export class PlayTaskGenerator {
                 },
             ];
 
-            const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
+            const updatedHero = this.generateResultingHero(state.hero, modifications);
             const newTask: Task = {
                 description: taskName,
                 durationMs: durationSeconds * 1000,
@@ -265,7 +274,7 @@ export class PlayTaskGenerator {
                     data: [{index: TaskMode.LOOTING, value: true}],
                 }
             ];
-            const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
+            const updatedHero = this.generateResultingHero(state.hero, modifications);
             const newTask: Task = {
                 description: 'Heading to market to pawn your loot',
                 durationMs: 4 * 1000,
@@ -310,7 +319,7 @@ export class PlayTaskGenerator {
                         data: sellQuantity,
                     },
                 ]
-                const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
+                const updatedHero = this.generateResultingHero(state.hero, modifications);
     
                 const newTask: Task = {
                     description: 'Selling ' + makeStringIndefinite(sellItem.name, sellItem.quantity),
@@ -326,7 +335,7 @@ export class PlayTaskGenerator {
                         data: [{index: TaskMode.LOOTING, value: false}],
                     }
                 ];
-                const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
+                const updatedHero = this.generateResultingHero(state.hero, modifications);
                 const newTask: Task = {
                     description: 'Cleanup',
                     durationMs: 10,
@@ -352,7 +361,7 @@ export class PlayTaskGenerator {
                     data: [{index: TaskMode.LOOTING, value: false}],
                 }
             ];
-            const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
+            const updatedHero = this.generateResultingHero(state.hero, modifications);
             const newTask: Task = {
                 description: 'Heading out to find some swag',
                 durationMs: 4 * 1000,
@@ -381,7 +390,7 @@ export class PlayTaskGenerator {
                     data: -PlayTaskGenerator.getTradeInCostForLevel(state.hero.level),
                 },
             ];
-            const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
+            const updatedHero = this.generateResultingHero(state.hero, modifications);
             const newTask: Task = {
                 description: 'Negotiating the purchase of better equipment',
                 durationMs: 5 * 1000,
@@ -431,7 +440,7 @@ export class PlayTaskGenerator {
                     data: (Math.ceil(durationSeconds / (isFatigued ? 2 : 1))),
                 },
             ]
-            const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
+            const updatedHero = this.generateResultingHero(state.hero, modifications);
             const newTask: Task = {
                 description: taskName,
                 durationMs: durationSeconds * 1000,
@@ -460,7 +469,7 @@ export class PlayTaskGenerator {
                     data: [{index: TaskMode.GLADIATING, value: true}],
                 }
             ];
-            const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
+            const updatedHero = this.generateResultingHero(state.hero, modifications);
             const newTask: Task = {
                 description: 'Heading to the nearest inn to boast of your recent deeds while your armor is repaired',
                 durationMs: 4 * 1000,
@@ -500,7 +509,7 @@ export class PlayTaskGenerator {
                         data: renownValue,
                     },
                 ];
-                const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
+                const updatedHero = this.generateResultingHero(state.hero, modifications);
                 
                 const newTask: Task = {
                     description: 'Boasting of ' + makeStringIndefinite(boastItem.name, boastQuantity),
@@ -516,7 +525,7 @@ export class PlayTaskGenerator {
                         data: [{index: TaskMode.GLADIATING, value: false}],
                     },
                 ];
-                const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
+                const updatedHero = this.generateResultingHero(state.hero, modifications);
                 const newTask: Task = {
                     description: 'Cleanup',
                     durationMs: 10,
@@ -542,7 +551,7 @@ export class PlayTaskGenerator {
                     data: [{index: TaskMode.GLADIATING, value: false}],
                 }
             ];
-            const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
+            const updatedHero = this.generateResultingHero(state.hero, modifications);
             const newTask: Task = {
                 description: 'Heading off in search of glory',
                 durationMs: 4 * 1000,
@@ -570,7 +579,7 @@ export class PlayTaskGenerator {
                     data: PlayTaskGenerator.getTradeInCostForLevel(state.hero.level),
                 },
             ];
-            const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
+            const updatedHero = this.generateResultingHero(state.hero, modifications);
             const newTask: Task = {
                 description: 'Being honored for your glorious achievements',
                 durationMs: 5 * 1000,
@@ -595,7 +604,7 @@ export class PlayTaskGenerator {
                     data: leadData,
                 },
             ];
-            const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
+            const updatedHero = this.generateResultingHero(state.hero, modifications);
             
             const newTask: Task = {
                 description: taskName,
@@ -622,7 +631,7 @@ export class PlayTaskGenerator {
                     data: [{index: TaskMode.INVESTIGATING, value: true}],
                 }
             ];
-            const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
+            const updatedHero = this.generateResultingHero(state.hero, modifications);
 
             const newTask: Task = {
                 description: 'Organizing your Questlog',
@@ -681,7 +690,7 @@ export class PlayTaskGenerator {
                         data: (Math.ceil(durationSeconds / (isOverexposed ? 2 : 1))),
                     },
                 ];
-                const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
+                const updatedHero = this.generateResultingHero(state.hero, modifications);
                 
                 const newTask: Task = {
                     description: leadToFollow.taskName,
@@ -697,7 +706,7 @@ export class PlayTaskGenerator {
                         data: [{index: TaskMode.INVESTIGATING, value: false}],
                     },
                 ];
-                const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
+                const updatedHero = this.generateResultingHero(state.hero, modifications);
                 const newTask: Task = {
                     description: 'Cleanup',
                     durationMs: 10,
@@ -720,7 +729,7 @@ export class PlayTaskGenerator {
                     data: [{index: TaskMode.INVESTIGATING, value: false}],
                 }
             ];
-            const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
+            const updatedHero = this.generateResultingHero(state.hero, modifications);
             const newTask: Task = {
                 description: `Rooting out some ${randFromList(LEAD_GATHERING_TASK_MODIFIERS)} leads`,
                 durationMs: 4 * 1000,
@@ -745,7 +754,7 @@ export class PlayTaskGenerator {
                     data: PlayTaskGenerator.getTradeInCostForLevel(state.hero.level),
                 },
             ];
-            const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
+            const updatedHero = this.generateResultingHero(state.hero, modifications);
             const newTask: Task = {
                 description: 'Solidifying a new connection',
                 durationMs: 5 * 1000,
@@ -771,7 +780,7 @@ export class PlayTaskGenerator {
                     data: curPrologueTask.durationSeconds,
                 },
             ];
-            const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
+            const updatedHero = this.generateResultingHero(state.hero, modifications);
             const newTask: Task = {
                 description: curPrologueTask.taskDescription,
                 durationMs: curPrologueTask.durationSeconds * 1000,
@@ -787,7 +796,7 @@ export class PlayTaskGenerator {
         },
         generateTask: (state: AppState) => {
             const modifications = this.taskResultGenerator.generateNewAdventureResults(state.hero, false);
-            const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
+            const updatedHero = this.generateResultingHero(state.hero, modifications);
             const newTask: Task = {
                 description: 'Loading',
                 durationMs: 20,
@@ -804,7 +813,7 @@ export class PlayTaskGenerator {
         },
         generateTask: (state: AppState) => {
             const modifications = this.taskResultGenerator.generateNewAdventureResults(state.hero);
-            const updatedHero = this.heroMgr.applyHeroTaskUpdates(state.hero, modifications);
+            const updatedHero = this.generateResultingHero(state.hero, modifications);
             const newTask: Task = {
                 description: 'Experiencing an enigmatic and foreboding night vision',
                 durationMs: randRange(2, 3) * 1000,

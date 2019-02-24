@@ -1,7 +1,7 @@
 import { GameSettingsManager } from "./game-settings-manager";
 import { Adventure, HeroAbilityType } from "../models/hero-models";
 import { IS_DEBUG, WEAPON_MATERIALS, SHEILD_MATERIALS, ARMOR_MATERIALS, EPITHET_DESCRIPTORS, EPITHET_BEING_ALL, TITLE_POSITIONS_ALL, SOBRIQUET_MODIFIERS, SOBRIQUET_NOUN_PORTION, HONORIFIC_TEMPLATES, STANDARD_GROUPS_INDEFINITE, OFFICE_POSITIONS_ALL } from "../global/config";
-import { Hero, HeroModification, HeroModificationType, HeroEquipment, EquipmentType, EquipmentMaterial, HeroAccolade, AccoladeType, HeroTitlePosition, HeroAffiliation, HeroConnection } from "../models/models";
+import { Hero, HeroModification, HeroModificationType, HeroEquipment, EquipmentType, EquipmentMaterial, HeroAccolade, AccoladeType, HeroTitlePosition, HeroAffiliation, HeroConnection, HeroStat } from "../models/models";
 import { GameSetting } from "../global/game-setting";
 import { randRange, randFromList, randFromListLow, getIterableEnumKeys, capitalizeInitial, randFromListHigh, generateRandomName } from "../global/utils";
 
@@ -36,13 +36,12 @@ export class PlayTaskResultGenerator {
             },
         ];
         if (includeReward) {
-            results.push(randRange(0, 1) ? this.generateNewEquipmentModification(currentHero) : PlayTaskResultGenerator.generateAbilityModification(currentHero, curGameSetting));
+            results.push(randRange(0, 1) ? this.generateNewEquipmentModification(currentHero) : this.generateAbilityModification(currentHero, curGameSetting));
         }
         return results;
     }
     
-    
-    static generateAbilityModification(hero: Hero, curGameSetting: GameSetting, modValue: number = 1): HeroModification {
+    private generateAbilityModification(hero: Hero, curGameSetting: GameSetting, modValue: number = 1): HeroModification {
         const newAbilityType = randFromList(curGameSetting.abilityTypes);
         // pick a spell/ability early in the list, weighted toward 0
         const dataObj: HeroAbilityType = {
@@ -336,6 +335,83 @@ export class PlayTaskResultGenerator {
     
     private isNonNullNonHighestOffice(officeName: string) {
         return !!officeName && OFFICE_POSITIONS_ALL.indexOf(officeName) < (OFFICE_POSITIONS_ALL.length - 1)
+    }
+
+    public generateLevelUpModifications(hero: Hero): HeroModification[] {
+        const curGameSetting = this.gameSettingsMgr.getGameSettingById(hero.gameSettingId);
+    
+        let levelMods = [];
+        
+        levelMods.push({
+            type: HeroModificationType.INCREASE,
+            attributeName: 'level',
+            data: 1,
+        });
+        levelMods.push({
+            type: HeroModificationType.SET,
+            attributeName: 'currentXp',
+            data: 0,
+        })
+        levelMods.push({
+            type: HeroModificationType.ADD_STAT,
+            attributeName: 'maxHealthStat',
+            data: [{
+                name: curGameSetting.healthStatName,
+                value: Math.floor(hero.stats[curGameSetting.healthBaseStatIndex].value / 3) + 1 + randRange(0, 3)
+            }],
+        });
+        levelMods.push({
+            type: HeroModificationType.ADD_STAT,
+            attributeName: 'maxMagicStat',
+            data:[{
+                name: curGameSetting.magicStatName,
+                value: Math.floor(hero.stats[curGameSetting.magicBaseStatIndex].value / 3 ) + 1 + randRange(0, 3)
+            }],
+        })
+        const winStat1 = this.selectLevelBonusStatIndex(hero.stats);
+        const winStat2 = this.selectLevelBonusStatIndex(hero.stats);
+        const winStat1Name = curGameSetting.statNames[winStat1];
+        const winStat2Name = curGameSetting.statNames[winStat2];
+        if (winStat1 === winStat2) {
+            levelMods.push(this.generateStatModification([{name: winStat1Name, value: 2}]));
+        } else {
+            levelMods.push(this.generateStatModification([{name: winStat1Name, value: 1}, {name: winStat2Name, value: 1}]));
+        }
+        levelMods.push(this.generateAbilityModification(hero, curGameSetting));
+        
+        return levelMods;
+    }
+    
+    private selectLevelBonusStatIndex(heroStats: HeroStat[]): number {
+        let selectedStatIndex: number;
+        selectedStatIndex = randRange(0, heroStats.length-1);
+        
+        if (randRange(0, 1)) {
+            // Favor the best stat so it will tend to clump
+            let i = 0;
+            heroStats.forEach(stat => {
+                i += stat.value ** 2;
+            })
+            i = randRange(0, i-1);
+            heroStats.some((stat, index) => {
+                selectedStatIndex = index;
+                i -= stat.value ** 2;
+                if (i < 0) {
+                    return true;
+                }
+            });
+        }
+        
+        return selectedStatIndex;
+    }
+    
+    private generateStatModification(modData: {name: string, value: number}[]): HeroModification {
+        const mod: HeroModification = {
+            type: HeroModificationType.ADD_STAT,
+            attributeName: 'stats',
+            data: modData,
+        }
+        return mod;
     }
 }
 

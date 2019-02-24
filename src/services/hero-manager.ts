@@ -1,11 +1,10 @@
-import { Hero, HeroModificationType, AccoladeType, HeroModification, HeroEquipment, EquipmentType, HeroAccolade, HeroAffiliation, HeroStat, TaskMode } from '../models/models';
+import { Hero, HeroModificationType, AccoladeType, HeroModification, HeroEquipment, EquipmentType, HeroAccolade, HeroAffiliation, TaskMode } from '../models/models';
 import { randRange, deepCopyObject, getIterableEnumKeys } from '../global/utils';
 import { PROLOGUE_ADVENTURE_NAME } from '../global/storyline-helpers';
 import { IS_DEBUG } from '../global/config';
 import { GameSettingsManager } from './game-settings-manager';
 import { HeroInitData, HeroAbilityType, HeroAbility } from '../models/hero-models';
 import { GameSetting } from '../global/game-setting';
-import { PlayTaskResultGenerator } from './play-task-result-generator';
 
 export class HeroManager {
 
@@ -84,15 +83,11 @@ export class HeroManager {
     public applyHeroTaskUpdates(baseHero: Hero, heroMods: HeroModification[]): Hero {
         let newHero: Hero = deepCopyObject(baseHero);         // need to deep clone rather than using Object.assign() or spread operator
         newHero = this.applyHeroModifications(newHero, heroMods);
-        newHero = this.updateHeroState(newHero);
-        if (HeroManager.hasHeroReachedNextLevel(newHero)) {
-            const levelUpMods = this.generateLevelUpModifications(newHero)
-            newHero = this.applyHeroModifications(newHero, levelUpMods, false);
-        }
+        newHero = this.enforceHeroLimitBounds(newHero);
         return newHero;
     }
 
-    private applyHeroModifications(newHero: Hero, heroMods: HeroModification[], resetModsList = true): Hero {
+    public applyHeroModifications(newHero: Hero, heroMods: HeroModification[], resetModsList = true): Hero {
         if (resetModsList) {
             newHero.latestModifications = [];
         }
@@ -228,7 +223,7 @@ export class HeroManager {
         return newHero;
     }
 
-    private updateHeroState(newHero: Hero): Hero {
+    private enforceHeroLimitBounds(newHero: Hero): Hero {
         newHero.marketSaturation = Math.min(newHero.marketSaturation, newHero.maxMarketSaturation);
         newHero.marketSaturation = Math.max(newHero.marketSaturation, 0);
         newHero.fatigue = Math.min(newHero.fatigue, newHero.maxFatigue);
@@ -259,82 +254,5 @@ export class HeroManager {
         } else {
             return false;
         }
-    }
-    
-    private generateLevelUpModifications(hero: Hero): HeroModification[] {
-        const curGameSetting = this.gameSettingsMgr.getGameSettingById(hero.gameSettingId);
-    
-        let levelMods = [];
-        
-        levelMods.push({
-            type: HeroModificationType.INCREASE,
-            attributeName: 'level',
-            data: 1,
-        });
-        levelMods.push({
-            type: HeroModificationType.SET,
-            attributeName: 'currentXp',
-            data: 0,
-        })
-        levelMods.push({
-            type: HeroModificationType.ADD_STAT,
-            attributeName: 'maxHealthStat',
-            data: [{
-                name: curGameSetting.healthStatName,
-                value: Math.floor(hero.stats[curGameSetting.healthBaseStatIndex].value / 3) + 1 + randRange(0, 3)
-            }],
-        });
-        levelMods.push({
-            type: HeroModificationType.ADD_STAT,
-            attributeName: 'maxMagicStat',
-            data:[{
-                name: curGameSetting.magicStatName,
-                value: Math.floor(hero.stats[curGameSetting.magicBaseStatIndex].value / 3 ) + 1 + randRange(0, 3)
-            }],
-        })
-        const winStat1 = this.selectLevelBonusStatIndex(hero.stats);
-        const winStat2 = this.selectLevelBonusStatIndex(hero.stats);
-        const winStat1Name = curGameSetting.statNames[winStat1];
-        const winStat2Name = curGameSetting.statNames[winStat2];
-        if (winStat1 === winStat2) {
-            levelMods.push(this.generateStatModification([{name: winStat1Name, value: 2}]));
-        } else {
-            levelMods.push(this.generateStatModification([{name: winStat1Name, value: 1}, {name: winStat2Name, value: 1}]));
-        }
-        levelMods.push(PlayTaskResultGenerator.generateAbilityModification(hero, curGameSetting));
-        
-        return levelMods;
-    }
-    
-    private selectLevelBonusStatIndex(heroStats: HeroStat[]): number {
-        let selectedStatIndex: number;
-        selectedStatIndex = randRange(0, heroStats.length-1);
-        
-        if (randRange(0, 1)) {
-            // Favor the best stat so it will tend to clump
-            let i = 0;
-            heroStats.forEach(stat => {
-                i += stat.value ** 2;
-            })
-            i = randRange(0, i-1);
-            heroStats.some((stat, index) => {
-                selectedStatIndex = index;
-                i -= stat.value ** 2;
-                if (i < 0) {
-                    return true;
-                }
-            });
-        }
-        
-        return selectedStatIndex;
-    }
-    
-    private generateStatModification(modData: {name: string, value: number}[]): HeroModification {
-        const mod: HeroModification = {
-            type: HeroModificationType.ADD_STAT,
-            attributeName: 'stats',
-            data: modData,
-        }
-        return mod;
     }
 }
