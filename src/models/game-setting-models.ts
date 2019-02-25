@@ -14,6 +14,7 @@ export interface GameSettingConfig {
     abilityTypes: AbilityType[],
     prologueAdventureName: string,
     prologueTasks: PrologueTask[],
+    adventureTransitionTaskDescriptions: string[],
 }
 
 export interface AbilityType {

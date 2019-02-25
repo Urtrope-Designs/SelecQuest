@@ -820,8 +820,9 @@ export class PlayTaskGenerator {
         generateTask: (state: AppState) => {
             const modifications = this.taskResultGenerator.generateNewAdventureResults(state.hero);
             const updatedHero = this.generateResultingHero(state.hero, modifications);
+            const taskDescription = randFromList(this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId).adventureTransitionTaskDescriptions);
             const newTask: Task = {
-                description: 'Experiencing an enigmatic and foreboding night vision',
+                description: taskDescription,
                 durationMs: randRange(2, 3) * 1000,
                 resultingHero: updatedHero,
             };

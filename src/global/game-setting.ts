@@ -16,7 +16,7 @@ export class GameSetting {
     readonly abilityTypes: AbilityType[];
     readonly prologueAdventureName: string;
     readonly prologueTasks: PrologueTask[];
-
+    readonly adventureTransitionTaskDescriptions: string[];
 
 
     constructor(config: GameSettingConfig) {
@@ -33,5 +33,6 @@ export class GameSetting {
         this.abilityTypes = config.abilityTypes;
         this.prologueAdventureName = config.prologueAdventureName;
         this.prologueTasks = config.prologueTasks;
+        this.adventureTransitionTaskDescriptions = config.adventureTransitionTaskDescriptions;
     }
 }

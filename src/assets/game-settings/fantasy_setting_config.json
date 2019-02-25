@@ -110,5 +110,8 @@
             "taskDescription": "Loading",
             "durationSeconds": 2
         }
+    ],
+    "adventureTransitionTaskDescriptions": [
+        "Experiencing an enigmatic and foreboding night vision"
     ]
 }
