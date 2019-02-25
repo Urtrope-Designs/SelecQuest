@@ -2,7 +2,6 @@ import { GameSettingsManager } from "./game-settings-manager";
 import { Adventure, HeroAbilityType } from "../models/hero-models";
 import { IS_DEBUG, WEAPON_MATERIALS, SHEILD_MATERIALS, ARMOR_MATERIALS, EPITHET_DESCRIPTORS, EPITHET_BEING_ALL, TITLE_POSITIONS_ALL, SOBRIQUET_MODIFIERS, SOBRIQUET_NOUN_PORTION, HONORIFIC_TEMPLATES, STANDARD_GROUPS_INDEFINITE, OFFICE_POSITIONS_ALL } from "../global/config";
 import { Hero, HeroModification, HeroModificationType, HeroEquipment, EquipmentType, EquipmentMaterial, HeroAccolade, AccoladeType, HeroTitlePosition, HeroAffiliation, HeroConnection, HeroStat } from "../models/models";
-import { GameSetting } from "../global/game-setting";
 import { randRange, randFromList, randFromListLow, getIterableEnumKeys, capitalizeInitial, randFromListHigh, generateRandomName } from "../global/utils";
 
 export class PlayTaskResultGenerator {
@@ -17,7 +16,6 @@ export class PlayTaskResultGenerator {
     }
     
     public generateNewAdventureResults(currentHero: Hero, includeReward: boolean = true): HeroModification[] {
-        const curGameSetting = this.gameSettingsMgr.getGameSettingById(currentHero.gameSettingId);
         let results = [
             {
                 type: HeroModificationType.SET,

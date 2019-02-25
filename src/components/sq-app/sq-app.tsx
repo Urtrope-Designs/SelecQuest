@@ -94,7 +94,7 @@ export class SqApp {
 
         this.heroMgr = new HeroManager(this.gameSettingsMgr);
         this.taskResultGenerator = new PlayTaskResultGenerator(this.gameSettingsMgr);
-        this.taskGenerator = new PlayTaskGenerator(this.taskResultGenerator, this.heroMgr);
+        this.taskGenerator = new PlayTaskGenerator(this.taskResultGenerator, this.heroMgr, this.gameSettingsMgr);
         this.gameDataMgr.getActiveHeroHash()
             .then((heroHash: string) => {
                 if (!!heroHash) {

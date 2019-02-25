@@ -1,4 +1,5 @@
 import { HeroRace } from "./models";
+import { PrologueTask } from "./hero-models";
 
 export interface GameSettingConfig {
     gameSettingId: string,
@@ -11,6 +12,8 @@ export interface GameSettingConfig {
     magicStatName: string,          // 1-8 chars
     magicBaseStatIndex: number,     // number between 0 and 5 inclusive
     abilityTypes: AbilityType[],
+    prologueAdventureName: string,
+    prologueTasks: PrologueTask[],
 }
 
 export interface AbilityType {

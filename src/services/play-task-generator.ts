@@ -2,15 +2,17 @@ import { TaskGenerator, GameTaskGeneratorList } from "../models/task-models";
 import { AppState, HeroModification, HeroModificationType, TaskMode, Task, LootingTarget, TaskTargetType, GladiatingTarget, HeroLead, LeadType, LeadTarget, HeroTrophy, HeroLoot, Hero } from "../models/models";
 import { makeStringIndefinite, randRange, randFromList, randSign, capitalizeInitial, makeVerbGerund, generateRandomName } from "../global/utils";
 import { LEAD_GATHERING_TASK_MODIFIERS, TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, TASK_GERUNDS, STANDARD_GLADIATING_TARGETS, STANDARD_LOOTING_TARGETS, RACES, CLASSES, STANDARD_LEAD_GATHERING_TARGETS, STANDARD_LEAD_TARGETS, IS_DEBUG } from "../global/config";
-import { PROLOGUE_TASKS, PROLOGUE_ADVENTURE_NAME } from "../global/storyline-helpers";
 import { PlayTaskResultGenerator } from "./play-task-result-generator";
 import { HeroManager } from "./hero-manager";
+import { GameSettingsManager } from "./game-settings-manager";
+import { PrologueTask } from "../models/hero-models";
 
 export class PlayTaskGenerator {
 
     constructor(
         private taskResultGenerator: PlayTaskResultGenerator,
         private heroMgr: HeroManager,
+        private gameSettingsMgr: GameSettingsManager,
         ) {
     }
 
@@ -764,15 +766,18 @@ export class PlayTaskGenerator {
         },
     };
     
-    private prologueInc = 0;
     prologueTaskGen: TaskGenerator = {
         shouldRun: (state: AppState) => {
-            return state.hero.currentAdventure.name == PROLOGUE_ADVENTURE_NAME;
+            return state.hero.currentAdventure.name == this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId).prologueAdventureName;
         },
         generateTask: (state: AppState) => {
-            const curPrologueTask = PROLOGUE_TASKS[this.prologueInc];
-            this.prologueInc += 1;
-            this.prologueInc = Math.min(this.prologueInc, PROLOGUE_TASKS.length-1);
+            let progressInc: number = 0;
+            const prologueTasks = this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId).prologueTasks;
+            const curPrologueTask = prologueTasks.find((t: PrologueTask) => {
+                const isCurTask = state.hero.adventureProgress <= progressInc;
+                progressInc += t.durationSeconds;
+                return isCurTask;
+            });
             const modifications = [
                 {
                     type: HeroModificationType.INCREASE,
@@ -792,7 +797,8 @@ export class PlayTaskGenerator {
     
     prologueTransitionTaskGen: TaskGenerator = {
         shouldRun: (state: AppState) => {
-            return (state.hero.currentAdventure.name == PROLOGUE_ADVENTURE_NAME && state.hero.adventureProgress >= state.hero.currentAdventure.progressRequired);
+            const prologueAdventureName = this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId).prologueAdventureName;
+            return (state.hero.currentAdventure.name == prologueAdventureName && state.hero.adventureProgress >= state.hero.currentAdventure.progressRequired);
         },
         generateTask: (state: AppState) => {
             const modifications = this.taskResultGenerator.generateNewAdventureResults(state.hero, false);

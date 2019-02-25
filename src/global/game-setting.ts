@@ -1,6 +1,7 @@
 import { GameSettingConfig } from "../models/game-setting-models";
 import { HeroRace } from "../models/models";
 import { AbilityType } from "../models/game-setting-models";
+import { PrologueTask } from "../models/hero-models";
 
 export class GameSetting {
     readonly gameSettingId: string;
@@ -13,6 +14,9 @@ export class GameSetting {
     readonly magicStatName: string;                      // 1-8 chars
     readonly magicBaseStatIndex: number;                 // number between 0 and 5 inclusive
     readonly abilityTypes: AbilityType[];
+    readonly prologueAdventureName: string;
+    readonly prologueTasks: PrologueTask[];
+
 
 
     constructor(config: GameSettingConfig) {
@@ -27,5 +31,7 @@ export class GameSetting {
         this.magicStatName = config.magicStatName;
         this.magicBaseStatIndex = config.magicBaseStatIndex;
         this.abilityTypes = config.abilityTypes;
+        this.prologueAdventureName = config.prologueAdventureName;
+        this.prologueTasks = config.prologueTasks;
     }
 }

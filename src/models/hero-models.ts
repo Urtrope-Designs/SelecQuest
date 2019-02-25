@@ -22,3 +22,8 @@ export interface Adventure {
     name: string,
     progressRequired: number,
 };
+
+export interface PrologueTask {
+    taskDescription: string,
+    durationSeconds: number,
+}

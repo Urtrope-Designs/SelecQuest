@@ -1,6 +1,5 @@
 import { Hero, HeroModificationType, AccoladeType, HeroModification, HeroEquipment, EquipmentType, HeroAccolade, HeroAffiliation, TaskMode } from '../models/models';
 import { randRange, deepCopyObject, getIterableEnumKeys } from '../global/utils';
-import { PROLOGUE_ADVENTURE_NAME } from '../global/storyline-helpers';
 import { IS_DEBUG } from '../global/config';
 import { GameSettingsManager } from './game-settings-manager';
 import { HeroInitData, HeroAbilityType, HeroAbility } from '../models/hero-models';
@@ -70,7 +69,12 @@ export class HeroManager {
                     return LONG_TERM_LIMIT_FACTOR * (this.level + this.stats[4].value);
                 }
             },
-            currentAdventure: IS_DEBUG ? {name: 'Chapter 1', progressRequired: 60} : {name: PROLOGUE_ADVENTURE_NAME, progressRequired: 28},
+            currentAdventure: IS_DEBUG 
+                ? {name: 'Chapter 1', progressRequired: 60} 
+                : {
+                    name: gameSetting.prologueAdventureName,
+                    progressRequired: gameSetting.prologueTasks.reduce((total: number, curTask) => total + curTask.durationSeconds, 0),
+                },
             completedAdventures: [],
             adventureProgress: 0,
             latestModifications: [],
