@@ -28,7 +28,7 @@ export class CreateHeroScreen {
     async componentWillLoad() {
         await this.initGameSettings();
         this.rolledHero = {
-            name: generateRandomName(),
+            name: generateRandomName(this.selectedGameSetting),
             raceName: randFromList(this.heroRaces).raceName,
             className: randFromList(this.heroClasses),
             rolledStats: [this.generateRandomStats()],

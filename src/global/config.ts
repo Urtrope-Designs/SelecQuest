@@ -344,21 +344,6 @@ const SEEK_TARGET_OBJECTS = [
     'Fountain of Lamneth',
 ]
 
-
-export const STATIC_NAMES: string[] = [
-    'Scutabrix',
-    'Crinkle',
-    'Garg',
-    'Swindlefoot',
-    'Melse',
-]
-
-export const RANDOM_NAME_PARTS: string[][] = [
-    ['br', 'cr', 'dr', 'fr', 'gr', 'j', 'kr', 'l', 'm', 'n', 'pr', 'r', 'sh', 'tr', 'v', 'wh', 'x', 'y', 'z', ''],
-    ['a', 'a', 'e', 'e', 'i', 'i', 'o', 'o', 'u', 'u', 'ae', 'ie', 'oo', 'ou'],
-    ['b', 'ck', 'd', 'g', 'k', 'm', 'n', 'p', 't', 'v', 'x', 'z'],
-]
-
 export const EQUIPMENT_MODIFIERS = {
     offense: [
         {

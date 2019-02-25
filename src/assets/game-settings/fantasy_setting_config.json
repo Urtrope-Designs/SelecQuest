@@ -113,5 +113,17 @@
     ],
     "adventureTransitionTaskDescriptions": [
         "Experiencing an enigmatic and foreboding night vision"
+    ],
+    "staticNames": [
+        "Scutabrix",
+        "Crinkle",
+        "Garg",
+        "Swindlefoot",
+        "Melse"
+    ],
+    "randomNameParts": [
+        ["br", "cr", "dr", "fr", "gr", "j", "kr", "l", "m", "n", "pr", "r", "sh", "tr", "v", "wh", "x", "y", "z", ""],
+        ["a", "a", "e", "e", "i", "i", "o", "o", "u", "u", "ae", "ie", "oo", "ou"],
+        ["b", "ck", "d", "g", "k", "m", "n", "p", "t", "v", "x", "z"]
     ]
 }

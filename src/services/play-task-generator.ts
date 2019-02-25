@@ -136,7 +136,7 @@ export class PlayTaskGenerator {
             let foeClass = randFromList(gameSetting.heroClasses);
             let quantity = PlayTaskGenerator.determineTaskQuantity(targetLevel, foeLevel);
             if (quantity === 1) {
-                let foeName = generateRandomName();
+                let foeName = generateRandomName(gameSetting);
                 taskName = `${TASK_GERUNDS[TaskTargetType.DUEL]} ${foeName}, the ${foeRace.raceName} ${foeClass}`;
             }
             else {

@@ -1,6 +1,6 @@
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { STATIC_NAMES, RANDOM_NAME_PARTS } from './config';
 import { Hero } from '../models/models';
+import { GameSetting } from './game-setting';
 
 export function urlB64ToUint8Array(base64String) {
     const padding = '='.repeat((4 - base64String.length % 4) % 4);
@@ -127,14 +127,14 @@ export function capitalizeInitial(baseString: string): string {
     return baseString.charAt(0).toLocaleUpperCase() + baseString.slice(1);
 }
 
-export function generateRandomName(): string {
+export function generateRandomName(gameSetting: GameSetting): string {
     let name = '';
 
     if (!randRange(0, 4)) {     // should it only be 1 in 5?
-        name = randFromList(STATIC_NAMES);
+        name = randFromList(gameSetting.staticNames);
     } else {
         for (var i = 0; i <= 5; ++i)
-            name += randFromList(RANDOM_NAME_PARTS[i % 3]);
+            name += randFromList(gameSetting.randomNameParts[i % gameSetting.randomNameParts.length]);
         name = capitalizeInitial(name);
     }
 

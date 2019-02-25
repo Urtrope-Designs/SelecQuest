@@ -246,7 +246,7 @@ export class PlayTaskResultGenerator {
     private generateRandomAffiliation(hero: Hero): HeroAffiliation {
         let newAffiliationData: HeroAffiliation;
     
-        let newAffiliationFactories: ((existingAffiliations: HeroAffiliation[]) => HeroAffiliation)[] = [];
+        let newAffiliationFactories: ((hero: Hero) => HeroAffiliation)[] = [];
         if (hero.affiliations.length < STANDARD_GROUPS_INDEFINITE.length) {
             newAffiliationFactories.push(this.generateRandomDistinctConnection);
             newAffiliationFactories.push(this.generateRandomDistinctConnection); // double the odds
@@ -261,22 +261,22 @@ export class PlayTaskResultGenerator {
     
         
         let selectedFactory = randFromList(newAffiliationFactories);
-        newAffiliationData = selectedFactory(hero.affiliations);
+        newAffiliationData = selectedFactory(hero);
     
         return newAffiliationData;
     }
     
     
-    private generateRandomDistinctConnection(existingAffiliations: HeroAffiliation[]): HeroAffiliation {
+    private generateRandomDistinctConnection(hero: Hero): HeroAffiliation {
         const availableDistinctGroups: string[] = STANDARD_GROUPS_INDEFINITE.filter((groupName: string) => {
-            return !existingAffiliations.some(a => a.groupName == groupName);
+            return !hero.affiliations.some(a => a.groupName == groupName);
         });
     
         if (availableDistinctGroups.length === 0) {
             return nullAffiliation;
         }
         
-        const newConnectionName = generateRandomName();
+        const newConnectionName = generateRandomName(this.gameSettingsMgr.getGameSettingById(hero.gameSettingId));
         const newConnectionTitle = randFromList(OFFICE_POSITIONS_ALL.slice(1));
         const newGroupName = randFromList(availableDistinctGroups);
         const newConnection: HeroConnection = {
@@ -291,9 +291,9 @@ export class PlayTaskResultGenerator {
         return returnData;
     }
     
-    private generateRandomDistinctMembership(existingAffiliations: HeroAffiliation[]): HeroAffiliation {
+    private generateRandomDistinctMembership(hero: Hero): HeroAffiliation {
         // list of all groups we have a connection with but don't currently have membership (ie, an office)
-        const availableMembershipGroups: string[] = existingAffiliations.filter(a => a.office == null).map(a => a.groupName);
+        const availableMembershipGroups: string[] = hero.affiliations.filter(a => a.office == null).map(a => a.groupName);
     
         if (availableMembershipGroups.length === 0) {
             return nullAffiliation;
@@ -309,15 +309,15 @@ export class PlayTaskResultGenerator {
         return returnData;
     }
     
-    private generateRandomDistinctHigherOffice(existingAffiliations: HeroAffiliation[]): HeroAffiliation {
+    private generateRandomDistinctHigherOffice(hero: Hero): HeroAffiliation {
         // list of all groups with a non-null office that is also not the highest office
-        const availableOfficeGroups: string[] = existingAffiliations.filter(a => this.isNonNullNonHighestOffice(a.office)).map(a => a.groupName);
+        const availableOfficeGroups: string[] = hero.affiliations.filter(a => this.isNonNullNonHighestOffice(a.office)).map(a => a.groupName);
         if (availableOfficeGroups.length === 0) {
             return nullAffiliation;
         }
         const group = randFromList(availableOfficeGroups);
         
-        const existingAffiliation: HeroAffiliation = existingAffiliations.find(a => a.groupName == group);
+        const existingAffiliation: HeroAffiliation = hero.affiliations.find(a => a.groupName == group);
         // list of all positions higher than currently "held" office, non-dup with the same group's Connection
         const availableOfficePositions: string[] = OFFICE_POSITIONS_ALL.slice(OFFICE_POSITIONS_ALL.indexOf(existingAffiliation.office) + 1).filter(o => {
                 return o != existingAffiliation.connection.personTitle;

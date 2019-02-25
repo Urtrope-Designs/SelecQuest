@@ -17,6 +17,8 @@ export class GameSetting {
     readonly prologueAdventureName: string;
     readonly prologueTasks: PrologueTask[];
     readonly adventureTransitionTaskDescriptions: string[];
+    readonly staticNames: string[];
+    readonly randomNameParts: string[][];
 
 
     constructor(config: GameSettingConfig) {
@@ -34,5 +36,7 @@ export class GameSetting {
         this.prologueAdventureName = config.prologueAdventureName;
         this.prologueTasks = config.prologueTasks;
         this.adventureTransitionTaskDescriptions = config.adventureTransitionTaskDescriptions;
+        this.statNames = config.statNames;
+        this.randomNameParts = config.randomNameParts;
     }
 }
