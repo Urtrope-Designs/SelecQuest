@@ -1,4 +1,4 @@
-import { TaskTargetType, LootingTarget, GladiatingTarget, HeroRace, LeadGatheringTarget, LeadType, LeadTarget, EquipmentMaterial, EquipmentModifier, HeroTitlePosition } from "../models/models";
+import { TaskTargetType, LootingTarget, GladiatingTarget, LeadGatheringTarget, LeadType, LeadTarget, EquipmentMaterial, EquipmentModifier, HeroTitlePosition } from "../models/models";
 import { makeStringIndefinite, randFromList, makeStringPlural } from "./utils";
 
 export const IS_DEBUG = true;
@@ -357,43 +357,6 @@ export const RANDOM_NAME_PARTS: string[][] = [
     ['br', 'cr', 'dr', 'fr', 'gr', 'j', 'kr', 'l', 'm', 'n', 'pr', 'r', 'sh', 'tr', 'v', 'wh', 'x', 'y', 'z', ''],
     ['a', 'a', 'e', 'e', 'i', 'i', 'o', 'o', 'u', 'u', 'ae', 'ie', 'oo', 'ou'],
     ['b', 'ck', 'd', 'g', 'k', 'm', 'n', 'p', 't', 'v', 'x', 'z'],
-]
-
-export const RACES: HeroRace[] = [
-    {
-        raceName: 'Demimutant',
-        trophyName: 'genome',
-    },
-    {
-        raceName: 'Werefellow',
-        trophyName: 'bowler hat',
-    },
-    {
-        raceName: 'Fartling',
-        trophyName: 'cloud',
-    },
-    {
-        raceName: 'Owl-head',
-        trophyName: 'hoot',
-    },
-    {
-        raceName: 'Half-mermaid',
-        trophyName: 'bident',
-    }
-]
-
-export const CLASSES: string[] = [
-    'Veg Crisper',
-    'Cat-caller',
-    'Metanarc',
-    'War Flautist',
-    'Sarcasminista',
-    'Meter Beater',
-    'Chef de Cuisine',
-    'Basher',
-    'Smasher',
-    'Warlock',
-    'Semi-retired Heckler',
 ]
 
 export const EQUIPMENT_MODIFIERS = {

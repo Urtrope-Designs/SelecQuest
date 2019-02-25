@@ -1,7 +1,7 @@
 import { TaskGenerator, GameTaskGeneratorList } from "../models/task-models";
 import { AppState, HeroModification, HeroModificationType, TaskMode, Task, LootingTarget, TaskTargetType, GladiatingTarget, HeroLead, LeadType, LeadTarget, HeroTrophy, HeroLoot, Hero } from "../models/models";
 import { makeStringIndefinite, randRange, randFromList, randSign, capitalizeInitial, makeVerbGerund, generateRandomName } from "../global/utils";
-import { LEAD_GATHERING_TASK_MODIFIERS, TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, TASK_GERUNDS, STANDARD_GLADIATING_TARGETS, STANDARD_LOOTING_TARGETS, RACES, CLASSES, STANDARD_LEAD_GATHERING_TARGETS, STANDARD_LEAD_TARGETS, IS_DEBUG } from "../global/config";
+import { LEAD_GATHERING_TASK_MODIFIERS, TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, TASK_GERUNDS, STANDARD_GLADIATING_TARGETS, STANDARD_LOOTING_TARGETS, STANDARD_LEAD_GATHERING_TARGETS, STANDARD_LEAD_TARGETS, IS_DEBUG } from "../global/config";
 import { PlayTaskResultGenerator } from "./play-task-result-generator";
 import { HeroManager } from "./hero-manager";
 import { GameSettingsManager } from "./game-settings-manager";
@@ -121,18 +121,19 @@ export class PlayTaskGenerator {
         return {taskName: taskName, taskLevel: targetLevel * quantity, lootData: lootData};
     }
 
-    private generateGladiatingTaskContentsFromLevel(level: number): {taskName: string, taskLevel: number, trophyData: HeroTrophy[]} {
+    private generateGladiatingTaskContents(curHero: Hero): {taskName: string, taskLevel: number, trophyData: HeroTrophy[]} {
+        const gameSetting = this.gameSettingsMgr.getGameSettingById(curHero.gameSettingId);
         let taskName = '';
         let trophyData: HeroTrophy[] = [];
 
-        let targetLevel = PlayTaskGenerator.randomizeTargetLevel(level);
+        let targetLevel = PlayTaskGenerator.randomizeTargetLevel(curHero.level);
         let taskLevel = targetLevel;
 
         if (randRange(0, 1)) {
             // dueling task
-            let foeLevel = PlayTaskGenerator.randomizeTargetLevel(level);
-            let foeRace = randFromList(RACES);
-            let foeClass = randFromList(CLASSES);
+            let foeLevel = PlayTaskGenerator.randomizeTargetLevel(curHero.level);
+            let foeRace = randFromList(gameSetting.heroRaces);
+            let foeClass = randFromList(gameSetting.heroClasses);
             let quantity = PlayTaskGenerator.determineTaskQuantity(targetLevel, foeLevel);
             if (quantity === 1) {
                 let foeName = generateRandomName();
@@ -407,7 +408,7 @@ export class PlayTaskGenerator {
             return true;
         },
         generateTask: (state: AppState) => {
-            const {taskName, taskLevel, trophyData} = this.generateGladiatingTaskContentsFromLevel(state.hero.level);
+            const {taskName, taskLevel, trophyData} = this.generateGladiatingTaskContents(state.hero);
             const durationSeconds = Math.floor(6 * taskLevel / state.hero.level);
             const isFatigued = state.hero.fatigue >= state.hero.maxFatigue;
             const modifications: HeroModification[] = [
