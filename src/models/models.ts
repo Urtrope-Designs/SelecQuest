@@ -8,12 +8,6 @@ export interface Task {
     resultingHero: Hero;
 }
 
-export enum TaskMode {
-    LOOTING,
-    GLADIATING,
-    INVESTIGATING,
-}
-
 export enum TaskTargetType {
     LOCATION,
     MONSTER,
@@ -185,7 +179,7 @@ export interface AppState {
     activeTask: Task;
     hasActiveTask: boolean;
     hero: Hero;
-    activeTaskMode: TaskMode
+    activeTaskModeIndex: number
 }
 
 export interface HeroRace {

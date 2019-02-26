@@ -258,7 +258,7 @@ export class PlayTaskResultGenerator {
     
         
         let selectedFactory = randFromList(newAffiliationFactories);
-        newAffiliationData = selectedFactory(hero);
+        newAffiliationData = selectedFactory.bind(this)(hero);
     
         return newAffiliationData;
     }

@@ -22,6 +22,8 @@ export class GameSetting {
     readonly equipmentTypes: EquipmentType[];
     readonly equipmentMaterialTypes: EquipmentMaterialType[];
     readonly equipmentModifierTypes: EquipmentModifierType[];
+    readonly taskModeNames: string[];
+ 
 
 
     constructor(config: GameSettingConfig) {
@@ -51,5 +53,6 @@ export class GameSetting {
         }
         this.equipmentMaterialTypes = config.equipmentMaterialTypes;
         this.equipmentModifierTypes = config.equipmentModifierTypes;
+        this.taskModeNames = config.taskModeNames;
     }
 }

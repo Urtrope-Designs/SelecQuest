@@ -20,8 +20,10 @@ import {
 } from './models/hero-models';
 import {
   AppState,
-  TaskMode,
 } from './models/models';
+import {
+  GameSetting,
+} from './global/game-setting';
 
 
 export namespace Components {
@@ -37,15 +39,17 @@ export namespace Components {
   interface SqPlayScreen {
     'appState': AppState;
     'availableHeroes': {hash: string, name: string}[];
+    'gameSetting': GameSetting;
   }
   interface SqPlayScreenAttributes extends StencilHTMLAttributes {
     'appState'?: AppState;
     'availableHeroes'?: {hash: string, name: string}[];
+    'gameSetting'?: GameSetting;
     'onBuildNewHero'?: (event: CustomEvent) => void;
     'onClearAllGameData'?: (event: CustomEvent) => void;
     'onDeleteHero'?: (event: CustomEvent<string>) => void;
     'onPlayNewHero'?: (event: CustomEvent<string>) => void;
-    'onTaskModeAction'?: (event: CustomEvent<TaskMode>) => void;
+    'onTaskModeAction'?: (event: CustomEvent<number>) => void;
   }
 
   interface SqProgressBar {

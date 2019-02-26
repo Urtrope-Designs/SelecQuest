@@ -1,4 +1,4 @@
-import { Hero, HeroModificationType, AccoladeType, HeroModification, HeroAccolade, HeroAffiliation, TaskMode } from '../models/models';
+import { Hero, HeroModificationType, AccoladeType, HeroModification, HeroAccolade, HeroAffiliation } from '../models/models';
 import { randRange, deepCopyObject, getIterableEnumKeys } from '../global/utils';
 import { IS_DEBUG } from '../global/config';
 import { GameSettingsManager } from './game-settings-manager';
@@ -217,7 +217,7 @@ export class HeroManager {
                     break;
                 case HeroModificationType.SET_TEARDOWN_MODE:
                     /* teardown modes */
-                    result.data.forEach((teardownUpdate: {index: TaskMode, value: boolean}) => {
+                    result.data.forEach((teardownUpdate: {index: number, value: boolean}) => {
                         newHero.isInTeardownMode[teardownUpdate.index] = teardownUpdate.value;
                     })
                     break;

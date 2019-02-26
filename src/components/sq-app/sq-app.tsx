@@ -3,7 +3,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
 import { stateFn } from '../../global/state-store';
-import { AppState, TaskMode } from '../../models/models';
+import { AppState } from '../../models/models';
 import { Action, ChangeActiveTaskMode, SetActiveHero } from '../../global/actions';
 import { GameDataManager } from '../../services/game-data-manager';
 import { generateHeroHashFromHero } from '../../global/utils';
@@ -142,7 +142,12 @@ export class SqApp {
                 <ion-app>
                     {
                         !!this.state.hero
-                        ? <sq-play-screen appState={this.state} availableHeroes={this.availableHeroes} ref={(el: any) => this.playScreen = el}></sq-play-screen>
+                        ? <sq-play-screen 
+                                appState={this.state}
+                                gameSetting={this.gameSettingsMgr.getGameSettingById(this.state.hero.gameSettingId)}
+                                availableHeroes={this.availableHeroes}
+                                ref={(el: any) => this.playScreen = el}
+                            ></sq-play-screen>
                         : <sq-create-hero-screen gameSettingsMgr={this.gameSettingsMgr}></sq-create-hero-screen>
                     }
                 </ion-app>
@@ -161,5 +166,5 @@ const DEFAULT_APP_STATE: AppState = {
     hero: null,
     activeTask: null,
     hasActiveTask: false,
-    activeTaskMode: TaskMode.LOOTING,
+    activeTaskModeIndex: 0,
 };

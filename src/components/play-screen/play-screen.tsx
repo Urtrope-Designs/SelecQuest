@@ -1,9 +1,10 @@
 import { Component, Prop, State, Event, EventEmitter, Element, Watch } from '@stencil/core';
 
-import { AppState, Task, TaskMode, AccoladeType, Hero, HeroAffiliation, HeroStat } from '../../models/models';
+import { AppState, Task, AccoladeType, Hero, HeroAffiliation, HeroStat } from '../../models/models';
 import { HeroManager } from '../../services/hero-manager';
 import { capitalizeInitial, getRoughTime, generateHeroHashFromHero, toRoman } from '../../global/utils';
 import { HeroAbilityType, HeroAbility } from '../../models/hero-models';
+import { GameSetting } from '../../global/game-setting';
 
 @Component({
     tag: 'sq-play-screen',
@@ -11,6 +12,7 @@ import { HeroAbilityType, HeroAbility } from '../../models/hero-models';
 })
 export class PlayScreen {
     @Prop() appState: AppState;
+    @Prop() gameSetting: GameSetting;
     @Prop() availableHeroes: {hash: string, name: string}[];
 
     @Element() homeEl: HTMLElement;
@@ -19,7 +21,7 @@ export class PlayScreen {
     @State() activeVisibleSection: VisibleSection;
     @State() selectedAvailableHeroHash: string = '';
     @State() heroHashWeAreWaitingFor: string = '';
-    @Event() taskModeAction: EventEmitter<TaskMode>;
+    @Event() taskModeAction: EventEmitter<number>;
     @Event() clearAllGameData: EventEmitter;
     @Event() buildNewHero: EventEmitter;
     @Event() playNewHero: EventEmitter<string>;
@@ -52,20 +54,8 @@ export class PlayScreen {
         }
     }
 
-    taskModeButtonClicked(newTaskModeString: TaskMode) {
-        let newTaskMode: TaskMode;
-        switch(newTaskModeString) {
-            case TaskMode.LOOTING:
-                newTaskMode = TaskMode.LOOTING;
-                break;
-            case TaskMode.GLADIATING:
-                newTaskMode = TaskMode.GLADIATING;
-                break;
-            case TaskMode.INVESTIGATING:
-                newTaskMode = TaskMode.INVESTIGATING;
-                break;
-        }
-        this.taskModeAction.emit(newTaskMode)
+    taskModeButtonClicked(newTaskModeIndex: number) {
+        this.taskModeAction.emit(newTaskModeIndex)
     }
 
     visibleSectionButtonClicked(newVisibleSection: VisibleSection) {
@@ -497,12 +487,12 @@ export class PlayScreen {
                     <ion-footer>
                         <hr />
                         <div class="buttonRow">
-                            <button {...(this.appState.activeTaskMode != TaskMode.LOOTING ? {} : {class: 'selected'})} onClick={ () => this.taskModeButtonClicked(TaskMode.LOOTING)}>Loot</button>
-                            <button {...(this.appState.activeTaskMode == TaskMode.GLADIATING ? {class: 'selected'} : {})} onClick={ () => this.taskModeButtonClicked(TaskMode.GLADIATING)}>Gladiate</button>
-                            <button {...(this.appState.activeTaskMode == TaskMode.INVESTIGATING ? {class: 'selected'} : {})} onClick={ () => this.taskModeButtonClicked(TaskMode.INVESTIGATING)}>Investigate</button>
+                            <button {...(this.appState.activeTaskModeIndex != 0 ? {} : {class: 'selected'})} onClick={ () => this.taskModeButtonClicked(0)}>Loot</button>
+                            <button {...(this.appState.activeTaskModeIndex == 1 ? {class: 'selected'} : {})} onClick={ () => this.taskModeButtonClicked(1)}>Gladiate</button>
+                            <button {...(this.appState.activeTaskModeIndex == 2 ? {class: 'selected'} : {})} onClick={ () => this.taskModeButtonClicked(2)}>Investigate</button>
                         </div>
                         {
-                            this.appState.activeTaskMode == TaskMode.LOOTING
+                            this.appState.activeTaskModeIndex == 0
                                 ? [
                                     <div class="textRow">
                                     {
@@ -519,7 +509,7 @@ export class PlayScreen {
                                         ></sq-progress-bar>
                                     </div>
                                 ]
-                            : this.appState.activeTaskMode == TaskMode.GLADIATING
+                            : this.appState.activeTaskModeIndex == 1
                                 ? [
                                     <div class="textRow">
                                     {

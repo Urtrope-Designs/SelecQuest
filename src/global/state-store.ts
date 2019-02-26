@@ -3,7 +3,7 @@ import { zip } from 'rxjs/observable/zip';
 import { scan } from 'rxjs/operators/scan';
 import { map } from 'rxjs/operators/map';
 import { Action, SetActiveTask, TaskCompleted, ChangeActiveTaskMode, ActionType, SetActiveHero } from './actions';
-import { Task, AppState, Hero, TaskMode } from '../models/models';
+import { Task, AppState, Hero } from '../models/models';
 import { wrapIntoBehavior } from './utils';
 
 function activeTask(initState: Task, actions: Observable<Action>) {
@@ -57,14 +57,14 @@ function hero(initState: Hero, actions: Observable<Action>): Observable<Hero> {
     );
 }
 
-function activeTaskMode(initState: TaskMode, actions: Observable<Action>): Observable<TaskMode> {
+function activeTaskMode(initState: number, actions: Observable<Action>): Observable<number> {
     return actions.pipe(
-        scan((state: TaskMode, action: Action) => {
+        scan((state: number, action: Action) => {
             if (action.actionType === ActionType.ChangeActiveTaskMode) {
-                return (action as ChangeActiveTaskMode).newTaskMode;
+                return (action as ChangeActiveTaskMode).newTaskModeIndex;
             }
             else if (action.actionType === ActionType.SetActiveHero) {
-                return (action as SetActiveHero).newGameState.activeTaskMode;
+                return (action as SetActiveHero).newGameState.activeTaskModeIndex;
             } 
             else {
                 return state;
@@ -80,14 +80,14 @@ export function stateFn(initState: AppState, actions: Observable<Action>): Obser
         hero: s[0],
         activeTask: s[1],
         hasActiveTask: s[2],
-        activeTaskMode: s[3],
+        activeTaskModeIndex: s[3],
     });
     const appStateObs: Observable<AppState> = 
         zip(
             hero(initState.hero, actions),
             activeTask(initState.activeTask, actions),
             hasActiveTask(initState.hasActiveTask, actions),
-            activeTaskMode(initState.activeTaskMode, actions),
+            activeTaskMode(initState.activeTaskModeIndex, actions),
         ).pipe(
             map(combine),
         );
