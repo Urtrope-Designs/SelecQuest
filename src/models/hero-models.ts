@@ -27,3 +27,13 @@ export interface PrologueTask {
     taskDescription: string,
     durationSeconds: number,
 }
+
+export interface EquipmentType {
+    name: string,
+    materialType: string,
+}
+
+export interface HeroEquipment {
+    type: string,
+    description: string,
+};

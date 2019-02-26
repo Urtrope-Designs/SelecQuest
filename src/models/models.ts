@@ -1,4 +1,4 @@
-import { HeroAbilityType, Adventure } from "./hero-models";
+import { HeroAbilityType, Adventure, HeroEquipment } from "./hero-models";
 
 /** Task related */
 export interface Task {
@@ -138,11 +138,6 @@ export interface Hero {
     gameSettingId: string;
 }
 
-export interface HeroEquipment {
-    type: EquipmentType,
-    description: string,
-};
-
 export interface HeroAccolade {
     type: AccoladeType,
     received: string[],
@@ -176,20 +171,6 @@ export interface HeroLead {
     taskName: string,
     value: number,
 };
-
-export enum EquipmentType {
-    Weapon = 'Weapon',
-    Shield = 'Shield',
-    Helm = 'Helm',
-    Hauberk = 'Hauberk',
-    Brassairts = 'Brassairts',
-    Vambraces = 'Vambraces',
-    Gauntlets = 'Gauntlets',
-    Gambeson = 'Gambeson',
-    Cuisses = 'Cuisses',
-    Greaves = 'Greaves',
-    Sollerets = 'Sollerets',
-}
 
 export enum AccoladeType {
     Epithets,

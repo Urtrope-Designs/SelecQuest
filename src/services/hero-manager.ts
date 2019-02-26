@@ -1,8 +1,8 @@
-import { Hero, HeroModificationType, AccoladeType, HeroModification, HeroEquipment, EquipmentType, HeroAccolade, HeroAffiliation, TaskMode } from '../models/models';
+import { Hero, HeroModificationType, AccoladeType, HeroModification, HeroAccolade, HeroAffiliation, TaskMode } from '../models/models';
 import { randRange, deepCopyObject, getIterableEnumKeys } from '../global/utils';
 import { IS_DEBUG } from '../global/config';
 import { GameSettingsManager } from './game-settings-manager';
-import { HeroInitData, HeroAbilityType, HeroAbility } from '../models/hero-models';
+import { HeroInitData, HeroAbilityType, HeroEquipment, HeroAbility } from '../models/hero-models';
 import { GameSetting } from '../global/game-setting';
 
 export class HeroManager {
@@ -30,7 +30,7 @@ export class HeroManager {
             maxMagicStat: {name: gameSetting.magicStatName, value: randRange(0, 7) + Math.floor(heroling.stats[gameSetting.magicBaseStatIndex].value / 6)},
             currentXp: 0,
             abilities: gameSetting.abilityTypes.map(aT => {return {name: aT.displayName, received: []}}),
-            equipment: getIterableEnumKeys(EquipmentType).map(typeKey => ({type: EquipmentType[typeKey], description: ''})),
+            equipment: gameSetting.equipmentTypes.map(et => ({type: et.name, description: ''})),
             accolades: getIterableEnumKeys(AccoladeType).map(typeKey => ({type: AccoladeType[typeKey], received: []})),
             affiliations: [],
             get maxEncumbrance() {return this.stats[0].value + 10},

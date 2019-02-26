@@ -125,5 +125,307 @@
         ["br", "cr", "dr", "fr", "gr", "j", "kr", "l", "m", "n", "pr", "r", "sh", "tr", "v", "wh", "x", "y", "z", ""],
         ["a", "a", "e", "e", "i", "i", "o", "o", "u", "u", "ae", "ie", "oo", "ou"],
         ["b", "ck", "d", "g", "k", "m", "n", "p", "t", "v", "x", "z"]
+    ],
+    "equipmentTypes": [
+        {
+            "name": "Weapon",
+            "materialType": "Weapon"
+        },
+        {
+            "name": "Shield",
+            "materialType": "Shield"
+        },
+        {
+            "name": "Helm",
+            "materialType": "Armor"
+        },
+        {
+            "name": "Hauberk",
+            "materialType": "Armor"
+        },
+        {
+            "name": "Brassairts",
+            "materialType": "Armor"
+        },
+        {
+            "name": "Vambraces",
+            "materialType": "Armor"
+        },
+        {
+            "name": "Gauntlets",
+            "materialType": "Armor"
+        },
+        {
+            "name": "Gambeson",
+            "materialType": "Armor"
+        },
+        {
+            "name": "Cuisses",
+            "materialType": "Armor"
+        },
+        {
+            "name": "Greaves",
+            "materialType": "Armor"
+        },
+        {
+            "name": "Sollerets",
+            "materialType": "Armor"
+        }
+    ],
+    "equipmentMaterialTypes": [
+        {
+            "name": "Weapon",
+            "options": [
+                {
+                    "name": "Ski Pole",
+                    "baseLevel": 3,
+                    "modifierType": "Offense"
+                },
+                {
+                    "name": "Power Glove\u2122",
+                    "baseLevel": 5,
+                    "modifierType": "Offense"
+                },
+                {
+                    "name": "De-icer",
+                    "baseLevel": 4,
+                    "modifierType": "Offense"
+                },
+                {
+                    "name": "Wolf-eater",
+                    "baseLevel": 8,
+                    "modifierType": "Offense"
+                },
+                {
+                    "name": "Taserclaw",
+                    "baseLevel": 12,
+                    "modifierType": "Offense"
+                },
+                {
+                    "name": "Snagglesword",
+                    "baseLevel": 6,
+                    "modifierType": "Offense"
+                },
+                {
+                    "name": "Dowsing Rod",
+                    "baseLevel": 1,
+                    "modifierType": "Offense"
+                },
+                {
+                    "name": "Smart Iron",
+                    "baseLevel": 5,
+                    "modifierType": "Offense"
+                },
+                {
+                    "name": "Battle Tines",
+                    "baseLevel": 3,
+                    "modifierType": "Offense"
+                },
+                {
+                    "name": "B\u00e2ton",
+                    "baseLevel": 2,
+                    "modifierType": "Offense"
+                },
+                {
+                    "name": "Cat-o-nine-tails",
+                    "baseLevel": 6,
+                    "modifierType": "Offense"
+                },
+                {
+                    "name": "Gatortooth",
+                    "baseLevel": 3,
+                    "modifierType": "Offense"
+                },
+                {
+                    "name": "Unicorn Femur",
+                    "baseLevel": 3,
+                    "modifierType": "Offense"
+                },
+                {
+                    "name": "Skipping Stones",
+                    "baseLevel": 1,
+                    "modifierType": "Offense"
+                },
+                {
+                    "name": "Atl-atl",
+                    "baseLevel": 2,
+                    "modifierType": "Offense"
+                },
+                {
+                    "name": "Bo Staff",
+                    "baseLevel": 3,
+                    "modifierType": "Offense"
+                },
+                {
+                    "name": "War Knuckles",
+                    "baseLevel": 5,
+                    "modifierType": "Offense"
+                },
+                {
+                    "name": "Limb Wrench",
+                    "baseLevel": 4,
+                    "modifierType": "Offense"
+                },
+                {
+                    "name": "Pike",
+                    "baseLevel": 6,
+                    "modifierType": "Offense"
+                },
+                {
+                    "name": "Trepanner",
+                    "baseLevel": 8,
+                    "modifierType": "Offense"
+                },
+                {
+                    "name": "Power Trowel",
+                    "baseLevel": 5,
+                    "modifierType": "Offense"
+                },
+                {
+                    "name": "Truncheon",
+                    "baseLevel": 5,
+                    "modifierType": "Offense"
+                }
+            ]
+        },
+        {
+            "name": "Shield",
+            "options": [
+                {
+                    "name": "Frolf Disc",
+                    "baseLevel": 1,
+                    "modifierType": "Defense"
+                },
+                {
+                    "name": "Oak Burl",
+                    "baseLevel": 2,
+                    "modifierType": "Defense"
+                },
+                {
+                    "name": "Hide Shield",
+                    "baseLevel": 2,
+                    "modifierType": "Defense"
+                },
+                {
+                    "name": "Wicker Targe",
+                    "baseLevel": 3,
+                    "modifierType": "Defense"
+                },
+                {
+                    "name": "Ishlangu",
+                    "baseLevel": 3,
+                    "modifierType": "Defense"
+                },
+                {
+                    "name": "Wooden Buckler",
+                    "baseLevel": 3,
+                    "modifierType": "Defense"
+                },
+                {
+                    "name": "Heater Shield",
+                    "baseLevel": 4,
+                    "modifierType": "Defense"
+                },
+                {
+                    "name": "Hoplon",
+                    "baseLevel": 5,
+                    "modifierType": "Defense"
+                },
+                {
+                    "name": "Scutum",
+                    "baseLevel": 6,
+                    "modifierType": "Defense"
+                },
+                {
+                    "name": "Fridge Door",
+                    "baseLevel": 8,
+                    "modifierType": "Defense"
+                }
+            ]
+        },
+        {
+            "name": "Armor",
+            "options": [
+                {
+                    "name": "Mahogany",
+                    "baseLevel": 4,
+                    "modifierType": "Defense"
+                },
+                {
+                    "name": "Shingle Mail",
+                    "baseLevel": 2,
+                    "modifierType": "Defense"
+                },
+                {
+                    "name": "Mulch Mail",
+                    "baseLevel": 1,
+                    "modifierType": "Defense"
+                }
+            ]
+        }
+    ],
+    "equipmentModifierTypes": [
+        {
+            "name": "Offense",
+            "options": [
+                {
+                    "name": "Precious",
+                    "levelModifier": 2
+                },
+                {
+                    "name": "Leeching",
+                    "levelModifier": 3
+                },
+                {
+                    "name": "Enforcing",
+                    "levelModifier": 4
+                },
+                {
+                    "name": "Twee",
+                    "levelModifier": -2
+                },
+                {
+                    "name": "Bungled",
+                    "levelModifier": -3
+                }
+            ]
+        },
+        {
+            "name": "Defense",
+            "options": [
+                {
+                    "name": "Naff",
+                    "levelModifier": -1
+                },
+                {
+                    "name": "Mixolydian",
+                    "levelModifier": 2
+                },
+                {
+                    "name": "Tectonic",
+                    "levelModifier": 5
+                },
+                {
+                    "name": "Bungled",
+                    "levelModifier": -3
+                },
+                {
+                    "name": "Bespoke",
+                    "levelModifier": 4
+                },
+                {
+                    "name": "Hardened",
+                    "levelModifier": 1
+                },
+                {
+                    "name": "Ill-fitting",
+                    "levelModifier": -2
+                },
+                {
+                    "name": "Thunderlogged",
+                    "levelModifier": -4
+                }
+            ]
+        }
     ]
 }

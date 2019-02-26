@@ -1,5 +1,5 @@
 import { HeroRace } from "./models";
-import { PrologueTask } from "./hero-models";
+import { PrologueTask, EquipmentType } from "./hero-models";
 
 export interface GameSettingConfig {
     gameSettingId: string,
@@ -17,10 +17,34 @@ export interface GameSettingConfig {
     adventureTransitionTaskDescriptions: string[],
     staticNames: string[],
     randomNameParts: string[][],
+    equipmentTypes: EquipmentType[],
+    equipmentMaterialTypes: EquipmentMaterialType[],
+    equipmentModifierTypes: EquipmentModifierType[],
 }
 
 export interface AbilityType {
     displayName: string;
     baseStatIndex: number;
     availableValues: string[];
+}
+
+export interface EquipmentMaterial {
+    name: string,
+    baseLevel: number,
+    modifierType: string,
+}
+
+export interface EquipmentMaterialType {
+    name: string,
+    options: EquipmentMaterial[],
+}
+
+export interface EquipmentModifier {
+    name: string,
+    levelModifier: number,
+}
+
+export interface EquipmentModifierType {
+    name: string,
+    options: EquipmentModifier[],
 }

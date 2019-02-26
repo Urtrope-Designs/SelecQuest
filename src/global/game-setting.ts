@@ -1,7 +1,7 @@
-import { GameSettingConfig } from "../models/game-setting-models";
+import { GameSettingConfig, EquipmentMaterialType, EquipmentModifierType } from "../models/game-setting-models";
 import { HeroRace } from "../models/models";
 import { AbilityType } from "../models/game-setting-models";
-import { PrologueTask } from "../models/hero-models";
+import { PrologueTask, EquipmentType } from "../models/hero-models";
 
 export class GameSetting {
     readonly gameSettingId: string;
@@ -19,6 +19,9 @@ export class GameSetting {
     readonly adventureTransitionTaskDescriptions: string[];
     readonly staticNames: string[];
     readonly randomNameParts: string[][];
+    readonly equipmentTypes: EquipmentType[];
+    readonly equipmentMaterialTypes: EquipmentMaterialType[];
+    readonly equipmentModifierTypes: EquipmentModifierType[];
 
 
     constructor(config: GameSettingConfig) {
@@ -38,5 +41,15 @@ export class GameSetting {
         this.adventureTransitionTaskDescriptions = config.adventureTransitionTaskDescriptions;
         this.statNames = config.statNames;
         this.randomNameParts = config.randomNameParts;
+
+        if (config.equipmentTypes.some(et => !config.equipmentMaterialTypes.some(emt => et.materialType === emt.name))) {
+            throw 'At least 1 EquipmentType has invalid EquipmentMaterialType configured in ' + config.gameSettingName;
+        }
+        this.equipmentTypes = config.equipmentTypes;
+        if (config.equipmentMaterialTypes.some(eMatT => eMatT.options.some(eMat => !config.equipmentModifierTypes.some(eModT => eMat.modifierType === eModT.name)))) {
+            throw 'At least 1 EquipmentMaterial has invalid EquipmentModifierType configured in ' + config.gameSettingName;
+        }
+        this.equipmentMaterialTypes = config.equipmentMaterialTypes;
+        this.equipmentModifierTypes = config.equipmentModifierTypes;
     }
 }
