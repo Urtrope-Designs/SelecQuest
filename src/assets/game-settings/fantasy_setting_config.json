@@ -427,5 +427,16 @@
                 }
             ]
         }
+    ],
+    "taskModeData": [
+        {
+            "taskModeActionName": "Loot"
+        },
+        {
+            "taskModeActionName": "Gladiate"
+        },
+        {
+            "taskModeActionName": "Investigate"
+        }
     ]
 }

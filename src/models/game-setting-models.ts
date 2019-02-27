@@ -20,7 +20,9 @@ export interface GameSettingConfig {
     equipmentTypes: EquipmentType[],
     equipmentMaterialTypes: EquipmentMaterialType[],
     equipmentModifierTypes: EquipmentModifierType[],
-    taskModeNames: string[],
+    taskModeData: {
+        taskModeActionName: string,
+    }[],
 }
 
 export interface AbilityType {

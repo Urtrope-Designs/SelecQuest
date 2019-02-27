@@ -487,9 +487,16 @@ export class PlayScreen {
                     <ion-footer>
                         <hr />
                         <div class="buttonRow">
-                            <button {...(this.appState.activeTaskModeIndex != 0 ? {} : {class: 'selected'})} onClick={ () => this.taskModeButtonClicked(0)}>Loot</button>
-                            <button {...(this.appState.activeTaskModeIndex == 1 ? {class: 'selected'} : {})} onClick={ () => this.taskModeButtonClicked(1)}>Gladiate</button>
-                            <button {...(this.appState.activeTaskModeIndex == 2 ? {class: 'selected'} : {})} onClick={ () => this.taskModeButtonClicked(2)}>Investigate</button>
+                            {
+                                this.gameSetting.taskModeData.map((modeData, index: number) => 
+                                    <button 
+                                        {...(this.appState.activeTaskModeIndex != index ? {} : {class: 'selected'})}
+                                        onClick={ () => this.taskModeButtonClicked(index)}
+                                    >
+                                        {modeData.taskModeActionName}
+                                    </button>
+                                )
+                            }
                         </div>
                         {
                             this.appState.activeTaskModeIndex == 0
