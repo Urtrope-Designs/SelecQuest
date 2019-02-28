@@ -43,7 +43,7 @@ export class GameSetting {
         this.prologueAdventureName = config.prologueAdventureName;
         this.prologueTasks = config.prologueTasks;
         this.adventureTransitionTaskDescriptions = config.adventureTransitionTaskDescriptions;
-        this.statNames = config.statNames;
+        this.staticNames = config.staticNames;
         this.randomNameParts = config.randomNameParts;
 
         if (config.equipmentTypes.some(et => !config.equipmentMaterialTypes.some(emt => et.materialType === emt.name))) {

@@ -36,7 +36,7 @@ export class HeroManager {
             get maxEncumbrance() {return this.stats[0].value + 10},
             get maxEquipmentWear() {return this.stats[1].value + 10},
             get maxQuestLogSize() {return this.stats[3].value + 10},
-            gold: 0,
+            currency: 0,
             renown: 0,
             spentRenown: 0,
             reputation: 0,
@@ -62,7 +62,7 @@ export class HeroManager {
                 }
             },
             socialExposure: 0,
-            get maxSocialCapital() {
+            get maxSocialExposure() {
                 if (IS_DEBUG) {
                     return 35;
                 } else {
@@ -232,7 +232,7 @@ export class HeroManager {
         newHero.marketSaturation = Math.max(newHero.marketSaturation, 0);
         newHero.fatigue = Math.min(newHero.fatigue, newHero.maxFatigue);
         newHero.fatigue = Math.max(newHero.fatigue, 0);
-        newHero.socialExposure = Math.min(newHero.socialExposure, newHero.maxSocialCapital);
+        newHero.socialExposure = Math.min(newHero.socialExposure, newHero.maxSocialExposure);
         newHero.socialExposure = Math.max(newHero.socialExposure, 0);
         newHero.adventureProgress = Math.min(newHero.adventureProgress, newHero.currentAdventure.progressRequired);
         newHero.adventureProgress = Math.max(newHero.adventureProgress, 0);

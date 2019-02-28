@@ -313,7 +313,7 @@ export class PlayTaskGenerator {
                     },
                     {
                         type: HeroModificationType.INCREASE,
-                        attributeName: 'gold',
+                        attributeName: 'currency',
                         data: sellValue,
                     },
                     {
@@ -381,7 +381,7 @@ export class PlayTaskGenerator {
                 return prevVal + curVal.quantity;
             }, 0);
             const minGold = PlayTaskGenerator.getTradeInCostForLevel(state.hero.level);
-            return currentEncumbrance <= 0 && state.hero.gold >= minGold;
+            return currentEncumbrance <= 0 && state.hero.currency >= minGold;
         },
         generateTask: (state: AppState) => {
             const newEquipmentMod = this.taskResultGenerator.generateNewEquipmentModification(state.hero);
@@ -389,7 +389,7 @@ export class PlayTaskGenerator {
                 newEquipmentMod,
                 {
                     type: HeroModificationType.DECREASE,
-                    attributeName: 'gold',
+                    attributeName: 'currency',
                     data: -PlayTaskGenerator.getTradeInCostForLevel(state.hero.level),
                 },
             ];
@@ -653,7 +653,7 @@ export class PlayTaskGenerator {
         generateTask: (state: AppState) => {
             const leadToFollow = state.hero.leads[0];
             if (!!leadToFollow) {
-                const isOverexposed = state.hero.socialExposure >= state.hero.maxSocialCapital;
+                const isOverexposed = state.hero.socialExposure >= state.hero.maxSocialExposure;
                 const reputationValue = Math.ceil((leadToFollow.value * state.hero.level) / (isOverexposed ? 2 : 1));
                 const durationSeconds = randRange(5, 8);
                 const modifications: HeroModification[] = [

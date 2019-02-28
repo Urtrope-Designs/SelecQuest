@@ -105,7 +105,7 @@ export class PlayScreen {
 
     static _getAdventureTimeRemainingString(hero: Hero): string {
         let timeRemaining = hero.currentAdventure.progressRequired - hero.adventureProgress;
-        if (hero.marketSaturation >= hero.maxMarketSaturation || hero.fatigue >= hero.maxFatigue || hero.socialExposure >= hero.maxSocialCapital) {
+        if (hero.marketSaturation >= hero.maxMarketSaturation || hero.fatigue >= hero.maxFatigue || hero.socialExposure >= hero.maxSocialExposure) {
             timeRemaining *= 2;
         }
         return `${getRoughTime(timeRemaining)} remaining`
@@ -249,7 +249,7 @@ export class PlayScreen {
                                     </tbody>
                                 </table>
                                 <p>
-                                    <div sq-flex class={this.findUpdate('gold') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Gold</span> {this.appState.hero.gold}</div>
+                                    <div sq-flex class={this.findUpdate('currency') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Gold</span> {this.appState.hero.currency}</div>
                                     <div class="textRow">Encumbrance</div>
                                     <div class="indentRow">
                                         <sq-progress-bar
@@ -536,7 +536,7 @@ export class PlayScreen {
                             : [
                                 <div class="textRow">
                                 {
-                                    this.appState.hero.socialExposure >= this.appState.hero.maxSocialCapital
+                                    this.appState.hero.socialExposure >= this.appState.hero.maxSocialExposure
                                     ? <b style={{display: 'block', textAlign: 'center'}}>&#9733; OVEREXPOSED &#9733;</b>
                                     : <span>Social Exposure</span>
 
@@ -544,9 +544,9 @@ export class PlayScreen {
                                 </div>,
                                 <div class="indentRow">
                                     <sq-progress-bar
-                                        totalValue={this.appState.hero.maxSocialCapital}
+                                        totalValue={this.appState.hero.maxSocialExposure}
                                         currentValue={this.appState.hero.socialExposure}
-                                        tapOverlayText={`${Math.floor(100 * this.appState.hero.socialExposure / this.appState.hero.maxSocialCapital)}%`}
+                                        tapOverlayText={`${Math.floor(100 * this.appState.hero.socialExposure / this.appState.hero.maxSocialExposure)}%`}
                                     ></sq-progress-bar>
                                 </div>
                             ]

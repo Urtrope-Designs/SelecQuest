@@ -101,30 +101,38 @@ export interface Hero {
     currentXp: number;
     abilities: HeroAbilityType[];
     
-    equipment: HeroEquipment[];
-    accolades: HeroAccolade[];
-    affiliations: HeroAffiliation[];
+    // build-up rewards
+    loot: HeroLoot[];
+    trophies: HeroTrophy[];
+    leads: HeroLead[];
+
+    // build-up limits
     maxEncumbrance: number;
     maxEquipmentWear: number;
     maxQuestLogSize: number;
-    gold: number;
+
+    isInTeardownMode: boolean[];
+
+    // currency
+    currency: number;
     renown: number;
     spentRenown: number;
     reputation: number;
     spentReputation: number;
-    loot: HeroLoot[];
-    trophies: HeroTrophy[];
-    leads: HeroLead[];
-    isInTeardownMode: boolean[];
-    // isInLootSelloffMode: boolean;
-    // isInTrophyBoastingMode: boolean;
-    // isInLeadFollowingMode: boolean;
+
+    // long-term rewards
+    equipment: HeroEquipment[];
+    accolades: HeroAccolade[];
+    affiliations: HeroAffiliation[];
+
+    // long-term limits
     marketSaturation: number;
     maxMarketSaturation: number;
     fatigue: number;
     maxFatigue: number;
     socialExposure: number;
-    maxSocialCapital: number;
+    maxSocialExposure: number;
+
     currentAdventure: Adventure;
     completedAdventures: string[];
     adventureProgress: number;
