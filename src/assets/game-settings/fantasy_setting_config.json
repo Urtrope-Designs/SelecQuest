@@ -430,13 +430,13 @@
     ],
     "taskModeData": [
         {
-            "taskModeActionName": "Loot"
+            "taskModeActionName": "Loot Mode"
         },
         {
-            "taskModeActionName": "Gladiate"
+            "taskModeActionName": "Trial Mode"
         },
         {
-            "taskModeActionName": "Investigate"
+            "taskModeActionName": "Quest Mode"
         }
     ]
 }
