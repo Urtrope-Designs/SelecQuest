@@ -236,8 +236,8 @@ export class PlayScreen {
                                     </thead>
                                     <tbody>
                                         {
-                                            this.appState.hero.equipment.map(equip => 
-                                                <tr {...this.highlightModifiedAttribute('equipment', equip.type)}>
+                                            this.appState.hero.lootMajorRewards.map(equip => 
+                                                <tr {...this.highlightModifiedAttribute('lootMajorRewards', equip.type)}>
                                                     <td style={{width: "40%"}}>{equip.type}</td>
                                                     {
                                                         !!equip.description

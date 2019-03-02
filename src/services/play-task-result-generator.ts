@@ -1,5 +1,5 @@
 import { GameSettingsManager } from "./game-settings-manager";
-import { Adventure, HeroAbilityType, EquipmentType, HeroEquipment } from "../models/hero-models";
+import { Adventure, HeroAbilityType, LootMajorRewardType, LootMajorReward } from "../models/hero-models";
 import { IS_DEBUG, EPITHET_DESCRIPTORS, EPITHET_BEING_ALL, TITLE_POSITIONS_ALL, SOBRIQUET_MODIFIERS, SOBRIQUET_NOUN_PORTION, HONORIFIC_TEMPLATES, STANDARD_GROUPS_INDEFINITE, OFFICE_POSITIONS_ALL } from "../global/config";
 import { Hero, HeroModification, HeroModificationType, TrialMajorReward, AccoladeType, HeroTitlePosition, QuestMajorReward, HeroConnection, HeroStat } from "../models/models";
 import { randRange, randFromList, randFromListLow, getIterableEnumKeys, capitalizeInitial, randFromListHigh, generateRandomName } from "../global/utils";
@@ -34,7 +34,7 @@ export class PlayTaskResultGenerator {
             },
         ];
         if (includeReward) {
-            results.push(randRange(0, 1) ? this.generateNewEquipmentModification(currentHero) : this.generateAbilityModification(currentHero));
+            results.push(randRange(0, 1) ? this.generateNewLootMajorRewardModification(currentHero) : this.generateAbilityModification(currentHero));
         }
         return results;
     }
@@ -62,25 +62,25 @@ export class PlayTaskResultGenerator {
         return mod;
     }
     
-    public generateNewEquipmentModification(hero: Hero): HeroModification {
-        const newEquipmentData = this.generateRandomEquipment(hero);
+    public generateNewLootMajorRewardModification(hero: Hero): HeroModification {
+        const newLootMajorRewardData = this.generateRandomLootMajorReward(hero);
         
         const mod: HeroModification = {
-            type: HeroModificationType.SET_EQUIPMENT,
-            attributeName: 'equipment',
-            data: [newEquipmentData],
+            type: HeroModificationType.SET_LOOT_MAJOR_REWARD,
+            attributeName: 'lootMajorRewards',
+            data: [newLootMajorRewardData],
         };
     
         return mod;
     }
     
-    private generateRandomEquipment(hero: Hero): HeroEquipment {
+    private generateRandomLootMajorReward(hero: Hero): LootMajorReward {
         const gameSetting = this.gameSettingsMgr.getGameSettingById(hero.gameSettingId);
         const targetLevel = hero.level;
-        //     randomly pick equipment type
-        const newEquipmentType: EquipmentType = randFromList(gameSetting.equipmentTypes);
-        // 2. randomly pick 5 items of selected equipment type, & pick the one closest to hero level
-        const targetList = gameSetting.equipmentMaterialTypes.find(emt => emt.name == newEquipmentType.materialType).options;
+        //     randomly pick LootMajorReward type
+        const newLootMajorRewardType: LootMajorRewardType = randFromList(gameSetting.lootMajorRewardTypes);
+        // 2. randomly pick 5 items of selected LootMajorReward type, & pick the one closest to hero level
+        const targetList = gameSetting.lootMajorRewardMaterialTypes.find(emt => emt.name == newLootMajorRewardType.materialType).options;
         
         let material = randFromList(targetList);
         for (let i = 0; i <= 5; i++) {
@@ -92,12 +92,12 @@ export class PlayTaskResultGenerator {
     
         // 3. add up to 2 modifiers (no duplicates) to bring quality of selected item closer to hero level (don't allow it to go over)
         let qualityDifference = targetLevel - material.baseLevel;
-        let newEquipmentDescription = material.name;
-        const modifierList = gameSetting.equipmentModifierTypes.find(emt => emt.name === material.modifierType).options
+        let newLootMajorRewardDescription = material.name;
+        const modifierList = gameSetting.lootMajorRewardModifierTypes.find(emt => emt.name === material.modifierType).options
             .filter(i => qualityDifference > 0 ? i.levelModifier >= 0 : i.levelModifier < 0);
         for (let i = 0; i < 2 && qualityDifference != 0; i++) {
             const modifier = randFromList(modifierList);
-            if (newEquipmentDescription.includes(modifier.name)) {
+            if (newLootMajorRewardDescription.includes(modifier.name)) {
                 //no repeats
                 break;
             }
@@ -106,21 +106,21 @@ export class PlayTaskResultGenerator {
                 break;
             }
     
-            newEquipmentDescription = `${modifier.name} ${newEquipmentDescription}`;
+            newLootMajorRewardDescription = `${modifier.name} ${newLootMajorRewardDescription}`;
             qualityDifference -= modifier.levelModifier;
         }
         
         // 4. add remainder of difference (between quality of item adjusted by mods and hero level) as numeric modifier.
         if (qualityDifference != 0) {
-            newEquipmentDescription = `${qualityDifference > 0 ? '+' : ''}${qualityDifference} ${newEquipmentDescription}`;
+            newLootMajorRewardDescription = `${qualityDifference > 0 ? '+' : ''}${qualityDifference} ${newLootMajorRewardDescription}`;
         }
     
-        const newEquipment: HeroEquipment = {
-            type: newEquipmentType.name,
-            description: newEquipmentDescription,
+        const newLootMajorReward: LootMajorReward = {
+            type: newLootMajorRewardType.name,
+            description: newLootMajorRewardDescription,
         };
     
-        return newEquipment;
+        return newLootMajorReward;
     }
     
     public generateNewAccoladeModification(hero: Hero): HeroModification {

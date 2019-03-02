@@ -1,7 +1,7 @@
-import { GameSettingConfig, EquipmentMaterialType, EquipmentModifierType } from "../models/game-setting-models";
+import { GameSettingConfig, LootMajorRewardMaterialType, LootMajorRewardModifierType } from "../models/game-setting-models";
 import { HeroRace } from "../models/models";
 import { AbilityType } from "../models/game-setting-models";
-import { PrologueTask, EquipmentType } from "../models/hero-models";
+import { PrologueTask, LootMajorRewardType } from "../models/hero-models";
 
 export class GameSetting {
     readonly gameSettingId: string;
@@ -19,9 +19,9 @@ export class GameSetting {
     readonly adventureTransitionTaskDescriptions: string[];
     readonly staticNames: string[];
     readonly randomNameParts: string[][];
-    readonly equipmentTypes: EquipmentType[];
-    readonly equipmentMaterialTypes: EquipmentMaterialType[];
-    readonly equipmentModifierTypes: EquipmentModifierType[];
+    readonly lootMajorRewardTypes: LootMajorRewardType[];
+    readonly lootMajorRewardMaterialTypes: LootMajorRewardMaterialType[];
+    readonly lootMajorRewardModifierTypes: LootMajorRewardModifierType[];
     readonly taskModeData: {
         taskModeActionName: string,
     }[];
@@ -46,15 +46,15 @@ export class GameSetting {
         this.staticNames = config.staticNames;
         this.randomNameParts = config.randomNameParts;
 
-        if (config.equipmentTypes.some(et => !config.equipmentMaterialTypes.some(emt => et.materialType === emt.name))) {
-            throw 'At least 1 EquipmentType has invalid EquipmentMaterialType configured in ' + config.gameSettingName;
+        if (config.lootMajorRewardTypes.some(et => !config.lootMajorRewardMaterialTypes.some(emt => et.materialType === emt.name))) {
+            throw 'At least 1 LootMajorRewardType has invalid LootMajorRewardMaterialType configured in ' + config.gameSettingName;
         }
-        this.equipmentTypes = config.equipmentTypes;
-        if (config.equipmentMaterialTypes.some(eMatT => eMatT.options.some(eMat => !config.equipmentModifierTypes.some(eModT => eMat.modifierType === eModT.name)))) {
-            throw 'At least 1 EquipmentMaterial has invalid EquipmentModifierType configured in ' + config.gameSettingName;
+        this.lootMajorRewardTypes = config.lootMajorRewardTypes;
+        if (config.lootMajorRewardMaterialTypes.some(eMatT => eMatT.options.some(eMat => !config.lootMajorRewardModifierTypes.some(eModT => eMat.modifierType === eModT.name)))) {
+            throw 'At least 1 LootMajorRewardMaterial has invalid LootMajorRewardModifierType configured in ' + config.gameSettingName;
         }
-        this.equipmentMaterialTypes = config.equipmentMaterialTypes;
-        this.equipmentModifierTypes = config.equipmentModifierTypes;
+        this.lootMajorRewardMaterialTypes = config.lootMajorRewardMaterialTypes;
+        this.lootMajorRewardModifierTypes = config.lootMajorRewardModifierTypes;
         this.taskModeData = config.taskModeData;
     }
 }

@@ -1,5 +1,5 @@
 import { HeroRace } from "./models";
-import { PrologueTask, EquipmentType } from "./hero-models";
+import { PrologueTask, LootMajorRewardType } from "./hero-models";
 
 export interface GameSettingConfig {
     gameSettingId: string,
@@ -17,9 +17,9 @@ export interface GameSettingConfig {
     adventureTransitionTaskDescriptions: string[],
     staticNames: string[],
     randomNameParts: string[][],
-    equipmentTypes: EquipmentType[],
-    equipmentMaterialTypes: EquipmentMaterialType[],
-    equipmentModifierTypes: EquipmentModifierType[],
+    lootMajorRewardTypes: LootMajorRewardType[],
+    lootMajorRewardMaterialTypes: LootMajorRewardMaterialType[],
+    lootMajorRewardModifierTypes: LootMajorRewardModifierType[],
     taskModeData: {
         taskModeActionName: string,
     }[],
@@ -31,23 +31,23 @@ export interface AbilityType {
     availableValues: string[];
 }
 
-export interface EquipmentMaterial {
+export interface LootMajorRewardMaterial {
     name: string,
     baseLevel: number,
     modifierType: string,
 }
 
-export interface EquipmentMaterialType {
+export interface LootMajorRewardMaterialType {
     name: string,
-    options: EquipmentMaterial[],
+    options: LootMajorRewardMaterial[],
 }
 
-export interface EquipmentModifier {
+export interface LootMajorRewardModifier {
     name: string,
     levelModifier: number,
 }
 
-export interface EquipmentModifierType {
+export interface LootMajorRewardModifierType {
     name: string,
-    options: EquipmentModifier[],
+    options: LootMajorRewardModifier[],
 }

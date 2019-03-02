@@ -126,7 +126,7 @@
         ["a", "a", "e", "e", "i", "i", "o", "o", "u", "u", "ae", "ie", "oo", "ou"],
         ["b", "ck", "d", "g", "k", "m", "n", "p", "t", "v", "x", "z"]
     ],
-    "equipmentTypes": [
+    "lootMajorRewardTypes": [
         {
             "name": "Weapon",
             "materialType": "Weapon"
@@ -172,7 +172,7 @@
             "materialType": "Armor"
         }
     ],
-    "equipmentMaterialTypes": [
+    "lootMajorRewardMaterialTypes": [
         {
             "name": "Weapon",
             "options": [
@@ -364,7 +364,7 @@
             ]
         }
     ],
-    "equipmentModifierTypes": [
+    "lootMajorRewardModifierTypes": [
         {
             "name": "Offense",
             "options": [

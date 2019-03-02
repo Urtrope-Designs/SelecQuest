@@ -375,7 +375,7 @@ export class PlayTaskGenerator {
         },
     };
     
-    purchaseEquipmentTaskGen: TaskGenerator = {
+    purchaseLootMajorRewardTaskGen: TaskGenerator = {
         shouldRun: (state: AppState) => {
             const currentEncumbrance = state.hero.lootBuildUpRewards.reduce((prevVal, curVal) => {
                 return prevVal + curVal.quantity;
@@ -384,9 +384,9 @@ export class PlayTaskGenerator {
             return currentEncumbrance <= 0 && (state.hero.currency[TaskMode.LOOT_MODE] - state.hero.spentCurrency[TaskMode.LOOT_MODE]) >= minGold;
         },
         generateTask: (state: AppState) => {
-            const newEquipmentMod = this.taskResultGenerator.generateNewEquipmentModification(state.hero);
+            const newLootMajorRewardMod = this.taskResultGenerator.generateNewLootMajorRewardModification(state.hero);
             const modifications = [
-                newEquipmentMod,
+                newLootMajorRewardMod,
                 {
                     type: HeroModificationType.ADD_CURRENCY,
                     attributeName: 'spentCurrency',
@@ -459,10 +459,10 @@ export class PlayTaskGenerator {
                 return false;
             }
     
-            const currentEquipmentWear = state.hero.trialBuildUpRewards.reduce((prevVal, curVal) => {
+            const currentTrialBuildUp = state.hero.trialBuildUpRewards.reduce((prevVal, curVal) => {
                 return prevVal + curVal.quantity;
             }, 0);
-            return currentEquipmentWear >= state.hero.maxTrialBuildUp;
+            return currentTrialBuildUp >= state.hero.maxTrialBuildUp;
         },
         generateTask: (state: AppState) => {
             const modifications = [
@@ -541,10 +541,10 @@ export class PlayTaskGenerator {
     
     endBoastingTaskGen: TaskGenerator = {
         shouldRun: (state: AppState) => {
-            const currentEquipmentIntegrity = state.hero.trialBuildUpRewards.reduce((prevVal, curVal) => {
+            const currentTrialBuildUp = state.hero.trialBuildUpRewards.reduce((prevVal, curVal) => {
                 return prevVal + curVal.quantity;
             }, 0);
-            return currentEquipmentIntegrity <= 0;
+            return currentTrialBuildUp <= 0;
         },
         generateTask: (state: AppState) => {
             const modifications = [
@@ -567,10 +567,10 @@ export class PlayTaskGenerator {
     
     earnAccoladeTaskGen: TaskGenerator = {
         shouldRun: (state: AppState) => {
-            const currentEquipmentIntegrity = state.hero.trialBuildUpRewards.reduce((prevVal, curVal) => {
+            const currentTrialBuildUp = state.hero.trialBuildUpRewards.reduce((prevVal, curVal) => {
                 return prevVal + curVal.quantity;
             }, 0);
-            return currentEquipmentIntegrity <= 0 && (state.hero.currency[TaskMode.TRIAL_MODE] - state.hero.spentCurrency[TaskMode.TRIAL_MODE]) >= PlayTaskGenerator.getTradeInCostForLevel(state.hero.level);
+            return currentTrialBuildUp <= 0 && (state.hero.currency[TaskMode.TRIAL_MODE] - state.hero.spentCurrency[TaskMode.TRIAL_MODE]) >= PlayTaskGenerator.getTradeInCostForLevel(state.hero.level);
         },
         generateTask: (state: AppState) => {
             const newAccoladeMod = this.taskResultGenerator.generateNewAccoladeModification(state.hero);
@@ -844,7 +844,7 @@ export class PlayTaskGenerator {
                     this.lootingTaskGen,
                 ],
                 [       // teardownMode[0] == true
-                    this.purchaseEquipmentTaskGen,
+                    this.purchaseLootMajorRewardTaskGen,
                     this.endSelloffTaskGen,
                     this.selloffTaskGen,
                 ],

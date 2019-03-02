@@ -28,12 +28,12 @@ export interface PrologueTask {
     durationSeconds: number,
 }
 
-export interface EquipmentType {
+export interface LootMajorRewardType {
     name: string,
     materialType: string,
 }
 
-export interface HeroEquipment {
+export interface LootMajorReward {
     type: string,
     description: string,
 };

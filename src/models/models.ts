@@ -1,4 +1,4 @@
-import { HeroAbilityType, Adventure, HeroEquipment as LootMajorReward } from "./hero-models";
+import { HeroAbilityType, Adventure, LootMajorReward } from "./hero-models";
 import { TaskMode } from "./task-models";
 
 /** Task related */
@@ -66,7 +66,7 @@ export enum HeroModificationType {
     INCREASE,
     DECREASE,
     SET,
-    SET_EQUIPMENT,
+    SET_LOOT_MAJOR_REWARD,
     ADD,
     ADD_STAT,
     ADD_QUANTITY,
@@ -120,7 +120,7 @@ export interface Hero {
     spentCurrency: number[];
 
     // major rewards
-    equipment: LootMajorReward[];
+    lootMajorRewards: LootMajorReward[];
     accolades: TrialMajorReward[];
     affiliations: QuestMajorReward[];
 
@@ -192,17 +192,6 @@ export interface AppState {
 export interface HeroRace {
     raceName: string,
     trophyName: string,
-}
-
-export interface EquipmentModifier {
-    description: string,
-    levelModifier: number,
-}
-
-export interface EquipmentMaterial {
-    description: string,
-    baseLevel: number,
-    modifierList: EquipmentModifier[],
 }
 
 export interface HeroTitlePosition {

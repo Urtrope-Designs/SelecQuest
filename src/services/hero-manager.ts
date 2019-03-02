@@ -2,7 +2,7 @@ import { Hero, HeroModificationType, AccoladeType, HeroModification, TrialMajorR
 import { randRange, deepCopyObject, getIterableEnumKeys } from '../global/utils';
 import { IS_DEBUG } from '../global/config';
 import { GameSettingsManager } from './game-settings-manager';
-import { HeroInitData, HeroAbilityType, HeroEquipment, HeroAbility } from '../models/hero-models';
+import { HeroInitData, HeroAbilityType, LootMajorReward, HeroAbility } from '../models/hero-models';
 import { GameSetting } from '../global/game-setting';
 import { TaskMode } from '../models/task-models';
 
@@ -31,7 +31,7 @@ export class HeroManager {
             maxMagicStat: {name: gameSetting.magicStatName, value: randRange(0, 7) + Math.floor(heroling.stats[gameSetting.magicBaseStatIndex].value / 6)},
             currentXp: 0,
             abilities: gameSetting.abilityTypes.map(aT => {return {name: aT.displayName, received: []}}),
-            equipment: gameSetting.equipmentTypes.map(et => ({type: et.name, description: ''})),
+            lootMajorRewards: gameSetting.lootMajorRewardTypes.map(et => ({type: et.name, description: ''})),
             accolades: getIterableEnumKeys(AccoladeType).map(typeKey => ({type: AccoladeType[typeKey], received: []})),
             affiliations: [],
             get maxLootBuildUp() {return this.stats[0].value + 10},
@@ -135,14 +135,14 @@ export class HeroManager {
                     newHero[result.attributeName] = result.data;
                     newHero.latestModifications.push({attributeName: result.attributeName, data: null});
                     break;
-                case HeroModificationType.SET_EQUIPMENT:
-                    /* equipment */
-                    result.data.map((equip: HeroEquipment) => {
-                        const existingEquipment = newHero[result.attributeName].find(e => {
-                            return e.type == equip.type;
+                case HeroModificationType.SET_LOOT_MAJOR_REWARD:
+                    /* lootMajorRewards */
+                    result.data.map((reward: LootMajorReward) => {
+                        const existingReward = newHero[result.attributeName].find(r => {
+                            return r.type == reward.type;
                         })
-                        existingEquipment.description = equip.description;
-                        newHero.latestModifications.push({attributeName: result.attributeName, data: equip.type});
+                        existingReward.description = reward.description;
+                        newHero.latestModifications.push({attributeName: result.attributeName, data: reward.type});
                     })
                     break;
                 case HeroModificationType.ADD_STAT:
