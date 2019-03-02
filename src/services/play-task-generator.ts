@@ -219,7 +219,7 @@ export class PlayTaskGenerator {
         generateTask: (state: AppState) => {
             const {taskName, taskLevel, lootData} = this.generateLootingTaskContentsFromLevel(state.hero.level);
             const durationSeconds = Math.floor(6 * taskLevel / state.hero.level);
-            const isMarketSaturated = state.hero.marketSaturation >= state.hero.maxMarketSaturation;
+            const isMarketSaturated = state.hero.lootEnvironmentalLimit >= state.hero.maxLootEnvironmentalLimit;
             const modifications: HeroModification[] = [
                 {
                     type: HeroModificationType.ADD_QUANTITY,
@@ -228,12 +228,12 @@ export class PlayTaskGenerator {
                 },
                 {
                     type: HeroModificationType.DECREASE,
-                    attributeName: 'fatigue',
+                    attributeName: 'trialEnvironmentalLimit',
                     data: -2,
                 },
                 {
                     type: HeroModificationType.DECREASE,
-                    attributeName: 'socialExposure',
+                    attributeName: 'questEnvironmentalLimit',
                     data: -2,
                 },
                 {
@@ -267,7 +267,7 @@ export class PlayTaskGenerator {
             const currentEncumbrance = state.hero.loot.reduce((prevVal, curVal) => {
                 return prevVal + curVal.quantity;
             }, 0);
-            return currentEncumbrance >= state.hero.maxEncumbrance;
+            return currentEncumbrance >= state.hero.maxLootBuildUp;
         },
         generateTask: (state: AppState) => {
             const modifications = [
@@ -295,7 +295,7 @@ export class PlayTaskGenerator {
         generateTask: (state: AppState) => {
             const sellItem = state.hero.loot[0];
             if (!!sellItem) {
-                const isMarketSaturated = state.hero.marketSaturation >= state.hero.maxMarketSaturation;
+                const isMarketSaturated = state.hero.lootEnvironmentalLimit >= state.hero.maxLootEnvironmentalLimit;
                 const sellQuantity = sellItem.quantity;
                 const sellValue = Math.ceil((sellQuantity * sellItem.value * state.hero.level) / (isMarketSaturated ? 2 : 1));
                 let lootData = [
@@ -318,7 +318,7 @@ export class PlayTaskGenerator {
                     },
                     {
                         type: HeroModificationType.INCREASE,
-                        attributeName: 'marketSaturation',
+                        attributeName: 'lootEnvironmentalLimit',
                         data: sellQuantity,
                     },
                 ]
@@ -410,7 +410,7 @@ export class PlayTaskGenerator {
         generateTask: (state: AppState) => {
             const {taskName, taskLevel, trophyData} = this.generateGladiatingTaskContents(state.hero);
             const durationSeconds = Math.floor(6 * taskLevel / state.hero.level);
-            const isFatigued = state.hero.fatigue >= state.hero.maxFatigue;
+            const isFatigued = state.hero.trialEnvironmentalLimit >= state.hero.maxTrialEnvironmentalLimit;
             const modifications: HeroModification[] = [
                 {
                     type: HeroModificationType.ADD_QUANTITY,
@@ -419,17 +419,17 @@ export class PlayTaskGenerator {
                 },
                 {
                     type: HeroModificationType.INCREASE,
-                    attributeName: 'fatigue',
+                    attributeName: 'trialEnvironmentalLimit',
                     data: 1,
                 },
                 {
                     type: HeroModificationType.DECREASE,
-                    attributeName: 'marketSaturation',
+                    attributeName: 'lootEnvironmentalLimit',
                     data: -2,
                 },
                 {
                     type: HeroModificationType.DECREASE,
-                    attributeName: 'socialExposure',
+                    attributeName: 'questEnvironmentalLimit',
                     data: -2,
                 },
                 {
@@ -462,7 +462,7 @@ export class PlayTaskGenerator {
             const currentEquipmentWear = state.hero.trophies.reduce((prevVal, curVal) => {
                 return prevVal + curVal.quantity;
             }, 0);
-            return currentEquipmentWear >= state.hero.maxEquipmentWear;
+            return currentEquipmentWear >= state.hero.maxTrophyBuildUp;
         },
         generateTask: (state: AppState) => {
             const modifications = [
@@ -490,7 +490,7 @@ export class PlayTaskGenerator {
         generateTask: (state: AppState) => {
             const boastItem = state.hero.trophies[0];
             if (!!boastItem) {
-                const isFatigued = state.hero.fatigue >= state.hero.maxFatigue;
+                const isFatigued = state.hero.trialEnvironmentalLimit >= state.hero.maxTrialEnvironmentalLimit;
                 const boastQuantity = boastItem.quantity;
                 const renownValue = Math.ceil((boastQuantity * boastItem.value * state.hero.level) / (isFatigued ? 2 : 1));
                 let trophies = [
@@ -624,7 +624,7 @@ export class PlayTaskGenerator {
                 return false;
             }
     
-            return state.hero.leads.length >= state.hero.maxQuestLogSize;
+            return state.hero.leads.length >= state.hero.maxQuestBuildUp;
         },
         generateTask: (state: AppState) => {
             const modifications = [
@@ -653,7 +653,7 @@ export class PlayTaskGenerator {
         generateTask: (state: AppState) => {
             const leadToFollow = state.hero.leads[0];
             if (!!leadToFollow) {
-                const isOverexposed = state.hero.socialExposure >= state.hero.maxSocialExposure;
+                const isOverexposed = state.hero.questEnvironmentalLimit >= state.hero.maxQuestEnvironmentalLimit;
                 const reputationValue = Math.ceil((leadToFollow.value * state.hero.level) / (isOverexposed ? 2 : 1));
                 const durationSeconds = randRange(5, 8);
                 const modifications: HeroModification[] = [
@@ -669,17 +669,17 @@ export class PlayTaskGenerator {
                     },
                     {
                         type: HeroModificationType.INCREASE,
-                        attributeName: 'socialExposure',
+                        attributeName: 'questEnvironmentalLimit',
                         data: 1,
                     },
                     {
                         type: HeroModificationType.DECREASE,
-                        attributeName: 'marketSaturation',
+                        attributeName: 'lootEnvironmentalLimit',
                         data: -2,
                     },
                     {
                         type: HeroModificationType.DECREASE,
-                        attributeName: 'fatigue',
+                        attributeName: 'trialEnvironmentalLimit',
                         data: -2,
                     },
                     {

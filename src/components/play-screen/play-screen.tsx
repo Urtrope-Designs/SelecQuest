@@ -106,7 +106,7 @@ export class PlayScreen {
 
     static _getAdventureTimeRemainingString(hero: Hero): string {
         let timeRemaining = hero.currentAdventure.progressRequired - hero.adventureProgress;
-        if (hero.marketSaturation >= hero.maxMarketSaturation || hero.fatigue >= hero.maxFatigue || hero.socialExposure >= hero.maxSocialExposure) {
+        if (hero.lootEnvironmentalLimit >= hero.maxLootEnvironmentalLimit || hero.trialEnvironmentalLimit >= hero.maxTrialEnvironmentalLimit || hero.questEnvironmentalLimit >= hero.maxQuestEnvironmentalLimit) {
             timeRemaining *= 2;
         }
         return `${getRoughTime(timeRemaining)} remaining`
@@ -254,9 +254,9 @@ export class PlayScreen {
                                     <div class="textRow">Encumbrance</div>
                                     <div class="indentRow">
                                         <sq-progress-bar
-                                            totalValue={this.appState.hero.maxEncumbrance}
+                                            totalValue={this.appState.hero.maxLootBuildUp}
                                             currentValue={this.appState.hero.loot.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}
-                                            tapOverlayText={`${this.appState.hero.loot.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}/${this.appState.hero.maxEncumbrance}`}
+                                            tapOverlayText={`${this.appState.hero.loot.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}/${this.appState.hero.maxLootBuildUp}`}
                                         ></sq-progress-bar>
                                     </div>
                                 </p>
@@ -313,9 +313,9 @@ export class PlayScreen {
                                     <div class="textRow">Equipment Wear</div>
                                     <div class="indentRow">
                                         <sq-progress-bar
-                                            totalValue={this.appState.hero.maxEquipmentWear}
+                                            totalValue={this.appState.hero.maxTrophyBuildUp}
                                             currentValue={this.appState.hero.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}
-                                            tapOverlayText={`${this.appState.hero.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}/${this.appState.hero.maxEquipmentWear}`}
+                                            tapOverlayText={`${this.appState.hero.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}/${this.appState.hero.maxTrophyBuildUp}`}
                                         ></sq-progress-bar>
                                     </div>
                                 </p>    
@@ -393,9 +393,9 @@ export class PlayScreen {
                                     <div class="textRow">Questlog</div>
                                     <div class="indentRow">
                                         <sq-progress-bar
-                                            totalValue={this.appState.hero.maxQuestLogSize}
+                                            totalValue={this.appState.hero.maxQuestBuildUp}
                                             currentValue={this.appState.hero.leads.length}
-                                            tapOverlayText={`${this.appState.hero.leads.length}/${this.appState.hero.maxQuestLogSize}`}
+                                            tapOverlayText={`${this.appState.hero.leads.length}/${this.appState.hero.maxQuestBuildUp}`}
                                         ></sq-progress-bar>
                                     </div>
                                 </p>
@@ -504,16 +504,16 @@ export class PlayScreen {
                                 ? [
                                     <div class="textRow">
                                     {
-                                        this.appState.hero.marketSaturation >= this.appState.hero.maxMarketSaturation 
+                                        this.appState.hero.lootEnvironmentalLimit >= this.appState.hero.maxLootEnvironmentalLimit 
                                         ? <b style={{display: 'block', textAlign: 'center'}}>&#9733; MARKET SATURATED &#9733;</b>
                                         : <span>Market Saturation</span>
                                     }
                                     </div>,
                                     <div class="indentRow">
                                         <sq-progress-bar
-                                            totalValue={this.appState.hero.maxMarketSaturation}
-                                            currentValue={this.appState.hero.marketSaturation}
-                                            tapOverlayText={`${Math.floor(100 * this.appState.hero.marketSaturation / this.appState.hero.maxMarketSaturation)}%`}
+                                            totalValue={this.appState.hero.maxLootEnvironmentalLimit}
+                                            currentValue={this.appState.hero.lootEnvironmentalLimit}
+                                            tapOverlayText={`${Math.floor(100 * this.appState.hero.lootEnvironmentalLimit / this.appState.hero.maxLootEnvironmentalLimit)}%`}
                                         ></sq-progress-bar>
                                     </div>
                                 ]
@@ -521,23 +521,23 @@ export class PlayScreen {
                                 ? [
                                     <div class="textRow">
                                     {
-                                        this.appState.hero.fatigue >= this.appState.hero.maxFatigue
+                                        this.appState.hero.trialEnvironmentalLimit >= this.appState.hero.maxTrialEnvironmentalLimit
                                         ? <b style={{display: 'block', textAlign: 'center'}}>&#9733; FATIGUED &#9733;</b>
                                         : <span>Fatigue</span>
                                     }
                                     </div>,
                                     <div class="indentRow">
                                         <sq-progress-bar
-                                            totalValue={this.appState.hero.maxFatigue}
-                                            currentValue={this.appState.hero.fatigue}
-                                            tapOverlayText={`${Math.floor(100 * this.appState.hero.fatigue / this.appState.hero.maxFatigue)}%`}
+                                            totalValue={this.appState.hero.maxTrialEnvironmentalLimit}
+                                            currentValue={this.appState.hero.trialEnvironmentalLimit}
+                                            tapOverlayText={`${Math.floor(100 * this.appState.hero.trialEnvironmentalLimit / this.appState.hero.maxTrialEnvironmentalLimit)}%`}
                                         ></sq-progress-bar>
                                     </div>
                                 ]
                             : [
                                 <div class="textRow">
                                 {
-                                    this.appState.hero.socialExposure >= this.appState.hero.maxSocialExposure
+                                    this.appState.hero.questEnvironmentalLimit >= this.appState.hero.maxQuestEnvironmentalLimit
                                     ? <b style={{display: 'block', textAlign: 'center'}}>&#9733; OVEREXPOSED &#9733;</b>
                                     : <span>Social Exposure</span>
 
@@ -545,9 +545,9 @@ export class PlayScreen {
                                 </div>,
                                 <div class="indentRow">
                                     <sq-progress-bar
-                                        totalValue={this.appState.hero.maxSocialExposure}
-                                        currentValue={this.appState.hero.socialExposure}
-                                        tapOverlayText={`${Math.floor(100 * this.appState.hero.socialExposure / this.appState.hero.maxSocialExposure)}%`}
+                                        totalValue={this.appState.hero.maxQuestEnvironmentalLimit}
+                                        currentValue={this.appState.hero.questEnvironmentalLimit}
+                                        tapOverlayText={`${Math.floor(100 * this.appState.hero.questEnvironmentalLimit / this.appState.hero.maxQuestEnvironmentalLimit)}%`}
                                     ></sq-progress-bar>
                                 </div>
                             ]

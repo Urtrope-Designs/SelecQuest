@@ -34,9 +34,9 @@ export class HeroManager {
             equipment: gameSetting.equipmentTypes.map(et => ({type: et.name, description: ''})),
             accolades: getIterableEnumKeys(AccoladeType).map(typeKey => ({type: AccoladeType[typeKey], received: []})),
             affiliations: [],
-            get maxEncumbrance() {return this.stats[0].value + 10},
-            get maxEquipmentWear() {return this.stats[1].value + 10},
-            get maxQuestLogSize() {return this.stats[3].value + 10},
+            get maxLootBuildUp() {return this.stats[0].value + 10},
+            get maxTrophyBuildUp() {return this.stats[1].value + 10},
+            get maxQuestBuildUp() {return this.stats[3].value + 10},
             currency: 0,
             renown: 0,
             spentRenown: 0,
@@ -46,24 +46,24 @@ export class HeroManager {
             trophies: [],
             leads: [],
             isInTeardownMode: [true, true, true],
-            marketSaturation: 0,
-            get maxMarketSaturation() {
+            lootEnvironmentalLimit: 0,
+            get maxLootEnvironmentalLimit() {
                 if (IS_DEBUG) {
                     return 35;
                 } else {
                     return LONG_TERM_LIMIT_FACTOR * (this.level + this.stats[3].value);
                 }
             },
-            fatigue: 0,
-            get maxFatigue() {
+            trialEnvironmentalLimit: 0,
+            get maxTrialEnvironmentalLimit() {
                 if (IS_DEBUG) {
                     return 35;
                 } else {
                     return LONG_TERM_LIMIT_FACTOR * (this.level + this.stats[2].value);
                 }
             },
-            socialExposure: 0,
-            get maxSocialExposure() {
+            questEnvironmentalLimit: 0,
+            get maxQuestEnvironmentalLimit() {
                 if (IS_DEBUG) {
                     return 35;
                 } else {
@@ -127,11 +127,11 @@ export class HeroManager {
             switch(result.type) {
                 case HeroModificationType.INCREASE:
                     /* level, currentXp, gold, renown, spentRenown, reputation, spentReputation,
-                    marketSaturation, fatigue, socialExposure, adventureProgress */
+                    lootEnvironmentalLimit, trialEnvironmentalLimit, questEnvironmentalLimit, adventureProgress */
                     newHero.latestModifications.push({attributeName: result.attributeName, data: null});
                     // fallthrough
                 case HeroModificationType.DECREASE:
-                    /* gold, marketSaturation, fatigue, socialExposure */
+                    /* gold, lootEnvironmentalLimit, trialEnvironmentalLimit, questEnvironmentalLimit */
                     newHero[result.attributeName] += result.data;
                     break;
                 case HeroModificationType.SET:
@@ -229,12 +229,12 @@ export class HeroManager {
     }
 
     private enforceHeroLimitBounds(newHero: Hero): Hero {
-        newHero.marketSaturation = Math.min(newHero.marketSaturation, newHero.maxMarketSaturation);
-        newHero.marketSaturation = Math.max(newHero.marketSaturation, 0);
-        newHero.fatigue = Math.min(newHero.fatigue, newHero.maxFatigue);
-        newHero.fatigue = Math.max(newHero.fatigue, 0);
-        newHero.socialExposure = Math.min(newHero.socialExposure, newHero.maxSocialExposure);
-        newHero.socialExposure = Math.max(newHero.socialExposure, 0);
+        newHero.lootEnvironmentalLimit = Math.min(newHero.lootEnvironmentalLimit, newHero.maxLootEnvironmentalLimit);
+        newHero.lootEnvironmentalLimit = Math.max(newHero.lootEnvironmentalLimit, 0);
+        newHero.trialEnvironmentalLimit = Math.min(newHero.trialEnvironmentalLimit, newHero.maxTrialEnvironmentalLimit);
+        newHero.trialEnvironmentalLimit = Math.max(newHero.trialEnvironmentalLimit, 0);
+        newHero.questEnvironmentalLimit = Math.min(newHero.questEnvironmentalLimit, newHero.maxQuestEnvironmentalLimit);
+        newHero.questEnvironmentalLimit = Math.max(newHero.questEnvironmentalLimit, 0);
         newHero.adventureProgress = Math.min(newHero.adventureProgress, newHero.currentAdventure.progressRequired);
         newHero.adventureProgress = Math.max(newHero.adventureProgress, 0);
         

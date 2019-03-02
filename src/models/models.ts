@@ -108,10 +108,9 @@ export interface Hero {
     leads: HeroLead[];
 
     // build-up limits
-    maxEncumbrance: number;
-    maxEquipmentWear: number;
-    maxQuestLogSize: number;
-    // buildUpLimit: number[];
+    maxLootBuildUp: number;
+    maxTrophyBuildUp: number;
+    maxQuestBuildUp: number;
 
     isInTeardownMode: boolean[];
 
@@ -128,12 +127,12 @@ export interface Hero {
     affiliations: HeroAffiliation[];
 
     // long-term limits
-    marketSaturation: number;
-    maxMarketSaturation: number;
-    fatigue: number;
-    maxFatigue: number;
-    socialExposure: number;
-    maxSocialExposure: number;
+    lootEnvironmentalLimit: number;
+    maxLootEnvironmentalLimit: number;
+    trialEnvironmentalLimit: number;
+    maxTrialEnvironmentalLimit: number;
+    questEnvironmentalLimit: number;
+    maxQuestEnvironmentalLimit: number;
 
     currentAdventure: Adventure;
     completedAdventures: string[];
