@@ -76,6 +76,7 @@ export enum HeroModificationType {
     REMOVE,
     REMOVE_QUANTITY,
     SET_TEARDOWN_MODE,
+    ADD_CURRENCY,
 }
 
 export interface HeroStat {
@@ -115,7 +116,8 @@ export interface Hero {
     isInTeardownMode: boolean[];
 
     // currency
-    currency: number;
+    currency: number[];
+    spentCurrency: number[];
     renown: number;
     spentRenown: number;
     reputation: number;

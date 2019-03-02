@@ -250,7 +250,9 @@ export class PlayScreen {
                                     </tbody>
                                 </table>
                                 <p>
-                                    <div sq-flex class={this.findUpdate('currency') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Gold</span> {this.appState.hero.currency}</div>
+                                    <div sq-flex class={this.findUpdate('currency', ((data: TaskMode[]) => data.includes(TaskMode.LOOT_MODE))) ? 'textRow textRow-highlight' : 'textRow'}>
+                                        <span sq-mr-auto>Gold</span> {this.appState.hero.currency[TaskMode.LOOT_MODE] - this.appState.hero.spentCurrency[TaskMode.LOOT_MODE]}
+                                    </div>
                                     <div class="textRow">Encumbrance</div>
                                     <div class="indentRow">
                                         <sq-progress-bar

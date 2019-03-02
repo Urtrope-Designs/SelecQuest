@@ -37,7 +37,8 @@ export class HeroManager {
             get maxLootBuildUp() {return this.stats[0].value + 10},
             get maxTrialBuildUp() {return this.stats[1].value + 10},
             get maxQuestBuildUp() {return this.stats[3].value + 10},
-            currency: 0,
+            currency: [0, 0, 0],
+            spentCurrency: [0, 0, 0],
             renown: 0,
             spentRenown: 0,
             reputation: 0,
@@ -126,12 +127,11 @@ export class HeroManager {
         for (let result of heroMods) {
             switch(result.type) {
                 case HeroModificationType.INCREASE:
-                    /* level, currentXp, gold, renown, spentRenown, reputation, spentReputation,
-                    lootEnvironmentalLimit, trialEnvironmentalLimit, questEnvironmentalLimit, adventureProgress */
+                    /* level, currentXp, lootEnvironmentalLimit, trialEnvironmentalLimit, questEnvironmentalLimit, adventureProgress */
                     newHero.latestModifications.push({attributeName: result.attributeName, data: null});
                     // fallthrough
                 case HeroModificationType.DECREASE:
-                    /* gold, lootEnvironmentalLimit, trialEnvironmentalLimit, questEnvironmentalLimit */
+                    /* lootEnvironmentalLimit, trialEnvironmentalLimit, questEnvironmentalLimit */
                     newHero[result.attributeName] += result.data;
                     break;
                 case HeroModificationType.SET:
@@ -220,7 +220,14 @@ export class HeroManager {
                     /* teardown modes */
                     result.data.forEach((teardownUpdate: {index: TaskMode, value: boolean}) => {
                         newHero.isInTeardownMode[teardownUpdate.index] = teardownUpdate.value;
-                    })
+                    });
+                    break;
+                case HeroModificationType.ADD_CURRENCY:
+                    /* currency, spent currency */
+                    result.data.forEach((currencyUpdate: {index: TaskMode, value: number}) => {
+                        newHero[result.attributeName][currencyUpdate.index] += currencyUpdate.value;
+                    });
+                    newHero.latestModifications.push({attributeName: result.attributeName, data: result.data.map(u => u.index)});
                     break;
             }
         }

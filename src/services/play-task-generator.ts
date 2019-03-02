@@ -312,9 +312,9 @@ export class PlayTaskGenerator {
                         data: lootData,
                     },
                     {
-                        type: HeroModificationType.INCREASE,
+                        type: HeroModificationType.ADD_CURRENCY,
                         attributeName: 'currency',
-                        data: sellValue,
+                        data: [{index: TaskMode.LOOT_MODE, value: sellValue}],
                     },
                     {
                         type: HeroModificationType.INCREASE,
@@ -381,16 +381,16 @@ export class PlayTaskGenerator {
                 return prevVal + curVal.quantity;
             }, 0);
             const minGold = PlayTaskGenerator.getTradeInCostForLevel(state.hero.level);
-            return currentEncumbrance <= 0 && state.hero.currency >= minGold;
+            return currentEncumbrance <= 0 && (state.hero.currency[TaskMode.LOOT_MODE] - state.hero.spentCurrency[TaskMode.LOOT_MODE]) >= minGold;
         },
         generateTask: (state: AppState) => {
             const newEquipmentMod = this.taskResultGenerator.generateNewEquipmentModification(state.hero);
             const modifications = [
                 newEquipmentMod,
                 {
-                    type: HeroModificationType.DECREASE,
-                    attributeName: 'currency',
-                    data: -PlayTaskGenerator.getTradeInCostForLevel(state.hero.level),
+                    type: HeroModificationType.ADD_CURRENCY,
+                    attributeName: 'spentCurrency',
+                    data: [{index: TaskMode.LOOT_MODE, value: PlayTaskGenerator.getTradeInCostForLevel(state.hero.level)}],
                 },
             ];
             const updatedHero = this.generateResultingHero(state.hero, modifications);
