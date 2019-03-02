@@ -431,15 +431,18 @@
     "taskModeData": [
         {
             "taskModeActionName": "Loot Mode",
-            "isCurrencyCumulative": false
+            "isCurrencyCumulative": false,
+            "buildUpLimitBaseStatIndex": 0
         },
         {
             "taskModeActionName": "Trial Mode",
-            "isCurrencyCumulative": true
+            "isCurrencyCumulative": true,
+            "buildUpLimitBaseStatIndex": 2
         },
         {
             "taskModeActionName": "Quest Mode",
-            "isCurrencyCumulative": true
+            "isCurrencyCumulative": true,
+            "buildUpLimitBaseStatIndex": 3
         }
     ]
 }

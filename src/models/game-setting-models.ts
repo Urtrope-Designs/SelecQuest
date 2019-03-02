@@ -53,4 +53,5 @@ export interface LootMajorRewardModifierType {
 export interface TaskModeData {
     taskModeActionName: string,
     isCurrencyCumulative: boolean,
+    buildUpLimitBaseStatIndex: number,
 };
