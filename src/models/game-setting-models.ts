@@ -54,4 +54,5 @@ export interface TaskModeData {
     taskModeActionName: string,
     isCurrencyCumulative: boolean,
     buildUpLimitBaseStatIndex: number,
+    environmentalLimitBaseStatIndex: number,
 };

@@ -48,7 +48,7 @@ export class HeroManager {
                 if (IS_DEBUG) {
                     return 35;
                 } else {
-                    return LONG_TERM_LIMIT_FACTOR * (this.level + this.stats[3].value);
+                    return LONG_TERM_LIMIT_FACTOR * (this.level + this.stats[gameSetting.taskModeData[TaskMode.LOOT_MODE].environmentalLimitBaseStatIndex].value);
                 }
             },
             trialEnvironmentalLimit: 0,
@@ -56,7 +56,7 @@ export class HeroManager {
                 if (IS_DEBUG) {
                     return 35;
                 } else {
-                    return LONG_TERM_LIMIT_FACTOR * (this.level + this.stats[2].value);
+                    return LONG_TERM_LIMIT_FACTOR * (this.level + this.stats[gameSetting.taskModeData[TaskMode.TRIAL_MODE].environmentalLimitBaseStatIndex].value);
                 }
             },
             questEnvironmentalLimit: 0,
@@ -64,7 +64,7 @@ export class HeroManager {
                 if (IS_DEBUG) {
                     return 35;
                 } else {
-                    return LONG_TERM_LIMIT_FACTOR * (this.level + this.stats[4].value);
+                    return LONG_TERM_LIMIT_FACTOR * (this.level + this.stats[gameSetting.taskModeData[TaskMode.QUEST_MODE].environmentalLimitBaseStatIndex].value);
                 }
             },
             currentAdventure: IS_DEBUG 
