@@ -255,8 +255,8 @@ export class PlayScreen {
                                     <div class="indentRow">
                                         <sq-progress-bar
                                             totalValue={this.appState.hero.maxLootBuildUp}
-                                            currentValue={this.appState.hero.loot.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}
-                                            tapOverlayText={`${this.appState.hero.loot.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}/${this.appState.hero.maxLootBuildUp}`}
+                                            currentValue={this.appState.hero.lootBuildUpRewards.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}
+                                            tapOverlayText={`${this.appState.hero.lootBuildUpRewards.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}/${this.appState.hero.maxLootBuildUp}`}
                                         ></sq-progress-bar>
                                     </div>
                                 </p>
@@ -269,10 +269,10 @@ export class PlayScreen {
                                     </thead>
                                     <tbody>
                                         {
-                                            this.appState.hero.loot.length == 0
+                                            this.appState.hero.lootBuildUpRewards.length == 0
                                             ? <tr><td colSpan={2}>[None]</td></tr>
-                                            : this.appState.hero.loot.map((item) => 
-                                            <tr {...this.highlightModifiedAttribute('loot', item.name)}>
+                                            : this.appState.hero.lootBuildUpRewards.map((item) => 
+                                            <tr {...this.highlightModifiedAttribute('lootBuildUpRewards', item.name)}>
                                                         <td>{capitalizeInitial(item.name)}</td>
                                                         <td>{item.quantity}</td>
                                                     </tr>
@@ -314,8 +314,8 @@ export class PlayScreen {
                                     <div class="indentRow">
                                         <sq-progress-bar
                                             totalValue={this.appState.hero.maxTrialBuildUp}
-                                            currentValue={this.appState.hero.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}
-                                            tapOverlayText={`${this.appState.hero.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}/${this.appState.hero.maxTrialBuildUp}`}
+                                            currentValue={this.appState.hero.trialBuildUpRewards.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}
+                                            tapOverlayText={`${this.appState.hero.trialBuildUpRewards.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}/${this.appState.hero.maxTrialBuildUp}`}
                                         ></sq-progress-bar>
                                     </div>
                                 </p>    
@@ -328,10 +328,10 @@ export class PlayScreen {
                                     </thead>
                                     <tbody>
                                         {
-                                            this.appState.hero.trophies.length == 0
+                                            this.appState.hero.trialBuildUpRewards.length == 0
                                             ? <tr><td colSpan={2}>[None]</td></tr>
-                                            : this.appState.hero.trophies.map((item) => 
-                                            <tr {...this.highlightModifiedAttribute('trophies', item.name)}>
+                                            : this.appState.hero.trialBuildUpRewards.map((item) => 
+                                            <tr {...this.highlightModifiedAttribute('trialBuildUpRewards', item.name)}>
                                                     <td>{item.name}</td>
                                                     <td>{item.quantity}</td>
                                                 </tr>
@@ -394,8 +394,8 @@ export class PlayScreen {
                                     <div class="indentRow">
                                         <sq-progress-bar
                                             totalValue={this.appState.hero.maxQuestBuildUp}
-                                            currentValue={this.appState.hero.leads.length}
-                                            tapOverlayText={`${this.appState.hero.leads.length}/${this.appState.hero.maxQuestBuildUp}`}
+                                            currentValue={this.appState.hero.questBuildUpRewards.length}
+                                            tapOverlayText={`${this.appState.hero.questBuildUpRewards.length}/${this.appState.hero.maxQuestBuildUp}`}
                                         ></sq-progress-bar>
                                     </div>
                                 </p>
@@ -407,10 +407,10 @@ export class PlayScreen {
                                     </thead>
                                     <tbody>
                                         {
-                                            this.appState.hero.leads.length == 0
+                                            this.appState.hero.questBuildUpRewards.length == 0
                                             ? <tr><td>[None]</td></tr>
-                                            : this.appState.hero.leads.map((item, index, array) => 
-                                                    <tr {...this.findUpdate('leads') && index == array.length-1 ? {class: 'textRow-highlight'} : {}}>
+                                            : this.appState.hero.questBuildUpRewards.map((item, index, array) => 
+                                                    <tr {...this.findUpdate('questBuildUpRewards') && index == array.length-1 ? {class: 'textRow-highlight'} : {}}>
                                                         <td>{item.questlogName}</td>
                                                     </tr>
                                                 )

@@ -103,9 +103,9 @@ export interface Hero {
     abilities: HeroAbilityType[];
     
     // build-up rewards
-    loot: LootBuildUpReward[];
-    trophies: TrialBuildUpReward[];
-    leads: QuestBuildUpReward[];
+    lootBuildUpRewards: LootBuildUpReward[];
+    trialBuildUpRewards: TrialBuildUpReward[];
+    questBuildUpRewards: QuestBuildUpReward[];
 
     // build-up limits
     maxLootBuildUp: number;

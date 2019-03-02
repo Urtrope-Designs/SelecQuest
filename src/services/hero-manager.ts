@@ -42,9 +42,9 @@ export class HeroManager {
             spentRenown: 0,
             reputation: 0,
             spentReputation: 0,
-            loot: [],
-            trophies: [],
-            leads: [],
+            lootBuildUpRewards: [],
+            trialBuildUpRewards: [],
+            questBuildUpRewards: [],
             isInTeardownMode: [true, true, true],
             lootEnvironmentalLimit: 0,
             get maxLootEnvironmentalLimit() {
@@ -167,12 +167,12 @@ export class HeroManager {
                     newHero.latestModifications.push(result);
                     break;
                 case HeroModificationType.ADD_QUANTITY:
-                    /* loot, trophies */
+                    /* lootBuildUpRewards, trialBuildUpRewards */
                     applyNameValue('quantity')(newHero, result);
                     break;
                 case HeroModificationType.REMOVE_QUANTITY:
                 case HeroModificationType.REMOVE:
-                    /* loot, trophies, leads */
+                    /* lootBuildUpRewards, trialBuildUpRewards, questBuildUpRewards */
                     for (let item of result.data) {
                         let existingItemIndex = newHero[result.attributeName].findIndex((i) => {
                             return item.name == i.name;
@@ -183,7 +183,7 @@ export class HeroManager {
                     }
                     break;
                 case HeroModificationType.ADD:
-                    /* leads, completedAdventures */
+                    /* questBuildUpRewards, completedAdventures */
                     newHero[result.attributeName] = newHero[result.attributeName].concat(result.data);
                     newHero.latestModifications.push({attributeName: result.attributeName, data: null});
                     break;

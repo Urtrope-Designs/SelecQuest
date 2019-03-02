@@ -223,7 +223,7 @@ export class PlayTaskGenerator {
             const modifications: HeroModification[] = [
                 {
                     type: HeroModificationType.ADD_QUANTITY,
-                    attributeName: 'loot',
+                    attributeName: 'lootBuildUpRewards',
                     data: lootData,
                 },
                 {
@@ -264,7 +264,7 @@ export class PlayTaskGenerator {
                 return false;
             }
     
-            const currentEncumbrance = state.hero.loot.reduce((prevVal, curVal) => {
+            const currentEncumbrance = state.hero.lootBuildUpRewards.reduce((prevVal, curVal) => {
                 return prevVal + curVal.quantity;
             }, 0);
             return currentEncumbrance >= state.hero.maxLootBuildUp;
@@ -293,7 +293,7 @@ export class PlayTaskGenerator {
             return true;
         },
         generateTask: (state: AppState) => {
-            const sellItem = state.hero.loot[0];
+            const sellItem = state.hero.lootBuildUpRewards[0];
             if (!!sellItem) {
                 const isMarketSaturated = state.hero.lootEnvironmentalLimit >= state.hero.maxLootEnvironmentalLimit;
                 const sellQuantity = sellItem.quantity;
@@ -308,7 +308,7 @@ export class PlayTaskGenerator {
                 const modifications: HeroModification[] = [
                     {
                         type: HeroModificationType.REMOVE,
-                        attributeName: 'loot',
+                        attributeName: 'lootBuildUpRewards',
                         data: lootData,
                     },
                     {
@@ -351,7 +351,7 @@ export class PlayTaskGenerator {
     
     endSelloffTaskGen: TaskGenerator = {
         shouldRun: (state: AppState) => {
-            const currentEncumbrance = state.hero.loot.reduce((prevVal, curVal) => {
+            const currentEncumbrance = state.hero.lootBuildUpRewards.reduce((prevVal, curVal) => {
                 return prevVal + curVal.quantity;
             }, 0);
             return currentEncumbrance <= 0;
@@ -377,7 +377,7 @@ export class PlayTaskGenerator {
     
     purchaseEquipmentTaskGen: TaskGenerator = {
         shouldRun: (state: AppState) => {
-            const currentEncumbrance = state.hero.loot.reduce((prevVal, curVal) => {
+            const currentEncumbrance = state.hero.lootBuildUpRewards.reduce((prevVal, curVal) => {
                 return prevVal + curVal.quantity;
             }, 0);
             const minGold = PlayTaskGenerator.getTradeInCostForLevel(state.hero.level);
@@ -414,7 +414,7 @@ export class PlayTaskGenerator {
             const modifications: HeroModification[] = [
                 {
                     type: HeroModificationType.ADD_QUANTITY,
-                    attributeName: 'trophies',
+                    attributeName: 'trialBuildUpRewards',
                     data: trophyData,
                 },
                 {
@@ -459,7 +459,7 @@ export class PlayTaskGenerator {
                 return false;
             }
     
-            const currentEquipmentWear = state.hero.trophies.reduce((prevVal, curVal) => {
+            const currentEquipmentWear = state.hero.trialBuildUpRewards.reduce((prevVal, curVal) => {
                 return prevVal + curVal.quantity;
             }, 0);
             return currentEquipmentWear >= state.hero.maxTrialBuildUp;
@@ -488,12 +488,12 @@ export class PlayTaskGenerator {
             return true;
         },
         generateTask: (state: AppState) => {
-            const boastItem = state.hero.trophies[0];
+            const boastItem = state.hero.trialBuildUpRewards[0];
             if (!!boastItem) {
                 const isFatigued = state.hero.trialEnvironmentalLimit >= state.hero.maxTrialEnvironmentalLimit;
                 const boastQuantity = boastItem.quantity;
                 const renownValue = Math.ceil((boastQuantity * boastItem.value * state.hero.level) / (isFatigued ? 2 : 1));
-                let trophies = [
+                let trialBuildUpRewards = [
                     {
                         name: boastItem.name,
                         quantity: -1 * boastQuantity,
@@ -503,8 +503,8 @@ export class PlayTaskGenerator {
                 const modifications: HeroModification[] = [
                     {
                         type: HeroModificationType.REMOVE,
-                        attributeName: 'trophies',
-                        data: trophies,
+                        attributeName: 'trialBuildUpRewards',
+                        data: trialBuildUpRewards,
                     },
                     {
                         type: HeroModificationType.INCREASE,
@@ -541,7 +541,7 @@ export class PlayTaskGenerator {
     
     endBoastingTaskGen: TaskGenerator = {
         shouldRun: (state: AppState) => {
-            const currentEquipmentIntegrity = state.hero.trophies.reduce((prevVal, curVal) => {
+            const currentEquipmentIntegrity = state.hero.trialBuildUpRewards.reduce((prevVal, curVal) => {
                 return prevVal + curVal.quantity;
             }, 0);
             return currentEquipmentIntegrity <= 0;
@@ -567,7 +567,7 @@ export class PlayTaskGenerator {
     
     earnAccoladeTaskGen: TaskGenerator = {
         shouldRun: (state: AppState) => {
-            const currentEquipmentIntegrity = state.hero.trophies.reduce((prevVal, curVal) => {
+            const currentEquipmentIntegrity = state.hero.trialBuildUpRewards.reduce((prevVal, curVal) => {
                 return prevVal + curVal.quantity;
             }, 0);
             return currentEquipmentIntegrity <= 0 && (state.hero.renown - state.hero.spentRenown) >= PlayTaskGenerator.getTradeInCostForLevel(state.hero.level);
@@ -603,7 +603,7 @@ export class PlayTaskGenerator {
             const modifications: HeroModification[] = [
                 {
                     type: HeroModificationType.ADD,
-                    attributeName: 'leads',
+                    attributeName: 'questBuildUpRewards',
                     data: leadData,
                 },
             ];
@@ -624,7 +624,7 @@ export class PlayTaskGenerator {
                 return false;
             }
     
-            return state.hero.leads.length >= state.hero.maxQuestBuildUp;
+            return state.hero.questBuildUpRewards.length >= state.hero.maxQuestBuildUp;
         },
         generateTask: (state: AppState) => {
             const modifications = [
@@ -651,7 +651,7 @@ export class PlayTaskGenerator {
             return true;
         },
         generateTask: (state: AppState) => {
-            const leadToFollow = state.hero.leads[0];
+            const leadToFollow = state.hero.questBuildUpRewards[0];
             if (!!leadToFollow) {
                 const isOverexposed = state.hero.questEnvironmentalLimit >= state.hero.maxQuestEnvironmentalLimit;
                 const reputationValue = Math.ceil((leadToFollow.value * state.hero.level) / (isOverexposed ? 2 : 1));
@@ -659,7 +659,7 @@ export class PlayTaskGenerator {
                 const modifications: HeroModification[] = [
                     {
                         type: HeroModificationType.REMOVE,
-                        attributeName: 'leads',
+                        attributeName: 'questBuildUpRewards',
                         data: [leadToFollow],
                     },
                     {
@@ -722,7 +722,7 @@ export class PlayTaskGenerator {
     
     endLeadFollowingTaskGen: TaskGenerator = {
         shouldRun: (state: AppState) => {
-            return state.hero.leads.length <= 0;
+            return state.hero.questBuildUpRewards.length <= 0;
         },
         generateTask: (state: AppState) => {
             const modifications = [
@@ -745,7 +745,7 @@ export class PlayTaskGenerator {
     
     gainAffiliationTaskGen: TaskGenerator = {
         shouldRun: (state: AppState) => {
-            return state.hero.leads.length <= 0 && (state.hero.reputation - state.hero.spentReputation) >= PlayTaskGenerator.getTradeInCostForLevel(state.hero.level);
+            return state.hero.questBuildUpRewards.length <= 0 && (state.hero.reputation - state.hero.spentReputation) >= PlayTaskGenerator.getTradeInCostForLevel(state.hero.level);
         },
         generateTask: (state: AppState) => {
             const newAffiliationMod = this.taskResultGenerator.generateNewAffiliationModification(state.hero);
