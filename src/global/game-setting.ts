@@ -1,4 +1,4 @@
-import { GameSettingConfig, LootMajorRewardMaterialType, LootMajorRewardModifierType } from "../models/game-setting-models";
+import { GameSettingConfig, LootMajorRewardMaterialType, LootMajorRewardModifierType, TaskModeData } from "../models/game-setting-models";
 import { HeroRace } from "../models/models";
 import { AbilityType } from "../models/game-setting-models";
 import { PrologueTask, LootMajorRewardType } from "../models/hero-models";
@@ -22,9 +22,7 @@ export class GameSetting {
     readonly lootMajorRewardTypes: LootMajorRewardType[];
     readonly lootMajorRewardMaterialTypes: LootMajorRewardMaterialType[];
     readonly lootMajorRewardModifierTypes: LootMajorRewardModifierType[];
-    readonly taskModeData: {
-        taskModeActionName: string,
-    }[];
+    readonly taskModeData: TaskModeData[];
  
 
 

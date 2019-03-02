@@ -430,13 +430,16 @@
     ],
     "taskModeData": [
         {
-            "taskModeActionName": "Loot Mode"
+            "taskModeActionName": "Loot Mode",
+            "isCurrencyCumulative": false
         },
         {
-            "taskModeActionName": "Trial Mode"
+            "taskModeActionName": "Trial Mode",
+            "isCurrencyCumulative": true
         },
         {
-            "taskModeActionName": "Quest Mode"
+            "taskModeActionName": "Quest Mode",
+            "isCurrencyCumulative": true
         }
     ]
 }

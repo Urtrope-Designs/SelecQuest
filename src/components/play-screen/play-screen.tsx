@@ -112,6 +112,14 @@ export class PlayScreen {
         return `${getRoughTime(timeRemaining)} remaining`
     }
 
+    getCurrencyDisplayValue(hero: Hero, taskMode: TaskMode): number {
+        const currencyDisplay = this.gameSetting.taskModeData[taskMode].isCurrencyCumulative 
+                ? hero.currency[taskMode]
+                : hero.currency[taskMode] - this.appState.hero.spentCurrency[taskMode];
+
+        return currencyDisplay;
+    }
+
     _textRowScrollHandler(ev: Event) {
         ev.srcElement.setAttribute('scrolled', ev.srcElement.scrollLeft != 0 ? 'true' : 'false');
     }
@@ -251,7 +259,7 @@ export class PlayScreen {
                                 </table>
                                 <p>
                                     <div sq-flex class={this.findUpdate('currency', ((data: TaskMode[]) => data.includes(TaskMode.LOOT_MODE))) ? 'textRow textRow-highlight' : 'textRow'}>
-                                        <span sq-mr-auto>Gold</span> {this.appState.hero.currency[TaskMode.LOOT_MODE] - this.appState.hero.spentCurrency[TaskMode.LOOT_MODE]}
+                                        <span sq-mr-auto>Gold</span> {this.getCurrencyDisplayValue(this.appState.hero, TaskMode.LOOT_MODE)}
                                     </div>
                                     <div class="textRow">Encumbrance</div>
                                     <div class="indentRow">
@@ -311,7 +319,7 @@ export class PlayScreen {
                                 </table>
                                 <p>
                                     <div sq-flex class={this.findUpdate('currency', ((data: TaskMode[]) => data.includes(TaskMode.TRIAL_MODE))) ? 'textRow textRow-highlight' : 'textRow'}>
-                                        <span sq-mr-auto>Renown</span> {this.appState.hero.currency[TaskMode.TRIAL_MODE]}
+                                        <span sq-mr-auto>Renown</span> {this.getCurrencyDisplayValue(this.appState.hero, TaskMode.TRIAL_MODE)}
                                     </div>
                                     <div class="textRow">Equipment Wear</div>
                                     <div class="indentRow">
@@ -392,7 +400,7 @@ export class PlayScreen {
                                 </table>
                                 <p>
                                     <div sq-flex class={this.findUpdate('currency', ((data: TaskMode[]) => data.includes(TaskMode.TRIAL_MODE))) ? 'textRow textRow-highlight' : 'textRow'}>
-                                        <span sq-mr-auto>Reputation</span> {this.appState.hero.currency[TaskMode.QUEST_MODE]}
+                                        <span sq-mr-auto>Reputation</span> {this.getCurrencyDisplayValue(this.appState.hero, TaskMode.QUEST_MODE)}
                                     </div>
                                     <div class="textRow">Questlog</div>
                                     <div class="indentRow">

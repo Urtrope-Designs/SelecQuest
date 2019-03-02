@@ -20,9 +20,7 @@ export interface GameSettingConfig {
     lootMajorRewardTypes: LootMajorRewardType[],
     lootMajorRewardMaterialTypes: LootMajorRewardMaterialType[],
     lootMajorRewardModifierTypes: LootMajorRewardModifierType[],
-    taskModeData: {
-        taskModeActionName: string,
-    }[],
+    taskModeData: TaskModeData[],
 }
 
 export interface AbilityType {
@@ -51,3 +49,8 @@ export interface LootMajorRewardModifierType {
     name: string,
     options: LootMajorRewardModifier[],
 }
+
+export interface TaskModeData {
+    taskModeActionName: string,
+    isCurrencyCumulative: boolean,
+};
