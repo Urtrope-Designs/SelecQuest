@@ -1,6 +1,6 @@
 import { Component, Prop, State, Event, EventEmitter, Element, Watch } from '@stencil/core';
 
-import { AppState, Task, AccoladeType, Hero, QuestMajorReward, HeroStat } from '../../models/models';
+import { AppState, Task, TrialMajorRewardType, Hero, QuestMajorReward, HeroStat } from '../../models/models';
 import { HeroManager } from '../../services/hero-manager';
 import { capitalizeInitial, getRoughTime, generateHeroHashFromHero, toRoman } from '../../global/utils';
 import { HeroAbilityType, HeroAbility } from '../../models/hero-models';
@@ -295,13 +295,13 @@ export class PlayScreen {
                                     </thead>
                                     <tbody>
                                         {
-                                            this.appState.hero.accolades.map(accolade =>
-                                                <tr {...this.highlightModifiedAttribute('accolades', ''+accolade.type)}>
-                                                    <td>{AccoladeType[accolade.type]}</td>
+                                            this.appState.hero.trialMajorRewards.map(trialMajorReward =>
+                                                <tr {...this.highlightModifiedAttribute('trialMajorRewards', ''+trialMajorReward.type)}>
+                                                    <td>{TrialMajorRewardType[trialMajorReward.type]}</td>
                                                     {
-                                                        accolade.received.length <= 0
+                                                        trialMajorReward.received.length <= 0
                                                         ? <td>[None]</td>
-                                                        : <td>{accolade.received.join(', ')}</td>
+                                                        : <td>{trialMajorReward.received.join(', ')}</td>
                                                     }
                                                 </tr>
                                             )

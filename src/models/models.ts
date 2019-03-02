@@ -59,7 +59,6 @@ export interface HeroModification {
     type: HeroModificationType,
     attributeName: string,
     data: any,
-    // data: string | number | {name: string, rank: number}[] | {type: string, description: string, rating: number}[] | {type: AccoladeType, received: string[]}[] | {type: AffiliationType, received: string[]}[] | {name: string, quantity: number, value: number} | {name: string, value: string} | string[],
 }
 
 export enum HeroModificationType {
@@ -71,7 +70,7 @@ export enum HeroModificationType {
     ADD_STAT,
     ADD_QUANTITY,
     ADD_RANK,
-    ADD_ACCOLADE,
+    ADD_TRIAL_MAJOR_REWARD,
     ADD_AFFILIATION,
     REMOVE,
     REMOVE_QUANTITY,
@@ -121,7 +120,7 @@ export interface Hero {
 
     // major rewards
     lootMajorRewards: LootMajorReward[];
-    accolades: TrialMajorReward[];
+    trialMajorRewards: TrialMajorReward[];
     affiliations: QuestMajorReward[];
 
     // long-term limits
@@ -140,7 +139,7 @@ export interface Hero {
 }
 
 export interface TrialMajorReward {
-    type: AccoladeType,
+    type: TrialMajorRewardType,
     received: string[],
 };
 
@@ -173,7 +172,7 @@ export interface QuestBuildUpReward {
     value: number,
 };
 
-export enum AccoladeType {
+export enum TrialMajorRewardType {
     Epithets,
     Titles,
     Sobriquets,

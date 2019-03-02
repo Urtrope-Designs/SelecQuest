@@ -1,7 +1,7 @@
 import { GameSettingsManager } from "./game-settings-manager";
 import { Adventure, HeroAbilityType, LootMajorRewardType, LootMajorReward } from "../models/hero-models";
 import { IS_DEBUG, EPITHET_DESCRIPTORS, EPITHET_BEING_ALL, TITLE_POSITIONS_ALL, SOBRIQUET_MODIFIERS, SOBRIQUET_NOUN_PORTION, HONORIFIC_TEMPLATES, STANDARD_GROUPS_INDEFINITE, OFFICE_POSITIONS_ALL } from "../global/config";
-import { Hero, HeroModification, HeroModificationType, TrialMajorReward, AccoladeType, HeroTitlePosition, QuestMajorReward, HeroConnection, HeroStat } from "../models/models";
+import { Hero, HeroModification, HeroModificationType, TrialMajorReward, TrialMajorRewardType, HeroTitlePosition, QuestMajorReward, HeroConnection, HeroStat } from "../models/models";
 import { randRange, randFromList, randFromListLow, getIterableEnumKeys, capitalizeInitial, randFromListHigh, generateRandomName } from "../global/utils";
 
 export class PlayTaskResultGenerator {
@@ -123,47 +123,47 @@ export class PlayTaskResultGenerator {
         return newLootMajorReward;
     }
     
-    public generateNewAccoladeModification(hero: Hero): HeroModification {
-        const newAccoladeData = this.generateRandomAccolade(hero);
+    public generateNewTrialMajorRewardModification(hero: Hero): HeroModification {
+        const newTrialMajorRewardData = this.generateRandomTrialMajorReward(hero);
         
         const mod: HeroModification = {
-            type: HeroModificationType.ADD_ACCOLADE,
-            attributeName: 'accolades',
-            data: [newAccoladeData],
+            type: HeroModificationType.ADD_TRIAL_MAJOR_REWARD,
+            attributeName: 'trialMajorRewards',
+            data: [newTrialMajorRewardData],
         };
     
         return mod;
     }
     
-    private generateRandomAccolade(hero: Hero): TrialMajorReward {
-        const newAccoladeType = AccoladeType[randFromList(getIterableEnumKeys(AccoladeType))];
-        let newAccoladeDescription = '';
+    private generateRandomTrialMajorReward(hero: Hero): TrialMajorReward {
+        const newTrialMajorRewardType = TrialMajorRewardType[randFromList(getIterableEnumKeys(TrialMajorRewardType))];
+        let newTrialMajorRewardDescription = '';
         let exclusions: string = '';
-        switch(newAccoladeType) {
-            case AccoladeType.Epithets:
-                exclusions = hero.accolades.find(accolade => accolade.type == AccoladeType.Epithets).received.join(' ');
-                newAccoladeDescription = this.generateRandomEpithetDescription(exclusions);
+        switch(newTrialMajorRewardType) {
+            case TrialMajorRewardType.Epithets:
+                exclusions = hero.trialMajorRewards.find(reward => reward.type == TrialMajorRewardType.Epithets).received.join(' ');
+                newTrialMajorRewardDescription = this.generateRandomEpithetDescription(exclusions);
                 break;
-            case AccoladeType.Titles:
-                exclusions = hero.accolades.find(accolade => accolade.type == AccoladeType.Titles).received.join(' ');
-                newAccoladeDescription = this.generateRandomTitleDescription(exclusions);
+            case TrialMajorRewardType.Titles:
+                exclusions = hero.trialMajorRewards.find(reward => reward.type == TrialMajorRewardType.Titles).received.join(' ');
+                newTrialMajorRewardDescription = this.generateRandomTitleDescription(exclusions);
                 break;
-                case AccoladeType.Sobriquets:
-                exclusions = hero.accolades.find(accolade => accolade.type == AccoladeType.Sobriquets).received.join(' ');
-                newAccoladeDescription = this.generateRandomSobriquetDescription(exclusions);
+                case TrialMajorRewardType.Sobriquets:
+                exclusions = hero.trialMajorRewards.find(reward => reward.type == TrialMajorRewardType.Sobriquets).received.join(' ');
+                newTrialMajorRewardDescription = this.generateRandomSobriquetDescription(exclusions);
                 break;
-                case AccoladeType.Honorifics:
-                exclusions = hero.accolades.find(accolade => accolade.type == AccoladeType.Honorifics).received.join(' ');
-                newAccoladeDescription = this.generateRandomHonorificDescription(exclusions, hero.level, hero.name);
+                case TrialMajorRewardType.Honorifics:
+                exclusions = hero.trialMajorRewards.find(reward => reward.type == TrialMajorRewardType.Honorifics).received.join(' ');
+                newTrialMajorRewardDescription = this.generateRandomHonorificDescription(exclusions, hero.level, hero.name);
                 break;
         }
     
-        const newAccolade = {
-            type: newAccoladeType,
-            received: [newAccoladeDescription]
+        const newTrialMajorReward = {
+            type: newTrialMajorRewardType,
+            received: [newTrialMajorRewardDescription]
         }
     
-        return newAccolade;
+        return newTrialMajorReward;
     }
     
     private generateRandomEpithetDescription(exclusions: string) {

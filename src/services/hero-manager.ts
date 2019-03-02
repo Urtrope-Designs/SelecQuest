@@ -1,4 +1,4 @@
-import { Hero, HeroModificationType, AccoladeType, HeroModification, TrialMajorReward, QuestMajorReward } from '../models/models';
+import { Hero, HeroModificationType, TrialMajorRewardType, HeroModification, TrialMajorReward, QuestMajorReward } from '../models/models';
 import { randRange, deepCopyObject, getIterableEnumKeys } from '../global/utils';
 import { IS_DEBUG } from '../global/config';
 import { GameSettingsManager } from './game-settings-manager';
@@ -32,7 +32,7 @@ export class HeroManager {
             currentXp: 0,
             abilities: gameSetting.abilityTypes.map(aT => {return {name: aT.displayName, received: []}}),
             lootMajorRewards: gameSetting.lootMajorRewardTypes.map(et => ({type: et.name, description: ''})),
-            accolades: getIterableEnumKeys(AccoladeType).map(typeKey => ({type: AccoladeType[typeKey], received: []})),
+            trialMajorRewards: getIterableEnumKeys(TrialMajorRewardType).map(typeKey => ({type: TrialMajorRewardType[typeKey], received: []})),
             affiliations: [],
             get maxLootBuildUp() {return this.stats[0].value + 10},
             get maxTrialBuildUp() {return this.stats[1].value + 10},
@@ -183,17 +183,17 @@ export class HeroManager {
                     newHero[result.attributeName] = newHero[result.attributeName].concat(result.data);
                     newHero.latestModifications.push({attributeName: result.attributeName, data: null});
                     break;
-                case HeroModificationType.ADD_ACCOLADE:
-                    /* accolades */
-                    result.data.map((newAccolade: TrialMajorReward) => {
-                        const existingAccolade: TrialMajorReward = newHero[result.attributeName].find(a => {
-                            return a.type == newAccolade.type;
+                case HeroModificationType.ADD_TRIAL_MAJOR_REWARD:
+                    /* trialMajorReward */
+                    result.data.map((newTrialMajorReward: TrialMajorReward) => {
+                        const existingTrialMajorReward: TrialMajorReward = newHero[result.attributeName].find(r => {
+                            return r.type == newTrialMajorReward.type;
                         })
-                        existingAccolade.received = existingAccolade.received.concat(newAccolade.received);
-                        if (existingAccolade.received.length > 3) {
-                            existingAccolade.received.splice(0, existingAccolade.received.length - 3);
+                        existingTrialMajorReward.received = existingTrialMajorReward.received.concat(newTrialMajorReward.received);
+                        if (existingTrialMajorReward.received.length > 3) {
+                            existingTrialMajorReward.received.splice(0, existingTrialMajorReward.received.length - 3);
                         }
-                        newHero.latestModifications.push({attributeName: result.attributeName, data: newAccolade.type});
+                        newHero.latestModifications.push({attributeName: result.attributeName, data: newTrialMajorReward.type});
                     })
                     break;
                 case HeroModificationType.ADD_AFFILIATION:

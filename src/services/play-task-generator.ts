@@ -565,7 +565,7 @@ export class PlayTaskGenerator {
         }
     };
     
-    earnAccoladeTaskGen: TaskGenerator = {
+    earnTrialMajorRewardTaskGen: TaskGenerator = {
         shouldRun: (state: AppState) => {
             const currentTrialBuildUp = state.hero.trialBuildUpRewards.reduce((prevVal, curVal) => {
                 return prevVal + curVal.quantity;
@@ -573,9 +573,9 @@ export class PlayTaskGenerator {
             return currentTrialBuildUp <= 0 && (state.hero.currency[TaskMode.TRIAL_MODE] - state.hero.spentCurrency[TaskMode.TRIAL_MODE]) >= PlayTaskGenerator.getTradeInCostForLevel(state.hero.level);
         },
         generateTask: (state: AppState) => {
-            const newAccoladeMod = this.taskResultGenerator.generateNewAccoladeModification(state.hero);
+            const newTrialMajorRewardMod = this.taskResultGenerator.generateNewTrialMajorRewardModification(state.hero);
             const modifications = [
-                newAccoladeMod,
+                newTrialMajorRewardMod,
                 {
                     type: HeroModificationType.ADD_CURRENCY,
                     attributeName: 'spentCurrency',
@@ -855,7 +855,7 @@ export class PlayTaskGenerator {
                     this.gladiatingTaskGen,
                 ],
                 [       // teardownMode[1] == true
-                    this.earnAccoladeTaskGen,
+                    this.earnTrialMajorRewardTaskGen,
                     this.endBoastingTaskGen,
                     this.boastingTaskGen,
                 ],
