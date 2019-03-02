@@ -228,49 +228,49 @@ export class PlayTaskResultGenerator {
         return honorificDescription;
     }
     
-    public generateNewAffiliationModification(hero: Hero): HeroModification {
-        const newAffiliationData = this.generateRandomAffiliation(hero);
+    public generateNewQuestMajorRewardModification(hero: Hero): HeroModification {
+        const newQuestMajorRewardData = this.generateRandomQuestMajorReward(hero);
     
         const mod = {
-            type: HeroModificationType.ADD_AFFILIATION,
-            attributeName: 'affiliations',
-            data: [newAffiliationData],
+            type: HeroModificationType.ADD_QUEST_MAJOR_REWARD,
+            attributeName: 'questMajorRewards',
+            data: [newQuestMajorRewardData],
         };
     
         return mod;
     }
     
-    private generateRandomAffiliation(hero: Hero): QuestMajorReward {
-        let newAffiliationData: QuestMajorReward;
+    private generateRandomQuestMajorReward(hero: Hero): QuestMajorReward {
+        let newRewardData: QuestMajorReward;
     
-        let newAffiliationFactories: ((hero: Hero) => QuestMajorReward)[] = [];
-        if (hero.affiliations.length < STANDARD_GROUPS_INDEFINITE.length) {
-            newAffiliationFactories.push(this.generateRandomDistinctConnection);
-            newAffiliationFactories.push(this.generateRandomDistinctConnection); // double the odds
+        let newRewardFactories: ((hero: Hero) => QuestMajorReward)[] = [];
+        if (hero.questMajorRewards.length < STANDARD_GROUPS_INDEFINITE.length) {
+            newRewardFactories.push(this.generateRandomDistinctConnection);
+            newRewardFactories.push(this.generateRandomDistinctConnection); // double the odds
         }
-        if (hero.affiliations.some(a => a.office == null)) {
-            newAffiliationFactories.push(this.generateRandomDistinctMembership);
-            newAffiliationFactories.push(this.generateRandomDistinctMembership); // double the odds
+        if (hero.questMajorRewards.some(a => a.office == null)) {
+            newRewardFactories.push(this.generateRandomDistinctMembership);
+            newRewardFactories.push(this.generateRandomDistinctMembership); // double the odds
         }
-        if (hero.affiliations.some(a => this.isNonNullNonHighestOffice(a.office))) {
-            newAffiliationFactories.push(this.generateRandomDistinctHigherOffice);
+        if (hero.questMajorRewards.some(a => this.isNonNullNonHighestOffice(a.office))) {
+            newRewardFactories.push(this.generateRandomDistinctHigherOffice);
         }
     
         
-        let selectedFactory = randFromList(newAffiliationFactories);
-        newAffiliationData = selectedFactory.bind(this)(hero);
+        let selectedFactory = randFromList(newRewardFactories);
+        newRewardData = selectedFactory.bind(this)(hero);
     
-        return newAffiliationData;
+        return newRewardData;
     }
     
     
     private generateRandomDistinctConnection(hero: Hero): QuestMajorReward {
         const availableDistinctGroups: string[] = STANDARD_GROUPS_INDEFINITE.filter((groupName: string) => {
-            return !hero.affiliations.some(a => a.groupName == groupName);
+            return !hero.questMajorRewards.some(a => a.groupName == groupName);
         });
     
         if (availableDistinctGroups.length === 0) {
-            return nullAffiliation;
+            return nullQuestMajorReward;
         }
         
         const newConnectionName = generateRandomName(this.gameSettingsMgr.getGameSettingById(hero.gameSettingId));
@@ -290,10 +290,10 @@ export class PlayTaskResultGenerator {
     
     private generateRandomDistinctMembership(hero: Hero): QuestMajorReward {
         // list of all groups we have a connection with but don't currently have membership (ie, an office)
-        const availableMembershipGroups: string[] = hero.affiliations.filter(a => a.office == null).map(a => a.groupName);
+        const availableMembershipGroups: string[] = hero.questMajorRewards.filter(a => a.office == null).map(a => a.groupName);
     
         if (availableMembershipGroups.length === 0) {
-            return nullAffiliation;
+            return nullQuestMajorReward;
         }
     
         const newMembershipGroupName = randFromList(availableMembershipGroups);
@@ -308,16 +308,16 @@ export class PlayTaskResultGenerator {
     
     private generateRandomDistinctHigherOffice(hero: Hero): QuestMajorReward {
         // list of all groups with a non-null office that is also not the highest office
-        const availableOfficeGroups: string[] = hero.affiliations.filter(a => this.isNonNullNonHighestOffice(a.office)).map(a => a.groupName);
+        const availableOfficeGroups: string[] = hero.questMajorRewards.filter(a => this.isNonNullNonHighestOffice(a.office)).map(a => a.groupName);
         if (availableOfficeGroups.length === 0) {
-            return nullAffiliation;
+            return nullQuestMajorReward;
         }
         const group = randFromList(availableOfficeGroups);
         
-        const existingAffiliation: QuestMajorReward = hero.affiliations.find(a => a.groupName == group);
+        const existingReward: QuestMajorReward = hero.questMajorRewards.find(a => a.groupName == group);
         // list of all positions higher than currently "held" office, non-dup with the same group's Connection
-        const availableOfficePositions: string[] = OFFICE_POSITIONS_ALL.slice(OFFICE_POSITIONS_ALL.indexOf(existingAffiliation.office) + 1).filter(o => {
-                return o != existingAffiliation.connection.personTitle;
+        const availableOfficePositions: string[] = OFFICE_POSITIONS_ALL.slice(OFFICE_POSITIONS_ALL.indexOf(existingReward.office) + 1).filter(o => {
+                return o != existingReward.connection.personTitle;
             });
         
         const newOffice = randFromListLow(availableOfficePositions, 3);
@@ -411,7 +411,7 @@ export class PlayTaskResultGenerator {
     }
 }
 
-const nullAffiliation: QuestMajorReward = {
+const nullQuestMajorReward: QuestMajorReward = {
     groupName: null,
     connection: null,
     office: null,

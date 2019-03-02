@@ -33,7 +33,7 @@ export class HeroManager {
             abilities: gameSetting.abilityTypes.map(aT => {return {name: aT.displayName, received: []}}),
             lootMajorRewards: gameSetting.lootMajorRewardTypes.map(et => ({type: et.name, description: ''})),
             trialMajorRewards: getIterableEnumKeys(TrialMajorRewardType).map(typeKey => ({type: TrialMajorRewardType[typeKey], received: []})),
-            affiliations: [],
+            questMajorRewards: [],
             get maxLootBuildUp() {return this.stats[0].value + 10},
             get maxTrialBuildUp() {return this.stats[1].value + 10},
             get maxQuestBuildUp() {return this.stats[3].value + 10},
@@ -184,7 +184,7 @@ export class HeroManager {
                     newHero.latestModifications.push({attributeName: result.attributeName, data: null});
                     break;
                 case HeroModificationType.ADD_TRIAL_MAJOR_REWARD:
-                    /* trialMajorReward */
+                    /* trialMajorRewards */
                     result.data.map((newTrialMajorReward: TrialMajorReward) => {
                         const existingTrialMajorReward: TrialMajorReward = newHero[result.attributeName].find(r => {
                             return r.type == newTrialMajorReward.type;
@@ -196,20 +196,20 @@ export class HeroManager {
                         newHero.latestModifications.push({attributeName: result.attributeName, data: newTrialMajorReward.type});
                     })
                     break;
-                case HeroModificationType.ADD_AFFILIATION:
-                    /* affiliations */
-                    result.data.map((newAffiliation: QuestMajorReward) => {
-                        if (newAffiliation.connection != null) {
-                            newHero.affiliations.push(newAffiliation);
+                case HeroModificationType.ADD_QUEST_MAJOR_REWARD:
+                    /* questMajorRewards */
+                    result.data.map((newQuestMajorReward: QuestMajorReward) => {
+                        if (newQuestMajorReward.connection != null) {
+                            newHero.questMajorRewards.push(newQuestMajorReward);
                         }
-                        if (newAffiliation.office != null) {
-                            const existingAffiliation: QuestMajorReward = newHero.affiliations.find(a => {
-                                return a.groupName == newAffiliation.groupName;
+                        if (newQuestMajorReward.office != null) {
+                            const existingQuestMajorReward: QuestMajorReward = newHero.questMajorRewards.find(a => {
+                                return a.groupName == newQuestMajorReward.groupName;
                             });
-                            existingAffiliation.office = newAffiliation.office;
+                            existingQuestMajorReward.office = newQuestMajorReward.office;
                         }
                         
-                        newHero.latestModifications.push({attributeName: result.attributeName, data: newAffiliation});
+                        newHero.latestModifications.push({attributeName: result.attributeName, data: newQuestMajorReward});
                     })
                     break;
                 case HeroModificationType.SET_TEARDOWN_MODE:

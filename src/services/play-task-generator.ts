@@ -743,14 +743,14 @@ export class PlayTaskGenerator {
         }
     };
     
-    gainAffiliationTaskGen: TaskGenerator = {
+    gainQuestMajorRewardTaskGen: TaskGenerator = {
         shouldRun: (state: AppState) => {
             return state.hero.questBuildUpRewards.length <= 0 && (state.hero.currency[TaskMode.QUEST_MODE] - state.hero.spentCurrency[TaskMode.QUEST_MODE]) >= PlayTaskGenerator.getTradeInCostForLevel(state.hero.level);
         },
         generateTask: (state: AppState) => {
-            const newAffiliationMod = this.taskResultGenerator.generateNewAffiliationModification(state.hero);
+            const newQuestMajorRewardMod = this.taskResultGenerator.generateNewQuestMajorRewardModification(state.hero);
             const modifications = [
-                newAffiliationMod,
+                newQuestMajorRewardMod,
                 {
                     type: HeroModificationType.ADD_CURRENCY,
                     attributeName: 'spentCurrency',
@@ -866,7 +866,7 @@ export class PlayTaskGenerator {
                     this.investigatingTaskGen,
                 ],
                 [       // teardownMode[2] == true
-                    this.gainAffiliationTaskGen,
+                    this.gainQuestMajorRewardTaskGen,
                     this.endLeadFollowingTaskGen,
                     this.leadFollowingTaskGen,
                 ]

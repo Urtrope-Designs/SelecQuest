@@ -71,7 +71,7 @@ export enum HeroModificationType {
     ADD_QUANTITY,
     ADD_RANK,
     ADD_TRIAL_MAJOR_REWARD,
-    ADD_AFFILIATION,
+    ADD_QUEST_MAJOR_REWARD,
     REMOVE,
     REMOVE_QUANTITY,
     SET_TEARDOWN_MODE,
@@ -121,7 +121,7 @@ export interface Hero {
     // major rewards
     lootMajorRewards: LootMajorReward[];
     trialMajorRewards: TrialMajorReward[];
-    affiliations: QuestMajorReward[];
+    questMajorRewards: QuestMajorReward[];
 
     // long-term limits
     lootEnvironmentalLimit: number;

@@ -355,13 +355,13 @@ export class PlayScreen {
                                     </thead>
                                     <tbody>
                                         {
-                                            this.appState.hero.affiliations.length <= 0
+                                            this.appState.hero.questMajorRewards.length <= 0
                                             ? <tr><td colSpan={2}>[None]</td></tr>
-                                            : this.appState.hero.affiliations
-                                                .map((affiliation: QuestMajorReward) => 
-                                                    <tr {...this.findUpdate('affiliations', (data: QuestMajorReward) => data.connection != null && data.groupName == affiliation.groupName) ? {class: 'textRow-highlight'} : {}}>
-                                                        <td>{affiliation.connection.personName}, the {affiliation.connection.personTitle}</td>
-                                                        <td>{capitalizeInitial(affiliation.groupName)}</td>
+                                            : this.appState.hero.questMajorRewards
+                                                .map((reward: QuestMajorReward) => 
+                                                    <tr {...this.findUpdate('questMajorRewards', (data: QuestMajorReward) => data.connection != null && data.groupName == reward.groupName) ? {class: 'textRow-highlight'} : {}}>
+                                                        <td>{reward.connection.personName}, the {reward.connection.personTitle}</td>
+                                                        <td>{capitalizeInitial(reward.groupName)}</td>
                                                     </tr>
                                                 )
                                         }
@@ -377,13 +377,13 @@ export class PlayScreen {
                                     </thead>
                                     <tbody>
                                         {
-                                            this.appState.hero.affiliations.filter(a => a.office != null).length <= 0
+                                            this.appState.hero.questMajorRewards.filter(a => a.office != null).length <= 0
                                             ? <tr><td colSpan={2}>[None]</td></tr>
-                                            : this.appState.hero.affiliations.filter(a => a.office != null)
-                                                .map((affiliation: QuestMajorReward) => 
-                                                    <tr {...this.findUpdate('affiliations', (data: QuestMajorReward) => data.office != null && data.groupName == affiliation.groupName) ? {class: 'textRow-highlight'} : {}}>
-                                                        <td>{capitalizeInitial(affiliation.groupName)}</td>
-                                                        <td>{affiliation.office}</td>
+                                            : this.appState.hero.questMajorRewards.filter(a => a.office != null)
+                                                .map((reward: QuestMajorReward) => 
+                                                    <tr {...this.findUpdate('questMajorRewards', (data: QuestMajorReward) => data.office != null && data.groupName == reward.groupName) ? {class: 'textRow-highlight'} : {}}>
+                                                        <td>{capitalizeInitial(reward.groupName)}</td>
+                                                        <td>{reward.office}</td>
                                                     </tr>
                                                 )
                                         }
