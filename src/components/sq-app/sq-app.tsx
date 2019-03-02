@@ -13,6 +13,7 @@ import { HeroInitData } from '../../models/hero-models';
 import { HeroManager } from '../../services/hero-manager';
 import { PlayTaskGenerator } from '../../services/play-task-generator';
 import { PlayTaskResultGenerator } from '../../services/play-task-result-generator';
+import { TaskMode } from '../../models/task-models';
 
 @Component({
     tag: 'sq-app',
@@ -166,5 +167,5 @@ const DEFAULT_APP_STATE: AppState = {
     hero: null,
     activeTask: null,
     hasActiveTask: false,
-    activeTaskModeIndex: 0,
+    activeTaskMode: TaskMode.LOOT_MODE,
 };

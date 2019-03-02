@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators/map';
 import { Action, SetActiveTask, TaskCompleted, ChangeActiveTaskMode, ActionType, SetActiveHero } from './actions';
 import { Task, AppState, Hero } from '../models/models';
 import { wrapIntoBehavior } from './utils';
+import { TaskMode } from '../models/task-models';
 
 function activeTask(initState: Task, actions: Observable<Action>) {
     return actions.pipe(
@@ -57,14 +58,14 @@ function hero(initState: Hero, actions: Observable<Action>): Observable<Hero> {
     );
 }
 
-function activeTaskMode(initState: number, actions: Observable<Action>): Observable<number> {
+function activeTaskMode(initState: TaskMode, actions: Observable<Action>): Observable<number> {
     return actions.pipe(
         scan((state: number, action: Action) => {
             if (action.actionType === ActionType.ChangeActiveTaskMode) {
-                return (action as ChangeActiveTaskMode).newTaskModeIndex;
+                return (action as ChangeActiveTaskMode).newTaskMode;
             }
             else if (action.actionType === ActionType.SetActiveHero) {
-                return (action as SetActiveHero).newGameState.activeTaskModeIndex;
+                return (action as SetActiveHero).newGameState.activeTaskMode;
             } 
             else {
                 return state;
@@ -80,14 +81,14 @@ export function stateFn(initState: AppState, actions: Observable<Action>): Obser
         hero: s[0],
         activeTask: s[1],
         hasActiveTask: s[2],
-        activeTaskModeIndex: s[3],
+        activeTaskMode: s[3],
     });
     const appStateObs: Observable<AppState> = 
         zip(
             hero(initState.hero, actions),
             activeTask(initState.activeTask, actions),
             hasActiveTask(initState.hasActiveTask, actions),
-            activeTaskMode(initState.activeTaskModeIndex, actions),
+            activeTaskMode(initState.activeTaskMode, actions),
         ).pipe(
             map(combine),
         );

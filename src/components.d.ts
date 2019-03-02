@@ -24,6 +24,9 @@ import {
 import {
   GameSetting,
 } from './global/game-setting';
+import {
+  TaskMode,
+} from './models/task-models';
 
 
 export namespace Components {
@@ -49,7 +52,7 @@ export namespace Components {
     'onClearAllGameData'?: (event: CustomEvent) => void;
     'onDeleteHero'?: (event: CustomEvent<string>) => void;
     'onPlayNewHero'?: (event: CustomEvent<string>) => void;
-    'onTaskModeAction'?: (event: CustomEvent<number>) => void;
+    'onTaskModeAction'?: (event: CustomEvent<TaskMode>) => void;
   }
 
   interface SqProgressBar {

@@ -1,4 +1,5 @@
 import { HeroAbilityType, Adventure, HeroEquipment } from "./hero-models";
+import { TaskMode } from "./task-models";
 
 /** Task related */
 export interface Task {
@@ -110,6 +111,7 @@ export interface Hero {
     maxEncumbrance: number;
     maxEquipmentWear: number;
     maxQuestLogSize: number;
+    // buildUpLimit: number[];
 
     isInTeardownMode: boolean[];
 
@@ -187,7 +189,7 @@ export interface AppState {
     activeTask: Task;
     hasActiveTask: boolean;
     hero: Hero;
-    activeTaskModeIndex: number
+    activeTaskMode: TaskMode;
 }
 
 export interface HeroRace {

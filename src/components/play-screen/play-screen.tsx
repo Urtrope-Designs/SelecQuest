@@ -5,6 +5,7 @@ import { HeroManager } from '../../services/hero-manager';
 import { capitalizeInitial, getRoughTime, generateHeroHashFromHero, toRoman } from '../../global/utils';
 import { HeroAbilityType, HeroAbility } from '../../models/hero-models';
 import { GameSetting } from '../../global/game-setting';
+import { TaskMode } from '../../models/task-models';
 
 @Component({
     tag: 'sq-play-screen',
@@ -21,7 +22,7 @@ export class PlayScreen {
     @State() activeVisibleSection: VisibleSection;
     @State() selectedAvailableHeroHash: string = '';
     @State() heroHashWeAreWaitingFor: string = '';
-    @Event() taskModeAction: EventEmitter<number>;
+    @Event() taskModeAction: EventEmitter<TaskMode>;
     @Event() clearAllGameData: EventEmitter;
     @Event() buildNewHero: EventEmitter;
     @Event() playNewHero: EventEmitter<string>;
@@ -55,7 +56,7 @@ export class PlayScreen {
     }
 
     taskModeButtonClicked(newTaskModeIndex: number) {
-        this.taskModeAction.emit(newTaskModeIndex)
+        this.taskModeAction.emit(TaskMode[TaskMode[newTaskModeIndex]]);
     }
 
     visibleSectionButtonClicked(newVisibleSection: VisibleSection) {
@@ -490,7 +491,7 @@ export class PlayScreen {
                             {
                                 this.gameSetting.taskModeData.map((modeData, index: number) => 
                                     <button 
-                                        {...(this.appState.activeTaskModeIndex != index ? {} : {class: 'selected'})}
+                                        {...(this.appState.activeTaskMode != index ? {} : {class: 'selected'})}
                                         onClick={ () => this.taskModeButtonClicked(index)}
                                     >
                                         {modeData.taskModeActionName}
@@ -499,7 +500,7 @@ export class PlayScreen {
                             }
                         </div>
                         {
-                            this.appState.activeTaskModeIndex == 0
+                            this.appState.activeTaskMode == TaskMode.LOOT_MODE
                                 ? [
                                     <div class="textRow">
                                     {
@@ -516,7 +517,7 @@ export class PlayScreen {
                                         ></sq-progress-bar>
                                     </div>
                                 ]
-                            : this.appState.activeTaskModeIndex == 1
+                            : this.appState.activeTaskMode == TaskMode.TRIAL_MODE
                                 ? [
                                     <div class="textRow">
                                     {

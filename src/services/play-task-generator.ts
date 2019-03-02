@@ -1,4 +1,4 @@
-import { TaskGenerator, GameTaskGeneratorList } from "../models/task-models";
+import { TaskGenerator, GameTaskGeneratorList, TaskMode } from "../models/task-models";
 import { AppState, HeroModification, HeroModificationType, Task, LootingTarget, TaskTargetType, GladiatingTarget, HeroLead, LeadType, LeadTarget, HeroTrophy, HeroLoot, Hero } from "../models/models";
 import { makeStringIndefinite, randRange, randFromList, randSign, capitalizeInitial, makeVerbGerund, generateRandomName } from "../global/utils";
 import { LEAD_GATHERING_TASK_MODIFIERS, TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, TASK_GERUNDS, STANDARD_GLADIATING_TARGETS, STANDARD_LOOTING_TARGETS, STANDARD_LEAD_GATHERING_TARGETS, STANDARD_LEAD_TARGETS, IS_DEBUG } from "../global/config";
@@ -260,7 +260,7 @@ export class PlayTaskGenerator {
     
     triggerSelloffTaskGen: TaskGenerator = {
         shouldRun: (state: AppState) => {
-            if (state.activeTaskModeIndex !== 0) {
+            if (state.activeTaskMode !== TaskMode.LOOT_MODE) {
                 return false;
             }
     
@@ -274,7 +274,7 @@ export class PlayTaskGenerator {
                 {
                     type: HeroModificationType.SET_TEARDOWN_MODE,
                     attributeName: 'isInTeardownMode',
-                    data: [{index: 0, value: true}],
+                    data: [{index: TaskMode.LOOT_MODE, value: true}],
                 }
             ];
             const updatedHero = this.generateResultingHero(state.hero, modifications);
@@ -335,7 +335,7 @@ export class PlayTaskGenerator {
                     {
                         type: HeroModificationType.SET_TEARDOWN_MODE,
                         attributeName: 'isInTeardownMode',
-                        data: [{index: 0, value: false}],
+                        data: [{index: TaskMode.LOOT_MODE, value: false}],
                     }
                 ];
                 const updatedHero = this.generateResultingHero(state.hero, modifications);
@@ -361,7 +361,7 @@ export class PlayTaskGenerator {
                 {
                     type: HeroModificationType.SET_TEARDOWN_MODE,
                     attributeName: 'isInTeardownMode',
-                    data: [{index: 0, value: false}],
+                    data: [{index: TaskMode.LOOT_MODE, value: false}],
                 }
             ];
             const updatedHero = this.generateResultingHero(state.hero, modifications);
@@ -455,7 +455,7 @@ export class PlayTaskGenerator {
     
     triggerBoastingTaskGen: TaskGenerator = {
         shouldRun: (state: AppState) => {
-            if (state.activeTaskModeIndex !== 1) {
+            if (state.activeTaskMode !== TaskMode.TRIAL_MODE) {
                 return false;
             }
     
@@ -469,7 +469,7 @@ export class PlayTaskGenerator {
                 {
                     type: HeroModificationType.SET_TEARDOWN_MODE,
                     attributeName: 'isInTeardownMode',
-                    data: [{index: 1, value: true}],
+                    data: [{index: TaskMode.TRIAL_MODE, value: true}],
                 }
             ];
             const updatedHero = this.generateResultingHero(state.hero, modifications);
@@ -525,7 +525,7 @@ export class PlayTaskGenerator {
                     {
                         type: HeroModificationType.SET_TEARDOWN_MODE,
                         attributeName: 'isInTeardownMode',
-                        data: [{index: 1, value: false}],
+                        data: [{index: TaskMode.TRIAL_MODE, value: false}],
                     },
                 ];
                 const updatedHero = this.generateResultingHero(state.hero, modifications);
@@ -551,7 +551,7 @@ export class PlayTaskGenerator {
                 {
                     type: HeroModificationType.SET_TEARDOWN_MODE,
                     attributeName: 'isInTeardownMode',
-                    data: [{index: 1, value: false}],
+                    data: [{index: TaskMode.TRIAL_MODE, value: false}],
                 }
             ];
             const updatedHero = this.generateResultingHero(state.hero, modifications);
@@ -620,7 +620,7 @@ export class PlayTaskGenerator {
     
     triggerLeadFollowingTaskGen: TaskGenerator = {
         shouldRun: (state: AppState) => {
-            if (state.activeTaskModeIndex !== 2) {
+            if (state.activeTaskMode !== TaskMode.QUEST_MODE) {
                 return false;
             }
     
@@ -631,7 +631,7 @@ export class PlayTaskGenerator {
                 {
                     type: HeroModificationType.SET_TEARDOWN_MODE,
                     attributeName: 'isInTeardownMode',
-                    data: [{index: 2, value: true}],
+                    data: [{index: TaskMode.QUEST_MODE, value: true}],
                 }
             ];
             const updatedHero = this.generateResultingHero(state.hero, modifications);
@@ -706,7 +706,7 @@ export class PlayTaskGenerator {
                     {
                         type: HeroModificationType.SET_TEARDOWN_MODE,
                         attributeName: 'isInTeardownMode',
-                        data: [{index: 2, value: false}],
+                        data: [{index: TaskMode.QUEST_MODE, value: false}],
                     },
                 ];
                 const updatedHero = this.generateResultingHero(state.hero, modifications);
@@ -729,7 +729,7 @@ export class PlayTaskGenerator {
                 {
                     type: HeroModificationType.SET_TEARDOWN_MODE,
                     attributeName: 'isInTeardownMode',
-                    data: [{index: 2, value: false}],
+                    data: [{index: TaskMode.QUEST_MODE, value: false}],
                 }
             ];
             const updatedHero = this.generateResultingHero(state.hero, modifications);
@@ -879,7 +879,7 @@ export class PlayTaskGenerator {
         nextTaskGenerator = this.prioritizedTaskGenerators.coreTaskGenerators.find(taskGen => taskGen.shouldRun(state));
     
         if (!nextTaskGenerator) {
-            const taskGeneratorsForState = this.prioritizedTaskGenerators.adventuringModeTaskGenerators[state.activeTaskModeIndex][+state.hero.isInTeardownMode[state.activeTaskModeIndex]];
+            const taskGeneratorsForState = this.prioritizedTaskGenerators.adventuringModeTaskGenerators[state.activeTaskMode][+state.hero.isInTeardownMode[state.activeTaskMode]];
             nextTaskGenerator = taskGeneratorsForState.find(taskGen => taskGen.shouldRun(state));
         }
     

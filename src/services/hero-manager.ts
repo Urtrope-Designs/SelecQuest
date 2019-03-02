@@ -4,6 +4,7 @@ import { IS_DEBUG } from '../global/config';
 import { GameSettingsManager } from './game-settings-manager';
 import { HeroInitData, HeroAbilityType, HeroEquipment, HeroAbility } from '../models/hero-models';
 import { GameSetting } from '../global/game-setting';
+import { TaskMode } from '../models/task-models';
 
 export class HeroManager {
 
@@ -217,7 +218,7 @@ export class HeroManager {
                     break;
                 case HeroModificationType.SET_TEARDOWN_MODE:
                     /* teardown modes */
-                    result.data.forEach((teardownUpdate: {index: number, value: boolean}) => {
+                    result.data.forEach((teardownUpdate: {index: TaskMode, value: boolean}) => {
                         newHero.isInTeardownMode[teardownUpdate.index] = teardownUpdate.value;
                     })
                     break;

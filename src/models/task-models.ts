@@ -1,5 +1,11 @@
 import { AppState, Task } from "./models";
 
+export enum TaskMode {
+    LOOT_MODE,
+    TRIAL_MODE,
+    QUEST_MODE,
+}
+
 export interface GameTaskGeneratorList {
     coreTaskGenerators: TaskGenerator[],
     adventuringModeTaskGenerators: TaskGenerator[][][],
