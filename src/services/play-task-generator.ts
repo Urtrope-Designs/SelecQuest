@@ -507,9 +507,9 @@ export class PlayTaskGenerator {
                         data: trialBuildUpRewards,
                     },
                     {
-                        type: HeroModificationType.INCREASE,
-                        attributeName: 'renown',
-                        data: renownValue,
+                        type: HeroModificationType.ADD_CURRENCY,
+                        attributeName: 'currency',
+                        data: [{index: TaskMode.TRIAL_MODE, value: renownValue}],
                     },
                 ];
                 const updatedHero = this.generateResultingHero(state.hero, modifications);
@@ -570,16 +570,16 @@ export class PlayTaskGenerator {
             const currentEquipmentIntegrity = state.hero.trialBuildUpRewards.reduce((prevVal, curVal) => {
                 return prevVal + curVal.quantity;
             }, 0);
-            return currentEquipmentIntegrity <= 0 && (state.hero.renown - state.hero.spentRenown) >= PlayTaskGenerator.getTradeInCostForLevel(state.hero.level);
+            return currentEquipmentIntegrity <= 0 && (state.hero.currency[TaskMode.TRIAL_MODE] - state.hero.spentCurrency[TaskMode.TRIAL_MODE]) >= PlayTaskGenerator.getTradeInCostForLevel(state.hero.level);
         },
         generateTask: (state: AppState) => {
             const newAccoladeMod = this.taskResultGenerator.generateNewAccoladeModification(state.hero);
             const modifications = [
                 newAccoladeMod,
                 {
-                    type: HeroModificationType.INCREASE,
-                    attributeName: 'spentRenown',
-                    data: PlayTaskGenerator.getTradeInCostForLevel(state.hero.level),
+                    type: HeroModificationType.ADD_CURRENCY,
+                    attributeName: 'spentCurrency',
+                    data: [{index: TaskMode.TRIAL_MODE, value: PlayTaskGenerator.getTradeInCostForLevel(state.hero.level)}],
                 },
             ];
             const updatedHero = this.generateResultingHero(state.hero, modifications);

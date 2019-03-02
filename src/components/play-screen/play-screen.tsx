@@ -310,8 +310,7 @@ export class PlayScreen {
                                     </tbody>
                                 </table>
                                 <p>
-                                    <div sq-flex class={this.findUpdate('renown') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Renown</span> {this.appState.hero.renown}</div>
-                                    <div sq-flex class={this.findUpdate('spentRenown') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Spent Renown</span> {this.appState.hero.spentRenown}</div>
+                                    <div sq-flex class={this.findUpdate('currency', ((data: TaskMode[]) => data.includes(TaskMode.TRIAL_MODE))) ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Renown</span> {this.appState.hero.currency[TaskMode.TRIAL_MODE]}</div>
                                     <div class="textRow">Equipment Wear</div>
                                     <div class="indentRow">
                                         <sq-progress-bar

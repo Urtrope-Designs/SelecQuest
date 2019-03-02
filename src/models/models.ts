@@ -118,8 +118,6 @@ export interface Hero {
     // currency
     currency: number[];
     spentCurrency: number[];
-    renown: number;
-    spentRenown: number;
     reputation: number;
     spentReputation: number;
 
