@@ -118,8 +118,6 @@ export interface Hero {
     // currency
     currency: number[];
     spentCurrency: number[];
-    reputation: number;
-    spentReputation: number;
 
     // major rewards
     equipment: LootMajorReward[];

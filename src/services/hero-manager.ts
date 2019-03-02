@@ -39,8 +39,6 @@ export class HeroManager {
             get maxQuestBuildUp() {return this.stats[3].value + 10},
             currency: [0, 0, 0],
             spentCurrency: [0, 0, 0],
-            reputation: 0,
-            spentReputation: 0,
             lootBuildUpRewards: [],
             trialBuildUpRewards: [],
             questBuildUpRewards: [],

@@ -663,9 +663,9 @@ export class PlayTaskGenerator {
                         data: [leadToFollow],
                     },
                     {
-                        type: HeroModificationType.INCREASE,
-                        attributeName: 'reputation',
-                        data: reputationValue,
+                        type: HeroModificationType.ADD_CURRENCY,
+                        attributeName: 'currency',
+                        data: [{index: TaskMode.QUEST_MODE, value: reputationValue}],
                     },
                     {
                         type: HeroModificationType.INCREASE,
@@ -745,16 +745,16 @@ export class PlayTaskGenerator {
     
     gainAffiliationTaskGen: TaskGenerator = {
         shouldRun: (state: AppState) => {
-            return state.hero.questBuildUpRewards.length <= 0 && (state.hero.reputation - state.hero.spentReputation) >= PlayTaskGenerator.getTradeInCostForLevel(state.hero.level);
+            return state.hero.questBuildUpRewards.length <= 0 && (state.hero.currency[TaskMode.QUEST_MODE] - state.hero.spentCurrency[TaskMode.QUEST_MODE]) >= PlayTaskGenerator.getTradeInCostForLevel(state.hero.level);
         },
         generateTask: (state: AppState) => {
             const newAffiliationMod = this.taskResultGenerator.generateNewAffiliationModification(state.hero);
             const modifications = [
                 newAffiliationMod,
                 {
-                    type: HeroModificationType.INCREASE,
-                    attributeName: 'spentReputation',
-                    data: PlayTaskGenerator.getTradeInCostForLevel(state.hero.level),
+                    type: HeroModificationType.ADD_CURRENCY,
+                    attributeName: 'spentCurrency',
+                    data: [{index: TaskMode.QUEST_MODE, value: PlayTaskGenerator.getTradeInCostForLevel(state.hero.level)}],
                 },
             ];
             const updatedHero = this.generateResultingHero(state.hero, modifications);

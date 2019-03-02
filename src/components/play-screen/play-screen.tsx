@@ -310,7 +310,9 @@ export class PlayScreen {
                                     </tbody>
                                 </table>
                                 <p>
-                                    <div sq-flex class={this.findUpdate('currency', ((data: TaskMode[]) => data.includes(TaskMode.TRIAL_MODE))) ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Renown</span> {this.appState.hero.currency[TaskMode.TRIAL_MODE]}</div>
+                                    <div sq-flex class={this.findUpdate('currency', ((data: TaskMode[]) => data.includes(TaskMode.TRIAL_MODE))) ? 'textRow textRow-highlight' : 'textRow'}>
+                                        <span sq-mr-auto>Renown</span> {this.appState.hero.currency[TaskMode.TRIAL_MODE]}
+                                    </div>
                                     <div class="textRow">Equipment Wear</div>
                                     <div class="indentRow">
                                         <sq-progress-bar
@@ -389,8 +391,9 @@ export class PlayScreen {
                                     </tbody>
                                 </table>
                                 <p>
-                                    <div sq-flex class={this.findUpdate('reputation') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Reputation</span> {this.appState.hero.reputation}</div>
-                                    <div sq-flex class={this.findUpdate('spentReputation') ? 'textRow textRow-highlight' : 'textRow'}><span sq-mr-auto>Leveraged Reputation</span> {this.appState.hero.spentReputation}</div>
+                                    <div sq-flex class={this.findUpdate('currency', ((data: TaskMode[]) => data.includes(TaskMode.TRIAL_MODE))) ? 'textRow textRow-highlight' : 'textRow'}>
+                                        <span sq-mr-auto>Reputation</span> {this.appState.hero.currency[TaskMode.QUEST_MODE]}
+                                    </div>
                                     <div class="textRow">Questlog</div>
                                     <div class="indentRow">
                                         <sq-progress-bar
