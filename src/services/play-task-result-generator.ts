@@ -1,7 +1,7 @@
 import { GameSettingsManager } from "./game-settings-manager";
 import { Adventure, HeroAbilityType, EquipmentType, HeroEquipment } from "../models/hero-models";
 import { IS_DEBUG, EPITHET_DESCRIPTORS, EPITHET_BEING_ALL, TITLE_POSITIONS_ALL, SOBRIQUET_MODIFIERS, SOBRIQUET_NOUN_PORTION, HONORIFIC_TEMPLATES, STANDARD_GROUPS_INDEFINITE, OFFICE_POSITIONS_ALL } from "../global/config";
-import { Hero, HeroModification, HeroModificationType, HeroAccolade, AccoladeType, HeroTitlePosition, HeroAffiliation, HeroConnection, HeroStat } from "../models/models";
+import { Hero, HeroModification, HeroModificationType, TrialMajorReward, AccoladeType, HeroTitlePosition, QuestMajorReward, HeroConnection, HeroStat } from "../models/models";
 import { randRange, randFromList, randFromListLow, getIterableEnumKeys, capitalizeInitial, randFromListHigh, generateRandomName } from "../global/utils";
 
 export class PlayTaskResultGenerator {
@@ -135,7 +135,7 @@ export class PlayTaskResultGenerator {
         return mod;
     }
     
-    private generateRandomAccolade(hero: Hero): HeroAccolade {
+    private generateRandomAccolade(hero: Hero): TrialMajorReward {
         const newAccoladeType = AccoladeType[randFromList(getIterableEnumKeys(AccoladeType))];
         let newAccoladeDescription = '';
         let exclusions: string = '';
@@ -240,10 +240,10 @@ export class PlayTaskResultGenerator {
         return mod;
     }
     
-    private generateRandomAffiliation(hero: Hero): HeroAffiliation {
-        let newAffiliationData: HeroAffiliation;
+    private generateRandomAffiliation(hero: Hero): QuestMajorReward {
+        let newAffiliationData: QuestMajorReward;
     
-        let newAffiliationFactories: ((hero: Hero) => HeroAffiliation)[] = [];
+        let newAffiliationFactories: ((hero: Hero) => QuestMajorReward)[] = [];
         if (hero.affiliations.length < STANDARD_GROUPS_INDEFINITE.length) {
             newAffiliationFactories.push(this.generateRandomDistinctConnection);
             newAffiliationFactories.push(this.generateRandomDistinctConnection); // double the odds
@@ -264,7 +264,7 @@ export class PlayTaskResultGenerator {
     }
     
     
-    private generateRandomDistinctConnection(hero: Hero): HeroAffiliation {
+    private generateRandomDistinctConnection(hero: Hero): QuestMajorReward {
         const availableDistinctGroups: string[] = STANDARD_GROUPS_INDEFINITE.filter((groupName: string) => {
             return !hero.affiliations.some(a => a.groupName == groupName);
         });
@@ -280,7 +280,7 @@ export class PlayTaskResultGenerator {
             personName: newConnectionName,
             personTitle: newConnectionTitle,
         }
-        const returnData: HeroAffiliation = {
+        const returnData: QuestMajorReward = {
             groupName: newGroupName,
             connection: newConnection,
             office: null,
@@ -288,7 +288,7 @@ export class PlayTaskResultGenerator {
         return returnData;
     }
     
-    private generateRandomDistinctMembership(hero: Hero): HeroAffiliation {
+    private generateRandomDistinctMembership(hero: Hero): QuestMajorReward {
         // list of all groups we have a connection with but don't currently have membership (ie, an office)
         const availableMembershipGroups: string[] = hero.affiliations.filter(a => a.office == null).map(a => a.groupName);
     
@@ -298,7 +298,7 @@ export class PlayTaskResultGenerator {
     
         const newMembershipGroupName = randFromList(availableMembershipGroups);
         const newOffice = OFFICE_POSITIONS_ALL[0];
-        const returnData: HeroAffiliation = {
+        const returnData: QuestMajorReward = {
             groupName: newMembershipGroupName,
             office: newOffice,
             connection: null,
@@ -306,7 +306,7 @@ export class PlayTaskResultGenerator {
         return returnData;
     }
     
-    private generateRandomDistinctHigherOffice(hero: Hero): HeroAffiliation {
+    private generateRandomDistinctHigherOffice(hero: Hero): QuestMajorReward {
         // list of all groups with a non-null office that is also not the highest office
         const availableOfficeGroups: string[] = hero.affiliations.filter(a => this.isNonNullNonHighestOffice(a.office)).map(a => a.groupName);
         if (availableOfficeGroups.length === 0) {
@@ -314,14 +314,14 @@ export class PlayTaskResultGenerator {
         }
         const group = randFromList(availableOfficeGroups);
         
-        const existingAffiliation: HeroAffiliation = hero.affiliations.find(a => a.groupName == group);
+        const existingAffiliation: QuestMajorReward = hero.affiliations.find(a => a.groupName == group);
         // list of all positions higher than currently "held" office, non-dup with the same group's Connection
         const availableOfficePositions: string[] = OFFICE_POSITIONS_ALL.slice(OFFICE_POSITIONS_ALL.indexOf(existingAffiliation.office) + 1).filter(o => {
                 return o != existingAffiliation.connection.personTitle;
             });
         
         const newOffice = randFromListLow(availableOfficePositions, 3);
-        const returnData: HeroAffiliation = {
+        const returnData: QuestMajorReward = {
             groupName: group,
             office: newOffice,
             connection: null,
@@ -411,7 +411,7 @@ export class PlayTaskResultGenerator {
     }
 }
 
-const nullAffiliation: HeroAffiliation = {
+const nullAffiliation: QuestMajorReward = {
     groupName: null,
     connection: null,
     office: null,

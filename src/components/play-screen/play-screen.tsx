@@ -1,6 +1,6 @@
 import { Component, Prop, State, Event, EventEmitter, Element, Watch } from '@stencil/core';
 
-import { AppState, Task, AccoladeType, Hero, HeroAffiliation, HeroStat } from '../../models/models';
+import { AppState, Task, AccoladeType, Hero, QuestMajorReward, HeroStat } from '../../models/models';
 import { HeroManager } from '../../services/hero-manager';
 import { capitalizeInitial, getRoughTime, generateHeroHashFromHero, toRoman } from '../../global/utils';
 import { HeroAbilityType, HeroAbility } from '../../models/hero-models';
@@ -313,9 +313,9 @@ export class PlayScreen {
                                     <div class="textRow">Equipment Wear</div>
                                     <div class="indentRow">
                                         <sq-progress-bar
-                                            totalValue={this.appState.hero.maxTrophyBuildUp}
+                                            totalValue={this.appState.hero.maxTrialBuildUp}
                                             currentValue={this.appState.hero.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}
-                                            tapOverlayText={`${this.appState.hero.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}/${this.appState.hero.maxTrophyBuildUp}`}
+                                            tapOverlayText={`${this.appState.hero.trophies.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}/${this.appState.hero.maxTrialBuildUp}`}
                                         ></sq-progress-bar>
                                     </div>
                                 </p>    
@@ -355,8 +355,8 @@ export class PlayScreen {
                                             this.appState.hero.affiliations.length <= 0
                                             ? <tr><td colSpan={2}>[None]</td></tr>
                                             : this.appState.hero.affiliations
-                                                .map((affiliation: HeroAffiliation) => 
-                                                    <tr {...this.findUpdate('affiliations', (data: HeroAffiliation) => data.connection != null && data.groupName == affiliation.groupName) ? {class: 'textRow-highlight'} : {}}>
+                                                .map((affiliation: QuestMajorReward) => 
+                                                    <tr {...this.findUpdate('affiliations', (data: QuestMajorReward) => data.connection != null && data.groupName == affiliation.groupName) ? {class: 'textRow-highlight'} : {}}>
                                                         <td>{affiliation.connection.personName}, the {affiliation.connection.personTitle}</td>
                                                         <td>{capitalizeInitial(affiliation.groupName)}</td>
                                                     </tr>
@@ -377,8 +377,8 @@ export class PlayScreen {
                                             this.appState.hero.affiliations.filter(a => a.office != null).length <= 0
                                             ? <tr><td colSpan={2}>[None]</td></tr>
                                             : this.appState.hero.affiliations.filter(a => a.office != null)
-                                                .map((affiliation: HeroAffiliation) => 
-                                                    <tr {...this.findUpdate('affiliations', (data: HeroAffiliation) => data.office != null && data.groupName == affiliation.groupName) ? {class: 'textRow-highlight'} : {}}>
+                                                .map((affiliation: QuestMajorReward) => 
+                                                    <tr {...this.findUpdate('affiliations', (data: QuestMajorReward) => data.office != null && data.groupName == affiliation.groupName) ? {class: 'textRow-highlight'} : {}}>
                                                         <td>{capitalizeInitial(affiliation.groupName)}</td>
                                                         <td>{affiliation.office}</td>
                                                     </tr>

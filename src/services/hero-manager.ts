@@ -1,4 +1,4 @@
-import { Hero, HeroModificationType, AccoladeType, HeroModification, HeroAccolade, HeroAffiliation } from '../models/models';
+import { Hero, HeroModificationType, AccoladeType, HeroModification, TrialMajorReward, QuestMajorReward } from '../models/models';
 import { randRange, deepCopyObject, getIterableEnumKeys } from '../global/utils';
 import { IS_DEBUG } from '../global/config';
 import { GameSettingsManager } from './game-settings-manager';
@@ -35,7 +35,7 @@ export class HeroManager {
             accolades: getIterableEnumKeys(AccoladeType).map(typeKey => ({type: AccoladeType[typeKey], received: []})),
             affiliations: [],
             get maxLootBuildUp() {return this.stats[0].value + 10},
-            get maxTrophyBuildUp() {return this.stats[1].value + 10},
+            get maxTrialBuildUp() {return this.stats[1].value + 10},
             get maxQuestBuildUp() {return this.stats[3].value + 10},
             currency: 0,
             renown: 0,
@@ -189,8 +189,8 @@ export class HeroManager {
                     break;
                 case HeroModificationType.ADD_ACCOLADE:
                     /* accolades */
-                    result.data.map((newAccolade: HeroAccolade) => {
-                        const existingAccolade: HeroAccolade = newHero[result.attributeName].find(a => {
+                    result.data.map((newAccolade: TrialMajorReward) => {
+                        const existingAccolade: TrialMajorReward = newHero[result.attributeName].find(a => {
                             return a.type == newAccolade.type;
                         })
                         existingAccolade.received = existingAccolade.received.concat(newAccolade.received);
@@ -202,12 +202,12 @@ export class HeroManager {
                     break;
                 case HeroModificationType.ADD_AFFILIATION:
                     /* affiliations */
-                    result.data.map((newAffiliation: HeroAffiliation) => {
+                    result.data.map((newAffiliation: QuestMajorReward) => {
                         if (newAffiliation.connection != null) {
                             newHero.affiliations.push(newAffiliation);
                         }
                         if (newAffiliation.office != null) {
-                            const existingAffiliation: HeroAffiliation = newHero.affiliations.find(a => {
+                            const existingAffiliation: QuestMajorReward = newHero.affiliations.find(a => {
                                 return a.groupName == newAffiliation.groupName;
                             });
                             existingAffiliation.office = newAffiliation.office;

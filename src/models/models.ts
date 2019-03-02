@@ -1,4 +1,4 @@
-import { HeroAbilityType, Adventure, HeroEquipment } from "./hero-models";
+import { HeroAbilityType, Adventure, HeroEquipment as LootMajorReward } from "./hero-models";
 import { TaskMode } from "./task-models";
 
 /** Task related */
@@ -103,13 +103,13 @@ export interface Hero {
     abilities: HeroAbilityType[];
     
     // build-up rewards
-    loot: HeroLoot[];
-    trophies: HeroTrophy[];
-    leads: HeroLead[];
+    loot: LootBuildUpReward[];
+    trophies: TrialBuildUpReward[];
+    leads: QuestBuildUpReward[];
 
     // build-up limits
     maxLootBuildUp: number;
-    maxTrophyBuildUp: number;
+    maxTrialBuildUp: number;
     maxQuestBuildUp: number;
 
     isInTeardownMode: boolean[];
@@ -121,10 +121,10 @@ export interface Hero {
     reputation: number;
     spentReputation: number;
 
-    // long-term rewards
-    equipment: HeroEquipment[];
-    accolades: HeroAccolade[];
-    affiliations: HeroAffiliation[];
+    // major rewards
+    equipment: LootMajorReward[];
+    accolades: TrialMajorReward[];
+    affiliations: QuestMajorReward[];
 
     // long-term limits
     lootEnvironmentalLimit: number;
@@ -141,12 +141,12 @@ export interface Hero {
     gameSettingId: string;
 }
 
-export interface HeroAccolade {
+export interface TrialMajorReward {
     type: AccoladeType,
     received: string[],
 };
 
-export interface HeroAffiliation {
+export interface QuestMajorReward {
     groupName: string,
     connection: HeroConnection,
     office: string,
@@ -157,19 +157,19 @@ export interface HeroConnection {
     personTitle: string,
 }
 
-export interface HeroLoot {
+export interface LootBuildUpReward {
     name: string,
     quantity: number,
     value: number,
 };
 
-export interface HeroTrophy {
+export interface TrialBuildUpReward {
     name: string,
     quantity: number,
     value: number,
 };
 
-export interface HeroLead {
+export interface QuestBuildUpReward {
     questlogName: string,
     taskName: string,
     value: number,

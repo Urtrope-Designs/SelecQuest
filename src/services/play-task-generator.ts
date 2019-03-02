@@ -1,5 +1,5 @@
 import { TaskGenerator, GameTaskGeneratorList, TaskMode } from "../models/task-models";
-import { AppState, HeroModification, HeroModificationType, Task, LootingTarget, TaskTargetType, GladiatingTarget, HeroLead, LeadType, LeadTarget, HeroTrophy, HeroLoot, Hero } from "../models/models";
+import { AppState, HeroModification, HeroModificationType, Task, LootingTarget, TaskTargetType, GladiatingTarget, QuestBuildUpReward, LeadType, LeadTarget, TrialBuildUpReward, LootBuildUpReward, Hero } from "../models/models";
 import { makeStringIndefinite, randRange, randFromList, randSign, capitalizeInitial, makeVerbGerund, generateRandomName } from "../global/utils";
 import { LEAD_GATHERING_TASK_MODIFIERS, TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, TASK_GERUNDS, STANDARD_GLADIATING_TARGETS, STANDARD_LOOTING_TARGETS, STANDARD_LEAD_GATHERING_TARGETS, STANDARD_LEAD_TARGETS, IS_DEBUG } from "../global/config";
 import { PlayTaskResultGenerator } from "./play-task-result-generator";
@@ -96,9 +96,9 @@ export class PlayTaskGenerator {
     }
 
     //logic stolen pretty much directly from PQ
-    private generateLootingTaskContentsFromLevel(level: number): {taskName: string, taskLevel: number, lootData: HeroLoot[]} {
+    private generateLootingTaskContentsFromLevel(level: number): {taskName: string, taskLevel: number, lootData: LootBuildUpReward[]} {
         let taskName = '';
-        let lootData: HeroLoot[] = [];
+        let lootData: LootBuildUpReward[] = [];
 
         let targetLevel = PlayTaskGenerator.randomizeTargetLevel(level);
 
@@ -121,10 +121,10 @@ export class PlayTaskGenerator {
         return {taskName: taskName, taskLevel: targetLevel * quantity, lootData: lootData};
     }
 
-    private generateGladiatingTaskContents(curHero: Hero): {taskName: string, taskLevel: number, trophyData: HeroTrophy[]} {
+    private generateGladiatingTaskContents(curHero: Hero): {taskName: string, taskLevel: number, trophyData: TrialBuildUpReward[]} {
         const gameSetting = this.gameSettingsMgr.getGameSettingById(curHero.gameSettingId);
         let taskName = '';
-        let trophyData: HeroTrophy[] = [];
+        let trophyData: TrialBuildUpReward[] = [];
 
         let targetLevel = PlayTaskGenerator.randomizeTargetLevel(curHero.level);
         let taskLevel = targetLevel;
@@ -175,7 +175,7 @@ export class PlayTaskGenerator {
         return {taskName: taskName, taskLevel: taskLevel, trophyData: trophyData};
     }
 
-    private generateInvestigatingTaskContents(): {taskName: string, leadData: HeroLead[]} {
+    private generateInvestigatingTaskContents(): {taskName: string, leadData: QuestBuildUpReward[]} {
         let investigatingTaskName = '';
         let leadData = [];
 
@@ -187,7 +187,7 @@ export class PlayTaskGenerator {
         const leadTarget: LeadTarget = randFromList(STANDARD_LEAD_TARGETS[leadTargetType]);
 
         const leadPredicate = leadTarget.predicateFactory.apply(null);
-        const lead: HeroLead = {
+        const lead: QuestBuildUpReward = {
             questlogName: capitalizeInitial(`${leadTarget.verb} ${leadPredicate}`),
             taskName: capitalizeInitial(`${makeVerbGerund(leadTarget.verb)} ${leadPredicate}`),
             value: 1,
@@ -462,7 +462,7 @@ export class PlayTaskGenerator {
             const currentEquipmentWear = state.hero.trophies.reduce((prevVal, curVal) => {
                 return prevVal + curVal.quantity;
             }, 0);
-            return currentEquipmentWear >= state.hero.maxTrophyBuildUp;
+            return currentEquipmentWear >= state.hero.maxTrialBuildUp;
         },
         generateTask: (state: AppState) => {
             const modifications = [
