@@ -22,6 +22,7 @@ export class GameSetting {
     readonly lootMajorRewardTypes: LootMajorRewardType[];
     readonly lootMajorRewardMaterialTypes: LootMajorRewardMaterialType[];
     readonly lootMajorRewardModifierTypes: LootMajorRewardModifierType[];
+    readonly gameViewTabDisplayNames: string[];
     readonly taskModeData: TaskModeData[];
  
 
@@ -53,6 +54,15 @@ export class GameSetting {
         }
         this.lootMajorRewardMaterialTypes = config.lootMajorRewardMaterialTypes;
         this.lootMajorRewardModifierTypes = config.lootMajorRewardModifierTypes;
+
+        if (config.gameViewTabDisplayNames.length != 5) {
+            throw 'Length of gameViewTabDisplayNames array not equal to 5 in ' + config.gameSettingName;
+        }
+        if (config.gameViewTabDisplayNames.some(name => name.length > 8)) {
+            throw 'At least one gameViewTabDisplayName longer than 8 characters in ' + config.gameSettingName;
+        }
+        this.gameViewTabDisplayNames = config.gameViewTabDisplayNames;
+
         this.taskModeData = config.taskModeData;
     }
 }

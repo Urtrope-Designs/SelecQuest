@@ -21,6 +21,7 @@ export interface GameSettingConfig {
     lootMajorRewardMaterialTypes: LootMajorRewardMaterialType[],
     lootMajorRewardModifierTypes: LootMajorRewardModifierType[],
     taskModeData: TaskModeData[],
+    gameViewTabDisplayNames: string[],          // length of array must be 5, each string must be 8 or fewer characters
 }
 
 export interface AbilityType {

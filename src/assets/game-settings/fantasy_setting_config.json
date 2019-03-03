@@ -428,6 +428,13 @@
             ]
         }
     ],
+    "gameViewTabDisplayNames": [
+        "Hero",
+        "Gear",
+        "Deeds",
+        "Story",
+        "Game"
+    ],
     "taskModeData": [
         {
             "taskModeActionName": "Loot Mode",

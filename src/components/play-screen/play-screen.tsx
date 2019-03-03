@@ -19,7 +19,7 @@ export class PlayScreen {
     @Element() homeEl: HTMLElement;
     private activeTaskProgressInterval: number;
     @State() activeTaskProgressMs: number = 0;
-    @State() activeVisibleSection: VisibleSection;
+    @State() activeGameViewTab: string;
     @State() selectedAvailableHeroHash: string = '';
     @State() heroHashWeAreWaitingFor: string = '';
     @Event() taskModeAction: EventEmitter<TaskMode>;
@@ -36,7 +36,7 @@ export class PlayScreen {
         if (!!newState.hero && generateHeroHashFromHero(newState.hero) == this.heroHashWeAreWaitingFor) {
             this.heroHashWeAreWaitingFor = '';
             this.selectedAvailableHeroHash = '';
-            this.activeVisibleSection = VisibleSection.hero;
+            this.activeGameViewTab = this.gameSetting.gameViewTabDisplayNames[GameViewTab.HERO];
         }
     }
 
@@ -49,7 +49,7 @@ export class PlayScreen {
     }
 
     componentWillLoad() {
-        this.activeVisibleSection = VisibleSection.hero;
+        this.activeGameViewTab = this.gameSetting.gameViewTabDisplayNames[GameViewTab.HERO];
         if (!!this.appState && this.appState.hasActiveTask) {
             this._updateTaskTimer();
         }
@@ -59,8 +59,8 @@ export class PlayScreen {
         this.taskModeAction.emit(TaskMode[TaskMode[newTaskModeIndex]]);
     }
 
-    visibleSectionButtonClicked(newVisibleSection: VisibleSection) {
-        this.activeVisibleSection = newVisibleSection;
+    gameViewTabClicked(selectedGameViewTab: string) {
+        this.activeGameViewTab = selectedGameViewTab;
         const contentElem: HTMLIonContentElement = this.homeEl.querySelector('ion-content');
         contentElem.scrollToTop(0);
     }
@@ -150,12 +150,12 @@ export class PlayScreen {
                         </div>
                         <div class="buttonRow">
                             {
-                                Object.keys(VisibleSection).map(sectionName => 
+                                this.gameSetting.gameViewTabDisplayNames.map(tabName => 
                                     <button 
-                                    {...(this.activeVisibleSection == VisibleSection[sectionName] ? {class: 'selected'} : {})}
-                                    onClick={ () => this.visibleSectionButtonClicked(VisibleSection[sectionName])}
+                                    {...(this.activeGameViewTab == tabName ? {class: 'selected'} : {})}
+                                    onClick={ () => this.gameViewTabClicked(tabName)}
                                     >
-                                        {VisibleSection[sectionName]}
+                                        {tabName}
                                     </button>
                                 )
                             }
@@ -164,7 +164,7 @@ export class PlayScreen {
                     </ion-header>
                     <ion-content>
                         {
-                            this.activeVisibleSection == VisibleSection.hero 
+                            this.activeGameViewTab == this.gameSetting.gameViewTabDisplayNames[GameViewTab.HERO]
                             ? <section>
                                 <table class="listBox">
                                     <thead>
@@ -233,7 +233,7 @@ export class PlayScreen {
                                     )
                                 }
                             </section>
-                            : this.activeVisibleSection == VisibleSection.gear
+                            : this.activeGameViewTab == this.gameSetting.gameViewTabDisplayNames[GameViewTab.GEAR]
                             ? <section>
                                 <table class="listBox">
                                     <thead>
@@ -292,7 +292,7 @@ export class PlayScreen {
                                     </tbody>
                                 </table>
                             </section>
-                            : this.activeVisibleSection == VisibleSection.deeds
+                            : this.activeGameViewTab == this.gameSetting.gameViewTabDisplayNames[GameViewTab.DEEDS]
                             ? <section>
                                 <table class="listBox">
                                     <thead>
@@ -352,7 +352,7 @@ export class PlayScreen {
                                     </tbody>
                                 </table>
                             </section>
-                            : this.activeVisibleSection == VisibleSection.story
+                            : this.activeGameViewTab == this.gameSetting.gameViewTabDisplayNames[GameViewTab.STORY]
                             ? <section>                    
                                 <table class="listBox">
                                     <thead>
@@ -589,10 +589,10 @@ export class PlayScreen {
     }
 }
 
-enum VisibleSection {
-    hero = "Hero",
-    gear = "Gear",
-    deeds = "Deeds",
-    story = "Story",
-    game = "Game",
+enum GameViewTab {
+    HERO,
+    GEAR,
+    DEEDS,
+    STORY,
+    GAME,
 }
