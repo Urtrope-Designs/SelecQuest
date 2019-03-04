@@ -261,7 +261,7 @@ export class PlayScreen {
                                     <div sq-flex class={this.findUpdate('currency', ((data: TaskMode[]) => data.includes(TaskMode.LOOT_MODE))) ? 'textRow textRow-highlight' : 'textRow'}>
                                         <span sq-mr-auto>{this.gameSetting.taskModeData[0].currencyDisplayName}</span> {this.getCurrencyDisplayValue(this.appState.hero, TaskMode.LOOT_MODE)}
                                     </div>
-                                    <div class="textRow">Encumbrance</div>
+                                    <div class="textRow">{this.gameSetting.taskModeData[0].buildUpLimitDisplayName}</div>
                                     <div class="indentRow">
                                         <sq-progress-bar
                                             totalValue={this.appState.hero.maxLootBuildUp}
@@ -321,7 +321,7 @@ export class PlayScreen {
                                     <div sq-flex class={this.findUpdate('currency', ((data: TaskMode[]) => data.includes(TaskMode.TRIAL_MODE))) ? 'textRow textRow-highlight' : 'textRow'}>
                                         <span sq-mr-auto>{this.gameSetting.taskModeData[1].currencyDisplayName}</span> {this.getCurrencyDisplayValue(this.appState.hero, TaskMode.TRIAL_MODE)}
                                     </div>
-                                    <div class="textRow">Equipment Wear</div>
+                                    <div class="textRow">{this.gameSetting.taskModeData[1].buildUpLimitDisplayName}</div>
                                     <div class="indentRow">
                                         <sq-progress-bar
                                             totalValue={this.appState.hero.maxTrialBuildUp}
@@ -402,7 +402,7 @@ export class PlayScreen {
                                     <div sq-flex class={this.findUpdate('currency', ((data: TaskMode[]) => data.includes(TaskMode.TRIAL_MODE))) ? 'textRow textRow-highlight' : 'textRow'}>
                                         <span sq-mr-auto>{this.gameSetting.taskModeData[2].currencyDisplayName}</span> {this.getCurrencyDisplayValue(this.appState.hero, TaskMode.QUEST_MODE)}
                                     </div>
-                                    <div class="textRow">Questlog</div>
+                                    <div class="textRow">{this.gameSetting.taskModeData[2].buildUpLimitDisplayName}</div>
                                     <div class="indentRow">
                                         <sq-progress-bar
                                             totalValue={this.appState.hero.maxQuestBuildUp}
