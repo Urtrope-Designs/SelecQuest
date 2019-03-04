@@ -63,6 +63,10 @@ export class GameSetting {
         }
         this.gameViewTabDisplayNames = config.gameViewTabDisplayNames;
 
+        /** Validating taskModeData */
+        if (config.taskModeData[0].majorRewardDisplayName.length != 1 || config.taskModeData[1].majorRewardDisplayName.length != 1 || config.taskModeData[2].majorRewardDisplayName.length != 4) {
+            throw 'Must have exactly 1 MajorRewardDisplayName for LOOT mode and TRIAL mode, and exactly 4 MajorRewardDisplayName for QUEST mode; in ' + config.gameSettingName;
+        }
         this.taskModeData = config.taskModeData;
     }
 }

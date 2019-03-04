@@ -56,4 +56,6 @@ export interface TaskModeData {
     isCurrencyCumulative: boolean,
     buildUpLimitBaseStatIndex: number,
     environmentalLimitBaseStatIndex: number,
+    majorRewardDisplayName: string[],       // must have length of 1 for Loot & Trial modes, length of 4 for Quest mode
+    currencyDisplayName: string,
 };
