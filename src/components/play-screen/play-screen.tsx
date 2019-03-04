@@ -273,7 +273,7 @@ export class PlayScreen {
                                 <table class="listBox">
                                     <thead>
                                         <tr>
-                                            <th style={{width: "65%"}}>Loot</th>
+                                            <th style={{width: "65%"}}>{this.gameSetting.taskModeData[0].buildUpRewardDisplayName}</th>
                                             <th>Qty</th>
                                         </tr>
                                     </thead>
@@ -333,7 +333,7 @@ export class PlayScreen {
                                 <table class="listBox">
                                     <thead>
                                         <tr>
-                                            <th style={{width: "65%"}}>Trophies</th>
+                                            <th style={{width: "65%"}}>{this.gameSetting.taskModeData[1].buildUpRewardDisplayName}</th>
                                             <th>Qty</th>
                                         </tr>
                                     </thead>
@@ -414,7 +414,7 @@ export class PlayScreen {
                                 <table class="listBox">
                                     <thead>
                                         <tr>
-                                            <th>Quests</th>
+                                            <th>{this.gameSetting.taskModeData[2].buildUpRewardDisplayName}</th>
                                         </tr>
                                     </thead>
                                     <tbody>

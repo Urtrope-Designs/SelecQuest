@@ -443,7 +443,8 @@
             "environmentalLimitBaseStatIndex": 3,
             "majorRewardDisplayName": ["Equipment"],
             "currencyDisplayName": "Gold",
-            "buildUpLimitDisplayName": "Encumbrance"
+            "buildUpLimitDisplayName": "Encumbrance",
+            "buildUpRewardDisplayName": "Loot"
         },
         {
             "taskModeActionName": "Trial Mode",
@@ -452,7 +453,8 @@
             "environmentalLimitBaseStatIndex": 5,
             "majorRewardDisplayName": ["Accolades"],
             "currencyDisplayName": "Renown",
-            "buildUpLimitDisplayName": "Fatigue"
+            "buildUpLimitDisplayName": "Fatigue",
+            "buildUpRewardDisplayName": "Trophies"
         },
         {
             "taskModeActionName": "Quest Mode",
@@ -461,7 +463,8 @@
             "environmentalLimitBaseStatIndex": 4,
             "majorRewardDisplayName": ["Connections", "Group", "Memberships", "Office"],
             "currencyDisplayName": "Reputation",
-            "buildUpLimitDisplayName": "Questlog"
+            "buildUpLimitDisplayName": "Questlog",
+            "buildUpRewardDisplayName": "Quests"
         }
     ]
 }

@@ -59,4 +59,5 @@ export interface TaskModeData {
     majorRewardDisplayName: string[],       // must have length of 1 for Loot & Trial modes, length of 4 for Quest mode
     currencyDisplayName: string,
     buildUpLimitDisplayName: string,
+    buildUpRewardDisplayName: string,
 };
