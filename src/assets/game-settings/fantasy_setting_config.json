@@ -444,7 +444,9 @@
             "majorRewardDisplayName": ["Equipment"],
             "currencyDisplayName": "Gold",
             "buildUpLimitDisplayName": "Encumbrance",
-            "buildUpRewardDisplayName": "Loot"
+            "buildUpRewardDisplayName": "Loot",
+            "environmentalLimitDisplayName": "Market Saturation",
+            "environmentalLimitBreakDisplayName": "Maket Saturated"
         },
         {
             "taskModeActionName": "Trial Mode",
@@ -454,7 +456,9 @@
             "majorRewardDisplayName": ["Accolades"],
             "currencyDisplayName": "Renown",
             "buildUpLimitDisplayName": "Fatigue",
-            "buildUpRewardDisplayName": "Trophies"
+            "buildUpRewardDisplayName": "Trophies",
+            "environmentalLimitDisplayName": "Competitive Demand",
+            "environmentalLimitBreakDisplayName": "Overhyped"
         },
         {
             "taskModeActionName": "Quest Mode",
@@ -464,7 +468,9 @@
             "majorRewardDisplayName": ["Connections", "Group", "Memberships", "Office"],
             "currencyDisplayName": "Reputation",
             "buildUpLimitDisplayName": "Questlog",
-            "buildUpRewardDisplayName": "Quests"
+            "buildUpRewardDisplayName": "Quests",
+            "environmentalLimitDisplayName": "Social Exposure",
+            "environmentalLimitBreakDisplayName": "Overexposed"
         }
     ]
 }

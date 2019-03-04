@@ -517,8 +517,8 @@ export class PlayScreen {
                                     <div class="textRow">
                                     {
                                         this.appState.hero.lootEnvironmentalLimit >= this.appState.hero.maxLootEnvironmentalLimit 
-                                        ? <b style={{display: 'block', textAlign: 'center'}}>&#9733; MARKET SATURATED &#9733;</b>
-                                        : <span>Market Saturation</span>
+                                        ? <b style={{display: 'block', textAlign: 'center'}}>&#9733; {this.gameSetting.taskModeData[0].environmentalLimitBreakDisplayName.toLocaleUpperCase()} &#9733;</b>
+                                        : <span>{this.gameSetting.taskModeData[0].environmentalLimitDisplayName}</span>
                                     }
                                     </div>,
                                     <div class="indentRow">
@@ -534,8 +534,8 @@ export class PlayScreen {
                                     <div class="textRow">
                                     {
                                         this.appState.hero.trialEnvironmentalLimit >= this.appState.hero.maxTrialEnvironmentalLimit
-                                        ? <b style={{display: 'block', textAlign: 'center'}}>&#9733; FATIGUED &#9733;</b>
-                                        : <span>Fatigue</span>
+                                        ? <b style={{display: 'block', textAlign: 'center'}}>&#9733; {this.gameSetting.taskModeData[1].environmentalLimitBreakDisplayName.toLocaleUpperCase()} &#9733;</b>
+                                        : <span>{this.gameSetting.taskModeData[1].environmentalLimitDisplayName}</span>
                                     }
                                     </div>,
                                     <div class="indentRow">
@@ -550,8 +550,8 @@ export class PlayScreen {
                                 <div class="textRow">
                                 {
                                     this.appState.hero.questEnvironmentalLimit >= this.appState.hero.maxQuestEnvironmentalLimit
-                                    ? <b style={{display: 'block', textAlign: 'center'}}>&#9733; OVEREXPOSED &#9733;</b>
-                                    : <span>Social Exposure</span>
+                                    ? <b style={{display: 'block', textAlign: 'center'}}>&#9733; {this.gameSetting.taskModeData[2].environmentalLimitBreakDisplayName.toLocaleUpperCase()} &#9733;</b>
+                                    : <span>{this.gameSetting.taskModeData[2].environmentalLimitDisplayName}</span>
 
                                 }
                                 </div>,

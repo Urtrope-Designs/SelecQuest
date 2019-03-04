@@ -60,4 +60,6 @@ export interface TaskModeData {
     currencyDisplayName: string,
     buildUpLimitDisplayName: string,
     buildUpRewardDisplayName: string,
+    environmentalLimitDisplayName: string,
+    environmentalLimitBreakDisplayName: string,
 };
