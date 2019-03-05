@@ -1,7 +1,7 @@
 import { TaskGenerator, GameTaskGeneratorList, TaskMode } from "../models/task-models";
 import { AppState, HeroModification, HeroModificationType, Task, LootingTarget, TaskTargetType, GladiatingTarget, QuestBuildUpReward, LeadType, LeadTarget, TrialBuildUpReward, LootBuildUpReward, Hero } from "../models/models";
 import { makeStringIndefinite, randRange, randFromList, randSign, capitalizeInitial, makeVerbGerund, generateRandomName } from "../global/utils";
-import { LEAD_GATHERING_TASK_MODIFIERS, TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, TASK_GERUNDS, STANDARD_GLADIATING_TARGETS, STANDARD_LOOTING_TARGETS, STANDARD_LEAD_GATHERING_TARGETS, STANDARD_LEAD_TARGETS, IS_DEBUG } from "../global/config";
+import { TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, TASK_GERUNDS, STANDARD_GLADIATING_TARGETS, STANDARD_LOOTING_TARGETS, STANDARD_LEAD_GATHERING_TARGETS, STANDARD_LEAD_TARGETS, IS_DEBUG } from "../global/config";
 import { PlayTaskResultGenerator } from "./play-task-result-generator";
 import { HeroManager } from "./hero-manager";
 import { GameSettingsManager } from "./game-settings-manager";
@@ -349,7 +349,7 @@ export class PlayTaskGenerator {
         }
     };
     
-    endSelloffTaskGen: TaskGenerator = {
+    startLootBuildUpTaskGenerator: TaskGenerator = {
         shouldRun: (state: AppState) => {
             const currentEncumbrance = state.hero.lootBuildUpRewards.reduce((prevVal, curVal) => {
                 return prevVal + curVal.quantity;
@@ -357,6 +357,7 @@ export class PlayTaskGenerator {
             return currentEncumbrance <= 0;
         },
         generateTask: (state: AppState) => {
+            const gameSetting = this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId);
             const modifications = [
                 {
                     type: HeroModificationType.SET_TEARDOWN_MODE,
@@ -366,7 +367,7 @@ export class PlayTaskGenerator {
             ];
             const updatedHero = this.generateResultingHero(state.hero, modifications);
             const newTask: Task = {
-                description: 'Heading out to find some swag',
+                description: randFromList(gameSetting.taskModeData[TaskMode.LOOT_MODE].startBuildUpTaskDescriptionOptions),
                 durationMs: 4 * 1000,
                 resultingHero: updatedHero
             }
@@ -539,7 +540,7 @@ export class PlayTaskGenerator {
         }
     };
     
-    endBoastingTaskGen: TaskGenerator = {
+    startTrialBuildUpTaskGenerator: TaskGenerator = {
         shouldRun: (state: AppState) => {
             const currentTrialBuildUp = state.hero.trialBuildUpRewards.reduce((prevVal, curVal) => {
                 return prevVal + curVal.quantity;
@@ -547,6 +548,7 @@ export class PlayTaskGenerator {
             return currentTrialBuildUp <= 0;
         },
         generateTask: (state: AppState) => {
+            const gameSetting = this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId);
             const modifications = [
                 {
                     type: HeroModificationType.SET_TEARDOWN_MODE,
@@ -556,7 +558,7 @@ export class PlayTaskGenerator {
             ];
             const updatedHero = this.generateResultingHero(state.hero, modifications);
             const newTask: Task = {
-                description: 'Heading off in search of glory',
+                description: randFromList(gameSetting.taskModeData[TaskMode.TRIAL_MODE].startBuildUpTaskDescriptionOptions),
                 durationMs: 4 * 1000,
                 resultingHero: updatedHero,
             };
@@ -720,11 +722,12 @@ export class PlayTaskGenerator {
         }
     };
     
-    endLeadFollowingTaskGen: TaskGenerator = {
+    startQuestBuildUpTaskGenerator: TaskGenerator = {
         shouldRun: (state: AppState) => {
             return state.hero.questBuildUpRewards.length <= 0;
         },
         generateTask: (state: AppState) => {
+            const gameSetting = this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId);
             const modifications = [
                 {
                     type: HeroModificationType.SET_TEARDOWN_MODE,
@@ -734,7 +737,7 @@ export class PlayTaskGenerator {
             ];
             const updatedHero = this.generateResultingHero(state.hero, modifications);
             const newTask: Task = {
-                description: `Rooting out some ${randFromList(LEAD_GATHERING_TASK_MODIFIERS)} leads`,
+                description: randFromList(gameSetting.taskModeData[TaskMode.QUEST_MODE].startBuildUpTaskDescriptionOptions),
                 durationMs: 4 * 1000,
                 resultingHero: updatedHero,
             };
@@ -845,7 +848,7 @@ export class PlayTaskGenerator {
                 ],
                 [       // teardownMode[0] == true
                     this.purchaseLootMajorRewardTaskGen,
-                    this.endSelloffTaskGen,
+                    this.startLootBuildUpTaskGenerator,
                     this.selloffTaskGen,
                 ],
             ],
@@ -856,7 +859,7 @@ export class PlayTaskGenerator {
                 ],
                 [       // teardownMode[1] == true
                     this.earnTrialMajorRewardTaskGen,
-                    this.endBoastingTaskGen,
+                    this.startTrialBuildUpTaskGenerator,
                     this.boastingTaskGen,
                 ],
             ],
@@ -867,7 +870,7 @@ export class PlayTaskGenerator {
                 ],
                 [       // teardownMode[2] == true
                     this.gainQuestMajorRewardTaskGen,
-                    this.endLeadFollowingTaskGen,
+                    this.startQuestBuildUpTaskGenerator,
                     this.leadFollowingTaskGen,
                 ]
             ]

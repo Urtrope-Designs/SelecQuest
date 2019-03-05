@@ -211,14 +211,6 @@ export const STANDARD_GLADIATING_TARGETS: GladiatingTarget[] = [
     },
 ]
 
-export const LEAD_GATHERING_TASK_MODIFIERS: string[] = [
-    'hot',
-    'fresh',
-    'new',
-    'buzzworthy',
-    'salacious',
-]
-
 export const STANDARD_LEAD_GATHERING_TARGETS: LeadGatheringTarget[] = [
     {
         gerundPhrase: 'gossipping with',

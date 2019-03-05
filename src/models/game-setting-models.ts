@@ -62,4 +62,5 @@ export interface TaskModeData {
     buildUpRewardDisplayName: string,
     environmentalLimitDisplayName: string,
     environmentalLimitBreakDisplayName: string,
+    startBuildUpTaskDescriptionOptions: string[],
 };
