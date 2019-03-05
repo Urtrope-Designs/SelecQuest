@@ -258,7 +258,7 @@ export class PlayTaskGenerator {
         },
     };
     
-    triggerSelloffTaskGen: TaskGenerator = {
+    startLootTearDownTaskGenerator: TaskGenerator = {
         shouldRun: (state: AppState) => {
             if (state.activeTaskMode !== TaskMode.LOOT_MODE) {
                 return false;
@@ -270,6 +270,7 @@ export class PlayTaskGenerator {
             return currentEncumbrance >= state.hero.maxLootBuildUp;
         },
         generateTask: (state: AppState) => {
+            const gameSetting = this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId);
             const modifications = [
                 {
                     type: HeroModificationType.SET_TEARDOWN_MODE,
@@ -279,7 +280,7 @@ export class PlayTaskGenerator {
             ];
             const updatedHero = this.generateResultingHero(state.hero, modifications);
             const newTask: Task = {
-                description: 'Heading to market to pawn your loot',
+                description: randFromList(gameSetting.taskModeData[TaskMode.LOOT_MODE].startTearDownTaskDescriptionOptions),
                 durationMs: 4 * 1000,
                 resultingHero: updatedHero,
             }
@@ -454,7 +455,7 @@ export class PlayTaskGenerator {
         }
     };
     
-    triggerBoastingTaskGen: TaskGenerator = {
+    startTrialTearDownTaskGenerator: TaskGenerator = {
         shouldRun: (state: AppState) => {
             if (state.activeTaskMode !== TaskMode.TRIAL_MODE) {
                 return false;
@@ -466,6 +467,7 @@ export class PlayTaskGenerator {
             return currentTrialBuildUp >= state.hero.maxTrialBuildUp;
         },
         generateTask: (state: AppState) => {
+            const gameSetting = this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId);
             const modifications = [
                 {
                     type: HeroModificationType.SET_TEARDOWN_MODE,
@@ -475,7 +477,7 @@ export class PlayTaskGenerator {
             ];
             const updatedHero = this.generateResultingHero(state.hero, modifications);
             const newTask: Task = {
-                description: 'Heading to the nearest inn to boast of your recent deeds while your armor is repaired',
+                description: randFromList(gameSetting.taskModeData[TaskMode.TRIAL_MODE].startTearDownTaskDescriptionOptions),
                 durationMs: 4 * 1000,
                 resultingHero: updatedHero,
             }
@@ -620,7 +622,7 @@ export class PlayTaskGenerator {
         }
     };
     
-    triggerLeadFollowingTaskGen: TaskGenerator = {
+    startQuestTearDownTaskGenerator: TaskGenerator = {
         shouldRun: (state: AppState) => {
             if (state.activeTaskMode !== TaskMode.QUEST_MODE) {
                 return false;
@@ -629,6 +631,7 @@ export class PlayTaskGenerator {
             return state.hero.questBuildUpRewards.length >= state.hero.maxQuestBuildUp;
         },
         generateTask: (state: AppState) => {
+            const gameSetting = this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId);
             const modifications = [
                 {
                     type: HeroModificationType.SET_TEARDOWN_MODE,
@@ -639,7 +642,7 @@ export class PlayTaskGenerator {
             const updatedHero = this.generateResultingHero(state.hero, modifications);
 
             const newTask: Task = {
-                description: 'Organizing your Questlog',
+                description: randFromList(gameSetting.taskModeData[TaskMode.QUEST_MODE].startTearDownTaskDescriptionOptions),
                 durationMs: 4 * 1000,
                 resultingHero: updatedHero,
             };
@@ -843,7 +846,7 @@ export class PlayTaskGenerator {
         adventuringModeTaskGenerators: [
             [           // Adventuring Mode 0
                 [       // teardownMode[0] == false
-                    this.triggerSelloffTaskGen,
+                    this.startLootTearDownTaskGenerator,
                     this.lootingTaskGen,
                 ],
                 [       // teardownMode[0] == true
@@ -854,7 +857,7 @@ export class PlayTaskGenerator {
             ],
             [           // Adventuring Mode 1
                 [       // teardownMode[1] == false
-                    this.triggerBoastingTaskGen,
+                    this.startTrialTearDownTaskGenerator,
                     this.gladiatingTaskGen,
                 ],
                 [       // teardownMode[1] == true
@@ -865,7 +868,7 @@ export class PlayTaskGenerator {
             ],
             [           // Adventuring Mode 2
                 [       // teardownMode[2] == false
-                    this.triggerLeadFollowingTaskGen,
+                    this.startQuestTearDownTaskGenerator,
                     this.investigatingTaskGen,
                 ],
                 [       // teardownMode[2] == true

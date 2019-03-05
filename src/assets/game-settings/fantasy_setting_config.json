@@ -447,7 +447,8 @@
             "buildUpRewardDisplayName": "Loot",
             "environmentalLimitDisplayName": "Market Saturation",
             "environmentalLimitBreakDisplayName": "Maket Saturated",
-            "startBuildUpTaskDescriptionOptions": ["Heading out to find some swag"]
+            "startBuildUpTaskDescriptionOptions": ["Heading out to find some swag"],
+            "startTearDownTaskDescriptionOptions": ["Heading to market to pawn your loot"]
         },
         {
             "taskModeActionName": "Trial Mode",
@@ -460,7 +461,8 @@
             "buildUpRewardDisplayName": "Trophies",
             "environmentalLimitDisplayName": "Competitive Demand",
             "environmentalLimitBreakDisplayName": "Overhyped",
-            "startBuildUpTaskDescriptionOptions": ["Heading off in search of glory"]
+            "startBuildUpTaskDescriptionOptions": ["Heading off in search of glory"],
+            "startTearDownTaskDescriptionOptions": ["Heading to the nearest inn to boast of your recent deeds"]
         },
         {
             "taskModeActionName": "Quest Mode",
@@ -479,7 +481,8 @@
                 "Rooting out some new leads",
                 "Rooting out some buzzworthy leads",
                 "Rooting out some salacious leads"
-            ]
+            ],
+            "startTearDownTaskDescriptionOptions": ["Organizing your Questlog"]
         }
     ]
 }

@@ -63,4 +63,5 @@ export interface TaskModeData {
     environmentalLimitDisplayName: string,
     environmentalLimitBreakDisplayName: string,
     startBuildUpTaskDescriptionOptions: string[],
+    startTearDownTaskDescriptionOptions: string[],
 };
