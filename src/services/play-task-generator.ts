@@ -386,6 +386,7 @@ export class PlayTaskGenerator {
             return currentEncumbrance <= 0 && (state.hero.currency[TaskMode.LOOT_MODE] - state.hero.spentCurrency[TaskMode.LOOT_MODE]) >= minGold;
         },
         generateTask: (state: AppState) => {
+            const gameSetting = this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId);
             const newLootMajorRewardMod = this.taskResultGenerator.generateNewLootMajorRewardModification(state.hero);
             const modifications = [
                 newLootMajorRewardMod,
@@ -397,7 +398,7 @@ export class PlayTaskGenerator {
             ];
             const updatedHero = this.generateResultingHero(state.hero, modifications);
             const newTask: Task = {
-                description: 'Negotiating the purchase of better equipment',
+                description: randFromList(gameSetting.taskModeData[TaskMode.LOOT_MODE].earnMajorRewardTaskDescriptionOptions),
                 durationMs: 5 * 1000,
                 resultingHero: updatedHero, 
             }
@@ -577,6 +578,7 @@ export class PlayTaskGenerator {
             return currentTrialBuildUp <= 0 && (state.hero.currency[TaskMode.TRIAL_MODE] - state.hero.spentCurrency[TaskMode.TRIAL_MODE]) >= PlayTaskGenerator.getTradeInCostForLevel(state.hero.level);
         },
         generateTask: (state: AppState) => {
+            const gameSetting = this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId);
             const newTrialMajorRewardMod = this.taskResultGenerator.generateNewTrialMajorRewardModification(state.hero);
             const modifications = [
                 newTrialMajorRewardMod,
@@ -588,7 +590,7 @@ export class PlayTaskGenerator {
             ];
             const updatedHero = this.generateResultingHero(state.hero, modifications);
             const newTask: Task = {
-                description: 'Being honored for your glorious achievements',
+                description: randFromList(gameSetting.taskModeData[TaskMode.TRIAL_MODE].earnMajorRewardTaskDescriptionOptions),
                 durationMs: 5 * 1000,
                 resultingHero: updatedHero,
             };
@@ -754,6 +756,7 @@ export class PlayTaskGenerator {
             return state.hero.questBuildUpRewards.length <= 0 && (state.hero.currency[TaskMode.QUEST_MODE] - state.hero.spentCurrency[TaskMode.QUEST_MODE]) >= PlayTaskGenerator.getTradeInCostForLevel(state.hero.level);
         },
         generateTask: (state: AppState) => {
+            const gameSetting = this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId);
             const newQuestMajorRewardMod = this.taskResultGenerator.generateNewQuestMajorRewardModification(state.hero);
             const modifications = [
                 newQuestMajorRewardMod,
@@ -765,7 +768,7 @@ export class PlayTaskGenerator {
             ];
             const updatedHero = this.generateResultingHero(state.hero, modifications);
             const newTask: Task = {
-                description: 'Solidifying a new connection',
+                description: randFromList(gameSetting.taskModeData[TaskMode.QUEST_MODE].earnMajorRewardTaskDescriptionOptions),
                 durationMs: 5 * 1000,
                 resultingHero: updatedHero,
             };

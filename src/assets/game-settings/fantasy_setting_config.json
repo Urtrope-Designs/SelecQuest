@@ -448,7 +448,8 @@
             "environmentalLimitDisplayName": "Market Saturation",
             "environmentalLimitBreakDisplayName": "Maket Saturated",
             "startBuildUpTaskDescriptionOptions": ["Heading out to find some swag"],
-            "startTearDownTaskDescriptionOptions": ["Heading to market to pawn your loot"]
+            "startTearDownTaskDescriptionOptions": ["Heading to market to pawn your loot"],
+            "earnMajorRewardTaskDescriptionOptions": ["Negotiating the purchase of better equipment"]
         },
         {
             "taskModeActionName": "Trial Mode",
@@ -462,7 +463,8 @@
             "environmentalLimitDisplayName": "Competitive Demand",
             "environmentalLimitBreakDisplayName": "Overhyped",
             "startBuildUpTaskDescriptionOptions": ["Heading off in search of glory"],
-            "startTearDownTaskDescriptionOptions": ["Heading to the nearest inn to boast of your recent deeds"]
+            "startTearDownTaskDescriptionOptions": ["Heading to the nearest inn to boast of your recent deeds"],
+            "earnMajorRewardTaskDescriptionOptions": ["Being honored for your glorious achievements"]
         },
         {
             "taskModeActionName": "Quest Mode",
@@ -482,7 +484,8 @@
                 "Rooting out some buzzworthy leads",
                 "Rooting out some salacious leads"
             ],
-            "startTearDownTaskDescriptionOptions": ["Organizing your Questlog"]
+            "startTearDownTaskDescriptionOptions": ["Organizing your Questlog"],
+            "earnMajorRewardTaskDescriptionOptions": ["Solidifying a new connection"]
         }
     ]
 }
