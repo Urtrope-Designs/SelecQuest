@@ -498,6 +498,30 @@
             "reward": "bowling trophy"
         }
     ],
+    "leadGatheringTargets": [
+        {
+            "gerundPhrase": "gossipping with",
+            "predicateOptions": [
+                "the Thieves Guild",
+                "the Volleyball Team",
+                "the local women's circle",
+                "your brew-pub crew",
+                "a bunch of retired ditch-diggers",
+                "the Young Neocons Chapter",
+                "three ancient crones"
+            ],
+            "leadTypes": ["fetch", "deliver"]
+        },
+        {
+            "gerundPhrase": "scouring",
+            "predicateOptions": [
+                "the MonsterHunterz bulletin board",
+                "the latest issue of \"Spelunker's Booty\"",
+                "the trash heap behind the inn"
+            ],
+            "leadTypes": ["seek"]
+        }
+    ],
     "gameViewTabDisplayNames": [
         "Hero",
         "Gear",

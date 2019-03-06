@@ -1,5 +1,5 @@
 import { GameSettingConfig, LootMajorRewardMaterialType, LootMajorRewardModifierType, TaskModeData } from "../models/game-setting-models";
-import { HeroRace, LootingTarget, TrialTarget } from "../models/models";
+import { HeroRace, LootingTarget, TrialTarget, LeadGatheringTarget } from "../models/models";
 import { AbilityType } from "../models/game-setting-models";
 import { PrologueTask, LootMajorRewardType } from "../models/hero-models";
 
@@ -33,6 +33,7 @@ export class GameSetting {
     readonly duelTaskGerund: string;
     readonly trialTaskGerund: string;
     readonly trialTaskTargets: TrialTarget[];
+    readonly leadGatheringTargets: LeadGatheringTarget[];
 
 
     constructor(config: GameSettingConfig) {
@@ -65,6 +66,7 @@ export class GameSetting {
         this.lootMajorRewardModifierTypes = config.lootMajorRewardModifierTypes;
 
         this.trialTaskTargets = config.trialTaskTargets;
+        this.leadGatheringTargets = config.leadGatheringTargets;
 
         if (config.gameViewTabDisplayNames.length != 5) {
             throw 'Length of gameViewTabDisplayNames array not equal to 5 in ' + config.gameSettingName;

@@ -39,13 +39,13 @@ export interface LeadGatheringTarget {
 }
 
 export enum LeadType {
-    FETCH,
-    DELIVER,
-    SEEK,
-    EXTERMINATE,
-    PLACATE,
-    NURSE,
-    DEFEND,
+    FETCH = "fetch",
+    DELIVER = "deliver",
+    SEEK = "seek",
+    EXTERMINATE = "exterminate",
+    PLACATE = "placate",
+    NURSE = "nurse",
+    DEFEND = "defend",
 }
 
 export interface LeadTarget {

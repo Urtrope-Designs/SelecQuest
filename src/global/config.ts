@@ -1,4 +1,4 @@
-import { TaskTargetType, LeadGatheringTarget, LeadType, LeadTarget, HeroTitlePosition } from "../models/models";
+import { TaskTargetType, LeadType, LeadTarget, HeroTitlePosition } from "../models/models";
 
 export const IS_DEBUG = true;
 
@@ -131,26 +131,6 @@ TASK_PREFIX_GOOD_SECOND[TaskTargetType.TRIAL] = [
     'challenging',
     'herculean',
 ];
-
-export const STANDARD_LEAD_GATHERING_TARGETS: LeadGatheringTarget[] = [
-    {
-        gerundPhrase: 'gossipping with',
-        predicateOptions: [
-            ...STANDARD_GROUPS_INDEFINITE,
-            'three ancient crones',
-        ],
-        leadTypes: [LeadType.FETCH, LeadType.DELIVER],
-    },
-    {
-        gerundPhrase: 'scouring',
-        predicateOptions: [
-            'the MonsterHunterz bulletin board',
-            'the latest issue of "Spelunker\'s Booty"',
-            'the trash heap behind the inn',
-        ],
-        leadTypes: [LeadType.SEEK],
-    }
-]
 
 export const STANDARD_LEAD_TARGETS: LeadTarget[][] = [];
 STANDARD_LEAD_TARGETS[LeadType.FETCH] = [
