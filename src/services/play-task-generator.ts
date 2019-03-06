@@ -1,7 +1,7 @@
 import { TaskGenerator, GameTaskGeneratorList, TaskMode } from "../models/task-models";
 import { AppState, HeroModification, HeroModificationType, Task, LootingTarget, TaskTargetType, GladiatingTarget, QuestBuildUpReward, LeadType, LeadTarget, TrialBuildUpReward, LootBuildUpReward, Hero } from "../models/models";
 import { makeStringIndefinite, randRange, randFromList, randSign, capitalizeInitial, makeVerbGerund, generateRandomName, makeStringPlural } from "../global/utils";
-import { TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, TASK_GERUNDS, STANDARD_GLADIATING_TARGETS, STANDARD_LEAD_GATHERING_TARGETS, STANDARD_LEAD_TARGETS, IS_DEBUG } from "../global/config";
+import { TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, STANDARD_GLADIATING_TARGETS, STANDARD_LEAD_GATHERING_TARGETS, STANDARD_LEAD_TARGETS, IS_DEBUG } from "../global/config";
 import { PlayTaskResultGenerator } from "./play-task-result-generator";
 import { HeroManager } from "./hero-manager";
 import { GameSettingsManager } from "./game-settings-manager";
@@ -112,7 +112,8 @@ export class PlayTaskGenerator {
     
         taskName = PlayTaskGenerator.applyTaskNameModifiers(targetLevel, lootTarget);
 
-        taskName = TASK_GERUNDS[lootTarget.type] + ' ' + makeStringIndefinite(taskName, quantity);
+        const taskGerund = lootTarget.type == TaskTargetType.FOE ? gameSetting.foeTaskGerund : gameSetting.locationTaskGerund;
+        taskName = taskGerund + ' ' + makeStringIndefinite(taskName, quantity);
 
         lootData.push({
             name: lootTarget.reward,
@@ -139,10 +140,10 @@ export class PlayTaskGenerator {
             let quantity = PlayTaskGenerator.determineTaskQuantity(targetLevel, foeLevel);
             if (quantity === 1) {
                 let foeName = generateRandomName(gameSetting);
-                taskName = `${TASK_GERUNDS[TaskTargetType.DUEL]} ${foeName}, the ${foeRace.raceName} ${foeClass}`;
+                taskName = `${gameSetting.duelTaskGerund} ${foeName}, the ${foeRace.raceName} ${foeClass}`;
             }
             else {
-                taskName = TASK_GERUNDS[TaskTargetType.DUEL] + ' ' + makeStringIndefinite(`level ${foeLevel} ${foeRace.raceName} ${foeClass}`, quantity);
+                taskName = gameSetting.duelTaskGerund + ' ' + makeStringIndefinite(`level ${foeLevel} ${foeRace.raceName} ${foeClass}`, quantity);
             }
             taskLevel = foeLevel * quantity;
             
@@ -163,7 +164,9 @@ export class PlayTaskGenerator {
             // todo: need to either fit trials into the mould of this function, or create a new function/modify the old one.
             taskName = PlayTaskGenerator.applyTaskNameModifiers(targetLevel, gladiatingTarget);
         
-            taskName = TASK_GERUNDS[gladiatingTarget.type] + ' ' + makeStringIndefinite(taskName, quantity);
+            const taskGerund = gladiatingTarget.type == TaskTargetType.DUEL ? gameSetting.duelTaskGerund : gameSetting.trialTaskGerund;
+
+            taskName = taskGerund + ' ' + makeStringIndefinite(taskName, quantity);
 
             taskLevel = targetLevel * quantity;
 

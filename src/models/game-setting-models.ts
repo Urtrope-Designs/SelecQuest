@@ -26,6 +26,10 @@ export interface GameSettingConfig {
     fetchTargetObjects: string[],
     seekTargetObjects: string[],
     places: string[],
+    locationTaskGerund: string,
+    foeTaskGerund: string,
+    duelTaskGerund: string,
+    trialTaskGerund: string,
 }
 
 export interface AbilityType {

@@ -28,12 +28,6 @@ export const STANDARD_PLACES: string[] = [
     'Hell',
 ];
 
-export let TASK_GERUNDS = [];
-TASK_GERUNDS[TaskTargetType.LOCATION] = 'Ransacking';
-TASK_GERUNDS[TaskTargetType.FOE] = 'Executing';
-TASK_GERUNDS[TaskTargetType.DUEL] = 'Dueling';
-TASK_GERUNDS[TaskTargetType.TRIAL] = 'Undertaking';
-
 export let TASK_PREFIX_MINIMAL = [];
 export let TASK_PREFIX_BAD_FIRST = [];
 export let TASK_PREFIX_BAD_SECOND = [];

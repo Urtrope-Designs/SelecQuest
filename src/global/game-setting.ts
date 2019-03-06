@@ -28,6 +28,10 @@ export class GameSetting {
     readonly fetchTargetObjects: string[];
     readonly seekTargetObjects: string[];
     readonly places: string[];
+    readonly locationTaskGerund: string;
+    readonly foeTaskGerund: string;
+    readonly duelTaskGerund: string;
+    readonly trialTaskGerund: string;
 
 
     constructor(config: GameSettingConfig) {
@@ -76,5 +80,9 @@ export class GameSetting {
         this.fetchTargetObjects = config.fetchTargetObjects;
         this.seekTargetObjects = config.seekTargetObjects;
         this.places = config.places;
+        this.locationTaskGerund = config.locationTaskGerund;
+        this.foeTaskGerund = config.foeTaskGerund;
+        this.duelTaskGerund = config.duelTaskGerund;
+        this.trialTaskGerund = config.trialTaskGerund;
     }
 }

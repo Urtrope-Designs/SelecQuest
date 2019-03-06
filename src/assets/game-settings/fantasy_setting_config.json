@@ -618,5 +618,9 @@
         "Allbrainia",
         "Bald Mountain",
         "Hell"
-    ]
+    ],
+    "locationTaskGerund": "Ransacking",
+    "foeTaskGerund": "Executing",
+    "duelTaskGerund": "Dueling",
+    "trialTaskGerund": "Undertaking"
 }
