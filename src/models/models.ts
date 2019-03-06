@@ -19,13 +19,13 @@ export enum TaskTargetType {
 };
 
 export interface LootingTarget {
-    type: 'location' | 'foe' | 'duel' | 'trial' | 'interrogation' | 'investigation',
+    type: TaskTargetType,
     name: string,
     level: number,
     reward: string,
 };
 
-export interface GladiatingTarget {
+export interface TrialTarget {
     type: TaskTargetType,
     name: string,
     level: number,

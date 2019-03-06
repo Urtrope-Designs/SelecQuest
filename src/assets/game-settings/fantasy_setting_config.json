@@ -484,6 +484,20 @@
             ]
         }
     ],
+    "trialTaskTargets": [
+        {
+            "type": "trial",
+            "name": "endurance challenge",
+            "level": 1,
+            "reward": "gold star"
+        },
+        {
+            "type": "trial",
+            "name": "bowling championship",
+            "level": 1,
+            "reward": "bowling trophy"
+        }
+    ],
     "gameViewTabDisplayNames": [
         "Hero",
         "Gear",

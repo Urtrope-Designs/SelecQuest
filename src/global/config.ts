@@ -1,4 +1,4 @@
-import { TaskTargetType, GladiatingTarget, LeadGatheringTarget, LeadType, LeadTarget, HeroTitlePosition } from "../models/models";
+import { TaskTargetType, LeadGatheringTarget, LeadType, LeadTarget, HeroTitlePosition } from "../models/models";
 
 export const IS_DEBUG = true;
 
@@ -131,21 +131,6 @@ TASK_PREFIX_GOOD_SECOND[TaskTargetType.TRIAL] = [
     'challenging',
     'herculean',
 ];
-
-export const STANDARD_GLADIATING_TARGETS: GladiatingTarget[] = [
-    {
-        type: TaskTargetType.TRIAL,
-        name: 'endurance challenge',
-        level: 1,
-        reward: 'gold star'
-    },
-    {
-        type: TaskTargetType.TRIAL,
-        name: 'bowling championship',
-        level: 1,
-        reward: 'bowling trophy'
-    },
-]
 
 export const STANDARD_LEAD_GATHERING_TARGETS: LeadGatheringTarget[] = [
     {

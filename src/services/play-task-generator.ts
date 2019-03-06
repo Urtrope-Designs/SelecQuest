@@ -1,7 +1,7 @@
 import { TaskGenerator, GameTaskGeneratorList, TaskMode } from "../models/task-models";
-import { AppState, HeroModification, HeroModificationType, Task, LootingTarget, TaskTargetType, GladiatingTarget, QuestBuildUpReward, LeadType, LeadTarget, TrialBuildUpReward, LootBuildUpReward, Hero } from "../models/models";
+import { AppState, HeroModification, HeroModificationType, Task, LootingTarget, TaskTargetType, TrialTarget, QuestBuildUpReward, LeadType, LeadTarget, TrialBuildUpReward, LootBuildUpReward, Hero } from "../models/models";
 import { makeStringIndefinite, randRange, randFromList, randSign, capitalizeInitial, makeVerbGerund, generateRandomName, makeStringPlural } from "../global/utils";
-import { TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, STANDARD_GLADIATING_TARGETS, STANDARD_LEAD_GATHERING_TARGETS, STANDARD_LEAD_TARGETS, IS_DEBUG } from "../global/config";
+import { TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, STANDARD_LEAD_GATHERING_TARGETS, STANDARD_LEAD_TARGETS, IS_DEBUG } from "../global/config";
 import { PlayTaskResultGenerator } from "./play-task-result-generator";
 import { HeroManager } from "./hero-manager";
 import { GameSettingsManager } from "./game-settings-manager";
@@ -81,7 +81,7 @@ export class PlayTaskGenerator {
     }
 
     /** select target with level closest to the targetLevel out of random selection of targets */
-    static randomizeTargetFromList(targetLevel: number, targetOptions: LootingTarget[] | GladiatingTarget[], numIterations: number = 6): LootingTarget | GladiatingTarget {
+    static randomizeTargetFromList(targetLevel: number, targetOptions: LootingTarget[] | TrialTarget[], numIterations: number = 6): LootingTarget | TrialTarget {
         if (numIterations < 1) {
             numIterations = 1;
         }
@@ -156,7 +156,7 @@ export class PlayTaskGenerator {
         } else {
             // trial task
             let gladiatingTarget;
-            gladiatingTarget = PlayTaskGenerator.randomizeTargetFromList(targetLevel, STANDARD_GLADIATING_TARGETS, 6);
+            gladiatingTarget = PlayTaskGenerator.randomizeTargetFromList(targetLevel, gameSetting.trialTaskTargets, 6);
             
             let quantity = PlayTaskGenerator.determineTaskQuantity(targetLevel, gladiatingTarget.level);
             targetLevel = Math.floor(targetLevel / quantity);
