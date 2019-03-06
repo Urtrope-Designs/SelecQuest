@@ -48,10 +48,6 @@ export enum LeadType {
     DEFEND = "defend",
 }
 
-export interface LeadTarget {
-    verb: string,
-}
-
 /** Hero Related */
 
 export interface HeroModification {

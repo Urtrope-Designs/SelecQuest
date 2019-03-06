@@ -1,7 +1,7 @@
 import { TaskGenerator, GameTaskGeneratorList, TaskMode } from "../models/task-models";
-import { AppState, HeroModification, HeroModificationType, Task, LootingTarget, TaskTargetType, TrialTarget, QuestBuildUpReward, LeadType, LeadTarget, TrialBuildUpReward, LootBuildUpReward, Hero } from "../models/models";
+import { AppState, HeroModification, HeroModificationType, Task, LootingTarget, TaskTargetType, TrialTarget, QuestBuildUpReward, LeadType, TrialBuildUpReward, LootBuildUpReward, Hero } from "../models/models";
 import { makeStringIndefinite, randRange, randFromList, randSign, capitalizeInitial, makeVerbGerund, generateRandomName, makeStringPlural } from "../global/utils";
-import { TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, STANDARD_LEAD_TARGETS, IS_DEBUG } from "../global/config";
+import { TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, IS_DEBUG } from "../global/config";
 import { PlayTaskResultGenerator } from "./play-task-result-generator";
 import { HeroManager } from "./hero-manager";
 import { GameSettingsManager } from "./game-settings-manager";
@@ -213,12 +213,11 @@ export class PlayTaskGenerator {
         investigatingTaskName = capitalizeInitial(`${investigatingTarget.gerundPhrase} ${randFromList(investigatingTarget.predicateOptions)}`);
 
         const leadTargetType: LeadType = randFromList(investigatingTarget.leadTypes);
-        const leadTarget: LeadTarget = randFromList(STANDARD_LEAD_TARGETS[leadTargetType]);
 
         const leadPredicate = this.generateLeadPredicate(leadTargetType, this.gameSettingsMgr.getGameSettingById(hero.gameSettingId));
         const lead: QuestBuildUpReward = {
-            questlogName: capitalizeInitial(`${leadTarget.verb} ${leadPredicate}`),
-            taskName: capitalizeInitial(`${makeVerbGerund(leadTarget.verb)} ${leadPredicate}`),
+            questlogName: capitalizeInitial(`${leadTargetType} ${leadPredicate}`),
+            taskName: capitalizeInitial(`${makeVerbGerund(leadTargetType)} ${leadPredicate}`),
             value: 1,
         }
 

@@ -1,4 +1,4 @@
-import { TaskTargetType, LeadType, LeadTarget, HeroTitlePosition } from "../models/models";
+import { TaskTargetType, HeroTitlePosition } from "../models/models";
 
 export const IS_DEBUG = true;
 
@@ -131,34 +131,6 @@ TASK_PREFIX_GOOD_SECOND[TaskTargetType.TRIAL] = [
     'challenging',
     'herculean',
 ];
-
-export const STANDARD_LEAD_TARGETS: LeadTarget[][] = [];
-STANDARD_LEAD_TARGETS[LeadType.FETCH] = [
-    {
-        verb: 'fetch',
-    }
-];
-STANDARD_LEAD_TARGETS[LeadType.DELIVER] = [
-    {
-        verb: 'deliver',
-    }
-];
-STANDARD_LEAD_TARGETS[LeadType.SEEK] = [
-    {
-        verb: 'seek',
-    }
-];
-STANDARD_LEAD_TARGETS[LeadType.EXTERMINATE] = [
-    {
-        verb: 'exterminate',
-    }
-]
-
-STANDARD_LEAD_TARGETS[LeadType.DEFEND] = [
-    {
-        verb: 'defend',
-    }
-]
 
 export const EPITHET_DESCRIPTORS: string[] = [
     'Cow-eyed',
