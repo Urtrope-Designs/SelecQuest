@@ -126,6 +126,62 @@
         ["a", "a", "e", "e", "i", "i", "o", "o", "u", "u", "ae", "ie", "oo", "ou"],
         ["b", "ck", "d", "g", "k", "m", "n", "p", "t", "v", "x", "z"]
     ],
+    "lootTaskTargets": [
+        {
+            "type": "location",
+            "name": "Barber Shop",
+            "level": 1,
+            "reward": "barber's cleaver"
+        },
+        {
+            "type": "location",
+            "name": "NagaMart",
+            "level": 2,
+            "reward": "nagamart loyalty card"
+        },
+        {
+            "type": "foe",
+            "name": "Orkey",
+            "level": 1,
+            "reward": "orkey giblet"
+        },
+        {
+            "type": "foe",
+            "name": "Frankenstork",
+            "level": 1,
+            "reward": "frankenstork beak"
+        },
+        {
+            "type": "foe",
+            "name": "Bison",
+            "level": 1,
+            "reward": "bison beard"
+        },
+        {
+            "type": "foe",
+            "name": "Mechanical marzipan",
+            "level": 3,
+            "reward": "mechanical marzipan crumb"
+        },
+        {
+            "type": "foe",
+            "name": "Grumpkin",
+            "level": 1,
+            "reward": "grumpkin frown"
+        },
+        {
+            "type": "foe",
+            "name": "Sofa king",
+            "level": 5,
+            "reward": "sofa king cushion"
+        },
+        {
+            "type": "foe",
+            "name": "Ratking",
+            "level": 7,
+            "reward": "ratking tooth"
+        }
+    ],
     "lootMajorRewardTypes": [
         {
             "name": "Weapon",
@@ -487,5 +543,80 @@
             "startTearDownTaskDescriptionOptions": ["Organizing your Questlog"],
             "earnMajorRewardTaskDescriptionOptions": ["Solidifying a new connection"]
         }
+    ],
+    "fetchTargetObjects": [
+        "nail",
+        "lunchpail",
+        "sock",
+        "I.O.U.",
+        "cookie",
+        "pint",
+        "toothpick",
+        "writ",
+        "newspaper",
+        "letter",
+        "plank",
+        "hat",
+        "egg",
+        "coin",
+        "needle",
+        "bucket",
+        "ladder",
+        "chicken",
+        "twig",
+        "dirtclod",
+        "counterpane",
+        "vest",
+        "teratoma",
+        "bunny",
+        "rock",
+        "pole",
+        "carrot",
+        "canoe",
+        "inkwell",
+        "hoe",
+        "bandage",
+        "trowel",
+        "towel",
+        "planter box",
+        "anvil",
+        "axle",
+        "tuppence",
+        "casket",
+        "nosegay",
+        "trinket",
+        "credenza",
+        "writ",
+        "roller skate",
+        "tutleneck",
+        "meat pouch",
+        "leg bag",
+        "pretzel"
+    ],
+    "seekTargetObjects": [
+        "Stewboots",
+        "Last Boner in Belfast",
+        "Standard of Mediocrity",
+        "Turgid Trumpet",
+        "Cumberbund of Combobulation",
+        "Secret Source Code",
+        "Colonel's Right Recipe",
+        "Fountain of Lamneth"
+    ], 
+    "places": [
+        "Sturtevant",
+        "Duplainville",
+        "Kankakee",
+        "Reno",
+        "Swington",
+        "the Marshes of Mediocrity",
+        "the Tower of Trifling",
+        "Beggarton",
+        "Monrovia",
+        "the Misty Isles",
+        "the Seas of Cheese",
+        "Allbrainia",
+        "Bald Mountain",
+        "Hell"
     ]
 }

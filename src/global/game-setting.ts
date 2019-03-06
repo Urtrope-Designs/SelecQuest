@@ -1,5 +1,5 @@
 import { GameSettingConfig, LootMajorRewardMaterialType, LootMajorRewardModifierType, TaskModeData } from "../models/game-setting-models";
-import { HeroRace } from "../models/models";
+import { HeroRace, LootingTarget } from "../models/models";
 import { AbilityType } from "../models/game-setting-models";
 import { PrologueTask, LootMajorRewardType } from "../models/hero-models";
 
@@ -19,12 +19,15 @@ export class GameSetting {
     readonly adventureTransitionTaskDescriptions: string[];
     readonly staticNames: string[];
     readonly randomNameParts: string[][];
+    readonly lootTaskTargets: LootingTarget[];
     readonly lootMajorRewardTypes: LootMajorRewardType[];
     readonly lootMajorRewardMaterialTypes: LootMajorRewardMaterialType[];
     readonly lootMajorRewardModifierTypes: LootMajorRewardModifierType[];
     readonly gameViewTabDisplayNames: string[];
     readonly taskModeData: TaskModeData[];
- 
+    readonly fetchTargetObjects: string[];
+    readonly seekTargetObjects: string[];
+    readonly places: string[];
 
 
     constructor(config: GameSettingConfig) {
@@ -44,6 +47,7 @@ export class GameSetting {
         this.adventureTransitionTaskDescriptions = config.adventureTransitionTaskDescriptions;
         this.staticNames = config.staticNames;
         this.randomNameParts = config.randomNameParts;
+        this.lootTaskTargets = config.lootTaskTargets;
 
         if (config.lootMajorRewardTypes.some(et => !config.lootMajorRewardMaterialTypes.some(emt => et.materialType === emt.name))) {
             throw 'At least 1 LootMajorRewardType has invalid LootMajorRewardMaterialType configured in ' + config.gameSettingName;
@@ -68,5 +72,9 @@ export class GameSetting {
             throw 'Must have exactly 1 MajorRewardDisplayName for LOOT mode and TRIAL mode, and exactly 4 MajorRewardDisplayName for QUEST mode; in ' + config.gameSettingName;
         }
         this.taskModeData = config.taskModeData;
+
+        this.fetchTargetObjects = config.fetchTargetObjects;
+        this.seekTargetObjects = config.seekTargetObjects;
+        this.places = config.places;
     }
 }

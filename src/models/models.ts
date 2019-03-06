@@ -10,16 +10,16 @@ export interface Task {
 }
 
 export enum TaskTargetType {
-    LOCATION,
-    MONSTER,
-    DUEL,
-    TRIAL,
-    INTERROGATION,
-    INVESTIGATION,
+    LOCATION = 'location',
+    FOE = 'foe',
+    DUEL = 'duel',
+    TRIAL = 'trial',
+    INTERROGATION = 'interrogation',
+    INVESTIGATION = 'investigation',
 };
 
 export interface LootingTarget {
-    type: TaskTargetType,
+    type: 'location' | 'foe' | 'duel' | 'trial' | 'interrogation' | 'investigation',
     name: string,
     level: number,
     reward: string,
@@ -50,7 +50,6 @@ export enum LeadType {
 
 export interface LeadTarget {
     verb: string,
-    predicateFactory: () => string,
 }
 
 /** Hero Related */

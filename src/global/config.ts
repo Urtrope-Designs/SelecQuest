@@ -1,5 +1,4 @@
-import { TaskTargetType, LootingTarget, GladiatingTarget, LeadGatheringTarget, LeadType, LeadTarget, HeroTitlePosition } from "../models/models";
-import { makeStringIndefinite, randFromList, makeStringPlural } from "./utils";
+import { TaskTargetType, GladiatingTarget, LeadGatheringTarget, LeadType, LeadTarget, HeroTitlePosition } from "../models/models";
 
 export const IS_DEBUG = true;
 
@@ -31,7 +30,7 @@ export const STANDARD_PLACES: string[] = [
 
 export let TASK_GERUNDS = [];
 TASK_GERUNDS[TaskTargetType.LOCATION] = 'Ransacking';
-TASK_GERUNDS[TaskTargetType.MONSTER] = 'Executing';
+TASK_GERUNDS[TaskTargetType.FOE] = 'Executing';
 TASK_GERUNDS[TaskTargetType.DUEL] = 'Dueling';
 TASK_GERUNDS[TaskTargetType.TRIAL] = 'Undertaking';
 
@@ -43,7 +42,7 @@ export let TASK_PREFIX_GOOD_FIRST = [];
 export let TASK_PREFIX_GOOD_SECOND = [];
 
 TASK_PREFIX_MINIMAL[TaskTargetType.LOCATION] = 'imaginary';
-TASK_PREFIX_MINIMAL[TaskTargetType.MONSTER] = 'imaginary';
+TASK_PREFIX_MINIMAL[TaskTargetType.FOE] = 'imaginary';
 TASK_PREFIX_BAD_FIRST[TaskTargetType.LOCATION] = [
     'dank',
     'desolate',
@@ -51,7 +50,7 @@ TASK_PREFIX_BAD_FIRST[TaskTargetType.LOCATION] = [
     'cobwebby',
     'dreary',
 ];
-TASK_PREFIX_BAD_FIRST[TaskTargetType.MONSTER] =[
+TASK_PREFIX_BAD_FIRST[TaskTargetType.FOE] =[
     'dead',
     'comatose',
     'crippled',
@@ -66,7 +65,7 @@ TASK_PREFIX_BAD_SECOND[TaskTargetType.LOCATION] = [
     'crumbling',
     'ramshackle',
 ];
-TASK_PREFIX_BAD_SECOND[TaskTargetType.MONSTER] = [
+TASK_PREFIX_BAD_SECOND[TaskTargetType.FOE] = [
     'foetal',
     'baby',
     'preadolescent',
@@ -75,7 +74,7 @@ TASK_PREFIX_BAD_SECOND[TaskTargetType.MONSTER] = [
 ];
 
 TASK_PREFIX_MAXIMAL[TaskTargetType.LOCATION] = 'messianic';
-TASK_PREFIX_MAXIMAL[TaskTargetType.MONSTER] = 'messianic';
+TASK_PREFIX_MAXIMAL[TaskTargetType.FOE] = 'messianic';
 TASK_PREFIX_GOOD_FIRST[TaskTargetType.LOCATION] = [
     'posh',
     'thriving',
@@ -84,7 +83,7 @@ TASK_PREFIX_GOOD_FIRST[TaskTargetType.LOCATION] = [
     'sinister',
     'sprawling',
 ];
-TASK_PREFIX_GOOD_FIRST[TaskTargetType.MONSTER] = [
+TASK_PREFIX_GOOD_FIRST[TaskTargetType.FOE] = [
     'greater',
     'massive',
     'enormous',
@@ -98,69 +97,12 @@ TASK_PREFIX_GOOD_SECOND[TaskTargetType.LOCATION] = [
     'renovated',
     'massive',
 ];
-TASK_PREFIX_GOOD_SECOND[TaskTargetType.MONSTER] = [
+TASK_PREFIX_GOOD_SECOND[TaskTargetType.FOE] = [
     'veteran',
     'cursed',
     'warrior',
     'undead',
     'demon',
-];
-
-export const STANDARD_LOOTING_TARGETS: LootingTarget[] = [
-    {
-        type: TaskTargetType.LOCATION,
-        name: 'Barber Shop',
-        level: 1,
-        reward: 'barber\'s cleaver',
-    },
-    {
-        type: TaskTargetType.LOCATION,
-        name: 'NagaMart',
-        level: 2,
-        reward: 'nagamart loyalty card',
-    },
-    {
-        type: TaskTargetType.MONSTER,
-        name: 'Orkey',
-        level: 1,
-        reward: 'orkey giblet',
-    },
-    {
-        type: TaskTargetType.MONSTER,
-        name: 'Frankenstork',
-        level: 1,
-        reward: 'frankenstork beak',
-    },
-    {
-        type: TaskTargetType.MONSTER,
-        name: 'Bison',
-        level: 1,
-        reward: 'bison beard',
-    },
-    {
-        type: TaskTargetType.MONSTER,
-        name: 'Mechanical marzipan',
-        level: 3,
-        reward: 'mechanical marzipan crumb',
-    },
-    {
-        type: TaskTargetType.MONSTER,
-        name: 'Grumpkin',
-        level: 1,
-        reward: 'grumpkin frown',
-    },
-    {
-        type: TaskTargetType.MONSTER,
-        name: 'Sofa king',
-        level: 5,
-        reward: 'sofa king cushion',
-    },
-    {
-        type: TaskTargetType.MONSTER,
-        name: 'Ratking',
-        level: 7,
-        reward: 'ratking tooth',
-    },
 ];
 
 TASK_PREFIX_MINIMAL[TaskTargetType.TRIAL] = 'mock';
@@ -235,105 +177,28 @@ export const STANDARD_LEAD_TARGETS: LeadTarget[][] = [];
 STANDARD_LEAD_TARGETS[LeadType.FETCH] = [
     {
         verb: 'fetch',
-        predicateFactory: () => {
-            return makeStringIndefinite(randFromList(FETCH_TARGET_OBJECTS), 1);
-        }
     }
 ];
 STANDARD_LEAD_TARGETS[LeadType.DELIVER] = [
     {
         verb: 'deliver',
-        predicateFactory: () => {
-            return `this ${randFromList(FETCH_TARGET_OBJECTS)}`;
-        }
     }
 ];
 STANDARD_LEAD_TARGETS[LeadType.SEEK] = [
     {
         verb: 'seek',
-        predicateFactory: () => {
-            return `the ${randFromList(SEEK_TARGET_OBJECTS)}`;
-        }
     }
 ];
 STANDARD_LEAD_TARGETS[LeadType.EXTERMINATE] = [
     {
         verb: 'exterminate',
-        predicateFactory: () => {
-            return `the ${makeStringPlural(randFromList(STANDARD_LOOTING_TARGETS.filter(t => t.type === TaskTargetType.MONSTER)).name)}`;
-        }
     }
 ]
 
 STANDARD_LEAD_TARGETS[LeadType.DEFEND] = [
     {
         verb: 'defend',
-        predicateFactory: () => {
-            return randFromList(STANDARD_PLACES);
-        }
     }
-]
-
-const FETCH_TARGET_OBJECTS = [
-    'nail',
-    'lunchpail',
-    'sock',
-    'I.O.U.',
-    'cookie',
-    'pint',
-    'toothpick',
-    'writ',
-    'newspaper',
-    'letter',
-    'plank',
-    'hat',
-    'egg',
-    'coin',
-    'needle',
-    'bucket',
-    'ladder',
-    'chicken',
-    'twig',
-    'dirtclod',
-    'counterpane',
-    'vest',
-    'teratoma',
-    'bunny',
-    'rock',
-    'pole',
-    'carrot',
-    'canoe',
-    'inkwell',
-    'hoe',
-    'bandage',
-    'trowel',
-    'towel',
-    'planter box',
-    'anvil',
-    'axle',
-    'tuppence',
-    'casket',
-    'nosegay',
-    'trinket',
-    'credenza',
-    'writ',
-    //mine
-    'roller skate',
-    'tutleneck',
-    'meat pouch',
-    'leg bag',
-    'pretzel',
-];
-
-const SEEK_TARGET_OBJECTS = [
-    'Stewboots',
-    'Last Boner in Belfast',
-    'Standard of Mediocrity',
-    'Turgid Trumpet',
-    'Cumberbund of Combobulation',
-    'Secret Source Code',
-    'Colonel\'s Right Recipe',
-    'Fountain of Lamneth',
 ]
 
 export const EPITHET_DESCRIPTORS: string[] = [

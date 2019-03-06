@@ -1,11 +1,12 @@
 import { TaskGenerator, GameTaskGeneratorList, TaskMode } from "../models/task-models";
 import { AppState, HeroModification, HeroModificationType, Task, LootingTarget, TaskTargetType, GladiatingTarget, QuestBuildUpReward, LeadType, LeadTarget, TrialBuildUpReward, LootBuildUpReward, Hero } from "../models/models";
-import { makeStringIndefinite, randRange, randFromList, randSign, capitalizeInitial, makeVerbGerund, generateRandomName } from "../global/utils";
-import { TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, TASK_GERUNDS, STANDARD_GLADIATING_TARGETS, STANDARD_LOOTING_TARGETS, STANDARD_LEAD_GATHERING_TARGETS, STANDARD_LEAD_TARGETS, IS_DEBUG } from "../global/config";
+import { makeStringIndefinite, randRange, randFromList, randSign, capitalizeInitial, makeVerbGerund, generateRandomName, makeStringPlural } from "../global/utils";
+import { TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, TASK_GERUNDS, STANDARD_GLADIATING_TARGETS, STANDARD_LEAD_GATHERING_TARGETS, STANDARD_LEAD_TARGETS, IS_DEBUG } from "../global/config";
 import { PlayTaskResultGenerator } from "./play-task-result-generator";
 import { HeroManager } from "./hero-manager";
 import { GameSettingsManager } from "./game-settings-manager";
 import { PrologueTask } from "../models/hero-models";
+import { GameSetting } from "../global/game-setting";
 
 export class PlayTaskGenerator {
 
@@ -96,13 +97,14 @@ export class PlayTaskGenerator {
     }
 
     //logic stolen pretty much directly from PQ
-    private generateLootingTaskContentsFromLevel(level: number): {taskName: string, taskLevel: number, lootData: LootBuildUpReward[]} {
+    private generateLootingTaskContentsFromLevel(hero: Hero): {taskName: string, taskLevel: number, lootData: LootBuildUpReward[]} {
+        const gameSetting = this.gameSettingsMgr.getGameSettingById(hero.gameSettingId);
         let taskName = '';
         let lootData: LootBuildUpReward[] = [];
 
-        let targetLevel = PlayTaskGenerator.randomizeTargetLevel(level);
+        let targetLevel = PlayTaskGenerator.randomizeTargetLevel(hero.level);
 
-        let lootTarget = PlayTaskGenerator.randomizeTargetFromList(targetLevel, STANDARD_LOOTING_TARGETS, 6);
+        let lootTarget = PlayTaskGenerator.randomizeTargetFromList(targetLevel, gameSetting.lootTaskTargets, 6);
 
         let quantity = PlayTaskGenerator.determineTaskQuantity(targetLevel, lootTarget.level);
 
@@ -175,7 +177,30 @@ export class PlayTaskGenerator {
         return {taskName: taskName, taskLevel: taskLevel, trophyData: trophyData};
     }
 
-    private generateInvestigatingTaskContents(): {taskName: string, leadData: QuestBuildUpReward[]} {
+    private generateLeadPredicate(leadType: LeadType, gameSetting: GameSetting): string {
+        let predicate: string;
+        switch (leadType) {
+            case LeadType.FETCH: 
+                predicate = makeStringIndefinite(randFromList(gameSetting.fetchTargetObjects), 1);
+                break;
+            case LeadType.DELIVER:
+                predicate = `this ${randFromList(gameSetting.fetchTargetObjects)}`;
+                break;
+            case LeadType.SEEK:
+                predicate = `the ${randFromList(gameSetting.seekTargetObjects)}`;
+                break;
+            case LeadType.EXTERMINATE:
+                predicate = `the ${makeStringPlural(randFromList(gameSetting.lootTaskTargets.filter(t => t.type == TaskTargetType.FOE)).name)}`;
+                break;
+            case LeadType.DEFEND:
+                predicate = randFromList(gameSetting.places);
+                break;
+        }
+
+        return predicate;
+    }
+
+    private generateInvestigatingTaskContents(hero: Hero): {taskName: string, leadData: QuestBuildUpReward[]} {
         let investigatingTaskName = '';
         let leadData = [];
 
@@ -186,7 +211,7 @@ export class PlayTaskGenerator {
         const leadTargetType: LeadType = randFromList(investigatingTarget.leadTypes);
         const leadTarget: LeadTarget = randFromList(STANDARD_LEAD_TARGETS[leadTargetType]);
 
-        const leadPredicate = leadTarget.predicateFactory.apply(null);
+        const leadPredicate = this.generateLeadPredicate(leadTargetType, this.gameSettingsMgr.getGameSettingById(hero.gameSettingId));
         const lead: QuestBuildUpReward = {
             questlogName: capitalizeInitial(`${leadTarget.verb} ${leadPredicate}`),
             taskName: capitalizeInitial(`${makeVerbGerund(leadTarget.verb)} ${leadPredicate}`),
@@ -217,7 +242,7 @@ export class PlayTaskGenerator {
             return true;
         },
         generateTask: (state: AppState) => {
-            const {taskName, taskLevel, lootData} = this.generateLootingTaskContentsFromLevel(state.hero.level);
+            const {taskName, taskLevel, lootData} = this.generateLootingTaskContentsFromLevel(state.hero);
             const durationSeconds = Math.floor(6 * taskLevel / state.hero.level);
             const isMarketSaturated = state.hero.lootEnvironmentalLimit >= state.hero.maxLootEnvironmentalLimit;
             const modifications: HeroModification[] = [
@@ -603,7 +628,7 @@ export class PlayTaskGenerator {
             return true;
         },
         generateTask: (state: AppState) => {
-            const {taskName, leadData} = this.generateInvestigatingTaskContents();
+            const {taskName, leadData} = this.generateInvestigatingTaskContents(state.hero);
             const durationSeconds = 1;
     
             const modifications: HeroModification[] = [
