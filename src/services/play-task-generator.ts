@@ -1,7 +1,7 @@
 import { TaskGenerator, GameTaskGeneratorList, TaskMode } from "../models/task-models";
 import { AppState, HeroModification, HeroModificationType, Task, LootingTarget, TaskTargetType, TrialTarget, QuestBuildUpReward, LeadType, TrialBuildUpReward, LootBuildUpReward, Hero } from "../models/models";
 import { makeStringIndefinite, randRange, randFromList, randSign, capitalizeInitial, makeVerbGerund, generateRandomName, makeStringPlural } from "../global/utils";
-import { TASK_PREFIX_MINIMAL, TASK_PREFIX_BAD_FIRST, TASK_PREFIX_BAD_SECOND, TASK_PREFIX_MAXIMAL, TASK_PREFIX_GOOD_FIRST, TASK_PREFIX_GOOD_SECOND, IS_DEBUG } from "../global/config";
+import { IS_DEBUG } from "../global/config";
 import { PlayTaskResultGenerator } from "./play-task-result-generator";
 import { HeroManager } from "./hero-manager";
 import { GameSettingsManager } from "./game-settings-manager";
@@ -36,32 +36,38 @@ export class PlayTaskGenerator {
         return quantity
     }
 
-    static applyTaskNameModifiers(targetLevel: number, taskTarget: LootingTarget): string {
+    static applyTaskNameModifiers(targetLevel: number, taskTarget: LootingTarget, gameSetting: GameSetting): string {
         let taskName = taskTarget.name;
-        const NEEDS_PREFIX_SEPARATOR = taskTarget.type == TaskTargetType.LOCATION || taskTarget.type == TaskTargetType.TRIAL;
-    
+        const needsPrefixSeparator = taskTarget.type == TaskTargetType.LOCATION || taskTarget.type == TaskTargetType.TRIAL;
+        const minimalPrefixList: string[] = gameSetting.taskPrefixes.find(p => p.taskTargetType == taskTarget.type && p.degree == 'maximal').options;
+        const badFirstPrefixList: string[] = gameSetting.taskPrefixes.find(p => p.taskTargetType == taskTarget.type && p.degree == 'bad first').options;
+        const badSecondPrefixList: string[] = gameSetting.taskPrefixes.find(p => p.taskTargetType == taskTarget.type && p.degree == 'bad second').options;
+        const maximalPrefixList: string[] = gameSetting.taskPrefixes.find(p => p.taskTargetType == taskTarget.type && p.degree == 'maximal').options;
+        const goodFirstPrefixList: string[] = gameSetting.taskPrefixes.find(p => p.taskTargetType == taskTarget.type && p.degree == 'good first').options;
+        const goodSecondPrefixList: string[] = gameSetting.taskPrefixes.find(p => p.taskTargetType == taskTarget.type && p.degree == 'good second').options;
+
         if ((targetLevel - taskTarget.level) <= -10) {
-            taskName = TASK_PREFIX_MINIMAL[taskTarget.type] + ' ' + taskName;
+            taskName = randFromList(minimalPrefixList) + ' ' + taskName;
         } else if ((targetLevel - taskTarget.level) < -5) {
-            const firstPrefix = randFromList(TASK_PREFIX_BAD_FIRST[taskTarget.type]);
-            const secondPrefix = randFromList(TASK_PREFIX_BAD_SECOND[taskTarget.type]);
-            const prefixSeparator = NEEDS_PREFIX_SEPARATOR ? ', ' : ' ';
+            const firstPrefix = randFromList(badFirstPrefixList);
+            const secondPrefix = randFromList(badSecondPrefixList);
+            const prefixSeparator = needsPrefixSeparator ? ', ' : ' ';
             taskName = firstPrefix + prefixSeparator + secondPrefix + ' ' + taskName;
         } else if (((targetLevel - taskTarget.level) < 0) && (randRange(0, 1))) {
-            taskName = randFromList(TASK_PREFIX_BAD_FIRST[taskTarget.type]) + ' ' + taskName;
+            taskName = randFromList(badFirstPrefixList) + ' ' + taskName;
         } else if (((targetLevel - taskTarget.level) < 0)) {
-            taskName = randFromList(TASK_PREFIX_BAD_SECOND[taskTarget.type]) + ' ' + taskName;
+            taskName = randFromList(badSecondPrefixList) + ' ' + taskName;
         } else if ((targetLevel - taskTarget.level) >= 10) {
-            taskName = TASK_PREFIX_MAXIMAL[taskTarget.type] + ' ' + taskName;
+            taskName = randFromList(maximalPrefixList) + ' ' + taskName;
         } else if ((targetLevel - taskTarget.level) > 5) {
-            const firstPrefix = randFromList(TASK_PREFIX_GOOD_FIRST[taskTarget.type]);
-            const secondPrefix = randFromList(TASK_PREFIX_GOOD_SECOND[taskTarget.type]);
-            const prefixSeparator = NEEDS_PREFIX_SEPARATOR ? ', ' : ' ';
+            const firstPrefix = randFromList(goodFirstPrefixList);
+            const secondPrefix = randFromList(goodSecondPrefixList);
+            const prefixSeparator = needsPrefixSeparator ? ', ' : ' ';
             taskName = firstPrefix + prefixSeparator + secondPrefix + ' ' + taskName;
         } else if (((targetLevel - taskTarget.level) > 0) && (randRange(0, 1))) {
-            taskName = randFromList(TASK_PREFIX_GOOD_FIRST[taskTarget.type]) + ' ' + taskName;
+            taskName = randFromList(goodFirstPrefixList) + ' ' + taskName;
         } else if (((targetLevel - taskTarget.level) > 0)) {
-            taskName = randFromList(TASK_PREFIX_GOOD_SECOND[taskTarget.type]) + ' ' + taskName;
+            taskName = randFromList(goodSecondPrefixList) + ' ' + taskName;
         }
     
         return taskName;
@@ -97,7 +103,7 @@ export class PlayTaskGenerator {
     }
 
     //logic stolen pretty much directly from PQ
-    private generateLootingTaskContentsFromLevel(hero: Hero): {taskName: string, taskLevel: number, lootData: LootBuildUpReward[]} {
+    private generateLootingTaskContents(hero: Hero): {taskName: string, taskLevel: number, lootData: LootBuildUpReward[]} {
         const gameSetting = this.gameSettingsMgr.getGameSettingById(hero.gameSettingId);
         let taskName = '';
         let lootData: LootBuildUpReward[] = [];
@@ -110,7 +116,7 @@ export class PlayTaskGenerator {
 
         targetLevel = Math.floor(targetLevel / quantity);
     
-        taskName = PlayTaskGenerator.applyTaskNameModifiers(targetLevel, lootTarget);
+        taskName = PlayTaskGenerator.applyTaskNameModifiers(targetLevel, lootTarget, gameSetting);
 
         const taskGerund = lootTarget.type == TaskTargetType.FOE ? gameSetting.foeTaskGerund : gameSetting.locationTaskGerund;
         taskName = taskGerund + ' ' + makeStringIndefinite(taskName, quantity);
@@ -162,7 +168,7 @@ export class PlayTaskGenerator {
             targetLevel = Math.floor(targetLevel / quantity);
         
             // todo: need to either fit trials into the mould of this function, or create a new function/modify the old one.
-            taskName = PlayTaskGenerator.applyTaskNameModifiers(targetLevel, gladiatingTarget);
+            taskName = PlayTaskGenerator.applyTaskNameModifiers(targetLevel, gladiatingTarget, gameSetting);
         
             const taskGerund = gladiatingTarget.type == TaskTargetType.DUEL ? gameSetting.duelTaskGerund : gameSetting.trialTaskGerund;
 
@@ -245,7 +251,7 @@ export class PlayTaskGenerator {
             return true;
         },
         generateTask: (state: AppState) => {
-            const {taskName, taskLevel, lootData} = this.generateLootingTaskContentsFromLevel(state.hero);
+            const {taskName, taskLevel, lootData} = this.generateLootingTaskContents(state.hero);
             const durationSeconds = Math.floor(6 * taskLevel / state.hero.level);
             const isMarketSaturated = state.hero.lootEnvironmentalLimit >= state.hero.maxLootEnvironmentalLimit;
             const modifications: HeroModification[] = [

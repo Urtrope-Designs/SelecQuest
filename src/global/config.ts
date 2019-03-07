@@ -1,4 +1,4 @@
-import { TaskTargetType, HeroTitlePosition } from "../models/models";
+import { HeroTitlePosition } from "../models/models";
 
 export const IS_DEBUG = true;
 
@@ -26,110 +26,6 @@ export const STANDARD_PLACES: string[] = [
     'Allbrainia',
     'Bald Mountain',
     'Hell',
-];
-
-export let TASK_PREFIX_MINIMAL = [];
-export let TASK_PREFIX_BAD_FIRST = [];
-export let TASK_PREFIX_BAD_SECOND = [];
-export let TASK_PREFIX_MAXIMAL = [];
-export let TASK_PREFIX_GOOD_FIRST = [];
-export let TASK_PREFIX_GOOD_SECOND = [];
-
-TASK_PREFIX_MINIMAL[TaskTargetType.LOCATION] = 'imaginary';
-TASK_PREFIX_MINIMAL[TaskTargetType.FOE] = 'imaginary';
-TASK_PREFIX_BAD_FIRST[TaskTargetType.LOCATION] = [
-    'dank',
-    'desolate',
-    'vandalized',
-    'cobwebby',
-    'dreary',
-];
-TASK_PREFIX_BAD_FIRST[TaskTargetType.FOE] =[
-    'dead',
-    'comatose',
-    'crippled',
-    'sick',
-    'undernourished',
-    'long-winded',
-];
-TASK_PREFIX_BAD_SECOND[TaskTargetType.LOCATION] = [
-    'abandoned',
-    'underwhelming',
-    'uninviting',
-    'crumbling',
-    'ramshackle',
-];
-TASK_PREFIX_BAD_SECOND[TaskTargetType.FOE] = [
-    'foetal',
-    'baby',
-    'preadolescent',
-    'teenage',
-    'underage',
-];
-
-TASK_PREFIX_MAXIMAL[TaskTargetType.LOCATION] = 'messianic';
-TASK_PREFIX_MAXIMAL[TaskTargetType.FOE] = 'messianic';
-TASK_PREFIX_GOOD_FIRST[TaskTargetType.LOCATION] = [
-    'posh',
-    'thriving',
-    'sturdy',
-    'fortified',
-    'sinister',
-    'sprawling',
-];
-TASK_PREFIX_GOOD_FIRST[TaskTargetType.FOE] = [
-    'greater',
-    'massive',
-    'enormous',
-    'giant',
-    'titanic',
-];
-TASK_PREFIX_GOOD_SECOND[TaskTargetType.LOCATION] = [
-    'booby-trapped',
-    'ominous',
-    'creepy',
-    'renovated',
-    'massive',
-];
-TASK_PREFIX_GOOD_SECOND[TaskTargetType.FOE] = [
-    'veteran',
-    'cursed',
-    'warrior',
-    'undead',
-    'demon',
-];
-
-TASK_PREFIX_MINIMAL[TaskTargetType.TRIAL] = 'mock';
-TASK_PREFIX_BAD_FIRST[TaskTargetType.TRIAL] = [
-    'short',
-    'quick',
-    'basic',
-    'underwhelming',
-    'brief',
-];
-TASK_PREFIX_BAD_SECOND[TaskTargetType.TRIAL] = [
-    'easy',
-    'unceremonious',
-    'casual',
-    'impromptu',
-    'lite',
-    'predictable',
-];
-
-TASK_PREFIX_MAXIMAL[TaskTargetType.TRIAL] = 'insane';
-TASK_PREFIX_GOOD_FIRST[TaskTargetType.TRIAL] = [
-    'neverending',
-    'long',
-    'draining',
-    'enduring',
-    'extended',
-];
-TASK_PREFIX_GOOD_SECOND[TaskTargetType.TRIAL] = [
-    'arduous',
-    'onerous',
-    'demanding',
-    'challenging',
-    'herculean',
 ];
 
 export const EPITHET_DESCRIPTORS: string[] = [

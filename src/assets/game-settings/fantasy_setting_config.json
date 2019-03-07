@@ -660,5 +660,184 @@
     "locationTaskGerund": "Ransacking",
     "foeTaskGerund": "Executing",
     "duelTaskGerund": "Dueling",
-    "trialTaskGerund": "Undertaking"
+    "trialTaskGerund": "Undertaking",
+    "taskPrefixes": [
+        {
+            "taskTargetType": "location",
+            "degree": "minimal",
+            "options": [
+                "imaginary"
+            ]
+        },
+        {
+            "taskTargetType": "location",
+            "degree": "bad first",
+            "options": [
+                "dank",
+                "desolate",
+                "vandalized",
+                "cobwebby",
+                "dreary"
+            ]
+        },
+        {
+            "taskTargetType": "location",
+            "degree": "bad second",
+            "options": [
+                "abandoned",
+                "underwhelming",
+                "uninviting",
+                "crumbling",
+                "ramshackle"
+            ]
+        },
+        {
+            "taskTargetType": "location",
+            "degree": "maximal",
+            "options": [
+                "preeminent"
+            ]
+        },
+        {
+            "taskTargetType": "location",
+            "degree": "good first",
+            "options": [
+                "posh",
+                "thriving",
+                "sturdy",
+                "fortified",
+                "sinister",
+                "sprawling"
+            ]
+        },
+        {
+            "taskTargetType": "location",
+            "degree": "good second",
+            "options": [
+                "booby-trapped",
+                "ominous",
+                "creepy",
+                "renovated",
+                "massive"
+            ]
+        },
+        {
+            "taskTargetType": "foe",
+            "degree": "minimal",
+            "options": [
+                "imaginary"
+            ]
+        },
+        {
+            "taskTargetType": "foe",
+            "degree": "bad first",
+            "options": [
+                "dead",
+                "comatose",
+                "crippled",
+                "sick",
+                "undernourished",
+                "long-winded"
+            ]
+        },
+        {
+            "taskTargetType": "foe",
+            "degree": "bad second",
+            "options": [
+                "foetal",
+                "baby",
+                "preadolescent",
+                "teenage",
+                "underage"
+            ]
+        },
+        {
+            "taskTargetType": "foe",
+            "degree": "maximal",
+            "options": [
+                "messianic"
+            ]
+        },
+        {
+            "taskTargetType": "foe",
+            "degree": "good first",
+            "options": [
+                "greater",
+                "massive",
+                "enormous",
+                "giant",
+                "titanic"
+            ]
+        },
+        {
+            "taskTargetType": "foe",
+            "degree": "good second",
+            "options": [
+                "veteran",
+                "cursed",
+                "warrior",
+                "undead",
+                "demon"
+            ]
+        },
+        {
+            "taskTargetType": "trial",
+            "degree": "minimal",
+            "options": [
+                "mock"
+            ]
+        },
+        {
+            "taskTargetType": "trial",
+            "degree": "bad first",
+            "options": [
+                "short",
+                "quick",
+                "basic",
+                "underwhelming",
+                "brief"
+            ]
+        },
+        {
+            "taskTargetType": "trial",
+            "degree": "bad second",
+            "options": [
+                "easy",
+                "unceremonious",
+                "casual",
+                "impromptu",
+                "lite",
+                "predictable"
+            ]
+        },
+        {
+            "taskTargetType": "trial",
+            "degree": "maximal",
+            "options": [
+                "insane"
+            ]
+        },
+        {
+            "taskTargetType": "trial",
+            "degree": "good first",
+            "options": [
+                "neverending",
+                "long",
+                "draining",
+                "enduring",
+                "extended"
+            ]
+        },
+        {
+            "taskTargetType": "trial",
+            "degree": "good second",
+            "options": [
+                "arduous",
+                "onerous",
+                "demanding",
+                "challenging",
+                "herculean"
+            ]
+        }
+    ]
 }

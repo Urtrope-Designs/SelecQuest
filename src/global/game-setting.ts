@@ -1,4 +1,4 @@
-import { GameSettingConfig, LootMajorRewardMaterialType, LootMajorRewardModifierType, TaskModeData } from "../models/game-setting-models";
+import { GameSettingConfig, LootMajorRewardMaterialType, LootMajorRewardModifierType, TaskModeData, TaskPrefix } from "../models/game-setting-models";
 import { HeroRace, LootingTarget, TrialTarget, LeadGatheringTarget } from "../models/models";
 import { AbilityType } from "../models/game-setting-models";
 import { PrologueTask, LootMajorRewardType } from "../models/hero-models";
@@ -34,6 +34,8 @@ export class GameSetting {
     readonly trialTaskGerund: string;
     readonly trialTaskTargets: TrialTarget[];
     readonly leadGatheringTargets: LeadGatheringTarget[];
+    readonly taskPrefixes: TaskPrefix[];
+
 
 
     constructor(config: GameSettingConfig) {
@@ -89,5 +91,6 @@ export class GameSetting {
         this.foeTaskGerund = config.foeTaskGerund;
         this.duelTaskGerund = config.duelTaskGerund;
         this.trialTaskGerund = config.trialTaskGerund;
+        this.taskPrefixes = config.taskPrefixes;
     }
 }

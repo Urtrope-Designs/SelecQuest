@@ -1,4 +1,4 @@
-import { HeroRace, LootingTarget, TrialTarget, LeadGatheringTarget } from "./models";
+import { HeroRace, LootingTarget, TrialTarget, LeadGatheringTarget, TaskTargetType } from "./models";
 import { PrologueTask, LootMajorRewardType } from "./hero-models";
 
 export interface GameSettingConfig {
@@ -32,6 +32,7 @@ export interface GameSettingConfig {
     foeTaskGerund: string,
     duelTaskGerund: string,
     trialTaskGerund: string,
+    taskPrefixes: TaskPrefix[],
 }
 
 export interface AbilityType {
@@ -76,3 +77,9 @@ export interface TaskModeData {
     startTearDownTaskDescriptionOptions: string[],
     earnMajorRewardTaskDescriptionOptions: string[],
 };
+
+export interface TaskPrefix {
+    options: string[],
+    taskTargetType: TaskTargetType,
+    degree: 'minimal' | 'maximal' | 'bad first' | 'bad second' | 'good first' | 'good second',
+}
