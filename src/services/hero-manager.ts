@@ -1,5 +1,5 @@
-import { Hero, HeroModificationType, TrialMajorRewardType, HeroModification, TrialMajorReward, QuestMajorReward } from '../models/models';
-import { randRange, deepCopyObject, getIterableEnumKeys } from '../global/utils';
+import { Hero, HeroModificationType, HeroModification, TrialMajorReward, QuestMajorReward } from '../models/models';
+import { randRange, deepCopyObject } from '../global/utils';
 import { IS_DEBUG } from '../global/config';
 import { GameSettingsManager } from './game-settings-manager';
 import { HeroInitData, HeroAbilityType, LootMajorReward, HeroAbility } from '../models/hero-models';
@@ -31,8 +31,8 @@ export class HeroManager {
             maxMagicStat: {name: gameSetting.magicStatName, value: randRange(0, 7) + Math.floor(heroling.stats[gameSetting.magicBaseStatIndex].value / 6)},
             currentXp: 0,
             abilities: gameSetting.abilityTypes.map(aT => {return {name: aT.displayName, received: []}}),
-            lootMajorRewards: gameSetting.lootMajorRewardTypes.map(et => ({type: et.name, description: ''})),
-            trialMajorRewards: getIterableEnumKeys(TrialMajorRewardType).map(typeKey => ({type: TrialMajorRewardType[typeKey], received: []})),
+            lootMajorRewards: gameSetting.lootMajorRewardTypes.map(rt => ({type: rt.name, description: ''})),
+            trialMajorRewards: gameSetting.trialMajorRewardTypes.map(rt => ({type: rt, received: []})),
             questMajorRewards: [],
             get maxLootBuildUp() {return this.stats[gameSetting.taskModeData[TaskMode.LOOT_MODE].buildUpLimitBaseStatIndex].value + 10},
             get maxTrialBuildUp() {return this.stats[gameSetting.taskModeData[TaskMode.TRIAL_MODE].buildUpLimitBaseStatIndex].value + 10},

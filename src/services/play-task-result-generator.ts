@@ -2,7 +2,7 @@ import { GameSettingsManager } from "./game-settings-manager";
 import { Adventure, HeroAbilityType, LootMajorRewardType, LootMajorReward } from "../models/hero-models";
 import { IS_DEBUG, EPITHET_DESCRIPTORS, EPITHET_BEING_ALL, TITLE_POSITIONS_ALL, SOBRIQUET_MODIFIERS, SOBRIQUET_NOUN_PORTION, HONORIFIC_TEMPLATES, STANDARD_GROUPS_INDEFINITE, OFFICE_POSITIONS_ALL } from "../global/config";
 import { Hero, HeroModification, HeroModificationType, TrialMajorReward, TrialMajorRewardType, HeroTitlePosition, QuestMajorReward, HeroConnection, HeroStat } from "../models/models";
-import { randRange, randFromList, randFromListLow, getIterableEnumKeys, capitalizeInitial, randFromListHigh, generateRandomName } from "../global/utils";
+import { randRange, randFromList, randFromListLow, capitalizeInitial, randFromListHigh, generateRandomName } from "../global/utils";
 
 export class PlayTaskResultGenerator {
     constructor(private gameSettingsMgr: GameSettingsManager) {
@@ -136,30 +136,31 @@ export class PlayTaskResultGenerator {
     }
     
     private generateRandomTrialMajorReward(hero: Hero): TrialMajorReward {
-        const newTrialMajorRewardType = TrialMajorRewardType[randFromList(getIterableEnumKeys(TrialMajorRewardType))];
+        const gameSetting = this.gameSettingsMgr.getGameSettingById(hero.gameSettingId);
+        const newTrialMajorRewardTypeIndex = randRange(0, gameSetting.trialMajorRewardTypes.length);
         let newTrialMajorRewardDescription = '';
         let exclusions: string = '';
-        switch(newTrialMajorRewardType) {
+        switch(newTrialMajorRewardTypeIndex) {
             case TrialMajorRewardType.Epithets:
-                exclusions = hero.trialMajorRewards.find(reward => reward.type == TrialMajorRewardType.Epithets).received.join(' ');
+                exclusions = hero.trialMajorRewards[TrialMajorRewardType.Epithets].received.join(' ');
                 newTrialMajorRewardDescription = this.generateRandomEpithetDescription(exclusions);
                 break;
             case TrialMajorRewardType.Titles:
-                exclusions = hero.trialMajorRewards.find(reward => reward.type == TrialMajorRewardType.Titles).received.join(' ');
+                exclusions = hero.trialMajorRewards[TrialMajorRewardType.Titles].received.join(' ');
                 newTrialMajorRewardDescription = this.generateRandomTitleDescription(exclusions);
                 break;
-                case TrialMajorRewardType.Sobriquets:
-                exclusions = hero.trialMajorRewards.find(reward => reward.type == TrialMajorRewardType.Sobriquets).received.join(' ');
+            case TrialMajorRewardType.Sobriquets:
+                exclusions = hero.trialMajorRewards[TrialMajorRewardType.Sobriquets].received.join(' ');
                 newTrialMajorRewardDescription = this.generateRandomSobriquetDescription(exclusions);
                 break;
-                case TrialMajorRewardType.Honorifics:
-                exclusions = hero.trialMajorRewards.find(reward => reward.type == TrialMajorRewardType.Honorifics).received.join(' ');
+            case TrialMajorRewardType.Honorifics:
+                exclusions = hero.trialMajorRewards[TrialMajorRewardType.Honorifics].received.join(' ');
                 newTrialMajorRewardDescription = this.generateRandomHonorificDescription(exclusions, hero.level, hero.name);
                 break;
         }
     
-        const newTrialMajorReward = {
-            type: newTrialMajorRewardType,
+        const newTrialMajorReward: TrialMajorReward = {
+            type: gameSetting.trialMajorRewardTypes[newTrialMajorRewardTypeIndex],
             received: [newTrialMajorRewardDescription]
         }
     

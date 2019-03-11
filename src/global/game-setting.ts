@@ -33,6 +33,7 @@ export class GameSetting {
     readonly duelTaskGerund: string;
     readonly trialTaskGerund: string;
     readonly trialTaskTargets: TrialTarget[];
+    readonly trialMajorRewardTypes: string[];
     readonly leadGatheringTargets: LeadGatheringTarget[];
     readonly taskPrefixes: TaskPrefix[];
 
@@ -68,6 +69,11 @@ export class GameSetting {
         this.lootMajorRewardModifierTypes = config.lootMajorRewardModifierTypes;
 
         this.trialTaskTargets = config.trialTaskTargets;
+
+        if(config.trialMajorRewardTypes.length != 4) {
+            throw 'Length of trialMajorRewardTypes array not equal to 4 in ' + config.gameSettingName;
+        }
+        this.trialMajorRewardTypes = config.trialMajorRewardTypes;
         this.leadGatheringTargets = config.leadGatheringTargets;
 
         if (config.gameViewTabDisplayNames.length != 5) {

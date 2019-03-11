@@ -498,6 +498,12 @@
             "reward": "bowling trophy"
         }
     ],
+    "trialMajorRewardTypes": [
+        "Epithets",
+        "Titles",
+        "Sobriquets",
+        "Honorifics"
+    ],
     "leadGatheringTargets": [
         {
             "gerundPhrase": "gossipping with",

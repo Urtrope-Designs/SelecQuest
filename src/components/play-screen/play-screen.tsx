@@ -1,6 +1,6 @@
 import { Component, Prop, State, Event, EventEmitter, Element, Watch } from '@stencil/core';
 
-import { AppState, Task, TrialMajorRewardType, Hero, QuestMajorReward, HeroStat } from '../../models/models';
+import { AppState, Task, Hero, QuestMajorReward, HeroStat } from '../../models/models';
 import { HeroManager } from '../../services/hero-manager';
 import { capitalizeInitial, getRoughTime, generateHeroHashFromHero, toRoman } from '../../global/utils';
 import { HeroAbilityType, HeroAbility } from '../../models/hero-models';
@@ -305,7 +305,7 @@ export class PlayScreen {
                                         {
                                             this.appState.hero.trialMajorRewards.map(trialMajorReward =>
                                                 <tr {...this.highlightModifiedAttribute('trialMajorRewards', ''+trialMajorReward.type)}>
-                                                    <td>{TrialMajorRewardType[trialMajorReward.type]}</td>
+                                                    <td>{trialMajorReward.type}</td>
                                                     {
                                                         trialMajorReward.received.length <= 0
                                                         ? <td>[None]</td>
@@ -399,7 +399,7 @@ export class PlayScreen {
                                     </tbody>
                                 </table>
                                 <p>
-                                    <div sq-flex class={this.findUpdate('currency', ((data: TaskMode[]) => data.includes(TaskMode.TRIAL_MODE))) ? 'textRow textRow-highlight' : 'textRow'}>
+                                    <div sq-flex class={this.findUpdate('currency', ((data: TaskMode[]) => data.includes(TaskMode.QUEST_MODE))) ? 'textRow textRow-highlight' : 'textRow'}>
                                         <span sq-mr-auto>{this.gameSetting.taskModeData[2].currencyDisplayName}</span> {this.getCurrencyDisplayValue(this.appState.hero, TaskMode.QUEST_MODE)}
                                     </div>
                                     <div class="textRow">{this.gameSetting.taskModeData[2].buildUpLimitDisplayName}</div>

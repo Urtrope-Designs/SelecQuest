@@ -134,7 +134,7 @@ export interface Hero {
 }
 
 export interface TrialMajorReward {
-    type: TrialMajorRewardType,
+    type: string,
     received: string[],
 };
 
