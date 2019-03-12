@@ -1,4 +1,4 @@
-import { HeroRace, LootingTarget, TrialTarget, LeadGatheringTarget, TaskTargetType } from "./models";
+import { HeroRace, LootingTarget, TrialTarget, LeadGatheringTarget, TaskTargetType, HeroTitlePosition } from "./models";
 import { PrologueTask, LootMajorRewardType } from "./hero-models";
 
 export interface GameSettingConfig {
@@ -23,6 +23,9 @@ export interface GameSettingConfig {
     lootMajorRewardModifierTypes: LootMajorRewardModifierType[];
     trialTaskTargets: TrialTarget[];
     trialMajorRewardTypes: string[];
+    epithetDescriptors: string[];
+    epithetBeingAll: string[];
+    titlePositionsAll: HeroTitlePosition[];
     leadGatheringTargets: LeadGatheringTarget[];
     taskModeData: TaskModeData[];
     gameViewTabDisplayNames: string[];          // length of array must be 5, each string must be 8 or fewer characters

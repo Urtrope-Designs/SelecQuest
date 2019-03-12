@@ -1,8 +1,9 @@
 import { GameSettingsManager } from "./game-settings-manager";
 import { Adventure, HeroAbilityType, LootMajorRewardType, LootMajorReward } from "../models/hero-models";
-import { IS_DEBUG, EPITHET_DESCRIPTORS, EPITHET_BEING_ALL, TITLE_POSITIONS_ALL, SOBRIQUET_MODIFIERS, SOBRIQUET_NOUN_PORTION, HONORIFIC_TEMPLATES, STANDARD_GROUPS_INDEFINITE, OFFICE_POSITIONS_ALL } from "../global/config";
+import { IS_DEBUG, SOBRIQUET_MODIFIERS, SOBRIQUET_NOUN_PORTION, HONORIFIC_TEMPLATES, STANDARD_GROUPS_INDEFINITE, OFFICE_POSITIONS_ALL } from "../global/config";
 import { Hero, HeroModification, HeroModificationType, TrialMajorReward, TrialMajorRewardType, HeroTitlePosition, QuestMajorReward, HeroConnection, HeroStat } from "../models/models";
 import { randRange, randFromList, randFromListLow, capitalizeInitial, randFromListHigh, generateRandomName } from "../global/utils";
+import { GameSetting } from "../global/game-setting";
 
 export class PlayTaskResultGenerator {
     constructor(private gameSettingsMgr: GameSettingsManager) {
@@ -143,11 +144,11 @@ export class PlayTaskResultGenerator {
         switch(newTrialMajorRewardTypeIndex) {
             case TrialMajorRewardType.Epithets:
                 exclusions = hero.trialMajorRewards[TrialMajorRewardType.Epithets].received.join(' ');
-                newTrialMajorRewardDescription = this.generateRandomEpithetDescription(exclusions);
+                newTrialMajorRewardDescription = this.generateRandomEpithetDescription(exclusions, gameSetting);
                 break;
             case TrialMajorRewardType.Titles:
                 exclusions = hero.trialMajorRewards[TrialMajorRewardType.Titles].received.join(' ');
-                newTrialMajorRewardDescription = this.generateRandomTitleDescription(exclusions);
+                newTrialMajorRewardDescription = this.generateRandomTitleDescription(exclusions, gameSetting);
                 break;
             case TrialMajorRewardType.Sobriquets:
                 exclusions = hero.trialMajorRewards[TrialMajorRewardType.Sobriquets].received.join(' ');
@@ -167,25 +168,25 @@ export class PlayTaskResultGenerator {
         return newTrialMajorReward;
     }
     
-    private generateRandomEpithetDescription(exclusions: string) {
+    private generateRandomEpithetDescription(exclusions: string, gameSetting: GameSetting) {
         let epithetDescriptor: string;
         let epithetBeing: string;
     
         do {
-            epithetDescriptor = randFromList(EPITHET_DESCRIPTORS);
+            epithetDescriptor = randFromList(gameSetting.epithetDescriptors);
         } while (exclusions.toLocaleLowerCase().includes(epithetDescriptor.toLocaleLowerCase()));
         do {
-            epithetBeing = randFromList(EPITHET_BEING_ALL);
+            epithetBeing = randFromList(gameSetting.epithetBeingAll);
         } while (exclusions.toLocaleLowerCase().includes(epithetBeing.toLocaleLowerCase()));
     
         let epithetDescription = `${epithetDescriptor} ${epithetBeing}`;
         return epithetDescription;
     };
-    private generateRandomTitleDescription(exclusions: string) {
+    private generateRandomTitleDescription(exclusions: string, gameSetting: GameSetting) {
         let titlePosition: HeroTitlePosition;
         let titleObject: string;
         do {
-            titlePosition = randFromList(TITLE_POSITIONS_ALL);
+            titlePosition = randFromList(gameSetting.titlePositionsAll);
         } while (exclusions.toLocaleLowerCase().includes(titlePosition.description.toLocaleLowerCase()));
         do {
             titleObject = randFromList(titlePosition.titleObjectList);

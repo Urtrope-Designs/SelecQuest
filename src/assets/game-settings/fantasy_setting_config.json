@@ -504,6 +504,84 @@
         "Sobriquets",
         "Honorifics"
     ],
+    "epithetDescriptors": [
+        "Cow-eyed1",
+        "Soggy1",
+        "Milk-white1",
+        "Weather-worn1",
+        "Jaunty1",
+        "Bronzed1",
+        "Ruthless1"
+    ],
+    "epithetBeingAll": [
+        "Bard1",
+        "Traveler1",
+        "Wanderer1",
+        "Adventurer1",
+        "Conqueror1"
+    ],
+    "titlePositionsAll": [
+        {
+            "description": "Vice-corporal",
+            "titleObjectList": [
+                "Sturtevant",
+                "Duplainville",
+                "Kankakee",
+                "Reno",
+                "Swington",
+                "the Marshes of Mediocrity",
+                "the Tower of Trifling",
+                "Beggarton",
+                "Monrovia",
+                "the Misty Isles",
+                "the Seas of Cheese",
+                "Allbrainia",
+                "Bald Mountain",
+                "Hell",
+                "Funk",
+                "Audacity",
+                "Courage",
+                "Fecklessness"
+            ]
+        },
+        {
+            "description": "Poet Laureate",
+            "titleObjectList": [
+                "Sturtevant",
+                "Duplainville",
+                "Kankakee",
+                "Reno",
+                "Swington",
+                "the Marshes of Mediocrity",
+                "the Tower of Trifling",
+                "Beggarton",
+                "Monrovia",
+                "the Misty Isles",
+                "the Seas of Cheese",
+                "Allbrainia",
+                "Bald Mountain",
+                "Hell"
+            ]
+        },
+        {
+            "description": "Blue Ribbon Winner",
+            "titleObjectList": [
+                "Funk",
+                "Audacity",
+                "Courage",
+                "Fecklessness"
+            ]
+        },
+        {
+            "description": "Connoisseur",
+            "titleObjectList": [
+                "Funk",
+                "Audacity",
+                "Courage",
+                "Fecklessness"
+            ]
+        }
+    ],
     "leadGatheringTargets": [
         {
             "gerundPhrase": "gossipping with",

@@ -1,5 +1,5 @@
 import { GameSettingConfig, LootMajorRewardMaterialType, LootMajorRewardModifierType, TaskModeData, TaskPrefix } from "../models/game-setting-models";
-import { HeroRace, LootingTarget, TrialTarget, LeadGatheringTarget } from "../models/models";
+import { HeroRace, LootingTarget, TrialTarget, LeadGatheringTarget, HeroTitlePosition } from "../models/models";
 import { AbilityType } from "../models/game-setting-models";
 import { PrologueTask, LootMajorRewardType } from "../models/hero-models";
 
@@ -34,6 +34,9 @@ export class GameSetting {
     readonly trialTaskGerund: string;
     readonly trialTaskTargets: TrialTarget[];
     readonly trialMajorRewardTypes: string[];
+    readonly epithetDescriptors: string[];
+    readonly epithetBeingAll: string[];
+    readonly titlePositionsAll: HeroTitlePosition[];
     readonly leadGatheringTargets: LeadGatheringTarget[];
     readonly taskPrefixes: TaskPrefix[];
 
@@ -74,6 +77,9 @@ export class GameSetting {
             throw 'Length of trialMajorRewardTypes array not equal to 4 in ' + config.gameSettingName;
         }
         this.trialMajorRewardTypes = config.trialMajorRewardTypes;
+        this.epithetDescriptors = config.epithetDescriptors;
+        this.epithetBeingAll = config.epithetBeingAll;
+        this.titlePositionsAll = config.titlePositionsAll;
         this.leadGatheringTargets = config.leadGatheringTargets;
 
         if (config.gameViewTabDisplayNames.length != 5) {
