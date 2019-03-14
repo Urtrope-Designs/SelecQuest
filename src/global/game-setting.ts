@@ -28,6 +28,7 @@ export class GameSetting {
     readonly fetchTargetObjects: string[];
     readonly seekTargetObjects: string[];
     readonly places: string[];
+    readonly groups: string[];
     readonly locationTaskGerund: string;
     readonly foeTaskGerund: string;
     readonly duelTaskGerund: string;
@@ -37,7 +38,11 @@ export class GameSetting {
     readonly epithetDescriptors: string[];
     readonly epithetBeingAll: string[];
     readonly titlePositionsAll: HeroTitlePosition[];
+    readonly sobriquetModifiers: string[];
+    readonly sobriquetNounPortions: string[];
+    readonly honorificTemplates: string[];
     readonly leadGatheringTargets: LeadGatheringTarget[];
+    readonly officePositionsAll: string[];
     readonly taskPrefixes: TaskPrefix[];
 
 
@@ -80,7 +85,12 @@ export class GameSetting {
         this.epithetDescriptors = config.epithetDescriptors;
         this.epithetBeingAll = config.epithetBeingAll;
         this.titlePositionsAll = config.titlePositionsAll;
+        this.sobriquetModifiers = config.sobriquetModifiers;
+        this.sobriquetNounPortions = config.sobriquetNounPortions;
+        this.honorificTemplates = config.honorificTemplates;
+        
         this.leadGatheringTargets = config.leadGatheringTargets;
+        this.officePositionsAll = config.officePositionsAll;
 
         if (config.gameViewTabDisplayNames.length != 5) {
             throw 'Length of gameViewTabDisplayNames array not equal to 5 in ' + config.gameSettingName;
@@ -99,6 +109,7 @@ export class GameSetting {
         this.fetchTargetObjects = config.fetchTargetObjects;
         this.seekTargetObjects = config.seekTargetObjects;
         this.places = config.places;
+        this.groups = config.groups;
         this.locationTaskGerund = config.locationTaskGerund;
         this.foeTaskGerund = config.foeTaskGerund;
         this.duelTaskGerund = config.duelTaskGerund;

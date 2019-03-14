@@ -26,12 +26,17 @@ export interface GameSettingConfig {
     epithetDescriptors: string[];
     epithetBeingAll: string[];
     titlePositionsAll: HeroTitlePosition[];
+    sobriquetModifiers: string[];
+    sobriquetNounPortions: string[];
+    honorificTemplates: string[];
     leadGatheringTargets: LeadGatheringTarget[];
+    officePositionsAll: string[];
     taskModeData: TaskModeData[];
     gameViewTabDisplayNames: string[];          // length of array must be 5, each string must be 8 or fewer characters
     fetchTargetObjects: string[];
     seekTargetObjects: string[];
     places: string[];
+    groups: string[];
     locationTaskGerund: string;
     foeTaskGerund: string;
     duelTaskGerund: string;

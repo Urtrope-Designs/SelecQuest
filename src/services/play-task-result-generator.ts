@@ -1,6 +1,6 @@
 import { GameSettingsManager } from "./game-settings-manager";
 import { Adventure, HeroAbilityType, LootMajorRewardType, LootMajorReward } from "../models/hero-models";
-import { IS_DEBUG, SOBRIQUET_MODIFIERS, SOBRIQUET_NOUN_PORTION, HONORIFIC_TEMPLATES, STANDARD_GROUPS_INDEFINITE, OFFICE_POSITIONS_ALL } from "../global/config";
+import { IS_DEBUG } from "../global/config";
 import { Hero, HeroModification, HeroModificationType, TrialMajorReward, TrialMajorRewardType, HeroTitlePosition, QuestMajorReward, HeroConnection, HeroStat } from "../models/models";
 import { randRange, randFromList, randFromListLow, capitalizeInitial, randFromListHigh, generateRandomName } from "../global/utils";
 import { GameSetting } from "../global/game-setting";
@@ -152,11 +152,11 @@ export class PlayTaskResultGenerator {
                 break;
             case TrialMajorRewardType.Sobriquets:
                 exclusions = hero.trialMajorRewards[TrialMajorRewardType.Sobriquets].received.join(' ');
-                newTrialMajorRewardDescription = this.generateRandomSobriquetDescription(exclusions);
+                newTrialMajorRewardDescription = this.generateRandomSobriquetDescription(exclusions, gameSetting);
                 break;
             case TrialMajorRewardType.Honorifics:
                 exclusions = hero.trialMajorRewards[TrialMajorRewardType.Honorifics].received.join(' ');
-                newTrialMajorRewardDescription = this.generateRandomHonorificDescription(exclusions, hero.level, hero.name);
+                newTrialMajorRewardDescription = this.generateRandomHonorificDescription(exclusions, hero.level, hero.name, gameSetting);
                 break;
         }
     
@@ -196,10 +196,10 @@ export class PlayTaskResultGenerator {
     
         return titleDescription;
     }
-    private generateRandomSobriquetDescription(exclusions: string) {
+    private generateRandomSobriquetDescription(exclusions: string, gameSetting: GameSetting) {
         let modifier = ''
         do {
-            modifier = randFromList(SOBRIQUET_MODIFIERS);
+            modifier = randFromList(gameSetting.sobriquetModifiers);
         } while (exclusions.toLocaleLowerCase().includes(modifier.toLocaleLowerCase()));
     
         // one or two (twice as likely) SOBRIQUET_NOUN_PORTIONs
@@ -207,7 +207,7 @@ export class PlayTaskResultGenerator {
         for (let i = 0; i < (randRange(0, 2) || 2); i++) {
             let nounPortion = '';
             do {
-                nounPortion = randFromList(SOBRIQUET_NOUN_PORTION);
+                nounPortion = randFromList(gameSetting.sobriquetNounPortions);
             } while (exclusions.toLocaleLowerCase().includes(nounPortion.toLocaleLowerCase()) || noun.toLocaleLowerCase().includes(nounPortion.toLocaleLowerCase()));
             noun += nounPortion;
         }
@@ -215,15 +215,15 @@ export class PlayTaskResultGenerator {
         const sobriquetDescription = `${modifier} ${capitalizeInitial(noun)}`;
         return sobriquetDescription;
     }
-    private generateRandomHonorificDescription(exclusions: string, targetLevel: number, heroName: string) {
+    private generateRandomHonorificDescription(exclusions: string, targetLevel: number, heroName: string, gameSetting: GameSetting) {
         let honorificTemplate: string;
         let honorificDescription: string;
         
         const deviation = 4;
-        const minIndex = Math.min(targetLevel - deviation, HONORIFIC_TEMPLATES.length - deviation);
+        const minIndex = Math.min(targetLevel - deviation, gameSetting.honorificTemplates.length - deviation);
         const maxIndex = Math.max(targetLevel + deviation, deviation);
         do {
-            honorificTemplate = randFromListHigh(HONORIFIC_TEMPLATES, 1, minIndex, maxIndex);
+            honorificTemplate = randFromListHigh(gameSetting.honorificTemplates, 1, minIndex, maxIndex);
             honorificDescription = honorificTemplate.replace('%NAME%', heroName);
         } while (exclusions.toLocaleLowerCase().includes(honorificDescription.toLocaleLowerCase()));
         
@@ -243,10 +243,11 @@ export class PlayTaskResultGenerator {
     }
     
     private generateRandomQuestMajorReward(hero: Hero): QuestMajorReward {
+        const gameSetting = this.gameSettingsMgr.getGameSettingById(hero.gameSettingId);
         let newRewardData: QuestMajorReward;
     
         let newRewardFactories: ((hero: Hero) => QuestMajorReward)[] = [];
-        if (hero.questMajorRewards.length < STANDARD_GROUPS_INDEFINITE.length) {
+        if (hero.questMajorRewards.length < gameSetting.groups.length) {
             newRewardFactories.push(this.generateRandomDistinctConnection);
             newRewardFactories.push(this.generateRandomDistinctConnection); // double the odds
         }
@@ -254,7 +255,7 @@ export class PlayTaskResultGenerator {
             newRewardFactories.push(this.generateRandomDistinctMembership);
             newRewardFactories.push(this.generateRandomDistinctMembership); // double the odds
         }
-        if (hero.questMajorRewards.some(a => this.isNonNullNonHighestOffice(a.office))) {
+        if (hero.questMajorRewards.some(a => this.isNonNullNonHighestOffice(a.office, gameSetting))) {
             newRewardFactories.push(this.generateRandomDistinctHigherOffice);
         }
     
@@ -267,7 +268,8 @@ export class PlayTaskResultGenerator {
     
     
     private generateRandomDistinctConnection(hero: Hero): QuestMajorReward {
-        const availableDistinctGroups: string[] = STANDARD_GROUPS_INDEFINITE.filter((groupName: string) => {
+        const gameSetting = this.gameSettingsMgr.getGameSettingById(hero.gameSettingId);
+        const availableDistinctGroups: string[] = gameSetting.groups.filter((groupName: string) => {
             return !hero.questMajorRewards.some(a => a.groupName == groupName);
         });
     
@@ -276,7 +278,7 @@ export class PlayTaskResultGenerator {
         }
         
         const newConnectionName = generateRandomName(this.gameSettingsMgr.getGameSettingById(hero.gameSettingId));
-        const newConnectionTitle = randFromList(OFFICE_POSITIONS_ALL.slice(1));
+        const newConnectionTitle = randFromList(gameSetting.officePositionsAll.slice(1));
         const newGroupName = randFromList(availableDistinctGroups);
         const newConnection: HeroConnection = {
             personName: newConnectionName,
@@ -291,6 +293,7 @@ export class PlayTaskResultGenerator {
     }
     
     private generateRandomDistinctMembership(hero: Hero): QuestMajorReward {
+        const gameSetting = this.gameSettingsMgr.getGameSettingById(hero.gameSettingId);
         // list of all groups we have a connection with but don't currently have membership (ie, an office)
         const availableMembershipGroups: string[] = hero.questMajorRewards.filter(a => a.office == null).map(a => a.groupName);
     
@@ -299,7 +302,7 @@ export class PlayTaskResultGenerator {
         }
     
         const newMembershipGroupName = randFromList(availableMembershipGroups);
-        const newOffice = OFFICE_POSITIONS_ALL[0];
+        const newOffice = gameSetting.officePositionsAll[0];
         const returnData: QuestMajorReward = {
             groupName: newMembershipGroupName,
             office: newOffice,
@@ -309,8 +312,9 @@ export class PlayTaskResultGenerator {
     }
     
     private generateRandomDistinctHigherOffice(hero: Hero): QuestMajorReward {
+        const gameSetting = this.gameSettingsMgr.getGameSettingById(hero.gameSettingId);
         // list of all groups with a non-null office that is also not the highest office
-        const availableOfficeGroups: string[] = hero.questMajorRewards.filter(a => this.isNonNullNonHighestOffice(a.office)).map(a => a.groupName);
+        const availableOfficeGroups: string[] = hero.questMajorRewards.filter(a => this.isNonNullNonHighestOffice(a.office, gameSetting)).map(a => a.groupName);
         if (availableOfficeGroups.length === 0) {
             return nullQuestMajorReward;
         }
@@ -318,7 +322,7 @@ export class PlayTaskResultGenerator {
         
         const existingReward: QuestMajorReward = hero.questMajorRewards.find(a => a.groupName == group);
         // list of all positions higher than currently "held" office, non-dup with the same group's Connection
-        const availableOfficePositions: string[] = OFFICE_POSITIONS_ALL.slice(OFFICE_POSITIONS_ALL.indexOf(existingReward.office) + 1).filter(o => {
+        const availableOfficePositions: string[] = gameSetting.officePositionsAll.slice(gameSetting.officePositionsAll.indexOf(existingReward.office) + 1).filter(o => {
                 return o != existingReward.connection.personTitle;
             });
         
@@ -331,8 +335,8 @@ export class PlayTaskResultGenerator {
         return returnData;
     }
     
-    private isNonNullNonHighestOffice(officeName: string) {
-        return !!officeName && OFFICE_POSITIONS_ALL.indexOf(officeName) < (OFFICE_POSITIONS_ALL.length - 1)
+    private isNonNullNonHighestOffice(officeName: string, gameSetting: GameSetting) {
+        return !!officeName && gameSetting.officePositionsAll.indexOf(officeName) < (gameSetting.officePositionsAll.length - 1)
     }
 
     public generateLevelUpModifications(hero: Hero): HeroModification[] {

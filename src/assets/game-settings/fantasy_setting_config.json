@@ -505,20 +505,20 @@
         "Honorifics"
     ],
     "epithetDescriptors": [
-        "Cow-eyed1",
-        "Soggy1",
-        "Milk-white1",
-        "Weather-worn1",
-        "Jaunty1",
-        "Bronzed1",
-        "Ruthless1"
+        "Cow-eyed",
+        "Soggy",
+        "Milk-white",
+        "Weather-worn",
+        "Jaunty",
+        "Bronzed",
+        "Ruthless"
     ],
     "epithetBeingAll": [
-        "Bard1",
-        "Traveler1",
-        "Wanderer1",
-        "Adventurer1",
-        "Conqueror1"
+        "Bard",
+        "Traveler",
+        "Wanderer",
+        "Adventurer",
+        "Conqueror"
     ],
     "titlePositionsAll": [
         {
@@ -582,6 +582,44 @@
             ]
         }
     ],
+    "sobriquetModifiers": [
+        "Old",
+        "The",
+        "Copper",
+        "Big"
+    ],
+    "sobriquetNounPortions": [
+        "fox",
+        "tims",
+        "soul",
+        "crank",
+        "munch",
+        "tugger",
+        "tower",
+        "blossom",
+        "sweet",
+        "silver",
+        "bell",
+        "dale",
+        "horn",
+        "way",
+        "star"
+    ],
+    "honorificTemplates": [
+        "%NAME%, Esquire",
+        "Prof %NAME%",
+        "Reverend %NAME%",
+        "Professor %NAME%",
+        "Swami %NAME%",
+        "%NAME%, MD",
+        "The Right Reverend %NAME%",
+        "Herr Doktor %NAME%",
+        "Frau Doktor %NAME%",
+        "Elder %NAME%",
+        "Your Excellency, %NAME%",
+        "The Most Honorable %NAME%",
+        "Primus %NAME%"
+    ],
     "leadGatheringTargets": [
         {
             "gerundPhrase": "gossipping with",
@@ -605,6 +643,22 @@
             ],
             "leadTypes": ["seek"]
         }
+    ],
+    "officePositionsAll": [
+        "Noob",
+        "Pawn",
+        "Lackey",
+        "Patsy",
+        "Court Jester",
+        "Mascot",
+        "Treasurer",
+        "Artist-in-Residence",
+        "Reconnoitrer",
+        "Striker",
+        "Speaker",
+        "Captain",
+        "Director",
+        "Messiah"
     ],
     "gameViewTabDisplayNames": [
         "Hero",
@@ -740,6 +794,14 @@
         "Allbrainia",
         "Bald Mountain",
         "Hell"
+    ],
+    "groups": [
+        "the Thieves Guild",
+        "the Volleyball Team",
+        "the local women's circle",
+        "your brew-pub crew",
+        "a bunch of retired ditch-diggers",
+        "the Young Neocons Chapter"
     ],
     "locationTaskGerund": "Ransacking",
     "foeTaskGerund": "Executing",
