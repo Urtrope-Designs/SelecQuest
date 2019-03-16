@@ -366,9 +366,11 @@ export class PlayTaskGenerator {
                     },
                 ]
                 const updatedHero = this.generateResultingHero(state.hero, modifications);
+
+                const sellName = sellQuantity === 1 ? sellItem.name : sellItem.namePlural;
     
                 const newTask: Task = {
-                    description: 'Selling ' + makeStringIndefinite(sellItem.name, sellItem.quantity),
+                    description: 'Selling ' + makeStringIndefinite(sellName, sellQuantity),
                     durationMs: 1000,
                     resultingHero: updatedHero,
                 }
@@ -559,9 +561,11 @@ export class PlayTaskGenerator {
                     },
                 ];
                 const updatedHero = this.generateResultingHero(state.hero, modifications);
+
+                const boastName = boastQuantity === 1 ? boastItem.name : boastItem.namePlural;
                 
                 const newTask: Task = {
-                    description: 'Boasting of ' + makeStringIndefinite(boastItem.name, boastQuantity),
+                    description: 'Boasting of ' + makeStringIndefinite(boastName, boastQuantity),
                     durationMs: 1000,
                     resultingHero: updatedHero,
                 }
