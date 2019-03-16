@@ -130,56 +130,74 @@
         {
             "type": "location",
             "name": "Barber Shop",
+            "namePlural": "Barber Shops",
             "level": 1,
-            "reward": "barber's cleaver"
+            "reward": "barber's cleaver",
+            "rewardPlural": "barber's cleavers"
         },
         {
             "type": "location",
             "name": "NagaMart",
+            "namePlural": "NagaMarts",
             "level": 2,
-            "reward": "nagamart loyalty card"
+            "reward": "nagamart loyalty card",
+            "rewardPlural": "nagamart loyalty cards"
         },
         {
             "type": "foe",
             "name": "Orkey",
+            "namePlural": "Orkeys",
             "level": 1,
-            "reward": "orkey giblet"
+            "reward": "orkey giblet",
+            "rewardPlural": "orkey giblets"
         },
         {
             "type": "foe",
             "name": "Frankenstork",
+            "namePlural": "Frankenstorks",
             "level": 1,
-            "reward": "frankenstork beak"
+            "reward": "frankenstork beak",
+            "rewardPlural": "frankenstork beaks"
         },
         {
             "type": "foe",
             "name": "Bison",
+            "namePlural": "Bison",
             "level": 1,
-            "reward": "bison beard"
+            "reward": "bison beard",
+            "rewardPlural": "bison beards"
         },
         {
             "type": "foe",
             "name": "Mechanical marzipan",
+            "namePlural": "Mechanical marzipans",
             "level": 3,
-            "reward": "mechanical marzipan crumb"
+            "reward": "mechanical marzipan crumb",
+            "rewardPlural": "mechanical marzipan crumbs"
         },
         {
             "type": "foe",
             "name": "Grumpkin",
+            "namePlural": "Grumpkins",
             "level": 1,
-            "reward": "grumpkin frown"
+            "reward": "grumpkin frown",
+            "rewardPlural": "grumpkin frowns"
         },
         {
             "type": "foe",
             "name": "Sofa king",
+            "namePlural": "Sofa kings",
             "level": 5,
-            "reward": "sofa king cushion"
+            "reward": "sofa king cushion",
+            "rewardPlural": "sofa king cushions"
         },
         {
             "type": "foe",
             "name": "Ratking",
+            "namePlural": "Ratkings",
             "level": 7,
-            "reward": "ratking tooth"
+            "reward": "ratking tooth",
+            "rewardPlural": "ratking teeth"
         }
     ],
     "lootMajorRewardTypes": [
@@ -488,14 +506,18 @@
         {
             "type": "trial",
             "name": "endurance challenge",
+            "namePlural": "endurance challenges",
             "level": 1,
-            "reward": "gold star"
+            "reward": "gold star",
+            "rewardPlural": "gold stars"
         },
         {
             "type": "trial",
             "name": "bowling championship",
+            "namePlural": "bowling championships",
             "level": 1,
-            "reward": "bowling trophy"
+            "reward": "bowling trophy",
+            "rewardPlural": "bowling trophies"
         }
     ],
     "trialMajorRewardTypes": [

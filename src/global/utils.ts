@@ -78,7 +78,7 @@ export function makeStringIndefinite(baseString: string, quantity: number): stri
         else
           return 'a ' + baseString;
     } else {
-        return quantity + ' ' + makeStringPlural(baseString);
+        return quantity + ' ' + baseString;
     }
 }
 

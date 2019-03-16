@@ -21,15 +21,19 @@ export enum TaskTargetType {
 export interface LootingTarget {
     type: TaskTargetType,
     name: string,
+    namePlural: string,
     level: number,
     reward: string,
+    rewardPlural: string,
 };
 
 export interface TrialTarget {
     type: TaskTargetType,
     name: string,
+    namePlural: string,
     level: number,
     reward: string,
+    rewardPlural: string,
 };
 
 export interface LeadGatheringTarget {
@@ -151,12 +155,14 @@ export interface HeroConnection {
 
 export interface LootBuildUpReward {
     name: string,
+    namePlural: string,
     quantity: number,
     value: number,
 };
 
 export interface TrialBuildUpReward {
     name: string,
+    namePlural: string,
     quantity: number,
     value: number,
 };
@@ -186,6 +192,11 @@ export interface AppState {
 export interface HeroRace {
     raceName: string,
     trophyName: string,
+}
+
+export interface HeroClass {
+    name: string,
+    namePlural: string,
 }
 
 export interface HeroTitlePosition {

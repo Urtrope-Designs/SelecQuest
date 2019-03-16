@@ -36,8 +36,8 @@ export class PlayTaskGenerator {
         return quantity
     }
 
-    static applyTaskNameModifiers(targetLevel: number, taskTarget: LootingTarget, gameSetting: GameSetting): string {
-        let taskName = taskTarget.name;
+    static generateTaskNameModifiers(targetLevel: number, taskTarget: LootingTarget, gameSetting: GameSetting): string {
+        let taskModifier = '';
         const needsPrefixSeparator = taskTarget.type == TaskTargetType.LOCATION || taskTarget.type == TaskTargetType.TRIAL;
         const minimalPrefixList: string[] = gameSetting.taskPrefixes.find(p => p.taskTargetType == taskTarget.type && p.degree == 'maximal').options;
         const badFirstPrefixList: string[] = gameSetting.taskPrefixes.find(p => p.taskTargetType == taskTarget.type && p.degree == 'bad first').options;
@@ -47,30 +47,30 @@ export class PlayTaskGenerator {
         const goodSecondPrefixList: string[] = gameSetting.taskPrefixes.find(p => p.taskTargetType == taskTarget.type && p.degree == 'good second').options;
 
         if ((targetLevel - taskTarget.level) <= -10) {
-            taskName = randFromList(minimalPrefixList) + ' ' + taskName;
+            taskModifier = randFromList(minimalPrefixList) + ' ';
         } else if ((targetLevel - taskTarget.level) < -5) {
             const firstPrefix = randFromList(badFirstPrefixList);
             const secondPrefix = randFromList(badSecondPrefixList);
             const prefixSeparator = needsPrefixSeparator ? ', ' : ' ';
-            taskName = firstPrefix + prefixSeparator + secondPrefix + ' ' + taskName;
+            taskModifier = firstPrefix + prefixSeparator + secondPrefix + ' ';
         } else if (((targetLevel - taskTarget.level) < 0) && (randRange(0, 1))) {
-            taskName = randFromList(badFirstPrefixList) + ' ' + taskName;
+            taskModifier = randFromList(badFirstPrefixList) + ' ';
         } else if (((targetLevel - taskTarget.level) < 0)) {
-            taskName = randFromList(badSecondPrefixList) + ' ' + taskName;
+            taskModifier = randFromList(badSecondPrefixList) + ' ';
         } else if ((targetLevel - taskTarget.level) >= 10) {
-            taskName = randFromList(maximalPrefixList) + ' ' + taskName;
+            taskModifier = randFromList(maximalPrefixList) + ' ';
         } else if ((targetLevel - taskTarget.level) > 5) {
             const firstPrefix = randFromList(goodFirstPrefixList);
             const secondPrefix = randFromList(goodSecondPrefixList);
             const prefixSeparator = needsPrefixSeparator ? ', ' : ' ';
-            taskName = firstPrefix + prefixSeparator + secondPrefix + ' ' + taskName;
+            taskModifier = firstPrefix + prefixSeparator + secondPrefix + ' ';
         } else if (((targetLevel - taskTarget.level) > 0) && (randRange(0, 1))) {
-            taskName = randFromList(goodFirstPrefixList) + ' ' + taskName;
+            taskModifier = randFromList(goodFirstPrefixList) + ' ';
         } else if (((targetLevel - taskTarget.level) > 0)) {
-            taskName = randFromList(goodSecondPrefixList) + ' ' + taskName;
+            taskModifier = randFromList(goodSecondPrefixList) + ' ';
         }
     
-        return taskName;
+        return taskModifier;
     }
 
     static randomizeTargetLevel(heroLevel: number): number {
@@ -114,15 +114,18 @@ export class PlayTaskGenerator {
 
         let quantity = PlayTaskGenerator.determineTaskQuantity(targetLevel, lootTarget.level);
 
+        taskName = quantity === 1 ? lootTarget.name : lootTarget.namePlural;
+
         targetLevel = Math.floor(targetLevel / quantity);
     
-        taskName = PlayTaskGenerator.applyTaskNameModifiers(targetLevel, lootTarget, gameSetting);
+        taskName = PlayTaskGenerator.generateTaskNameModifiers(targetLevel, lootTarget, gameSetting) + taskName;
 
         const taskGerund = lootTarget.type == TaskTargetType.FOE ? gameSetting.foeTaskGerund : gameSetting.locationTaskGerund;
         taskName = taskGerund + ' ' + makeStringIndefinite(taskName, quantity);
 
         lootData.push({
             name: lootTarget.reward,
+            namePlural: lootTarget.rewardPlural,
             quantity: 1,
             value: 1,
         });
@@ -155,29 +158,34 @@ export class PlayTaskGenerator {
             
             trophyData.push({
                 name: foeRace.raceName + ' ' + foeRace.trophyName,
+                namePlural: foeRace.raceName + ' ' + foeRace.trophyName,
                 quantity: 1,
                 value: 1,
             })
 
         } else {
             // trial task
-            let gladiatingTarget;
-            gladiatingTarget = PlayTaskGenerator.randomizeTargetFromList(targetLevel, gameSetting.trialTaskTargets, 6);
+            let trialTarget: TrialTarget;
+            trialTarget = PlayTaskGenerator.randomizeTargetFromList(targetLevel, gameSetting.trialTaskTargets, 6);
             
-            let quantity = PlayTaskGenerator.determineTaskQuantity(targetLevel, gladiatingTarget.level);
+            let quantity = PlayTaskGenerator.determineTaskQuantity(targetLevel, trialTarget.level);
+
+            taskName = quantity === 1 ? trialTarget.name : trialTarget.namePlural;
+
             targetLevel = Math.floor(targetLevel / quantity);
         
             // todo: need to either fit trials into the mould of this function, or create a new function/modify the old one.
-            taskName = PlayTaskGenerator.applyTaskNameModifiers(targetLevel, gladiatingTarget, gameSetting);
+            taskName = PlayTaskGenerator.generateTaskNameModifiers(targetLevel, trialTarget, gameSetting) + taskName;
         
-            const taskGerund = gladiatingTarget.type == TaskTargetType.DUEL ? gameSetting.duelTaskGerund : gameSetting.trialTaskGerund;
+            const taskGerund = trialTarget.type == TaskTargetType.DUEL ? gameSetting.duelTaskGerund : gameSetting.trialTaskGerund;
 
             taskName = taskGerund + ' ' + makeStringIndefinite(taskName, quantity);
 
             taskLevel = targetLevel * quantity;
 
             trophyData.push({
-                name: capitalizeInitial(gladiatingTarget.reward),
+                name: capitalizeInitial(trialTarget.reward),
+                namePlural: capitalizeInitial(trialTarget.rewardPlural),
                 quantity: 1,
                 value: 1,
             });
