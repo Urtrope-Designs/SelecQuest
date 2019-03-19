@@ -1,5 +1,5 @@
 import { GameSettingConfig, LootMajorRewardMaterialType, LootMajorRewardModifierType, TaskModeData, TaskPrefix } from "../models/game-setting-models";
-import { HeroRace, LootingTarget, TrialTarget, LeadGatheringTarget, HeroTitlePosition } from "../models/models";
+import { HeroRace, LootingTarget, TrialTarget, LeadGatheringTarget, HeroTitlePosition, HeroClass } from "../models/models";
 import { AbilityType } from "../models/game-setting-models";
 import { PrologueTask, LootMajorRewardType } from "../models/hero-models";
 
@@ -7,7 +7,7 @@ export class GameSetting {
     readonly gameSettingId: string;
     readonly gameSettingName: string;
     readonly heroRaces: HeroRace[];
-    readonly heroClasses: string[];
+    readonly heroClasses: HeroClass[];
     readonly statNames: string[];
     readonly healthStatName: string;            // 1-8 chars
     readonly healthBaseStatIndex: number;                // number between 0 and 5 inclusive

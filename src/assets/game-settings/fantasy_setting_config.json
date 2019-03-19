@@ -29,17 +29,50 @@
         }
     ],
     "heroClasses": [
-        "Veg Crisper",
-        "Cat-caller",
-        "Metanarc",
-        "War Flautist",
-        "Sarcasminista",
-        "Meter Beater",
-        "Chef de Cuisine",
-        "Basher",
-        "Smasher",
-        "Warlock",
-        "Semi-retired Heckler"
+        {
+            "name": "Veg Crisper",
+            "namePlural": "Veg Crispers"
+        },
+        {
+            "name": "Cat-caller",
+            "namePlural": "Cat-callers"
+        },
+        {
+            "name": "Metanarc",
+            "namePlural": "Metanarcs"
+        },
+        {
+            "name": "War Flautist",
+            "namePlural": "War Flautists"
+        },
+        {
+            "name": "Sarcasminista",
+            "namePlural": "Sarcasministas"
+        },
+        {
+            "name": "Meter Beater",
+            "namePlural": "Meter Beaters"
+        },
+        {
+            "name": "Chef de Cuisine",
+            "namePlural": "Chefs de Cuisine"
+        },
+        {
+            "name": "Basher",
+            "namePlural": "Bashers"
+        },
+        {
+            "name": "Smasher",
+            "namePlural": "Smashers"
+        },
+        {
+            "name": "Warlock",
+            "namePlural": "Warlocks"
+        },
+        {
+            "name": "Semi-retired Heckler",
+            "namePlural": "Semi-retired Hecklers"
+        }
     ],
     "statNames": [
         "str",

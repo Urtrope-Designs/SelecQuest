@@ -1,5 +1,5 @@
 import { Component, State, Event, EventEmitter, Prop } from "@stencil/core";
-import { HeroStat, HeroRace } from "../../models/models";
+import { HeroStat, HeroRace, HeroClass } from "../../models/models";
 import { generateRandomName, randFromList, randRange, capitalizeInitial } from "../../global/utils";
 import { GameSettingsManager } from '../../services/game-settings-manager';
 import { GameSetting } from "../../global/game-setting";
@@ -18,7 +18,7 @@ export class CreateHeroScreen {
     private get heroRaces(): HeroRace[] {
         return this.selectedGameSetting.heroRaces;
     }
-    private get heroClasses(): string[] {
+    private get heroClasses(): HeroClass[] {
         return this.selectedGameSetting.heroClasses;
     }
     private get statNames(): string[] {
@@ -30,7 +30,7 @@ export class CreateHeroScreen {
         this.rolledHero = {
             name: generateRandomName(this.selectedGameSetting),
             raceName: randFromList(this.heroRaces).raceName,
-            className: randFromList(this.heroClasses),
+            className: randFromList(this.heroClasses).name,
             rolledStats: [this.generateRandomStats()],
             statsIndex: 0,
         }
@@ -129,12 +129,12 @@ export class CreateHeroScreen {
                             <div class="textRow textRow-highlight">Class</div>
                             <div class="buttonRow">
                                 {
-                                    this.heroClasses.map(className => 
+                                    this.heroClasses.map(heroClass => 
                                         <button 
-                                            {...(this.rolledHero.className == className ? {class: 'selected'} : {})}
-                                            onClick={ () => this.handleChange('className', className)}
+                                            {...(this.rolledHero.className == heroClass.name ? {class: 'selected'} : {})}
+                                            onClick={ () => this.handleChange('className', heroClass.name)}
                                         >
-                                            {className}
+                                            {heroClass.name}
                                         </button>
                                     )
                                 }

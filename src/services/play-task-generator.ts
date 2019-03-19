@@ -1,5 +1,5 @@
 import { TaskGenerator, GameTaskGeneratorList, TaskMode } from "../models/task-models";
-import { AppState, HeroModification, HeroModificationType, Task, LootingTarget, TaskTargetType, TrialTarget, QuestBuildUpReward, LeadType, TrialBuildUpReward, LootBuildUpReward, Hero } from "../models/models";
+import { AppState, HeroModification, HeroModificationType, Task, LootingTarget, TaskTargetType, TrialTarget, QuestBuildUpReward, LeadType, TrialBuildUpReward, LootBuildUpReward, Hero, HeroClass } from "../models/models";
 import { makeStringIndefinite, randRange, randFromList, randSign, capitalizeInitial, makeVerbGerund, generateRandomName, makeStringPlural } from "../global/utils";
 import { IS_DEBUG } from "../global/config";
 import { PlayTaskResultGenerator } from "./play-task-result-generator";
@@ -145,14 +145,14 @@ export class PlayTaskGenerator {
             // dueling task
             let foeLevel = PlayTaskGenerator.randomizeTargetLevel(curHero.level);
             let foeRace = randFromList(gameSetting.heroRaces);
-            let foeClass = randFromList(gameSetting.heroClasses);
+            let foeClass: HeroClass = randFromList(gameSetting.heroClasses);
             let quantity = PlayTaskGenerator.determineTaskQuantity(targetLevel, foeLevel);
             if (quantity === 1) {
                 let foeName = generateRandomName(gameSetting);
-                taskName = `${gameSetting.duelTaskGerund} ${foeName}, the ${foeRace.raceName} ${foeClass}`;
+                taskName = `${gameSetting.duelTaskGerund} ${foeName}, the ${foeRace.raceName} ${foeClass.name}`;
             }
             else {
-                taskName = gameSetting.duelTaskGerund + ' ' + makeStringIndefinite(`level ${foeLevel} ${foeRace.raceName} ${foeClass}`, quantity);
+                taskName = gameSetting.duelTaskGerund + ' ' + makeStringIndefinite(`level ${foeLevel} ${foeRace.raceName} ${foeClass.namePlural}`, quantity);
             }
             taskLevel = foeLevel * quantity;
             

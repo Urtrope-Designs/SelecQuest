@@ -1,11 +1,11 @@
-import { HeroRace, LootingTarget, TrialTarget, LeadGatheringTarget, TaskTargetType, HeroTitlePosition } from "./models";
+import { HeroRace, LootingTarget, TrialTarget, LeadGatheringTarget, TaskTargetType, HeroTitlePosition, HeroClass } from "./models";
 import { PrologueTask, LootMajorRewardType } from "./hero-models";
 
 export interface GameSettingConfig {
     gameSettingId: string;
     gameSettingName: string;
     heroRaces: HeroRace[];
-    heroClasses: string[];
+    heroClasses: HeroClass[];
     statNames: string[];
     healthStatName: string;         // 1-8 chars
     healthBaseStatIndex: number;    // number between 0 and 5 inclusive
