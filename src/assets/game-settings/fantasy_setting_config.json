@@ -4,23 +4,28 @@
     "heroRaces": [
         {
             "raceName": "Demimutant",
-            "trophyName": "genome"
+            "trophyName": "genome",
+            "trophyNamePlural": "genomes"
         },
         {
             "raceName": "Werefellow",
-            "trophyName": "bowler hat"
+            "trophyName": "bowler hat",
+            "trophyNamePlural": "bowler hats"
         },
         {
             "raceName": "Fartling",
-            "trophyName": "cloud"
+            "trophyName": "cloud",
+            "trophyNamePlural": "clouds"
         },
         {
             "raceName": "Owl-head",
-            "trophyName": "hoot"
+            "trophyName": "hoot",
+            "trophyNamePlural": "hoots"
         },
         {
             "raceName": "Half-mermaid",
-            "trophyName": "bident"
+            "trophyName": "bident",
+            "trophyNamePlural": "bidents"
         }
     ],
     "heroClasses": [

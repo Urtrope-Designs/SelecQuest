@@ -158,7 +158,7 @@ export class PlayTaskGenerator {
             
             trophyData.push({
                 name: foeRace.raceName + ' ' + foeRace.trophyName,
-                namePlural: foeRace.raceName + ' ' + foeRace.trophyName,
+                namePlural: foeRace.raceName + ' ' + foeRace.trophyNamePlural,
                 quantity: 1,
                 value: 1,
             })

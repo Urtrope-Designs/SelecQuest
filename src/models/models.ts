@@ -192,6 +192,7 @@ export interface AppState {
 export interface HeroRace {
     raceName: string,
     trophyName: string,
+    trophyNamePlural: string,
 }
 
 export interface HeroClass {
