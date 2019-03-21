@@ -254,7 +254,7 @@ export class PlayTaskGenerator {
         return updatedHero;
     }
 
-    lootingTaskGen: TaskGenerator = {
+    lootBuildUpTaskGenerator: TaskGenerator = {
         shouldRun: (_state: AppState) => {
             return true;
         },
@@ -331,7 +331,7 @@ export class PlayTaskGenerator {
         }
     };
     
-    selloffTaskGen: TaskGenerator = {
+    lootTearDownTaskGenerator: TaskGenerator = {
         shouldRun: (_state: AppState) => {
             return true;
         },
@@ -421,7 +421,7 @@ export class PlayTaskGenerator {
         },
     };
     
-    purchaseLootMajorRewardTaskGen: TaskGenerator = {
+    earnLootMajorRewardTaskGenerator: TaskGenerator = {
         shouldRun: (state: AppState) => {
             const currentEncumbrance = state.hero.lootBuildUpRewards.reduce((prevVal, curVal) => {
                 return prevVal + curVal.quantity;
@@ -450,7 +450,7 @@ export class PlayTaskGenerator {
         },
     };
     
-    gladiatingTaskGen: TaskGenerator = {
+    trialBuildUpTaskGenerator: TaskGenerator = {
         shouldRun: (_state: AppState) => {
             return true;
         },
@@ -531,7 +531,7 @@ export class PlayTaskGenerator {
         }
     };
     
-    boastingTaskGen: TaskGenerator = {
+    trialTearDownTaskGenerator: TaskGenerator = {
         shouldRun: (_state: AppState) => {
             return true;
         },
@@ -616,7 +616,7 @@ export class PlayTaskGenerator {
         }
     };
     
-    earnTrialMajorRewardTaskGen: TaskGenerator = {
+    earnTrialMajorRewardTaskGenerator: TaskGenerator = {
         shouldRun: (state: AppState) => {
             const currentTrialBuildUp = state.hero.trialBuildUpRewards.reduce((prevVal, curVal) => {
                 return prevVal + curVal.quantity;
@@ -644,7 +644,7 @@ export class PlayTaskGenerator {
         },
     };
     
-    investigatingTaskGen: TaskGenerator = {
+    questBuildUpTaskGenerator: TaskGenerator = {
         shouldRun: (_state: AppState) => {
             return true;
         },
@@ -699,7 +699,7 @@ export class PlayTaskGenerator {
         }
     };
     
-    leadFollowingTaskGen: TaskGenerator = {
+    questTearDownTaskGenerator: TaskGenerator = {
         shouldRun: (_state: AppState) => {
             return true;
         },
@@ -797,7 +797,7 @@ export class PlayTaskGenerator {
         }
     };
     
-    gainQuestMajorRewardTaskGen: TaskGenerator = {
+    earnQuestMajorRewardTaskGenerator: TaskGenerator = {
         shouldRun: (state: AppState) => {
             return state.hero.questBuildUpRewards.length <= 0 && (state.hero.currency[TaskMode.QUEST_MODE] - state.hero.spentCurrency[TaskMode.QUEST_MODE]) >= PlayTaskGenerator.getTradeInCostForLevel(state.hero.level);
         },
@@ -822,7 +822,7 @@ export class PlayTaskGenerator {
         },
     };
     
-    prologueTaskGen: TaskGenerator = {
+    prologueTaskGenerator: TaskGenerator = {
         shouldRun: (state: AppState) => {
             return state.hero.currentAdventure.name == this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId).prologueAdventureName;
         },
@@ -851,7 +851,7 @@ export class PlayTaskGenerator {
         },
     }
     
-    prologueTransitionTaskGen: TaskGenerator = {
+    prologueTransitionTaskGenerator: TaskGenerator = {
         shouldRun: (state: AppState) => {
             const prologueAdventureName = this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId).prologueAdventureName;
             return (state.hero.currentAdventure.name == prologueAdventureName && state.hero.adventureProgress >= state.hero.currentAdventure.progressRequired);
@@ -869,7 +869,7 @@ export class PlayTaskGenerator {
     }
     
     
-    adventureTransitionTaskGen: TaskGenerator = {
+    adventureTransitionTaskGenerator: TaskGenerator = {
         shouldRun: (state: AppState) => {
             return (state.hero.adventureProgress >= state.hero.currentAdventure.progressRequired);
         },
@@ -888,42 +888,42 @@ export class PlayTaskGenerator {
     
     private prioritizedTaskGenerators: GameTaskGeneratorList = {
         coreTaskGenerators: [
-            this.prologueTransitionTaskGen,
-            this.prologueTaskGen,
-            this.adventureTransitionTaskGen,
+            this.prologueTransitionTaskGenerator,
+            this.prologueTaskGenerator,
+            this.adventureTransitionTaskGenerator,
         ],
         adventuringModeTaskGenerators: [
             [           // Adventuring Mode 0
                 [       // teardownMode[0] == false
                     this.startLootTearDownTaskGenerator,
-                    this.lootingTaskGen,
+                    this.lootBuildUpTaskGenerator,
                 ],
                 [       // teardownMode[0] == true
-                    this.purchaseLootMajorRewardTaskGen,
+                    this.earnLootMajorRewardTaskGenerator,
                     this.startLootBuildUpTaskGenerator,
-                    this.selloffTaskGen,
+                    this.lootTearDownTaskGenerator,
                 ],
             ],
             [           // Adventuring Mode 1
                 [       // teardownMode[1] == false
                     this.startTrialTearDownTaskGenerator,
-                    this.gladiatingTaskGen,
+                    this.trialBuildUpTaskGenerator,
                 ],
                 [       // teardownMode[1] == true
-                    this.earnTrialMajorRewardTaskGen,
+                    this.earnTrialMajorRewardTaskGenerator,
                     this.startTrialBuildUpTaskGenerator,
-                    this.boastingTaskGen,
+                    this.trialTearDownTaskGenerator,
                 ],
             ],
             [           // Adventuring Mode 2
                 [       // teardownMode[2] == false
                     this.startQuestTearDownTaskGenerator,
-                    this.investigatingTaskGen,
+                    this.questBuildUpTaskGenerator,
                 ],
                 [       // teardownMode[2] == true
-                    this.gainQuestMajorRewardTaskGen,
+                    this.earnQuestMajorRewardTaskGenerator,
                     this.startQuestBuildUpTaskGenerator,
-                    this.leadFollowingTaskGen,
+                    this.questTearDownTaskGenerator,
                 ]
             ]
         ]
