@@ -584,61 +584,26 @@
         {
             "description": "Vice-corporal",
             "titleObjectList": [
-                "Sturtevant",
-                "Duplainville",
-                "Kankakee",
-                "Reno",
-                "Swington",
-                "the Marshes of Mediocrity",
-                "the Tower of Trifling",
-                "Beggarton",
-                "Monrovia",
-                "the Misty Isles",
-                "the Seas of Cheese",
-                "Allbrainia",
-                "Bald Mountain",
-                "Hell",
-                "Funk",
-                "Audacity",
-                "Courage",
-                "Fecklessness"
+                "%places%",
+                "%titleObjects%"
             ]
         },
         {
             "description": "Poet Laureate",
             "titleObjectList": [
-                "Sturtevant",
-                "Duplainville",
-                "Kankakee",
-                "Reno",
-                "Swington",
-                "the Marshes of Mediocrity",
-                "the Tower of Trifling",
-                "Beggarton",
-                "Monrovia",
-                "the Misty Isles",
-                "the Seas of Cheese",
-                "Allbrainia",
-                "Bald Mountain",
-                "Hell"
+                "%places%"
             ]
         },
         {
             "description": "Blue Ribbon Winner",
             "titleObjectList": [
-                "Funk",
-                "Audacity",
-                "Courage",
-                "Fecklessness"
+                "%titleObjects%"
             ]
         },
         {
             "description": "Connoisseur",
             "titleObjectList": [
-                "Funk",
-                "Audacity",
-                "Courage",
-                "Fecklessness"
+                "%titleObjects%"
             ]
         }
     ],
@@ -839,22 +804,6 @@
         "Colonel's Right Recipe",
         "Fountain of Lamneth"
     ], 
-    "places": [
-        "Sturtevant",
-        "Duplainville",
-        "Kankakee",
-        "Reno",
-        "Swington",
-        "the Marshes of Mediocrity",
-        "the Tower of Trifling",
-        "Beggarton",
-        "Monrovia",
-        "the Misty Isles",
-        "the Seas of Cheese",
-        "Allbrainia",
-        "Bald Mountain",
-        "Hell"
-    ],
     "groups": [
         "the Thieves Guild",
         "the Volleyball Team",
@@ -1043,6 +992,36 @@
                 "demanding",
                 "challenging",
                 "herculean"
+            ]
+        }
+    ],
+    "nameSources": [
+        {
+            "source": "titleObjects",
+            "options": [
+                "Funk",
+                "Audacity",
+                "Courage",
+                "Fecklessness"
+            ]
+        },
+        {
+            "source": "places",
+            "options": [
+                "Sturtevant",
+                "Duplainville",
+                "Kankakee",
+                "Reno",
+                "Swington",
+                "the Marshes of Mediocrity",
+                "the Tower of Trifling",
+                "Beggarton",
+                "Monrovia",
+                "the Misty Isles",
+                "the Seas of Cheese",
+                "Allbrainia",
+                "Bald Mountain",
+                "Hell"        
             ]
         }
     ]

@@ -35,13 +35,13 @@ export interface GameSettingConfig {
     gameViewTabDisplayNames: string[];          // length of array must be 5, each string must be 8 or fewer characters
     fetchTargetObjects: string[];
     seekTargetObjects: string[];
-    places: string[];
     groups: string[];
     locationTaskGerund: string;
     foeTaskGerund: string;
     duelTaskGerund: string;
     trialTaskGerund: string;
     taskPrefixes: TaskPrefix[];
+    nameSources: NameSource[];
 }
 
 export interface AbilityType {
@@ -91,4 +91,9 @@ export interface TaskPrefix {
     options: string[];
     taskTargetType: TaskTargetType;
     degree: 'minimal' | 'maximal' | 'bad first' | 'bad second' | 'good first' | 'good second';
+}
+
+export interface NameSource {
+    source: string;
+    options: string[];
 }

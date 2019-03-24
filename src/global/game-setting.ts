@@ -1,7 +1,8 @@
-import { GameSettingConfig, LootMajorRewardMaterialType, LootMajorRewardModifierType, TaskModeData, TaskPrefix } from "../models/game-setting-models";
+import { GameSettingConfig, LootMajorRewardMaterialType, LootMajorRewardModifierType, TaskModeData, TaskPrefix, NameSource } from "../models/game-setting-models";
 import { HeroRace, LootingTarget, TrialTarget, LeadGatheringTarget, HeroTitlePosition, HeroClass } from "../models/models";
 import { AbilityType } from "../models/game-setting-models";
 import { PrologueTask, LootMajorRewardType } from "../models/hero-models";
+import { randFromList } from "./utils";
 
 export class GameSetting {
     readonly gameSettingId: string;
@@ -27,7 +28,6 @@ export class GameSetting {
     readonly taskModeData: TaskModeData[];
     readonly fetchTargetObjects: string[];
     readonly seekTargetObjects: string[];
-    readonly places: string[];
     readonly groups: string[];
     readonly locationTaskGerund: string;
     readonly foeTaskGerund: string;
@@ -44,6 +44,7 @@ export class GameSetting {
     readonly leadGatheringTargets: LeadGatheringTarget[];
     readonly officePositionsAll: string[];
     readonly taskPrefixes: TaskPrefix[];
+    readonly nameSources: NameSource[];
 
 
 
@@ -108,12 +109,41 @@ export class GameSetting {
 
         this.fetchTargetObjects = config.fetchTargetObjects;
         this.seekTargetObjects = config.seekTargetObjects;
-        this.places = config.places;
         this.groups = config.groups;
         this.locationTaskGerund = config.locationTaskGerund;
         this.foeTaskGerund = config.foeTaskGerund;
         this.duelTaskGerund = config.duelTaskGerund;
         this.trialTaskGerund = config.trialTaskGerund;
         this.taskPrefixes = config.taskPrefixes;
+
+        // need to add validation to EVERYTHING that could use a NameSource??
+        this.nameSources = config.nameSources;
+
+
+        console.log(this.hydrateFromNameSources('test string of %titleObjects% here'));
+
+    }
+
+    public hydrateFromNameSources(sourceString: string): string {
+        const requestedSources = sourceString.match(/%[a-zA-Z_]+%/g);
+        if (requestedSources == null) {
+            return sourceString;
+        } else {
+            let hydratedString = sourceString;
+            requestedSources.forEach((source: string) => {
+                // determine the replacement value
+                const matchedSource = this.nameSources.find(ns => ns.source == source.slice(1, -1));
+
+                // swap out the source placeholders with the replacement values
+                let replacementValue: string = ''
+                if (matchedSource != null) {
+                    replacementValue = randFromList(matchedSource.options);
+                }
+                
+                hydratedString = hydratedString.replace(source, replacementValue);
+            })
+
+            return hydratedString;
+        }
     }
 }

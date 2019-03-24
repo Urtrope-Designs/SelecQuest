@@ -210,7 +210,7 @@ export class PlayTaskGenerator {
                 predicate = `the ${makeStringPlural(randFromList(gameSetting.lootTaskTargets.filter(t => t.type == TaskTargetType.FOE)).name)}`;
                 break;
             case LeadType.DEFEND:
-                predicate = randFromList(gameSetting.places);
+                predicate = randFromList(gameSetting.nameSources.find(s => s.source == 'places').options);
                 break;
         }
 

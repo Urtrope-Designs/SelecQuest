@@ -189,7 +189,7 @@ export class PlayTaskResultGenerator {
             titlePosition = randFromList(gameSetting.titlePositionsAll);
         } while (exclusions.toLocaleLowerCase().includes(titlePosition.description.toLocaleLowerCase()));
         do {
-            titleObject = randFromList(titlePosition.titleObjectList);
+            titleObject = gameSetting.hydrateFromNameSources(randFromList(titlePosition.titleObjectList));
         } while (exclusions.toLocaleLowerCase().includes(titleObject.toLocaleLowerCase()));
     
         const titleDescription = `${titlePosition.description} of ${titleObject}`;
