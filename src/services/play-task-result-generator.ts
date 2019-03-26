@@ -247,7 +247,7 @@ export class PlayTaskResultGenerator {
         let newRewardData: QuestMajorReward;
     
         let newRewardFactories: ((hero: Hero) => QuestMajorReward)[] = [];
-        if (hero.questMajorRewards.length < gameSetting.groups.length) {
+        if (hero.questMajorRewards.length < gameSetting.nameSources.find(s => s.source == 'groups').options.length) {
             newRewardFactories.push(this.generateRandomDistinctConnection);
             newRewardFactories.push(this.generateRandomDistinctConnection); // double the odds
         }
@@ -269,7 +269,7 @@ export class PlayTaskResultGenerator {
     
     private generateRandomDistinctConnection(hero: Hero): QuestMajorReward {
         const gameSetting = this.gameSettingsMgr.getGameSettingById(hero.gameSettingId);
-        const availableDistinctGroups: string[] = gameSetting.groups.filter((groupName: string) => {
+        const availableDistinctGroups: string[] = gameSetting.nameSources.find(s => s.source == 'groups').options.filter((groupName: string) => {
             return !hero.questMajorRewards.some(a => a.groupName == groupName);
         });
     

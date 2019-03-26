@@ -28,7 +28,6 @@ export class GameSetting {
     readonly taskModeData: TaskModeData[];
     readonly fetchTargetObjects: string[];
     readonly seekTargetObjects: string[];
-    readonly groups: string[];
     readonly locationTaskGerund: string;
     readonly foeTaskGerund: string;
     readonly duelTaskGerund: string;
@@ -109,7 +108,6 @@ export class GameSetting {
 
         this.fetchTargetObjects = config.fetchTargetObjects;
         this.seekTargetObjects = config.seekTargetObjects;
-        this.groups = config.groups;
         this.locationTaskGerund = config.locationTaskGerund;
         this.foeTaskGerund = config.foeTaskGerund;
         this.duelTaskGerund = config.duelTaskGerund;

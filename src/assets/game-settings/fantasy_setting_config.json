@@ -796,14 +796,6 @@
         "Colonel's Right Recipe",
         "Fountain of Lamneth"
     ], 
-    "groups": [
-        "the Thieves Guild",
-        "the Volleyball Team",
-        "the local women's circle",
-        "your brew-pub crew",
-        "a bunch of retired ditch-diggers",
-        "the Young Neocons Chapter"
-    ],
     "locationTaskGerund": "Ransacking",
     "foeTaskGerund": "Executing",
     "duelTaskGerund": "Dueling",

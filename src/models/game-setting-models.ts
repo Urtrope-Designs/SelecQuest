@@ -35,7 +35,6 @@ export interface GameSettingConfig {
     gameViewTabDisplayNames: string[];          // length of array must be 5, each string must be 8 or fewer characters
     fetchTargetObjects: string[];
     seekTargetObjects: string[];
-    groups: string[];
     locationTaskGerund: string;
     foeTaskGerund: string;
     duelTaskGerund: string;
