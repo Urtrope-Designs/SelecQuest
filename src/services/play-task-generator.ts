@@ -412,7 +412,7 @@ export class PlayTaskGenerator {
             ];
             const updatedHero = this.generateResultingHero(state.hero, modifications);
             const newTask: Task = {
-                description: randFromList(gameSetting.taskModeData[TaskMode.LOOT_MODE].startBuildUpTaskDescriptionOptions),
+                description: gameSetting.hydrateFromNameSources(randFromList(gameSetting.taskModeData[TaskMode.LOOT_MODE].startBuildUpTaskDescriptionOptions)),
                 durationMs: 4 * 1000,
                 resultingHero: updatedHero
             }
@@ -607,7 +607,7 @@ export class PlayTaskGenerator {
             ];
             const updatedHero = this.generateResultingHero(state.hero, modifications);
             const newTask: Task = {
-                description: randFromList(gameSetting.taskModeData[TaskMode.TRIAL_MODE].startBuildUpTaskDescriptionOptions),
+                description: gameSetting.hydrateFromNameSources(randFromList(gameSetting.taskModeData[TaskMode.TRIAL_MODE].startBuildUpTaskDescriptionOptions)),
                 durationMs: 4 * 1000,
                 resultingHero: updatedHero,
             };
@@ -788,7 +788,7 @@ export class PlayTaskGenerator {
             ];
             const updatedHero = this.generateResultingHero(state.hero, modifications);
             const newTask: Task = {
-                description: randFromList(gameSetting.taskModeData[TaskMode.QUEST_MODE].startBuildUpTaskDescriptionOptions),
+                description: gameSetting.hydrateFromNameSources(randFromList(gameSetting.taskModeData[TaskMode.QUEST_MODE].startBuildUpTaskDescriptionOptions)),
                 durationMs: 4 * 1000,
                 resultingHero: updatedHero,
             };

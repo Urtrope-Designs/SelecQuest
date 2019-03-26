@@ -727,11 +727,7 @@
             "environmentalLimitDisplayName": "Social Exposure",
             "environmentalLimitBreakDisplayName": "Overexposed",
             "startBuildUpTaskDescriptionOptions": [
-                "Rooting out some hot leads",
-                "Rooting out some fresh leads",
-                "Rooting out some new leads",
-                "Rooting out some buzzworthy leads",
-                "Rooting out some salacious leads"
+                "Rooting out some %leadGatheringTaskModifiers% leads"
             ],
             "startTearDownTaskDescriptionOptions": ["Organizing your Questlog"],
             "earnMajorRewardTaskDescriptionOptions": ["Solidifying a new connection"]
@@ -1025,6 +1021,16 @@
                 "the MonsterHunterz bulletin board",
                 "the latest issue of \"Spelunker's Booty\"",
                 "the trash heap behind the inn"
+            ]
+        },
+        {
+            "source": "leadGatheringTaskModifiers",
+            "options": [
+                "hot",
+                "fresh",
+                "new",
+                "buzzworthy",
+                "salacious"
             ]
         }
     ]
