@@ -1,5 +1,5 @@
 import { GameSettingConfig, LootMajorRewardMaterialType, LootMajorRewardModifierType, TaskModeData, TaskPrefix, NameSource } from "../models/game-setting-models";
-import { HeroRace, TaskTarget, LeadGatheringTarget, HeroTitlePosition, HeroClass, TaskTargetType } from "../models/models";
+import { HeroRace, TaskTarget, LeadGatheringTarget, HeroTitlePosition, HeroClass, TaskTargetType, LeadTarget } from "../models/models";
 import { AbilityType } from "../models/game-setting-models";
 import { PrologueTask, LootMajorRewardType } from "../models/hero-models";
 import { randFromList, makeStringIndefinite } from "./utils";
@@ -40,6 +40,7 @@ export class GameSetting {
     readonly sobriquetNounPortions: string[];
     readonly honorificTemplates: string[];
     readonly leadGatheringTargets: LeadGatheringTarget[];
+    readonly leadTargets: LeadTarget[];
     readonly officePositionsAll: string[];
     readonly taskPrefixes: TaskPrefix[];
     readonly nameSources: NameSource[];
@@ -87,6 +88,7 @@ export class GameSetting {
         this.honorificTemplates = config.honorificTemplates;
         
         this.leadGatheringTargets = config.leadGatheringTargets;
+        this.leadTargets = config.leadTargets;
         this.officePositionsAll = config.officePositionsAll;
 
         if (config.gameViewTabDisplayNames.length != 5) {
@@ -134,18 +136,18 @@ export class GameSetting {
             return sourceString;
         } else {
             let hydratedString = sourceString;
-            let makeIndef = false;
-            let makePlural = false;
-            requestedSources.forEach((source: string) => {
-                const prefixIndex = source.indexOf(indefPrefix);
-                if (prefixIndex != -1) {
+            requestedSources.forEach((marker: string) => {
+                let makeIndef = false;
+                let makePlural = false;
+                
+                let source = marker.slice(1, -1);
+                if (source.includes(indefPrefix)) {
                     makeIndef = true;
-                    source = source.slice(prefixIndex);
+                    source = source.replace(indefPrefix, '');
                 }
-                const pluralIndex = source.indexOf(pluralPrefix);
-                if (pluralIndex != -1) {
+                if (source.includes(pluralPrefix)) {
                     makePlural = true;
-                    source = source.slice(pluralIndex);
+                    source = source.replace(pluralPrefix, '');
                 }
 
                 // determine the replacement value
@@ -163,7 +165,7 @@ export class GameSetting {
                     }
                 } else {
                     // pull from nameSources
-                    const matchedSource = this.nameSources.find(ns => ns.source == source.slice(1, -1));
+                    const matchedSource = this.nameSources.find(ns => ns.source == source);
                     
                     if (matchedSource != null) {
                         replacementValue = randFromList(matchedSource.options);
@@ -175,7 +177,7 @@ export class GameSetting {
                 }
 
                 // swap out the source placeholders with the replacement values                
-                hydratedString = hydratedString.replace(source, replacementValue);
+                hydratedString = hydratedString.replace(marker, replacementValue);
             })
 
             return hydratedString;

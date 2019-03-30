@@ -1,4 +1,4 @@
-import { HeroRace, TaskTarget, LeadGatheringTarget, TaskTargetType, HeroTitlePosition, HeroClass } from "./models";
+import { HeroRace, TaskTarget, LeadGatheringTarget, TaskTargetType, HeroTitlePosition, HeroClass, LeadTarget } from "./models";
 import { PrologueTask, LootMajorRewardType } from "./hero-models";
 
 export interface GameSettingConfig {
@@ -29,6 +29,7 @@ export interface GameSettingConfig {
     sobriquetNounPortions: string[];
     honorificTemplates: string[];
     leadGatheringTargets: LeadGatheringTarget[];
+    leadTargets: LeadTarget[];
     officePositionsAll: string[];
     taskModeData: TaskModeData[];
     gameViewTabDisplayNames: string[];          // length of array must be 5, each string must be 8 or fewer characters

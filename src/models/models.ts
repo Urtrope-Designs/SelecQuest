@@ -33,6 +33,12 @@ export interface LeadGatheringTarget {
     leadTypes: LeadType[],
 }
 
+export interface LeadTarget {
+    leadType: LeadType,
+    verb: string,
+    predicateOptions: string[],
+}
+
 export enum LeadType {
     FETCH = "fetch",
     DELIVER = "deliver",

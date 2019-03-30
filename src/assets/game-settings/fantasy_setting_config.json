@@ -659,6 +659,15 @@
             "leadTypes": ["seek"]
         }
     ],
+    "leadTargets": [
+        {
+            "leadType": "fetch",
+            "verb": "fetch",
+            "predicateOptions": [
+                "%INDEF_fetchTargetObjects%"
+            ]
+        }
+    ],
     "officePositionsAll": [
         "Noob",
         "Pawn",
@@ -1029,6 +1038,58 @@
                 "new",
                 "buzzworthy",
                 "salacious"
+            ]
+        },
+        {
+            "source": "fetchTargetObjects",
+            "options": [
+                "nail",
+                "lunchpail",
+                "sock",
+                "I.O.U.",
+                "cookie",
+                "pint",
+                "toothpick",
+                "writ",
+                "newspaper",
+                "letter",
+                "plank",
+                "hat",
+                "egg",
+                "coin",
+                "needle",
+                "bucket",
+                "ladder",
+                "chicken",
+                "twig",
+                "dirtclod",
+                "counterpane",
+                "vest",
+                "teratoma",
+                "bunny",
+                "rock",
+                "pole",
+                "carrot",
+                "canoe",
+                "inkwell",
+                "hoe",
+                "bandage",
+                "trowel",
+                "towel",
+                "planter box",
+                "anvil",
+                "axle",
+                "tuppence",
+                "casket",
+                "nosegay",
+                "trinket",
+                "credenza",
+                "writ",
+                "roller skate",
+                "tutleneck",
+                "meat pouch",
+                "leg bag",
+                "pretzel"
             ]
         }
     ]

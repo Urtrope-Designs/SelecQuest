@@ -200,7 +200,8 @@ export class PlayTaskGenerator {
         let predicate: string;
         switch (leadType) {
             case LeadType.FETCH: 
-                predicate = makeStringIndefinite(randFromList(gameSetting.fetchTargetObjects), 1);
+                const selectedLeadTarget = randFromList(gameSetting.leadTargets.filter(t => t.leadType == leadType));
+                predicate = gameSetting.hydrateFromNameSources(randFromList(selectedLeadTarget.predicateOptions));
                 break;
             case LeadType.DELIVER:
                 predicate = `this ${randFromList(gameSetting.fetchTargetObjects)}`;
