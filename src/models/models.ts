@@ -36,6 +36,7 @@ export interface LeadGatheringTarget {
 export interface LeadTarget {
     leadType: LeadType,
     verb: string,
+    gerund: string,
     predicateOptions: string[],
 }
 

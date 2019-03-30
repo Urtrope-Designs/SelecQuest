@@ -1,6 +1,6 @@
 import { TaskGenerator, GameTaskGeneratorList, TaskMode } from "../models/task-models";
 import { AppState, HeroModification, HeroModificationType, Task, TaskTarget, TaskTargetType, QuestBuildUpReward, LeadType, TrialBuildUpReward, LootBuildUpReward, Hero, HeroClass } from "../models/models";
-import { makeStringIndefinite, randRange, randFromList, randSign, capitalizeInitial, makeVerbGerund, generateRandomName } from "../global/utils";
+import { makeStringIndefinite, randRange, randFromList, randSign, capitalizeInitial, generateRandomName } from "../global/utils";
 import { IS_DEBUG } from "../global/config";
 import { PlayTaskResultGenerator } from "./play-task-result-generator";
 import { HeroManager } from "./hero-manager";
@@ -196,14 +196,6 @@ export class PlayTaskGenerator {
         return {taskName: taskName, taskLevel: taskLevel, trophyData: trophyData};
     }
 
-    private generateLeadPredicate(leadType: LeadType, gameSetting: GameSetting): string {
-        let predicate: string;
-        const selectedLeadTarget = randFromList(gameSetting.leadTargets.filter(t => t.leadType == leadType));
-        predicate = gameSetting.hydrateFromNameSources(randFromList(selectedLeadTarget.predicateOptions));
-
-        return predicate;
-    }
-
     private generateInvestigatingTaskContents(hero: Hero): {taskName: string, leadData: QuestBuildUpReward[]} {
         const gameSetting = this.gameSettingsMgr.getGameSettingById(hero.gameSettingId);
         let investigatingTaskName = '';
@@ -215,10 +207,11 @@ export class PlayTaskGenerator {
 
         const leadTargetType: LeadType = randFromList(investigatingTarget.leadTypes);
 
-        const leadPredicate = this.generateLeadPredicate(leadTargetType, this.gameSettingsMgr.getGameSettingById(hero.gameSettingId));
+        const selectedLeadTarget = randFromList(gameSetting.leadTargets.filter(t => t.leadType == leadTargetType));
+        const leadPredicate = gameSetting.hydrateFromNameSources(randFromList(selectedLeadTarget.predicateOptions));
         const lead: QuestBuildUpReward = {
-            questlogName: capitalizeInitial(`${leadTargetType} ${leadPredicate}`),
-            taskName: capitalizeInitial(`${makeVerbGerund(leadTargetType)} ${leadPredicate}`),
+            questlogName: capitalizeInitial(`${selectedLeadTarget.verb} ${leadPredicate}`),
+            taskName: capitalizeInitial(`${selectedLeadTarget.gerund} ${leadPredicate}`),
             value: 1,
         }
 

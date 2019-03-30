@@ -663,6 +663,7 @@
         {
             "leadType": "fetch",
             "verb": "fetch",
+            "gerund": "fetching",
             "predicateOptions": [
                 "%INDEF_fetchTargetObjects%"
             ]
@@ -670,6 +671,7 @@
         {
             "leadType": "deliver",
             "verb": "deliver",
+            "gerund": "delivering",
             "predicateOptions": [
                 "this %fetchTargetObjects%"
             ]
@@ -677,6 +679,7 @@
         {
             "leadType": "seek",
             "verb": "seek",
+            "gerund": "seeking",
             "predicateOptions": [
                 "the %seekTargetObjects%"
             ]
@@ -684,6 +687,7 @@
         {
             "leadType": "exterminate",
             "verb": "exterminate",
+            "gerund": "exterminating",
             "predicateOptions": [
                 "the %PLURAL_FOE%"
             ]
@@ -691,6 +695,7 @@
         {
             "leadType": "defend",
             "verb": "defend",
+            "gerund": "defending",
             "predicateOptions": [
                 "%places%"
             ]
