@@ -1,5 +1,5 @@
 import { GameSettingConfig, LootMajorRewardMaterialType, LootMajorRewardModifierType, TaskModeData, TaskPrefix, NameSource } from "../models/game-setting-models";
-import { HeroRace, LootingTarget, TrialTarget, LeadGatheringTarget, HeroTitlePosition, HeroClass } from "../models/models";
+import { HeroRace, TaskTarget, LeadGatheringTarget, HeroTitlePosition, HeroClass } from "../models/models";
 import { AbilityType } from "../models/game-setting-models";
 import { PrologueTask, LootMajorRewardType } from "../models/hero-models";
 import { randFromList } from "./utils";
@@ -20,7 +20,7 @@ export class GameSetting {
     readonly adventureTransitionTaskDescriptions: string[];
     readonly staticNames: string[];
     readonly randomNameParts: string[][];
-    readonly lootTaskTargets: LootingTarget[];
+    readonly lootTaskTargets: TaskTarget[];
     readonly lootMajorRewardTypes: LootMajorRewardType[];
     readonly lootMajorRewardMaterialTypes: LootMajorRewardMaterialType[];
     readonly lootMajorRewardModifierTypes: LootMajorRewardModifierType[];
@@ -32,7 +32,7 @@ export class GameSetting {
     readonly foeTaskGerund: string;
     readonly duelTaskGerund: string;
     readonly trialTaskGerund: string;
-    readonly trialTaskTargets: TrialTarget[];
+    readonly trialTaskTargets: TaskTarget[];
     readonly trialMajorRewardTypes: string[];
     readonly epithetDescriptors: string[];
     readonly epithetBeingAll: string[];
@@ -116,10 +116,6 @@ export class GameSetting {
 
         // need to add validation to EVERYTHING that could use a NameSource??
         this.nameSources = config.nameSources;
-
-
-        console.log(this.hydrateFromNameSources('test string of %titleObjects% here'));
-
     }
 
     public hydrateFromNameSources(sourceString: string): string {

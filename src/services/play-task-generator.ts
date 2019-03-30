@@ -1,5 +1,5 @@
 import { TaskGenerator, GameTaskGeneratorList, TaskMode } from "../models/task-models";
-import { AppState, HeroModification, HeroModificationType, Task, LootingTarget, TaskTargetType, TrialTarget, QuestBuildUpReward, LeadType, TrialBuildUpReward, LootBuildUpReward, Hero, HeroClass } from "../models/models";
+import { AppState, HeroModification, HeroModificationType, Task, TaskTarget, TaskTargetType, QuestBuildUpReward, LeadType, TrialBuildUpReward, LootBuildUpReward, Hero, HeroClass } from "../models/models";
 import { makeStringIndefinite, randRange, randFromList, randSign, capitalizeInitial, makeVerbGerund, generateRandomName, makeStringPlural } from "../global/utils";
 import { IS_DEBUG } from "../global/config";
 import { PlayTaskResultGenerator } from "./play-task-result-generator";
@@ -36,7 +36,7 @@ export class PlayTaskGenerator {
         return quantity
     }
 
-    static generateTaskNameModifiers(targetLevel: number, taskTarget: LootingTarget, gameSetting: GameSetting): string {
+    static generateTaskNameModifiers(targetLevel: number, taskTarget: TaskTarget, gameSetting: GameSetting): string {
         let taskModifier = '';
         const needsPrefixSeparator = taskTarget.type == TaskTargetType.LOCATION || taskTarget.type == TaskTargetType.TRIAL;
         const minimalPrefixList: string[] = gameSetting.taskPrefixes.find(p => p.taskTargetType == taskTarget.type && p.degree == 'maximal').options;
@@ -87,7 +87,7 @@ export class PlayTaskGenerator {
     }
 
     /** select target with level closest to the targetLevel out of random selection of targets */
-    static randomizeTargetFromList(targetLevel: number, targetOptions: LootingTarget[] | TrialTarget[], numIterations: number = 6): LootingTarget | TrialTarget {
+    static randomizeTargetFromList(targetLevel: number, targetOptions: TaskTarget[], numIterations: number = 6): TaskTarget {
         if (numIterations < 1) {
             numIterations = 1;
         }
@@ -165,7 +165,7 @@ export class PlayTaskGenerator {
 
         } else {
             // trial task
-            let trialTarget: TrialTarget;
+            let trialTarget: TaskTarget;
             trialTarget = PlayTaskGenerator.randomizeTargetFromList(targetLevel, gameSetting.trialTaskTargets, 6);
             
             let quantity = PlayTaskGenerator.determineTaskQuantity(targetLevel, trialTarget.level);

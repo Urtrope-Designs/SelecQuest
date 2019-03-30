@@ -21,10 +21,8 @@ export class GameSettingsManager {
             let req = new XMLHttpRequest();
             req.addEventListener('load', () => {
                 if (req.status === 200) {
-                    console.log('xhr response: ', req.response);
                     resolve(req.response);
                 } else {
-                    console.log('xhr error!');
                     reject(req.status)
                 }
             });

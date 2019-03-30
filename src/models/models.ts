@@ -18,16 +18,7 @@ export enum TaskTargetType {
     INVESTIGATION = 'investigation',
 };
 
-export interface LootingTarget {
-    type: TaskTargetType,
-    name: string,
-    namePlural: string,
-    level: number,
-    reward: string,
-    rewardPlural: string,
-};
-
-export interface TrialTarget {
+export interface TaskTarget {
     type: TaskTargetType,
     name: string,
     namePlural: string,

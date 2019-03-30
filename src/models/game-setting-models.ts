@@ -1,4 +1,4 @@
-import { HeroRace, LootingTarget, TrialTarget, LeadGatheringTarget, TaskTargetType, HeroTitlePosition, HeroClass } from "./models";
+import { HeroRace, TaskTarget, LeadGatheringTarget, TaskTargetType, HeroTitlePosition, HeroClass } from "./models";
 import { PrologueTask, LootMajorRewardType } from "./hero-models";
 
 export interface GameSettingConfig {
@@ -17,11 +17,11 @@ export interface GameSettingConfig {
     adventureTransitionTaskDescriptions: string[];
     staticNames: string[];
     randomNameParts: string[][];
-    lootTaskTargets: LootingTarget[];
+    lootTaskTargets: TaskTarget[];
     lootMajorRewardTypes: LootMajorRewardType[];
     lootMajorRewardMaterialTypes: LootMajorRewardMaterialType[];
     lootMajorRewardModifierTypes: LootMajorRewardModifierType[];
-    trialTaskTargets: TrialTarget[];
+    trialTaskTargets: TaskTarget[];
     trialMajorRewardTypes: string[];
     epithetDescriptors: string[];
     epithetBeingAll: string[];
