@@ -17,11 +17,10 @@ export interface GameSettingConfig {
     adventureTransitionTaskDescriptions: string[];
     staticNames: string[];
     randomNameParts: string[][];
-    lootTaskTargets: TaskTarget[];
+    basicTaskTargets: TaskTarget[];
     lootMajorRewardTypes: LootMajorRewardType[];
     lootMajorRewardMaterialTypes: LootMajorRewardMaterialType[];
     lootMajorRewardModifierTypes: LootMajorRewardModifierType[];
-    trialTaskTargets: TaskTarget[];
     trialMajorRewardTypes: string[];
     epithetDescriptors: string[];
     epithetBeingAll: string[];

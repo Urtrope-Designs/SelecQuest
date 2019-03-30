@@ -20,7 +20,7 @@ export class GameSetting {
     readonly adventureTransitionTaskDescriptions: string[];
     readonly staticNames: string[];
     readonly randomNameParts: string[][];
-    readonly lootTaskTargets: TaskTarget[];
+    readonly basicTaskTargets: TaskTarget[];
     readonly lootMajorRewardTypes: LootMajorRewardType[];
     readonly lootMajorRewardMaterialTypes: LootMajorRewardMaterialType[];
     readonly lootMajorRewardModifierTypes: LootMajorRewardModifierType[];
@@ -32,7 +32,6 @@ export class GameSetting {
     readonly foeTaskGerund: string;
     readonly duelTaskGerund: string;
     readonly trialTaskGerund: string;
-    readonly trialTaskTargets: TaskTarget[];
     readonly trialMajorRewardTypes: string[];
     readonly epithetDescriptors: string[];
     readonly epithetBeingAll: string[];
@@ -64,7 +63,7 @@ export class GameSetting {
         this.adventureTransitionTaskDescriptions = config.adventureTransitionTaskDescriptions;
         this.staticNames = config.staticNames;
         this.randomNameParts = config.randomNameParts;
-        this.lootTaskTargets = config.lootTaskTargets;
+        this.basicTaskTargets = config.basicTaskTargets;
 
         if (config.lootMajorRewardTypes.some(et => !config.lootMajorRewardMaterialTypes.some(emt => et.materialType === emt.name))) {
             throw 'At least 1 LootMajorRewardType has invalid LootMajorRewardMaterialType configured in ' + config.gameSettingName;
@@ -75,8 +74,6 @@ export class GameSetting {
         }
         this.lootMajorRewardMaterialTypes = config.lootMajorRewardMaterialTypes;
         this.lootMajorRewardModifierTypes = config.lootMajorRewardModifierTypes;
-
-        this.trialTaskTargets = config.trialTaskTargets;
 
         if(config.trialMajorRewardTypes.length != 4) {
             throw 'Length of trialMajorRewardTypes array not equal to 4 in ' + config.gameSettingName;

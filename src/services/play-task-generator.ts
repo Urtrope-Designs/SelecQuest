@@ -110,7 +110,9 @@ export class PlayTaskGenerator {
 
         let targetLevel = PlayTaskGenerator.randomizeTargetLevel(hero.level);
 
-        let lootTarget = PlayTaskGenerator.randomizeTargetFromList(targetLevel, gameSetting.lootTaskTargets, 6);
+        const availableLootTargets = gameSetting.basicTaskTargets.filter(t => t.type == TaskTargetType.FOE || t.type == TaskTargetType.LOCATION);
+
+        let lootTarget = PlayTaskGenerator.randomizeTargetFromList(targetLevel, availableLootTargets, 6);
 
         let quantity = PlayTaskGenerator.determineTaskQuantity(targetLevel, lootTarget.level);
 
@@ -166,7 +168,7 @@ export class PlayTaskGenerator {
         } else {
             // trial task
             let trialTarget: TaskTarget;
-            trialTarget = PlayTaskGenerator.randomizeTargetFromList(targetLevel, gameSetting.trialTaskTargets, 6);
+            trialTarget = PlayTaskGenerator.randomizeTargetFromList(targetLevel, gameSetting.basicTaskTargets.filter(t => t.type == TaskTargetType.TRIAL), 6);
             
             let quantity = PlayTaskGenerator.determineTaskQuantity(targetLevel, trialTarget.level);
 
@@ -207,7 +209,7 @@ export class PlayTaskGenerator {
                 predicate = `the ${randFromList(gameSetting.seekTargetObjects)}`;
                 break;
             case LeadType.EXTERMINATE:
-                predicate = `the ${makeStringPlural(randFromList(gameSetting.lootTaskTargets.filter(t => t.type == TaskTargetType.FOE)).name)}`;
+                predicate = `the ${makeStringPlural(randFromList(gameSetting.basicTaskTargets.filter(t => t.type == TaskTargetType.FOE)).name)}`;
                 break;
             case LeadType.DEFEND:
                 predicate = randFromList(gameSetting.nameSources.find(s => s.source == 'places').options);

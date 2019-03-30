@@ -164,7 +164,7 @@
         ["a", "a", "e", "e", "i", "i", "o", "o", "u", "u", "ae", "ie", "oo", "ou"],
         ["b", "ck", "d", "g", "k", "m", "n", "p", "t", "v", "x", "z"]
     ],
-    "lootTaskTargets": [
+    "basicTaskTargets": [
         {
             "type": "location",
             "name": "Barber Shop",
@@ -236,6 +236,22 @@
             "level": 7,
             "reward": "ratking tooth",
             "rewardPlural": "ratking teeth"
+        },
+        {
+            "type": "trial",
+            "name": "endurance challenge",
+            "namePlural": "endurance challenges",
+            "level": 1,
+            "reward": "gold star",
+            "rewardPlural": "gold stars"
+        },
+        {
+            "type": "trial",
+            "name": "bowling championship",
+            "namePlural": "bowling championships",
+            "level": 1,
+            "reward": "bowling trophy",
+            "rewardPlural": "bowling trophies"
         }
     ],
     "lootMajorRewardTypes": [
@@ -538,24 +554,6 @@
                     "levelModifier": -4
                 }
             ]
-        }
-    ],
-    "trialTaskTargets": [
-        {
-            "type": "trial",
-            "name": "endurance challenge",
-            "namePlural": "endurance challenges",
-            "level": 1,
-            "reward": "gold star",
-            "rewardPlural": "gold stars"
-        },
-        {
-            "type": "trial",
-            "name": "bowling championship",
-            "namePlural": "bowling championships",
-            "level": 1,
-            "reward": "bowling trophy",
-            "rewardPlural": "bowling trophies"
         }
     ],
     "trialMajorRewardTypes": [
