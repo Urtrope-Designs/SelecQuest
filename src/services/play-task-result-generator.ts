@@ -138,7 +138,7 @@ export class PlayTaskResultGenerator {
     
     private generateRandomTrialMajorReward(hero: Hero): TrialMajorReward {
         const gameSetting = this.gameSettingsMgr.getGameSettingById(hero.gameSettingId);
-        const newTrialMajorRewardTypeIndex = randRange(0, gameSetting.trialMajorRewardTypes.length);
+        const newTrialMajorRewardTypeIndex = randRange(0, gameSetting.trialMajorRewardTypes.length-1);
         let newTrialMajorRewardDescription = '';
         let exclusions: string = '';
         switch(newTrialMajorRewardTypeIndex) {
