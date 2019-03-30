@@ -1,8 +1,8 @@
 import { GameSettingConfig, LootMajorRewardMaterialType, LootMajorRewardModifierType, TaskModeData, TaskPrefix, NameSource } from "../models/game-setting-models";
-import { HeroRace, TaskTarget, LeadGatheringTarget, HeroTitlePosition, HeroClass } from "../models/models";
+import { HeroRace, TaskTarget, LeadGatheringTarget, HeroTitlePosition, HeroClass, TaskTargetType } from "../models/models";
 import { AbilityType } from "../models/game-setting-models";
 import { PrologueTask, LootMajorRewardType } from "../models/hero-models";
-import { randFromList } from "./utils";
+import { randFromList, makeStringIndefinite } from "./utils";
 
 export class GameSetting {
     readonly gameSettingId: string;
@@ -115,22 +115,66 @@ export class GameSetting {
         this.nameSources = config.nameSources;
     }
 
+    /**
+     * 
+     * @param sourceString string that may potentially contain template markers
+     * 
+     * Template Markers are surrounded by the "%" character. If a list exists in this.nameSources with a "source" attribute matching the Template Marker, 
+     * an option from that nameSource's "options" array will be used to replace it. Prefixing the Template Marker with "INDEF_" will cause the result
+     * to be passed through the util function "makeIndefinite" before replacing.
+     * Additionally, the static Template Markers "FOE", "LOCATION", and "TRIAL" can be used to pull random results from the filtered lists of names
+     * from this.basicTaskTargets where "type" matches the Template Marker. In addition to the "INDEF_" prefix, these Template Markers can make use of
+     * the prefix "PLURAL_" to use the corresponding "namePlural" attribute instead of "name".
+     */
     public hydrateFromNameSources(sourceString: string): string {
+        const indefPrefix = 'INDEF_';
+        const pluralPrefix = 'PLURAL_';
         const requestedSources = sourceString.match(/%[a-zA-Z_]+%/g);
         if (requestedSources == null) {
             return sourceString;
         } else {
             let hydratedString = sourceString;
+            let makeIndef = false;
+            let makePlural = false;
             requestedSources.forEach((source: string) => {
-                // determine the replacement value
-                const matchedSource = this.nameSources.find(ns => ns.source == source.slice(1, -1));
-
-                // swap out the source placeholders with the replacement values
-                let replacementValue: string = ''
-                if (matchedSource != null) {
-                    replacementValue = randFromList(matchedSource.options);
+                const prefixIndex = source.indexOf(indefPrefix);
+                if (prefixIndex != -1) {
+                    makeIndef = true;
+                    source = source.slice(prefixIndex);
                 }
-                
+                const pluralIndex = source.indexOf(pluralPrefix);
+                if (pluralIndex != -1) {
+                    makePlural = true;
+                    source = source.slice(pluralIndex);
+                }
+
+                // determine the replacement value
+                let replacementValue = '';
+
+                const matchedTaskType = TaskTargetType[source.toLocaleUpperCase()];
+                if (!!matchedTaskType) {
+                    // pull from basicTaskTargets
+                    const replacementTaskTarget = randFromList(this.basicTaskTargets.filter(t => t.type == matchedTaskType));
+
+                    replacementValue = makePlural ? replacementTaskTarget.namePlural : replacementTaskTarget.name;
+
+                    if (makeIndef) {
+                        replacementValue = 'some ' + replacementValue;
+                    }
+                } else {
+                    // pull from nameSources
+                    const matchedSource = this.nameSources.find(ns => ns.source == source.slice(1, -1));
+                    
+                    if (matchedSource != null) {
+                        replacementValue = randFromList(matchedSource.options);
+                    }
+
+                    if (makeIndef) {
+                        replacementValue = makeStringIndefinite(replacementValue, 1);
+                    }
+                }
+
+                // swap out the source placeholders with the replacement values                
                 hydratedString = hydratedString.replace(source, replacementValue);
             })
 
