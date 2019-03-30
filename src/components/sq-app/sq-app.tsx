@@ -1,5 +1,4 @@
-import { Component, Prop, Listen, State } from '@stencil/core';
-import { Observable } from 'rxjs/Observable';
+import { Component, Listen, State } from '@stencil/core';
 import { Subject } from 'rxjs/Subject';
 
 import { stateFn } from '../../global/state-store';
@@ -14,6 +13,7 @@ import { HeroManager } from '../../services/hero-manager';
 import { PlayTaskGenerator } from '../../services/play-task-generator';
 import { PlayTaskResultGenerator } from '../../services/play-task-result-generator';
 import { TaskMode } from '../../models/task-models';
+import { PlayTaskManager } from '../../services/play-task-manager';
 
 @Component({
     tag: 'sq-app',
@@ -24,7 +24,7 @@ export class SqApp {
     @State() state: AppState;
     private availableHeroes: {hash: string, name: string}[];
     
-    @Prop({ context: 'taskMgr'}) taskMgr: {init: (stateStore: Observable<AppState>, taskGenerator: PlayTaskGenerator, emulateTaskTimeGap?: boolean) => void, getTaskAction$: () => Observable<Action>};
+    private taskMgr: PlayTaskManager;
     private gameDataMgr = new GameDataManager();
     private heroMgr: HeroManager;
     private gameSettingsMgr: GameSettingsManager;
@@ -115,7 +115,7 @@ export class SqApp {
                 const initialData = state || DEFAULT_APP_STATE;
                 let state$ = stateFn(initialData, this.actionSubject.asObservable());
                 state$ = this.gameDataMgr.persistAppData(state$);
-                this.taskMgr.init(state$, this.taskGenerator, false);
+                this.taskMgr = new PlayTaskManager(state$, this.taskGenerator, false);
                 this.taskMgr.getTaskAction$().subscribe((taskAction: Action) => {
                     this._queueAction(taskAction);
                 })

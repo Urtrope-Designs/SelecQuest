@@ -7,7 +7,6 @@ export const config: Config = {
       type: 'www',
     }
   ],
-  globalScript: 'src/global/index.ts',
   globalStyle: 'src/global/app.css',
   plugins: [
     sass()
