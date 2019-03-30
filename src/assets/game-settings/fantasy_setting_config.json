@@ -649,14 +649,14 @@
             "predicateOptions": [
                 "%groups%"
             ],
-            "leadTypes": ["fetch", "deliver"]
+            "leadTypes": ["fetch", "deliver", "defend"]
         },
         {
             "gerundPhrase": "scouring",
             "predicateOptions": [
                 "%inanimateLeadSources%"
             ],
-            "leadTypes": ["seek"]
+            "leadTypes": ["seek", "exterminate"]
         }
     ],
     "leadTargets": [
@@ -666,7 +666,36 @@
             "predicateOptions": [
                 "%INDEF_fetchTargetObjects%"
             ]
+        },
+        {
+            "leadType": "deliver",
+            "verb": "deliver",
+            "predicateOptions": [
+                "this %fetchTargetObjects%"
+            ]
+        },
+        {
+            "leadType": "seek",
+            "verb": "seek",
+            "predicateOptions": [
+                "the %seekTargetObjects%"
+            ]
+        },
+        {
+            "leadType": "exterminate",
+            "verb": "exterminate",
+            "predicateOptions": [
+                "the %PLURAL_FOE%"
+            ]
+        },
+        {
+            "leadType": "defend",
+            "verb": "defend",
+            "predicateOptions": [
+                "%places%"
+            ]
         }
+        
     ],
     "officePositionsAll": [
         "Noob",
@@ -740,65 +769,6 @@
             "earnMajorRewardTaskDescriptionOptions": ["Solidifying a new connection"]
         }
     ],
-    "fetchTargetObjects": [
-        "nail",
-        "lunchpail",
-        "sock",
-        "I.O.U.",
-        "cookie",
-        "pint",
-        "toothpick",
-        "writ",
-        "newspaper",
-        "letter",
-        "plank",
-        "hat",
-        "egg",
-        "coin",
-        "needle",
-        "bucket",
-        "ladder",
-        "chicken",
-        "twig",
-        "dirtclod",
-        "counterpane",
-        "vest",
-        "teratoma",
-        "bunny",
-        "rock",
-        "pole",
-        "carrot",
-        "canoe",
-        "inkwell",
-        "hoe",
-        "bandage",
-        "trowel",
-        "towel",
-        "planter box",
-        "anvil",
-        "axle",
-        "tuppence",
-        "casket",
-        "nosegay",
-        "trinket",
-        "credenza",
-        "writ",
-        "roller skate",
-        "tutleneck",
-        "meat pouch",
-        "leg bag",
-        "pretzel"
-    ],
-    "seekTargetObjects": [
-        "Stewboots",
-        "Last Boner in Belfast",
-        "Standard of Mediocrity",
-        "Turgid Trumpet",
-        "Cumberbund of Combobulation",
-        "Secret Source Code",
-        "Colonel's Right Recipe",
-        "Fountain of Lamneth"
-    ], 
     "locationTaskGerund": "Ransacking",
     "foeTaskGerund": "Executing",
     "duelTaskGerund": "Dueling",
@@ -1090,6 +1060,19 @@
                 "meat pouch",
                 "leg bag",
                 "pretzel"
+            ]
+        },
+        {
+            "source": "seekTargetObjects",
+            "options": [
+                "Stewboots",
+                "Last Boner in Belfast",
+                "Standard of Mediocrity",
+                "Turgid Trumpet",
+                "Cumberbund of Combobulation",
+                "Secret Source Code",
+                "Colonel's Right Recipe",
+                "Fountain of Lamneth"
             ]
         }
     ]

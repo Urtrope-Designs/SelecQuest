@@ -1,6 +1,6 @@
 import { TaskGenerator, GameTaskGeneratorList, TaskMode } from "../models/task-models";
 import { AppState, HeroModification, HeroModificationType, Task, TaskTarget, TaskTargetType, QuestBuildUpReward, LeadType, TrialBuildUpReward, LootBuildUpReward, Hero, HeroClass } from "../models/models";
-import { makeStringIndefinite, randRange, randFromList, randSign, capitalizeInitial, makeVerbGerund, generateRandomName, makeStringPlural } from "../global/utils";
+import { makeStringIndefinite, randRange, randFromList, randSign, capitalizeInitial, makeVerbGerund, generateRandomName } from "../global/utils";
 import { IS_DEBUG } from "../global/config";
 import { PlayTaskResultGenerator } from "./play-task-result-generator";
 import { HeroManager } from "./hero-manager";
@@ -198,24 +198,8 @@ export class PlayTaskGenerator {
 
     private generateLeadPredicate(leadType: LeadType, gameSetting: GameSetting): string {
         let predicate: string;
-        switch (leadType) {
-            case LeadType.FETCH: 
-                const selectedLeadTarget = randFromList(gameSetting.leadTargets.filter(t => t.leadType == leadType));
-                predicate = gameSetting.hydrateFromNameSources(randFromList(selectedLeadTarget.predicateOptions));
-                break;
-            case LeadType.DELIVER:
-                predicate = `this ${randFromList(gameSetting.fetchTargetObjects)}`;
-                break;
-            case LeadType.SEEK:
-                predicate = `the ${randFromList(gameSetting.seekTargetObjects)}`;
-                break;
-            case LeadType.EXTERMINATE:
-                predicate = `the ${makeStringPlural(randFromList(gameSetting.basicTaskTargets.filter(t => t.type == TaskTargetType.FOE)).name)}`;
-                break;
-            case LeadType.DEFEND:
-                predicate = randFromList(gameSetting.nameSources.find(s => s.source == 'places').options);
-                break;
-        }
+        const selectedLeadTarget = randFromList(gameSetting.leadTargets.filter(t => t.leadType == leadType));
+        predicate = gameSetting.hydrateFromNameSources(randFromList(selectedLeadTarget.predicateOptions));
 
         return predicate;
     }

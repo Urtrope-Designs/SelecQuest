@@ -33,8 +33,6 @@ export interface GameSettingConfig {
     officePositionsAll: string[];
     taskModeData: TaskModeData[];
     gameViewTabDisplayNames: string[];          // length of array must be 5, each string must be 8 or fewer characters
-    fetchTargetObjects: string[];
-    seekTargetObjects: string[];
     locationTaskGerund: string;
     foeTaskGerund: string;
     duelTaskGerund: string;

@@ -26,8 +26,6 @@ export class GameSetting {
     readonly lootMajorRewardModifierTypes: LootMajorRewardModifierType[];
     readonly gameViewTabDisplayNames: string[];
     readonly taskModeData: TaskModeData[];
-    readonly fetchTargetObjects: string[];
-    readonly seekTargetObjects: string[];
     readonly locationTaskGerund: string;
     readonly foeTaskGerund: string;
     readonly duelTaskGerund: string;
@@ -105,8 +103,6 @@ export class GameSetting {
         }
         this.taskModeData = config.taskModeData;
 
-        this.fetchTargetObjects = config.fetchTargetObjects;
-        this.seekTargetObjects = config.seekTargetObjects;
         this.locationTaskGerund = config.locationTaskGerund;
         this.foeTaskGerund = config.foeTaskGerund;
         this.duelTaskGerund = config.duelTaskGerund;
@@ -139,7 +135,7 @@ export class GameSetting {
             requestedSources.forEach((marker: string) => {
                 let makeIndef = false;
                 let makePlural = false;
-                
+
                 let source = marker.slice(1, -1);
                 if (source.includes(indefPrefix)) {
                     makeIndef = true;
