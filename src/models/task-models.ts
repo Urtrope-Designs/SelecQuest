@@ -7,11 +7,13 @@ export enum TaskMode {
 }
 
 export interface GameTaskGeneratorList {
-    coreTaskGenerators: TaskGenerator[],
-    adventuringModeTaskGenerators: TaskGenerator[][][],
+    coreTaskGenerators: TaskGeneratorAlgorithm[],
+    adventuringModeTaskGenerators: TaskGeneratorAlgorithm[][][],
 }
 
-export interface TaskGenerator {
+export interface TaskGeneratorAlgorithm {
     shouldRun: (state: AppState) => boolean;
     generateTask: (state: AppState) => Task;
 }
+
+

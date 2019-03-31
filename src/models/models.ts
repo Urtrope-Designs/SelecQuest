@@ -185,6 +185,7 @@ export interface AppState {
     hasActiveTask: boolean;
     hero: Hero;
     activeTaskMode: TaskMode;
+    isInCatchUpMode: boolean;
 }
 
 export interface HeroRace {

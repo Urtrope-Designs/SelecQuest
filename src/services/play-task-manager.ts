@@ -15,7 +15,7 @@ export class PlayTaskManager {
     private taskWatchTimerSub: Subscription;
     public taskAction$ = new BehaviorSubject<Action>(null);
 
-    constructor(stateStore: Observable<AppState>, taskGenerator: PlayTaskGenerator, emulateTaskTimeGap: boolean = false) {
+    constructor(stateStore: Observable<AppState>, taskGenerator: PlayTaskGenerator) {
         this.taskGenerator = taskGenerator;
         if (!!this.stateStoreSub) {                 // TODO: fix #18
             this.stateStoreSub.unsubscribe();
@@ -23,35 +23,29 @@ export class PlayTaskManager {
         this.stateStore = stateStore;
         this.stateStore.subscribe((state: AppState) => {
             if (!!state && !!state.hero && !state.hasActiveTask) {
-                let nextTask = this.constructNextTask(state, emulateTaskTimeGap);
+                let nextTask = this.constructNextTask(state);
 
                 this.taskAction$.next(new SetActiveTask(nextTask));
             }
-            else if (emulateTaskTimeGap && !!state && !!state.activeTask) {
-                if (this.isTaskCompleted(state.activeTask)) {
-                    this.completeTask(state.activeTask);
-                } else {
-                    emulateTaskTimeGap = false;
-                    this.startTaskWatchTimer();
-                }
+            else if (state.isInCatchUpMode && !!state && !!state.activeTask) {
+                this.completeTask(state.activeTask);
             }
+
         });
 
-        if (!emulateTaskTimeGap) {
-            this.startTaskWatchTimer();
-        }
+        this.startTaskWatchTimer(stateStore);
     }
 
     public getTaskAction$() {
         return this.taskAction$.asObservable();
     }
 
-    private constructNextTask(state: AppState, emulateTaskTimeGap: boolean): Task {
+    private constructNextTask(state: AppState): Task {
         const newTask = this.taskGenerator.generateNextTask(state);
 
-        if (emulateTaskTimeGap && !!state.activeTask) {
-            const twentyFourHoursAgo = new Date().getTime() - (1000 * 60 * 60 * 24);
-            const minStartTime = Math.max(state.activeTask.taskStartTime, twentyFourHoursAgo);
+        if (state.isInCatchUpMode && !!state.activeTask) {
+            const oneWeekAgo = new Date().getTime() - (1000 * 60 * 60 * 24 * 7);
+            const minStartTime = Math.max(state.activeTask.taskStartTime, oneWeekAgo);
             newTask.taskStartTime = minStartTime + state.activeTask.durationMs;
         } else {
             newTask.taskStartTime = new Date().getTime();
@@ -60,13 +54,13 @@ export class PlayTaskManager {
         return newTask;
     }
 
-    private startTaskWatchTimer() {
+    private startTaskWatchTimer(stateStore: Observable<AppState>) {
         if (!!this.taskWatchTimerSub) {
             this.taskWatchTimerSub.unsubscribe();
         }
-        timer(1, 100).pipe(withLatestFrom(this.stateStore))
+        timer(1, 100).pipe(withLatestFrom(stateStore))
             .subscribe(([_timer, state]) => {
-                if (!!state && !!state.activeTask && this.isTaskCompleted(state.activeTask)) {
+                if (!!state && !state.isInCatchUpMode &&  !!state.activeTask && this.isTaskCompleted(state.activeTask)) {
                     this.completeTask(state.activeTask);
                 }
             })

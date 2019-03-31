@@ -1,4 +1,4 @@
-import { TaskGenerator, GameTaskGeneratorList, TaskMode } from "../models/task-models";
+import { TaskGeneratorAlgorithm, GameTaskGeneratorList, TaskMode } from "../models/task-models";
 import { AppState, HeroModification, HeroModificationType, Task, TaskTarget, TaskTargetType, QuestBuildUpReward, LeadType, TrialBuildUpReward, LootBuildUpReward, Hero, HeroClass } from "../models/models";
 import { makeStringIndefinite, randRange, randFromList, randSign, capitalizeInitial, generateRandomName } from "../global/utils";
 import { IS_DEBUG } from "../global/config";
@@ -234,7 +234,7 @@ export class PlayTaskGenerator {
         return updatedHero;
     }
 
-    lootBuildUpTaskGenerator: TaskGenerator = {
+    lootBuildUpTaskGenerator: TaskGeneratorAlgorithm = {
         shouldRun: (_state: AppState) => {
             return true;
         },
@@ -280,7 +280,7 @@ export class PlayTaskGenerator {
         },
     };
     
-    startLootTearDownTaskGenerator: TaskGenerator = {
+    startLootTearDownTaskGenerator: TaskGeneratorAlgorithm = {
         shouldRun: (state: AppState) => {
             if (state.activeTaskMode !== TaskMode.LOOT_MODE) {
                 return false;
@@ -311,7 +311,7 @@ export class PlayTaskGenerator {
         }
     };
     
-    lootTearDownTaskGenerator: TaskGenerator = {
+    lootTearDownTaskGenerator: TaskGeneratorAlgorithm = {
         shouldRun: (_state: AppState) => {
             return true;
         },
@@ -374,7 +374,7 @@ export class PlayTaskGenerator {
         }
     };
     
-    startLootBuildUpTaskGenerator: TaskGenerator = {
+    startLootBuildUpTaskGenerator: TaskGeneratorAlgorithm = {
         shouldRun: (state: AppState) => {
             const currentEncumbrance = state.hero.lootBuildUpRewards.reduce((prevVal, curVal) => {
                 return prevVal + curVal.quantity;
@@ -401,7 +401,7 @@ export class PlayTaskGenerator {
         },
     };
     
-    earnLootMajorRewardTaskGenerator: TaskGenerator = {
+    earnLootMajorRewardTaskGenerator: TaskGeneratorAlgorithm = {
         shouldRun: (state: AppState) => {
             const currentEncumbrance = state.hero.lootBuildUpRewards.reduce((prevVal, curVal) => {
                 return prevVal + curVal.quantity;
@@ -430,7 +430,7 @@ export class PlayTaskGenerator {
         },
     };
     
-    trialBuildUpTaskGenerator: TaskGenerator = {
+    trialBuildUpTaskGenerator: TaskGeneratorAlgorithm = {
         shouldRun: (_state: AppState) => {
             return true;
         },
@@ -480,7 +480,7 @@ export class PlayTaskGenerator {
         }
     };
     
-    startTrialTearDownTaskGenerator: TaskGenerator = {
+    startTrialTearDownTaskGenerator: TaskGeneratorAlgorithm = {
         shouldRun: (state: AppState) => {
             if (state.activeTaskMode !== TaskMode.TRIAL_MODE) {
                 return false;
@@ -511,7 +511,7 @@ export class PlayTaskGenerator {
         }
     };
     
-    trialTearDownTaskGenerator: TaskGenerator = {
+    trialTearDownTaskGenerator: TaskGeneratorAlgorithm = {
         shouldRun: (_state: AppState) => {
             return true;
         },
@@ -569,7 +569,7 @@ export class PlayTaskGenerator {
         }
     };
     
-    startTrialBuildUpTaskGenerator: TaskGenerator = {
+    startTrialBuildUpTaskGenerator: TaskGeneratorAlgorithm = {
         shouldRun: (state: AppState) => {
             const currentTrialBuildUp = state.hero.trialBuildUpRewards.reduce((prevVal, curVal) => {
                 return prevVal + curVal.quantity;
@@ -596,7 +596,7 @@ export class PlayTaskGenerator {
         }
     };
     
-    earnTrialMajorRewardTaskGenerator: TaskGenerator = {
+    earnTrialMajorRewardTaskGenerator: TaskGeneratorAlgorithm = {
         shouldRun: (state: AppState) => {
             const currentTrialBuildUp = state.hero.trialBuildUpRewards.reduce((prevVal, curVal) => {
                 return prevVal + curVal.quantity;
@@ -624,7 +624,7 @@ export class PlayTaskGenerator {
         },
     };
     
-    questBuildUpTaskGenerator: TaskGenerator = {
+    questBuildUpTaskGenerator: TaskGeneratorAlgorithm = {
         shouldRun: (_state: AppState) => {
             return true;
         },
@@ -650,7 +650,7 @@ export class PlayTaskGenerator {
         }
     };
     
-    startQuestTearDownTaskGenerator: TaskGenerator = {
+    startQuestTearDownTaskGenerator: TaskGeneratorAlgorithm = {
         shouldRun: (state: AppState) => {
             if (state.activeTaskMode !== TaskMode.QUEST_MODE) {
                 return false;
@@ -679,7 +679,7 @@ export class PlayTaskGenerator {
         }
     };
     
-    questTearDownTaskGenerator: TaskGenerator = {
+    questTearDownTaskGenerator: TaskGeneratorAlgorithm = {
         shouldRun: (_state: AppState) => {
             return true;
         },
@@ -753,7 +753,7 @@ export class PlayTaskGenerator {
         }
     };
     
-    startQuestBuildUpTaskGenerator: TaskGenerator = {
+    startQuestBuildUpTaskGenerator: TaskGeneratorAlgorithm = {
         shouldRun: (state: AppState) => {
             return state.hero.questBuildUpRewards.length <= 0;
         },
@@ -777,7 +777,7 @@ export class PlayTaskGenerator {
         }
     };
     
-    earnQuestMajorRewardTaskGenerator: TaskGenerator = {
+    earnQuestMajorRewardTaskGenerator: TaskGeneratorAlgorithm = {
         shouldRun: (state: AppState) => {
             return state.hero.questBuildUpRewards.length <= 0 && (state.hero.currency[TaskMode.QUEST_MODE] - state.hero.spentCurrency[TaskMode.QUEST_MODE]) >= PlayTaskGenerator.getTradeInCostForLevel(state.hero.level);
         },
@@ -802,7 +802,7 @@ export class PlayTaskGenerator {
         },
     };
     
-    prologueTaskGenerator: TaskGenerator = {
+    prologueTaskGenerator: TaskGeneratorAlgorithm = {
         shouldRun: (state: AppState) => {
             return state.hero.currentAdventure.name == this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId).prologueAdventureName;
         },
@@ -831,7 +831,7 @@ export class PlayTaskGenerator {
         },
     }
     
-    prologueTransitionTaskGenerator: TaskGenerator = {
+    prologueTransitionTaskGenerator: TaskGeneratorAlgorithm = {
         shouldRun: (state: AppState) => {
             const prologueAdventureName = this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId).prologueAdventureName;
             return (state.hero.currentAdventure.name == prologueAdventureName && state.hero.adventureProgress >= state.hero.currentAdventure.progressRequired);
@@ -849,7 +849,7 @@ export class PlayTaskGenerator {
     }
     
     
-    adventureTransitionTaskGenerator: TaskGenerator = {
+    adventureTransitionTaskGenerator: TaskGeneratorAlgorithm = {
         shouldRun: (state: AppState) => {
             return (state.hero.adventureProgress >= state.hero.currentAdventure.progressRequired);
         },
@@ -909,8 +909,8 @@ export class PlayTaskGenerator {
         ]
     }
     
-    private selectNextTaskGenerator(state: AppState): TaskGenerator {
-        let nextTaskGenerator: TaskGenerator;
+    private selectNextTaskGenerator(state: AppState): TaskGeneratorAlgorithm {
+        let nextTaskGenerator: TaskGeneratorAlgorithm;
         nextTaskGenerator = this.prioritizedTaskGenerators.coreTaskGenerators.find(taskGen => taskGen.shouldRun(state));
     
         if (!nextTaskGenerator) {

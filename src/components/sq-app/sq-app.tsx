@@ -3,7 +3,7 @@ import { Subject } from 'rxjs/Subject';
 
 import { stateFn } from '../../global/state-store';
 import { AppState } from '../../models/models';
-import { Action, ChangeActiveTaskMode, SetActiveHero } from '../../global/actions';
+import { Action, ChangeActiveTaskMode, SetActiveHero, SetIsInCatchUpMode } from '../../global/actions';
 import { GameDataManager } from '../../services/game-data-manager';
 import { generateHeroHashFromHero } from '../../global/utils';
 import { PlayScreen } from '../play-screen/play-screen';
@@ -14,6 +14,7 @@ import { PlayTaskGenerator } from '../../services/play-task-generator';
 import { PlayTaskResultGenerator } from '../../services/play-task-result-generator';
 import { TaskMode } from '../../models/task-models';
 import { PlayTaskManager } from '../../services/play-task-manager';
+import { takeWhile } from 'rxjs/operators';
 
 @Component({
     tag: 'sq-app',
@@ -25,7 +26,7 @@ export class SqApp {
     private availableHeroes: {hash: string, name: string}[];
     
     private taskMgr: PlayTaskManager;
-    private gameDataMgr = new GameDataManager();
+    private gameDataMgr: GameDataManager;
     private heroMgr: HeroManager;
     private gameSettingsMgr: GameSettingsManager;
     private taskGenerator: PlayTaskGenerator;
@@ -93,9 +94,11 @@ export class SqApp {
         this.gameSettingsMgr = new GameSettingsManager();
         await this.gameSettingsMgr.init(['fantasy_setting_config']);
 
+        this.gameDataMgr = new GameDataManager();
         this.heroMgr = new HeroManager(this.gameSettingsMgr);
         this.taskResultGenerator = new PlayTaskResultGenerator(this.gameSettingsMgr);
         this.taskGenerator = new PlayTaskGenerator(this.taskResultGenerator, this.heroMgr, this.gameSettingsMgr);
+
         this.gameDataMgr.getActiveHeroHash()
             .then((heroHash: string) => {
                 if (!!heroHash) {
@@ -104,6 +107,7 @@ export class SqApp {
                             if (state == null) {
                                 return DEFAULT_APP_STATE;
                             } else {
+                                state.isInCatchUpMode = true;
                                 return state;
                             }
                         });
@@ -115,7 +119,7 @@ export class SqApp {
                 const initialData = state || DEFAULT_APP_STATE;
                 let state$ = stateFn(initialData, this.actionSubject.asObservable());
                 state$ = this.gameDataMgr.persistAppData(state$);
-                this.taskMgr = new PlayTaskManager(state$, this.taskGenerator, false);
+                this.taskMgr = new PlayTaskManager(state$, this.taskGenerator);
                 this.taskMgr.getTaskAction$().subscribe((taskAction: Action) => {
                     this._queueAction(taskAction);
                 })
@@ -123,6 +127,14 @@ export class SqApp {
                 state$.subscribe(state => {
                     this.state = state;
                 });
+
+                state$.pipe(
+                    takeWhile(state => {
+                        return !!state && !!state.activeTask && state.activeTask.taskStartTime + state.activeTask.durationMs <= new Date().getTime();
+                    })
+                ).subscribe(null, null, () => {
+                    this._queueAction(new SetIsInCatchUpMode(false));
+                })
             });
 
         this._updateAvailableHeroes();
@@ -168,4 +180,5 @@ const DEFAULT_APP_STATE: AppState = {
     activeTask: null,
     hasActiveTask: false,
     activeTaskMode: TaskMode.LOOT_MODE,
+    isInCatchUpMode: true,
 };

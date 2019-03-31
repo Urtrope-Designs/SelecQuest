@@ -2,7 +2,7 @@ import { Observable } from 'rxjs/Observable';
 import { zip } from 'rxjs/observable/zip';
 import { scan } from 'rxjs/operators/scan';
 import { map } from 'rxjs/operators/map';
-import { Action, SetActiveTask, TaskCompleted, ChangeActiveTaskMode, ActionType, SetActiveHero } from './actions';
+import { Action, SetActiveTask, TaskCompleted, ChangeActiveTaskMode, ActionType, SetActiveHero, SetIsInCatchUpMode } from './actions';
 import { Task, AppState, Hero } from '../models/models';
 import { wrapIntoBehavior } from './utils';
 import { TaskMode } from '../models/task-models';
@@ -74,6 +74,19 @@ function activeTaskMode(initState: TaskMode, actions: Observable<Action>): Obser
     )
 }
 
+function isInCatchUpMode(initState: boolean, actions: Observable<Action>): Observable<boolean> {
+    return actions.pipe(
+        scan((state: boolean, action: Action) => {
+            if (action.actionType === ActionType.SetIsInCatchUpMode) {
+                return (action as SetIsInCatchUpMode).isNowInCatchUpMode;
+            }
+            else {
+                return state;
+            }
+        }, initState),
+    )
+}
+
 
 
 export function stateFn(initState: AppState, actions: Observable<Action>): Observable<AppState> {
@@ -82,6 +95,7 @@ export function stateFn(initState: AppState, actions: Observable<Action>): Obser
         activeTask: s[1],
         hasActiveTask: s[2],
         activeTaskMode: s[3],
+        isInCatchUpMode: s[4],
     });
     const appStateObs: Observable<AppState> = 
         zip(
@@ -89,6 +103,7 @@ export function stateFn(initState: AppState, actions: Observable<Action>): Obser
             activeTask(initState.activeTask, actions),
             hasActiveTask(initState.hasActiveTask, actions),
             activeTaskMode(initState.activeTaskMode, actions),
+            isInCatchUpMode(initState.isInCatchUpMode, actions),
         ).pipe(
             map(combine),
         );
