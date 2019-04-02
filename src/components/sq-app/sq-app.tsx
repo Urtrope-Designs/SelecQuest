@@ -12,9 +12,10 @@ import { HeroInitData } from '../../models/hero-models';
 import { HeroManager } from '../../services/hero-manager';
 import { PlayTaskGenerator } from '../../services/play-task-generator';
 import { PlayTaskResultGenerator } from '../../services/play-task-result-generator';
-import { TaskMode } from '../../models/task-models';
+import { TaskMode, ITaskGenerator } from '../../models/task-models';
 import { PlayTaskManager } from '../../services/play-task-manager';
 import { takeWhile } from 'rxjs/operators';
+import { CatchUpTaskGenerator } from '../../services/catch-up-task-generator';
 
 @Component({
     tag: 'sq-app',
@@ -29,7 +30,8 @@ export class SqApp {
     private gameDataMgr: GameDataManager;
     private heroMgr: HeroManager;
     private gameSettingsMgr: GameSettingsManager;
-    private taskGenerator: PlayTaskGenerator;
+    private playTaskGenerator: ITaskGenerator;
+    private catchUpTaskGenerator: ITaskGenerator;
     private taskResultGenerator: PlayTaskResultGenerator;
 
     private playScreen: PlayScreen;
@@ -97,7 +99,8 @@ export class SqApp {
         this.gameDataMgr = new GameDataManager();
         this.heroMgr = new HeroManager(this.gameSettingsMgr);
         this.taskResultGenerator = new PlayTaskResultGenerator(this.gameSettingsMgr);
-        this.taskGenerator = new PlayTaskGenerator(this.taskResultGenerator, this.heroMgr, this.gameSettingsMgr);
+        this.playTaskGenerator = new PlayTaskGenerator(this.taskResultGenerator, this.heroMgr, this.gameSettingsMgr);
+        this.catchUpTaskGenerator = new CatchUpTaskGenerator();
 
         this.gameDataMgr.getActiveHeroHash()
             .then((heroHash: string) => {
@@ -119,7 +122,7 @@ export class SqApp {
                 const initialData = state || DEFAULT_APP_STATE;
                 let state$ = stateFn(initialData, this.actionSubject.asObservable());
                 state$ = this.gameDataMgr.persistAppData(state$);
-                this.taskMgr = new PlayTaskManager(state$, this.taskGenerator);
+                this.taskMgr = new PlayTaskManager(state$, this.playTaskGenerator, this.catchUpTaskGenerator);
                 this.taskMgr.getTaskAction$().subscribe((taskAction: Action) => {
                     this._queueAction(taskAction);
                 })
@@ -150,7 +153,7 @@ export class SqApp {
     }
 
     render() {
-        if (!!this.state) {
+        if (!!this.state && !this.state.isInCatchUpMode) {
             return (
                 <ion-app>
                     {

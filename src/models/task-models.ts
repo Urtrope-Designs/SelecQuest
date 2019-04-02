@@ -16,4 +16,6 @@ export interface TaskGeneratorAlgorithm {
     generateTask: (state: AppState) => Task;
 }
 
-
+export interface ITaskGenerator {
+    generateNextTask: (state: AppState) => Task;
+}

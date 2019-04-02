@@ -6,28 +6,28 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { Task, AppState } from '../models/models';
 import { SetActiveTask, TaskCompleted, Action } from '../global/actions';
-import { PlayTaskGenerator } from './play-task-generator';
+import { ITaskGenerator } from '../models/task-models';
 
 export class PlayTaskManager {
-    private taskGenerator: PlayTaskGenerator;
-    private stateStore: Observable<AppState>;
     private stateStoreSub: Subscription;
     private taskWatchTimerSub: Subscription;
     public taskAction$ = new BehaviorSubject<Action>(null);
 
-    constructor(stateStore: Observable<AppState>, taskGenerator: PlayTaskGenerator) {
-        this.taskGenerator = taskGenerator;
+    constructor (
+        private stateStore: Observable<AppState>,
+        private playTaskGenerator: ITaskGenerator,
+        private catchUpTaskGenerator: ITaskGenerator,
+    ) {
         if (!!this.stateStoreSub) {                 // TODO: fix #18
             this.stateStoreSub.unsubscribe();
         }
-        this.stateStore = stateStore;
+
         this.stateStore.subscribe((state: AppState) => {
             if (!!state && !!state.hero && !state.hasActiveTask) {
                 let nextTask = this.constructNextTask(state);
 
                 this.taskAction$.next(new SetActiveTask(nextTask));
-            }
-            else if (state.isInCatchUpMode && !!state && !!state.activeTask) {
+            } else if (state.isInCatchUpMode && !!state && !!state.activeTask) {
                 this.completeTask(state.activeTask);
             }
 
@@ -41,13 +41,12 @@ export class PlayTaskManager {
     }
 
     private constructNextTask(state: AppState): Task {
-        const newTask = this.taskGenerator.generateNextTask(state);
-
+        let newTask: Task;
+        
         if (state.isInCatchUpMode && !!state.activeTask) {
-            const oneWeekAgo = new Date().getTime() - (1000 * 60 * 60 * 24 * 7);
-            const minStartTime = Math.max(state.activeTask.taskStartTime, oneWeekAgo);
-            newTask.taskStartTime = minStartTime + state.activeTask.durationMs;
+            newTask = this.catchUpTaskGenerator.generateNextTask(state) 
         } else {
+            newTask = this.playTaskGenerator.generateNextTask(state);
             newTask.taskStartTime = new Date().getTime();
         }
         

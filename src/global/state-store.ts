@@ -14,8 +14,7 @@ function activeTask(initState: Task, actions: Observable<Action>) {
                 return (action as SetActiveTask).newTask;
             } else if (action.actionType === ActionType.SetActiveHero) {
                 return (action as SetActiveHero).newGameState.activeTask;
-            }
-            else {
+            } else {
                 return state;
             }
         }, initState)
@@ -27,14 +26,11 @@ function hasActiveTask(initState: boolean, actions: Observable<Action>): Observa
         scan((state: boolean, action: Action) => {
             if (action.actionType === ActionType.SetActiveTask) {
                 return true;
-            }
-            else if (action.actionType === ActionType.TaskCompleted) {
+            } else if (action.actionType === ActionType.TaskCompleted) {
                 return false;
-            }
-            else if (action.actionType === ActionType.SetActiveHero) {
+            } else if (action.actionType === ActionType.SetActiveHero) {
                 return (action as SetActiveHero).newGameState.hasActiveTask;
-            }
-            else {
+            } else {
                 return state;
             }
         }, initState),
@@ -47,11 +43,9 @@ function hero(initState: Hero, actions: Observable<Action>): Observable<Hero> {
             if (action.actionType == ActionType.TaskCompleted) {
                 const updatedHero = (action as TaskCompleted).completedTask.resultingHero;
                 return updatedHero;
-            }
-            else if (action.actionType == ActionType.SetActiveHero) {
+            } else if (action.actionType == ActionType.SetActiveHero) {
                 return (action as SetActiveHero).newGameState.hero;
-            }
-            else {
+            } else {
                 return state;
             }
         }, initState),
@@ -63,11 +57,9 @@ function activeTaskMode(initState: TaskMode, actions: Observable<Action>): Obser
         scan((state: number, action: Action) => {
             if (action.actionType === ActionType.ChangeActiveTaskMode) {
                 return (action as ChangeActiveTaskMode).newTaskMode;
-            }
-            else if (action.actionType === ActionType.SetActiveHero) {
+            } else if (action.actionType === ActionType.SetActiveHero) {
                 return (action as SetActiveHero).newGameState.activeTaskMode;
-            } 
-            else {
+            } else {
                 return state;
             }
         }, initState),
@@ -79,8 +71,7 @@ function isInCatchUpMode(initState: boolean, actions: Observable<Action>): Obser
         scan((state: boolean, action: Action) => {
             if (action.actionType === ActionType.SetIsInCatchUpMode) {
                 return (action as SetIsInCatchUpMode).isNowInCatchUpMode;
-            }
-            else {
+            } else {
                 return state;
             }
         }, initState),

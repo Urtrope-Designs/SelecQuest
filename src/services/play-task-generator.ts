@@ -1,4 +1,4 @@
-import { TaskGeneratorAlgorithm, GameTaskGeneratorList, TaskMode } from "../models/task-models";
+import { TaskGeneratorAlgorithm, GameTaskGeneratorList, TaskMode, ITaskGenerator } from "../models/task-models";
 import { AppState, HeroModification, HeroModificationType, Task, TaskTarget, TaskTargetType, QuestBuildUpReward, LeadType, TrialBuildUpReward, LootBuildUpReward, Hero, HeroClass } from "../models/models";
 import { makeStringIndefinite, randRange, randFromList, randSign, capitalizeInitial, generateRandomName } from "../global/utils";
 import { IS_DEBUG } from "../global/config";
@@ -8,7 +8,7 @@ import { GameSettingsManager } from "./game-settings-manager";
 import { PrologueTask } from "../models/hero-models";
 import { GameSetting } from "../global/game-setting";
 
-export class PlayTaskGenerator {
+export class PlayTaskGenerator implements ITaskGenerator{
 
     constructor(
         private taskResultGenerator: PlayTaskResultGenerator,
@@ -445,11 +445,6 @@ export class PlayTaskGenerator {
                     data: trophyData,
                 },
                 {
-                    type: HeroModificationType.INCREASE,
-                    attributeName: 'trialEnvironmentalLimit',
-                    data: 1,
-                },
-                {
                     type: HeroModificationType.DECREASE,
                     attributeName: 'lootEnvironmentalLimit',
                     data: -2,
@@ -538,6 +533,11 @@ export class PlayTaskGenerator {
                         type: HeroModificationType.ADD_CURRENCY,
                         attributeName: 'currency',
                         data: [{index: TaskMode.TRIAL_MODE, value: renownValue}],
+                    },
+                    {
+                        type: HeroModificationType.INCREASE,
+                        attributeName: 'trialEnvironmentalLimit',
+                        data: 1,
                     },
                 ];
                 const updatedHero = this.generateResultingHero(state.hero, modifications);
