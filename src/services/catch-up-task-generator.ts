@@ -1,124 +1,260 @@
 import { ITaskGenerator, TaskMode } from "../models/task-models";
-import { AppState, Task, Hero } from "../models/models";
+import { AppState, Task, Hero, HeroModification, HeroModificationType } from "../models/models";
 import { HeroManager } from "./hero-manager";
+import { PlayTaskResultGenerator } from "./play-task-result-generator";
+import { GameSettingsManager } from "./game-settings-manager";
 
 export class CatchUpTaskGenerator implements ITaskGenerator{
 
     constructor(
+        private taskResultGenerator: PlayTaskResultGenerator,
+        private heroMgr: HeroManager,
+        private gameSettingsMgr: GameSettingsManager,
     ) {
     }
 
     generateNextTask(state: AppState): Task {
         const nowTime = new Date().getTime();
         const oneWeekAgo = nowTime - (1000 * 60 * 60 * 24 * 7);
-        const startingPoint = Math.max((state.activeTask.taskStartTime + state.activeTask.durationMs), oneWeekAgo);
-        const totalTimeToCatchUp = nowTime - startingPoint;
+        const startingPoint = Math.min(Math.max((state.activeTask.taskStartTime + state.activeTask.durationMs), oneWeekAgo), nowTime);
+        const totalTimeToCatchUpMs = nowTime - startingPoint;
         const averageAdvancementTaskLength = 6.5;
+        const isEnvironmentalLimitBroken = state.activeTaskMode == TaskMode.LOOT_MODE ? state.hero.lootEnvironmentalLimit >= state.hero.maxLootEnvironmentalLimit
+            : state.activeTaskMode == TaskMode.TRIAL_MODE ? state.hero.trialEnvironmentalLimit >= state.hero.maxTrialEnvironmentalLimit
+            : state.hero.questEnvironmentalLimit >= state.hero.maxQuestEnvironmentalLimit;
+        const buildUpLimit = state.activeTaskMode == TaskMode.LOOT_MODE ? state.hero.maxLootBuildUp 
+            : state.activeTaskMode == TaskMode.TRIAL_MODE ? state.hero.maxTrialBuildUp 
+            : state.hero.maxQuestBuildUp;
+
+        const {nearestMilestone, cyclesToNextMilestone, timeToNextMilestoneMs} = this.determineNearestMilestone(state, totalTimeToCatchUpMs, buildUpLimit, averageAdvancementTaskLength, isEnvironmentalLimitBroken); 
         
-        const {timeToNextMilestone, nearestMilestone} = this.determineNearestMilestone(state, totalTimeToCatchUp, averageAdvancementTaskLength); 
-        
-        const newTask = this.buildTaskResults(state, startingPoint, timeToNextMilestone, nearestMilestone);
+        const newTask = this.buildTaskResults(state, startingPoint, cyclesToNextMilestone, timeToNextMilestoneMs, nearestMilestone, buildUpLimit, averageAdvancementTaskLength, isEnvironmentalLimitBroken);
+
         
         return newTask;
     }
     
-    determineNearestMilestone(state: AppState, totalTimeToCatchUp: number, averageAdvancementTaskLength: number): { timeToNextMilestone: number; nearestMilestone: CatchUpMilestones; } {
-        let timeToNextMilestone = totalTimeToCatchUp;
+    private determineNearestMilestone(state: AppState, totalTimeToCatchUpMs: number, buildUpLimit: number, averageAdvancementTaskLength: number, isEnvironmentalLimitBroken: boolean): { nearestMilestone: CatchUpMilestones, cyclesToNextMilestone: number, timeToNextMilestoneMs: number } {
+        let cyclesToNextMilestone = this.determineCyclesToCatchUp(totalTimeToCatchUpMs, state.activeTaskMode, buildUpLimit, averageAdvancementTaskLength);
         let nearestMilestone = CatchUpMilestones.CATCH_UP;
-        
-        const isEnvironmentalLimitBroken = state.activeTaskMode == TaskMode.LOOT_MODE ? state.hero.lootEnvironmentalLimit >= state.hero.maxLootEnvironmentalLimit
-        : state.activeTaskMode == TaskMode.TRIAL_MODE ? state.hero.trialEnvironmentalLimit >= state.hero.maxTrialEnvironmentalLimit
-        : state.hero.questEnvironmentalLimit >= state.hero.maxQuestEnvironmentalLimit;
-        const buildUpLimit = state.activeTaskMode == TaskMode.LOOT_MODE ? state.hero.maxLootBuildUp 
-        : state.activeTaskMode == TaskMode.TRIAL_MODE ? state.hero.maxTrialBuildUp 
-        : state.hero.maxQuestBuildUp;
 
-        const timeToLevelUp = this.determineTimeToLevelUp(state.hero, state.activeTaskMode, buildUpLimit, averageAdvancementTaskLength, isEnvironmentalLimitBroken);
-        if (timeToLevelUp < timeToNextMilestone) {
-            timeToNextMilestone = timeToLevelUp;
+        const cyclesToLevelUp = this.determineCyclesToLevelUp(state.hero, buildUpLimit, averageAdvancementTaskLength, isEnvironmentalLimitBroken);
+        if (cyclesToLevelUp < cyclesToNextMilestone) {
+            cyclesToNextMilestone = cyclesToLevelUp;
             nearestMilestone = CatchUpMilestones.LEVEL_UP;
         }
         
-        const timeToNextAdventure = this.determineTimeToAdventureComplete(state.hero, state.activeTaskMode, buildUpLimit, averageAdvancementTaskLength, isEnvironmentalLimitBroken);
-        if (timeToNextAdventure < timeToNextMilestone) {
-            timeToNextMilestone = timeToNextAdventure;
+        const cyclesToNextAdventure = this.determineCyclesToAdventureComplete(state.hero, buildUpLimit, averageAdvancementTaskLength, isEnvironmentalLimitBroken);
+        if (cyclesToNextAdventure < cyclesToNextMilestone) {
+            cyclesToNextMilestone = cyclesToNextAdventure;
             nearestMilestone = CatchUpMilestones.COMPLETE_ADVENTURE;
         }
         
         if (!isEnvironmentalLimitBroken) {
-            const timeToEnvironmentalLimitBreak = this.determineTimeToEnvironmentalLimitBreak(state.hero, state.activeTaskMode, averageAdvancementTaskLength, buildUpLimit);
-            if (timeToEnvironmentalLimitBreak < timeToNextMilestone) {
-                timeToNextMilestone = timeToEnvironmentalLimitBreak;
+            const cyclesToEnvironmentalLimitBreak = this.determineCyclesToEnvironmentalLimitBreak(state.hero, state.activeTaskMode, buildUpLimit);
+            if (cyclesToEnvironmentalLimitBreak < cyclesToNextMilestone) {
+                cyclesToNextMilestone = cyclesToEnvironmentalLimitBreak;
                 nearestMilestone = CatchUpMilestones.ENVIRONMENTAL_LIMIT_BREAK;
             }
         }
+
+        const timeToNextMilestoneMs = this.determineTotalTimeFromCyclesMs(cyclesToNextMilestone, state.activeTaskMode, buildUpLimit, averageAdvancementTaskLength);
+
         
-        return {timeToNextMilestone: timeToNextMilestone, nearestMilestone: nearestMilestone};
+        return {nearestMilestone: nearestMilestone, cyclesToNextMilestone: cyclesToNextMilestone, timeToNextMilestoneMs: timeToNextMilestoneMs};
+    }
+
+    private determineCyclesToCatchUp(totalTimeToCatchUpMs: number, taskMode: TaskMode, buildUpLimit: number, averageAdvancementTaskLength: number): number {
+        const fullCycleDuration = this.determineFullCycleDurationMs(taskMode, buildUpLimit, averageAdvancementTaskLength);
+
+        return Math.ceil(totalTimeToCatchUpMs / fullCycleDuration);
+    }
+
+    private determineXpGainedPerCycle(buildUpLimit: number, averageAdvancementTaskLength: number, isEnvironmentalLimitBroken: boolean): number {
+        const xpGainedPerCycle = Math.ceil(buildUpLimit * averageAdvancementTaskLength / (isEnvironmentalLimitBroken ? 2 : 1));
+        return xpGainedPerCycle;
     }
     
-    buildTaskResults(state: AppState, startingPoint: number, timeToNextMilestone: number, nearestMilestone: CatchUpMilestones): Task {
-                // TODO: determine "resultingHero" after that milestone is reached, including "in situ" build-up rewards
-        if (nearestMilestone == CatchUpMilestones.CATCH_UP) {
-            return null;
+    private determineCyclesToLevelUp(hero: Hero, buildUpLimit: number, averageAdvancementTaskLength: number, isEnvironmentalLimitBroken: boolean): number {
+        const xpNeededToLevelUp = HeroManager.getXpRequiredForNextLevel(hero.level);
+        const xpGainedPerCycle = this.determineXpGainedPerCycle(buildUpLimit, averageAdvancementTaskLength, isEnvironmentalLimitBroken);
+
+        if (xpNeededToLevelUp < xpGainedPerCycle) {
+            return 0;
         }
 
+        const cyclesToNextLevel = Math.ceil(xpNeededToLevelUp / xpGainedPerCycle);
 
-
-        const newTask: Task = {
-            description: 'Catchup',
-            durationMs: 1000 * timeToNextMilestone,
-            resultingHero: state.hero,
-            taskStartTime: startingPoint,
-        };
-
-        return newTask
+        return cyclesToNextLevel;
     }
 
-    private determineTimeToLevelUp(hero: Hero, taskMode: TaskMode, buildUpLimit: number, averageAdvancementTaskLength: number, isEnvironmentalLimitBroken: boolean): number {
-        const xpGainedPerCycle = Math.ceil(buildUpLimit * averageAdvancementTaskLength / (isEnvironmentalLimitBroken ? 2 : 1));
-
-        const cyclesToNextLevel = Math.ceil(HeroManager.getXpRequiredForNextLevel(hero.level) / xpGainedPerCycle);
-
-        const averageOffXPTasksPerCycle = taskMode == TaskMode.QUEST_MODE ? buildUpLimit : .9 * buildUpLimit;
-
-        const fullCycleDuration = 4 + averageAdvancementTaskLength * buildUpLimit + 4 + averageOffXPTasksPerCycle + 5;
-
-        const timeToLevelUp = cyclesToNextLevel * fullCycleDuration;
-
-        return timeToLevelUp;
+    private determineApGainedPerCycle(buildUpLimit: number, averageAdvancementTaskLength: number, isEnvironmentalLimitBroken: boolean): number {
+        const apGainedPerCycle = Math.ceil(buildUpLimit * averageAdvancementTaskLength / (isEnvironmentalLimitBroken ? 2 : 1));
+        return apGainedPerCycle;
     }
     
-    private determineTimeToAdventureComplete(hero: Hero, taskMode: TaskMode, buildUpLimit: number, averageAdvancementTaskLength: number, isEnvironmentalLimitBroken: boolean): number {
-        const apGainedPerCycle = Math.ceil(buildUpLimit * averageAdvancementTaskLength / (isEnvironmentalLimitBroken ? 2 : 1));
+    private determineCyclesToAdventureComplete(hero: Hero, buildUpLimit: number, averageAdvancementTaskLength: number, isEnvironmentalLimitBroken: boolean): number {
+        const apNeededToCompleteAdventure = hero.currentAdventure.progressRequired;
+        const apGainedPerCycle = this.determineApGainedPerCycle(buildUpLimit, averageAdvancementTaskLength, isEnvironmentalLimitBroken);
 
-        const cyclesToNextAdventure = Math.ceil(hero.currentAdventure.progressRequired / apGainedPerCycle);
+        if (apNeededToCompleteAdventure < apGainedPerCycle) {
+            return 0;
+        }
 
-        const averageOffAPTasksPerCycle = taskMode == TaskMode.QUEST_MODE ? buildUpLimit : .9 * buildUpLimit;
+        const cyclesToNextAdventure = Math.ceil(apNeededToCompleteAdventure / apGainedPerCycle);
 
-        const fullCycleDuration = 4 + averageAdvancementTaskLength * buildUpLimit + 4 + averageOffAPTasksPerCycle + 5;
-
-        const timeToNextAdventure = cyclesToNextAdventure * fullCycleDuration + 3;
-
-        return timeToNextAdventure;
+        return cyclesToNextAdventure;
     }
 
-    private determineTimeToEnvironmentalLimitBreak(hero: Hero, taskMode: TaskMode, buildUpLimit: number, averageAdvancementTaskLength: number): number {
+    private determineCyclesToEnvironmentalLimitBreak(hero: Hero, taskMode: TaskMode, buildUpLimit: number): number {
         const advancementUntilLimit = taskMode == TaskMode.LOOT_MODE ? hero.maxLootEnvironmentalLimit - hero.lootEnvironmentalLimit
                                             : taskMode == TaskMode.TRIAL_MODE ? hero.maxTrialEnvironmentalLimit - hero.trialEnvironmentalLimit
                                             : hero.maxQuestEnvironmentalLimit - hero.questEnvironmentalLimit;
 
         const advancementGainedPerCycle = buildUpLimit;
 
-        const cyclesToNextLevel = Math.ceil(advancementUntilLimit / advancementGainedPerCycle);
+        if (advancementUntilLimit < advancementGainedPerCycle) {
+            return 0;
+        }
 
-        const averageOffAdvancementTasksPerCycle = taskMode == TaskMode.QUEST_MODE ? buildUpLimit : .9 * buildUpLimit;
+        const cyclesToEnvironmentalLimit = Math.ceil(advancementUntilLimit / advancementGainedPerCycle);
 
-        const fullCycleDuration = 4 + averageAdvancementTaskLength * buildUpLimit + 4 + averageOffAdvancementTasksPerCycle + 5;
-
-        const timeToLevelUp = cyclesToNextLevel * fullCycleDuration;
-
-        return timeToLevelUp;
+        return cyclesToEnvironmentalLimit;
     }
+
+    private determineFullCycleDurationMs(taskMode: TaskMode, buildUpLimit: number, averageAdvancementTaskLength: number) {
+        const averageOffAdvancementTasksPerCycle = taskMode == TaskMode.QUEST_MODE ? buildUpLimit : .9 * buildUpLimit;
+    
+        const fullCycleDurationSeconds = 4 + averageAdvancementTaskLength * buildUpLimit + 4 + averageOffAdvancementTasksPerCycle + 5;
+
+        return fullCycleDurationSeconds * 1000;
+    }
+
+    private determineTotalTimeFromCyclesMs(cyclesToNextMilestone: number, taskMode: TaskMode, buildUpLimit: number, averageAdvancementTaskLength: number) {
+        const fullCycleDurationMs = this.determineFullCycleDurationMs(taskMode, buildUpLimit, averageAdvancementTaskLength);
+        const totalTimeMs = cyclesToNextMilestone * fullCycleDurationMs;
+
+        return totalTimeMs;
+    }
+
+    private generateResultingHero(baseHero: Hero, modifications: HeroModification[]): Hero {
+        let updatedHero: Hero = this.heroMgr.applyHeroTaskUpdates(baseHero, modifications);
+        if (HeroManager.hasHeroReachedNextLevel(updatedHero)) {
+            const levelUpMods = this.taskResultGenerator.generateLevelUpModifications(updatedHero)
+            updatedHero = this.heroMgr.applyHeroModifications(updatedHero, levelUpMods, false);
+        }
+        return updatedHero;
+    }
+
+    private buildTaskResults(state: AppState, startingPoint: number, cyclesToNextMilestone: number, timeToNextMilestoneMs: number, nearestMilestone: CatchUpMilestones, buildUpLimit: number, averageAdvancementTaskLength: number, isEnvironmentalLimitBroken: boolean): Task {
+        if (nearestMilestone == CatchUpMilestones.CATCH_UP || cyclesToNextMilestone == 0) {
+            return null;
+        }
+
+        const catchUpTaskDescription = CatchUpMilestones[nearestMilestone] + ' Catchup';
+
+        const prologueAdventureName = this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId).prologueAdventureName;
+        if (state.hero.currentAdventure.name == prologueAdventureName) {
+            const actualDurationSeconds = state.hero.currentAdventure.progressRequired;
+            const modifications = this.taskResultGenerator.generateNewAdventureResults(state.hero, false);
+            const updatedHero = this.generateResultingHero(state.hero, modifications);
+            const newTask: Task = {
+                description: catchUpTaskDescription,
+                durationMs: actualDurationSeconds * 1000,
+                resultingHero: updatedHero,
+                taskStartTime: startingPoint,
+            };
+
+
+            return newTask;
+        }
+
+        // need to clear buildUpRewards
+        const xpGainedPerCycle = this.determineXpGainedPerCycle(buildUpLimit, averageAdvancementTaskLength, isEnvironmentalLimitBroken);
+        const totalXpEarned = cyclesToNextMilestone * xpGainedPerCycle;
+
+        const apGainedPerCycle = this.determineApGainedPerCycle(buildUpLimit, averageAdvancementTaskLength, isEnvironmentalLimitBroken);
+        const totalApEarned = cyclesToNextMilestone * apGainedPerCycle;
+
+        const environmentalLimitGainedPerCycle = buildUpLimit;
+        const totalEnvironmentalLimitGained = cyclesToNextMilestone * environmentalLimitGainedPerCycle;
+        const totalOffModeEnvironmentalLimitReduced = cyclesToNextMilestone * environmentalLimitGainedPerCycle * -2;
+        const allEnvironmentalLimitAttributeNames = [
+            'lootEnvironmentalLimit',
+            'trialEnvironmentalLimit',
+            'questEnvironmentalLimit',
+        ]
+        const activevModeEnvironmentalLimitAttributeName = allEnvironmentalLimitAttributeNames[state.activeTaskMode];
+        const offModeEnvironmentalLimitAttributeNames = allEnvironmentalLimitAttributeNames.filter(n => n != activevModeEnvironmentalLimitAttributeName);
+
+        const currencyGained = buildUpLimit;
+
+        const allBuildUpRewardAttributeNames = [
+            'lootBuildUpRewards',
+            'trialBuildUpRewards',
+            'questBuildUpRewards'
+        ]
+        const activeModeBuildUpRewardAttributeName = allBuildUpRewardAttributeNames[state.activeTaskMode];
+
+        const modifications: HeroModification[] = [
+            {
+                type: HeroModificationType.INCREASE,
+                attributeName: 'currentXp',
+                data: totalXpEarned,
+            },
+            {
+                type: HeroModificationType.INCREASE,
+                attributeName: 'adventureProgress',
+                data: totalApEarned,
+            },
+            {
+                type: HeroModificationType.INCREASE,
+                attributeName: activevModeEnvironmentalLimitAttributeName,
+                data: totalEnvironmentalLimitGained,
+            },
+            {
+                type: HeroModificationType.DECREASE,
+                attributeName: offModeEnvironmentalLimitAttributeNames[0],
+                data: totalOffModeEnvironmentalLimitReduced,
+            },
+            {
+                type: HeroModificationType.DECREASE,
+                attributeName: offModeEnvironmentalLimitAttributeNames[1],
+                data: totalOffModeEnvironmentalLimitReduced,
+            },
+            {
+                type: HeroModificationType.ADD_CURRENCY,
+                attributeName: 'currency',
+                data: [{index: state.activeTaskMode, value: currencyGained}],
+            },
+            {
+                type: HeroModificationType.SET,
+                attributeName: activeModeBuildUpRewardAttributeName,
+                data: [],
+            },
+            {
+                type: HeroModificationType.SET_TEARDOWN_MODE,
+                attributeName: 'isInTeardownMode',
+                data: [{index: state.activeTaskMode, value: true}],
+            },
+        ];
+
+        const resultingHero = this.generateResultingHero(state.hero, modifications);
+
+        const newTask: Task = {
+            description: catchUpTaskDescription,
+            durationMs: timeToNextMilestoneMs,
+            resultingHero: resultingHero,
+            taskStartTime: startingPoint,
+        };
+
+        console.log('new catchup task: ', newTask);
+        return newTask
+    }
+    
+    // private generateInSituBuildUpRewardsModification(): HeroModification {
+    //     throw new Error("Method not implemented.");
+    // }
 }
 
 enum CatchUpMilestones {

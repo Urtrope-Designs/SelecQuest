@@ -27,7 +27,7 @@ export class PlayTaskManager {
                 let nextTask = this.constructNextTask(state);
 
                 this.taskAction$.next(new SetActiveTask(nextTask));
-            } else if (state.isInCatchUpMode && !!state && !!state.activeTask) {
+            } else if (state.isInCatchUpMode && !!state && !!state.activeTask && this.isTaskCompleted(state.activeTask)) {
                 this.completeTask(state.activeTask);
             }
 
@@ -48,6 +48,7 @@ export class PlayTaskManager {
             if (newTask == null) {
                 console.log('catch-up mini task');
                 newTask = this.playTaskGenerator.generateNextTask(state);
+                newTask.taskStartTime = Math.min(state.activeTask.taskStartTime + state.activeTask.durationMs, new Date().getTime());
             }
         } else {
             newTask = this.playTaskGenerator.generateNextTask(state);
@@ -63,7 +64,7 @@ export class PlayTaskManager {
         }
         timer(1, 100).pipe(withLatestFrom(stateStore))
             .subscribe(([_timer, state]) => {
-                if (!!state && !state.isInCatchUpMode &&  !!state.activeTask && this.isTaskCompleted(state.activeTask)) {
+                if (!!state && !state.isInCatchUpMode && !!state.activeTask && this.isTaskCompleted(state.activeTask)) {
                     this.completeTask(state.activeTask);
                 }
             })
