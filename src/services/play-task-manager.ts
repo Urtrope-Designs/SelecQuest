@@ -46,7 +46,6 @@ export class PlayTaskManager {
         if (state.isInCatchUpMode && !!state.activeTask) {
             newTask = this.catchUpTaskGenerator.generateNextTask(state);
             if (newTask == null) {
-                console.log('catch-up mini task');
                 newTask = this.playTaskGenerator.generateNextTask(state);
                 newTask.taskStartTime = Math.min(state.activeTask.taskStartTime + state.activeTask.durationMs, new Date().getTime());
             }

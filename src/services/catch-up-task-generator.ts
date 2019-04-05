@@ -248,13 +248,8 @@ export class CatchUpTaskGenerator implements ITaskGenerator{
             taskStartTime: startingPoint,
         };
 
-        console.log('new catchup task: ', newTask);
         return newTask
     }
-    
-    // private generateInSituBuildUpRewardsModification(): HeroModification {
-    //     throw new Error("Method not implemented.");
-    // }
 }
 
 enum CatchUpMilestones {
