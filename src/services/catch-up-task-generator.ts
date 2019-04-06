@@ -58,6 +58,11 @@ export class CatchUpTaskGenerator implements ITaskGenerator{
             }
         }
 
+        // get us closer to catching up without going over
+        if (nearestMilestone == CatchUpMilestones.CATCH_UP) {
+            cyclesToNextMilestone = cyclesToNextMilestone - 2;
+        }
+
         const timeToNextMilestoneMs = this.determineTotalTimeFromCyclesMs(cyclesToNextMilestone, state.activeTaskMode, buildUpLimit, averageAdvancementTaskLength);
 
         
@@ -147,7 +152,7 @@ export class CatchUpTaskGenerator implements ITaskGenerator{
     }
 
     private buildTaskResults(state: AppState, startingPoint: number, cyclesToNextMilestone: number, timeToNextMilestoneMs: number, nearestMilestone: CatchUpMilestones, buildUpLimit: number, averageAdvancementTaskLength: number, isEnvironmentalLimitBroken: boolean): Task {
-        if (nearestMilestone == CatchUpMilestones.CATCH_UP || cyclesToNextMilestone == 0) {
+        if (cyclesToNextMilestone <= 0) {
             return null;
         }
 
@@ -169,7 +174,6 @@ export class CatchUpTaskGenerator implements ITaskGenerator{
             return newTask;
         }
 
-        // need to clear buildUpRewards
         const xpGainedPerCycle = this.determineXpGainedPerCycle(buildUpLimit, averageAdvancementTaskLength, isEnvironmentalLimitBroken);
         const totalXpEarned = cyclesToNextMilestone * xpGainedPerCycle;
 
