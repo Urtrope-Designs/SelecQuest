@@ -6,7 +6,6 @@ export enum ActionType {
     TaskCompleted,
     ChangeActiveTaskMode,
     SetActiveHero,
-    SetIsInCatchUpMode,
 }
 
 export class SetActiveTask {
@@ -29,13 +28,8 @@ export class SetActiveHero {
     constructor(public newGameState: AppState) {};
 }
 
-export class SetIsInCatchUpMode {
-    public actionType = ActionType.SetIsInCatchUpMode;
-    constructor(public isNowInCatchUpMode: boolean) {};
-}
 
 export type Action =    SetActiveTask |
                         TaskCompleted |
                         ChangeActiveTaskMode |
-                        SetActiveHero |
-                        SetIsInCatchUpMode;
+                        SetActiveHero;

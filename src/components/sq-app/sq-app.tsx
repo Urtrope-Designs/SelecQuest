@@ -2,8 +2,8 @@ import { Component, Listen, State } from '@stencil/core';
 import { Subject } from 'rxjs/Subject';
 
 import { stateFn } from '../../global/state-store';
-import { AppState } from '../../models/models';
-import { Action, ChangeActiveTaskMode, SetActiveHero, SetIsInCatchUpMode } from '../../global/actions';
+import { AppState, Task } from '../../models/models';
+import { Action, ChangeActiveTaskMode, SetActiveHero } from '../../global/actions';
 import { GameDataManager } from '../../services/game-data-manager';
 import { generateHeroHashFromHero } from '../../global/utils';
 import { PlayScreen } from '../play-screen/play-screen';
@@ -14,7 +14,6 @@ import { PlayTaskGenerator } from '../../services/play-task-generator';
 import { PlayTaskResultGenerator } from '../../services/play-task-result-generator';
 import { TaskMode, ITaskGenerator } from '../../models/task-models';
 import { PlayTaskManager } from '../../services/play-task-manager';
-import { takeWhile } from 'rxjs/operators';
 import { CatchUpTaskGenerator } from '../../services/catch-up-task-generator';
 
 @Component({
@@ -110,7 +109,6 @@ export class SqApp {
                             if (state == null) {
                                 return DEFAULT_APP_STATE;
                             } else {
-                                state.isInCatchUpMode = true;
                                 return state;
                             }
                         });
@@ -130,14 +128,6 @@ export class SqApp {
                 state$.subscribe(state => {
                     this.state = state;
                 });
-
-                state$.pipe(
-                    takeWhile(state => {
-                        return !!state && !!state.activeTask && state.activeTask.taskStartTime + state.activeTask.durationMs <= new Date().getTime();
-                    })
-                ).subscribe(null, null, () => {
-                    this._queueAction(new SetIsInCatchUpMode(false));
-                })
             });
 
         this._updateAvailableHeroes();
@@ -152,8 +142,13 @@ export class SqApp {
         }
     }
 
+    private isCatchUpTask(activeTask: Task): boolean {
+        const catchUpCutoff = new Date().getTime() - 200;
+        return activeTask.taskStartTime + activeTask.durationMs < catchUpCutoff;
+    }
+
     render() {
-        if (!!this.state && !this.state.isInCatchUpMode) {
+        if (!!this.state && !this.isCatchUpTask(this.state.activeTask)) {
             return (
                 <ion-app>
                     {
@@ -183,5 +178,4 @@ const DEFAULT_APP_STATE: AppState = {
     activeTask: null,
     hasActiveTask: false,
     activeTaskMode: TaskMode.LOOT_MODE,
-    isInCatchUpMode: true,
 };

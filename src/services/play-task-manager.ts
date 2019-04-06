@@ -1,7 +1,6 @@
 import { Observable } from 'rxjs/Observable';
 import { timer } from 'rxjs/observable/timer';
-import { withLatestFrom } from 'rxjs/operators';
-import { Subscription } from 'rxjs/Subscription';
+import { combineLatest } from 'rxjs/observable/combineLatest';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { Task, AppState } from '../models/models';
@@ -9,8 +8,6 @@ import { SetActiveTask, TaskCompleted, Action } from '../global/actions';
 import { ITaskGenerator } from '../models/task-models';
 
 export class PlayTaskManager {
-    private stateStoreSub: Subscription;
-    private taskWatchTimerSub: Subscription;
     public taskAction$ = new BehaviorSubject<Action>(null);
 
     constructor (
@@ -18,22 +15,17 @@ export class PlayTaskManager {
         private playTaskGenerator: ITaskGenerator,
         private catchUpTaskGenerator: ITaskGenerator,
     ) {
-        if (!!this.stateStoreSub) {                 // TODO: fix #18
-            this.stateStoreSub.unsubscribe();
-        }
+        combineLatest(timer(1, 100), this.stateStore)
+            .subscribe(([_timer, state]) => {
+                if (!!state && !!state.hero && !state.hasActiveTask) {
+                    let nextTask = this.constructNextTask(state);
 
-        this.stateStore.subscribe((state: AppState) => {
-            if (!!state && !!state.hero && !state.hasActiveTask) {
-                let nextTask = this.constructNextTask(state);
-
-                this.taskAction$.next(new SetActiveTask(nextTask));
-            } else if (state.isInCatchUpMode && !!state && !!state.activeTask && this.isTaskCompleted(state.activeTask)) {
-                this.completeTask(state.activeTask);
-            }
-
-        });
-
-        this.startTaskWatchTimer(stateStore);
+                    this.taskAction$.next(new SetActiveTask(nextTask));
+                }
+                if (!!state && !!state.activeTask && state.hasActiveTask && this.isTaskCompleted(state.activeTask)) {
+                    this.completeTask(state.activeTask);
+                }
+            });
     }
 
     public getTaskAction$() {
@@ -43,30 +35,13 @@ export class PlayTaskManager {
     private constructNextTask(state: AppState): Task {
         let newTask: Task;
         
-        if (state.isInCatchUpMode && !!state.activeTask) {
-            newTask = this.catchUpTaskGenerator.generateNextTask(state);
-            if (newTask == null) {
-                newTask = this.playTaskGenerator.generateNextTask(state);
-                newTask.taskStartTime = Math.min(state.activeTask.taskStartTime + state.activeTask.durationMs, new Date().getTime());
-            }
-        } else {
+        newTask = this.catchUpTaskGenerator.generateNextTask(state);
+        if (newTask == null) {
             newTask = this.playTaskGenerator.generateNextTask(state);
-            newTask.taskStartTime = new Date().getTime();
+            newTask.taskStartTime = Math.min(state.activeTask.taskStartTime + state.activeTask.durationMs, new Date().getTime());
         }
         
         return newTask;
-    }
-
-    private startTaskWatchTimer(stateStore: Observable<AppState>) {
-        if (!!this.taskWatchTimerSub) {
-            this.taskWatchTimerSub.unsubscribe();
-        }
-        timer(1, 100).pipe(withLatestFrom(stateStore))
-            .subscribe(([_timer, state]) => {
-                if (!!state && !state.isInCatchUpMode && !!state.activeTask && this.isTaskCompleted(state.activeTask)) {
-                    this.completeTask(state.activeTask);
-                }
-            })
     }
 
     private isTaskCompleted(task: Task): boolean {
