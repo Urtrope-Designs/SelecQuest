@@ -23,6 +23,36 @@
             "trophyNamePlural": "hoots"
         },
         {
+            "raceName": "Anthropomorphic Slug",
+            "trophyName": "trail",
+            "trophyNamePlural": "trails"
+        },
+        {
+            "raceName": "Wookipecker",
+            "trophyName": "braid",
+            "trophyNamePlural": "braids"
+        },
+        {
+            "raceName": "Trippelganger",
+            "trophyName": "triflection",
+            "trophyNamePlural": "triflections"
+        },
+        {
+            "raceName": "Genie",
+            "trophyName": "wish",
+            "trophyNamePlural": "wishes"
+        },
+        {
+            "raceName": "Butterfolk",
+            "trophyName": "churn",
+            "trophyNamePlural": "churns"
+        },
+        {
+            "raceName": "Pygmy Giant",
+            "trophyName": "vastus medialis",
+            "trophyNamePlural": "vastus mediales"
+        },
+        {
             "raceName": "Half-mermaid",
             "trophyName": "bident",
             "trophyNamePlural": "bidents"
@@ -70,6 +100,30 @@
             "namePlural": "Warlocks"
         },
         {
+            "name": "Lumberjack",
+            "namePlural": "Lumberjacks"
+        },
+        {
+            "name": "Fighter",
+            "namePlural": "Fighters"
+        },
+        {
+            "name": "Boulderer",
+            "namePlural": "Boulderers"
+        },
+        {
+            "name": "Semaphorist",
+            "namePlural": "Semaphorists"
+        },
+        {
+            "name": "Load",
+            "namePlural": "Loads"
+        },
+        {
+            "name": "Rogue",
+            "namePlural": "Rogues"
+        },
+        {
             "name": "Semi-retired Heckler",
             "namePlural": "Semi-retired Hecklers"
         }
@@ -92,19 +146,28 @@
             "baseStatIndex": 3,
             "availableValues": [
                 "Summon Snack",
+                "Make water",
                 "Tonguehairs",
                 "Eggsmoke",
                 "Miasmatic Ward",
+                "Goatsneeze",
                 "Digest",
                 "Trace Outline",
+                "Dutch Whisper",
                 "Gamey Aftertaste",
+                "Whistlenut",
+                "Sinterslix’s Bottomless Bundle",
+                "Heatherlips",
                 "Doubleflush",
                 "Dedandify",
                 "Hide Agenda",
+                "Protection from Geometry",
                 "Undigest",
                 "Bisonic Sphere",
                 "Detect Limp",
-                "Suddenly Sand Wedge"
+                "Bamboozle",
+                "Suddenly Sand Wedge",
+                "Boggrum’s Mighty Hush"
             ]
         },
         {
@@ -114,14 +177,21 @@
                 "Left Hook",
                 "Rope Tow",
                 "Jab",
+                "Preemptive shriek",
                 "Swingsies",
+                "Appropriate snack",
                 "Uppercut",
                 "Twist and Trout",
                 "Rope Climb",
+                "Omnilateral strike",
+                "Toothwhistle",
+                "Back attack",
                 "Soul Prick",
+                "Sonically weld",
                 "Half-time March",
                 "Imitate Mating Call",
                 "Chondromalacia Patella",
+                "Unnerving wink",
                 "Approach Infinity"
             ]
         }
@@ -158,7 +228,19 @@
         "Garg",
         "Swindlefoot",
         "Melse",
-        "Kriiblin"
+        "Kriiblin",
+        "Sklinther",
+        "Dax",
+        "Micker",
+        "Timpa",
+        "Obopomopa",
+        "Benjin",
+        "Kroolkis",
+        "Roloc",
+        "Zephlan",
+        "Youlil",
+        "Copperfunt",
+        "Xexzyzx"
     ],
     "randomNameParts": [
         ["br", "cr", "dr", "fr", "gr", "j", "kr", "l", "m", "n", "pr", "r", "sh", "tr", "v", "wh", "x", "y", "z", ""],
@@ -237,6 +319,150 @@
             "level": 7,
             "reward": "ratking tooth",
             "rewardPlural": "ratking teeth"
+        },
+        {
+            "type": "foe",
+            "name": "Debbie downer",
+            "namePlural": "Debbie downers",
+            "level": 4,
+            "reward": "debbie downer miserabilium",
+            "rewardPlural": "debbie downer miserabilia"
+        },
+        {
+            "type": "foe",
+            "name": "Feral butterfly",
+            "namePlural": "Feral butterflies",
+            "level": 2,
+            "reward": "feral butterfly mandible",
+            "rewardPlural": "feral butterfly mandibles"
+        },
+        {
+            "type": "foe",
+            "name": "Craptooth",
+            "namePlural": "Crapteeth",
+            "level": 3,
+            "reward": "craptooth apology",
+            "rewardPlural": "craptooth apologies"
+        },
+        {
+            "type": "foe",
+            "name": "Fire imp",
+            "namePlural": "Fire imps",
+            "level": 3,
+            "reward": "fire imp cinder",
+            "rewardPlural": "fire imp cinders"
+        },
+        {
+            "type": "foe",
+            "name": "Atoll troll",
+            "namePlural": "Atoll trolls",
+            "level": 10,
+            "reward": "atoll troll coral cowl",
+            "rewardPlural": "atoll troll coral cowls"
+        },
+        {
+            "type": "foe",
+            "name": "Goblin",
+            "namePlural": "Goblins",
+            "level": 1,
+            "reward": "goblin gob",
+            "rewardPlural": "goblin gobs"
+        },
+        {
+            "type": "foe",
+            "name": "Hobgoblin",
+            "namePlural": "Hobgoblins",
+            "level": 4,
+            "reward": "hobgoblin hob",
+            "rewardPlural": "hobgoblin hobs"
+        },
+        {
+            "type": "foe",
+            "name": "Knobgoblin",
+            "namePlural": "Knobgoblins",
+            "level": 6,
+            "reward": "knobgoblin knob",
+            "rewardPlural": "knobgoblin knobs"
+        },
+        {
+            "type": "foe",
+            "name": "Bloboblin",
+            "namePlural": "Bloboblins",
+            "level": 9,
+            "reward": "bloboblin blob",
+            "rewardPlural": "bloboblin blobs"
+        },
+        {
+            "type": "foe",
+            "name": "Street urchin",
+            "namePlural": "Street urchins",
+            "level": 2,
+            "reward": "street urchin grime",
+            "rewardPlural": "street urchin grimes"
+        },
+        {
+            "type": "foe",
+            "name": "Cutpurse",
+            "namePlural": "Cutpurses",
+            "level": 3,
+            "reward": "cutpurse shiv",
+            "rewardPlural": "cutpurse shivs"
+        },
+        {
+            "type": "foe",
+            "name": "Mindwheeler",
+            "namePlural": "Mindwheelers",
+            "level": 14,
+            "reward": "mindwheeler kickstand",
+            "rewardPlural": "mindwheeler kickstands"
+        },
+        {
+            "type": "foe",
+            "name": "Street magician",
+            "namePlural": "Street magicians",
+            "level": 7,
+            "reward": "street magician illusion",
+            "rewardPlural": "street magician illusions"
+        },
+        {
+            "type": "foe",
+            "name": "Ratprince",
+            "namePlural": "Ratprinces",
+            "level": 5,
+            "reward": "ratprince tail",
+            "rewardPlural": "ratprince tails"
+        },
+        {
+            "type": "foe",
+            "name": "Ratknave",
+            "namePlural": "Ratknaves",
+            "level": 1,
+            "reward": "ratknave whisker",
+            "rewardPlural": "ratknave whiskers"
+        },
+        {
+            "type": "foe",
+            "name": "Carbon genie",
+            "namePlural": "Carbon genies",
+            "level": 11,
+            "reward": "carbon genie carbonaceous char",
+            "rewardPlural": "carbon genie carbonaceous chars"
+        },
+        {
+            "type": "foe",
+            "name": "Plant-based protein golem",
+            "namePlural": "Plant-based protein golems",
+            "level": 7,
+            "reward": "plant-based protein golem smoothie",
+            "rewardPlural": "plant-based protein golem smoothies"
+        },
+        {
+            "type": "foe",
+            "name": "Superfood elemental",
+            "namePlural": "Superfood elementals",
+            "level": 14,
+            "reward": "superfood elemental recipe",
+            "rewardPlural": "superfood elemental recipes"
         },
         {
             "type": "trial",
@@ -411,6 +637,16 @@
                     "modifierType": "Offense"
                 },
                 {
+                    "name": "Halberd",
+                    "baseLevel": 4,
+                    "modifierType": "Offense"
+                },
+                {
+                    "name": "Poignard",
+                    "baseLevel": 3,
+                    "modifierType": "Offense"
+                },
+                {
                     "name": "Truncheon",
                     "baseLevel": 5,
                     "modifierType": "Offense"
@@ -476,8 +712,18 @@
             "name": "Armor",
             "options": [
                 {
-                    "name": "Mahogany",
-                    "baseLevel": 4,
+                    "name": "Oat Mail",
+                    "baseLevel": 1,
+                    "modifierType": "Defense"
+                },
+                {
+                    "name": "Mulch Mail",
+                    "baseLevel": 1,
+                    "modifierType": "Defense"
+                },
+                {
+                    "name": "Hair",
+                    "baseLevel": 1,
                     "modifierType": "Defense"
                 },
                 {
@@ -486,8 +732,68 @@
                     "modifierType": "Defense"
                 },
                 {
-                    "name": "Mulch Mail",
-                    "baseLevel": 1,
+                    "name": "Denim",
+                    "baseLevel": 2,
+                    "modifierType": "Defense"
+                },
+                {
+                    "name": "Scrap Mail",
+                    "baseLevel": 2,
+                    "modifierType": "Defense"
+                },
+                {
+                    "name": "Kindling",
+                    "baseLevel": 3,
+                    "modifierType": "Defense"
+                },
+                {
+                    "name": "Vegan Leather",
+                    "baseLevel": 3,
+                    "modifierType": "Defense"
+                },
+                {
+                    "name": "Bungee",
+                    "baseLevel": 3,
+                    "modifierType": "Defense"
+                },
+                {
+                    "name": "Splinter",
+                    "baseLevel": 4,
+                    "modifierType": "Defense"
+                },
+                {
+                    "name": "Mahogany",
+                    "baseLevel": 5,
+                    "modifierType": "Defense"
+                },
+                {
+                    "name": "Terra Cotta",
+                    "baseLevel": 6,
+                    "modifierType": "Defense"
+                },
+                {
+                    "name": "Stone",
+                    "baseLevel": 7,
+                    "modifierType": "Defense"
+                },
+                {
+                    "name": "Chain",
+                    "baseLevel": 8,
+                    "modifierType": "Defense"
+                },
+                {
+                    "name": "Ring Mail",
+                    "baseLevel": 9,
+                    "modifierType": "Defense"
+                },
+                {
+                    "name": "Fiberglass",
+                    "baseLevel": 10,
+                    "modifierType": "Defense"
+                },
+                {
+                    "name": "Kevlar",
+                    "baseLevel": 12,
                     "modifierType": "Defense"
                 }
             ]
@@ -549,6 +855,14 @@
                 {
                     "name": "Ill-fitting",
                     "levelModifier": -2
+                },
+                {
+                    "name": "Distressed",
+                    "levelModifier": 2
+                },
+                {
+                    "name": "Acid wash",
+                    "levelModifier": 3
                 },
                 {
                     "name": "Thunderlogged",
@@ -995,7 +1309,11 @@
                 "the local women's circle",
                 "your brew-pub crew",
                 "a bunch of retired ditch-diggers",
-                "the Young Neocons Chapter"        
+                "the Young Neocons Chapter",
+                "the Trappers Guild",
+                "the Wingnut Gang",
+                "a Traveling Circus",
+                "the International Association for Hobbyist Bloodletters"
             ]
         },
         {
@@ -1078,7 +1396,8 @@
                 "Cumberbund of Combobulation",
                 "Secret Source Code",
                 "Colonel's Right Recipe",
-                "Fountain of Lamneth"
+                "Fountain of Lamneth",
+                "Smooth Tube"
             ]
         }
     ]
