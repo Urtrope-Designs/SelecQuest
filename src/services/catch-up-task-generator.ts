@@ -14,6 +14,10 @@ export class CatchUpTaskGenerator implements ITaskGenerator{
     }
 
     generateNextTask(state: AppState): Task {
+        if (!state.activeTask) {
+            return null;
+        }
+
         const nowTime = new Date().getTime();
         const oneWeekAgo = nowTime - (1000 * 60 * 60 * 24 * 7);
         const startingPoint = Math.min(Math.max((state.activeTask.taskStartTime + state.activeTask.durationMs), oneWeekAgo), nowTime);

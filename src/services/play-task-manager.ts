@@ -38,7 +38,9 @@ export class PlayTaskManager {
         newTask = this.catchUpTaskGenerator.generateNextTask(state);
         if (newTask == null) {
             newTask = this.playTaskGenerator.generateNextTask(state);
-            newTask.taskStartTime = Math.min(state.activeTask.taskStartTime + state.activeTask.durationMs, new Date().getTime());
+            const nowTime = new Date().getTime();
+            const startTime = !!state.activeTask ? Math.min(state.activeTask.taskStartTime + state.activeTask.durationMs, nowTime) : nowTime;
+            newTask.taskStartTime = startTime;
         }
         
         return newTask;

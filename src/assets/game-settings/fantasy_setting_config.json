@@ -258,11 +258,27 @@
         },
         {
             "type": "location",
+            "name": "Loamy Shoals",
+            "namePlural": "Loamy Shoals",
+            "level": 2,
+            "reward": "loam brick",
+            "rewardPlural": "loam bricks"
+        },
+        {
+            "type": "location",
             "name": "NagaMart",
             "namePlural": "NagaMarts",
-            "level": 2,
+            "level": 3,
             "reward": "nagamart loyalty card",
             "rewardPlural": "nagamart loyalty cards"
+        },
+        {
+            "type": "location",
+            "name": "Mt. Kilowattauer",
+            "namePlural": "Mt. Kilowattauers",
+            "level": 4,
+            "reward": "kilowatt surge",
+            "rewardPlural": "kilowatt surges"
         },
         {
             "type": "foe",
@@ -962,7 +978,9 @@
         {
             "gerundPhrase": "gossipping with",
             "predicateOptions": [
-                "%groups%"
+                "%groups%",
+                "three ancient crones",
+                "some very venerated veterinarians"
             ],
             "leadTypes": ["fetch", "deliver", "defend"]
         },
@@ -1298,7 +1316,7 @@
                 "the Seas of Cheese",
                 "Allbrainia",
                 "Bald Mountain",
-                "Hell"        
+                "Hell"
             ]
         },
         {

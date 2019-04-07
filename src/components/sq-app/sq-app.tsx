@@ -148,7 +148,13 @@ export class SqApp {
     }
 
     render() {
-        if (!!this.state && !this.isCatchUpTask(this.state.activeTask)) {
+        if (!this.state || !!this.state.activeTask && this.isCatchUpTask(this.state.activeTask)) {
+            return (
+                <div class="appLoading">
+                    Loading...
+                </div>
+            )
+        } else {
             return (
                 <ion-app>
                     {
@@ -163,12 +169,6 @@ export class SqApp {
                     }
                 </ion-app>
             );
-        } else {
-            return (
-                <div class="appLoading">
-                    Loading...
-                </div>
-            )
         }
     }
 }

@@ -39,7 +39,7 @@ export class PlayTaskGenerator implements ITaskGenerator{
     static generateTaskNameModifiers(targetLevel: number, taskTarget: TaskTarget, gameSetting: GameSetting): string {
         let taskModifier = '';
         const needsPrefixSeparator = taskTarget.type == TaskTargetType.LOCATION || taskTarget.type == TaskTargetType.TRIAL;
-        const minimalPrefixList: string[] = gameSetting.taskPrefixes.find(p => p.taskTargetType == taskTarget.type && p.degree == 'maximal').options;
+        const minimalPrefixList: string[] = gameSetting.taskPrefixes.find(p => p.taskTargetType == taskTarget.type && p.degree == 'minimal').options;
         const badFirstPrefixList: string[] = gameSetting.taskPrefixes.find(p => p.taskTargetType == taskTarget.type && p.degree == 'bad first').options;
         const badSecondPrefixList: string[] = gameSetting.taskPrefixes.find(p => p.taskTargetType == taskTarget.type && p.degree == 'bad second').options;
         const maximalPrefixList: string[] = gameSetting.taskPrefixes.find(p => p.taskTargetType == taskTarget.type && p.degree == 'maximal').options;
@@ -94,7 +94,7 @@ export class PlayTaskGenerator implements ITaskGenerator{
         let target = randFromList(targetOptions);
         for (let i = 0; i < numIterations - 1; i++) {
             let newTarget = randFromList(targetOptions);
-            if (Math.abs(targetLevel - target.level) < Math.abs(targetLevel - newTarget.level)) {
+            if (Math.abs(targetLevel - newTarget.level) < Math.abs(targetLevel - target.level)) {
                 target = newTarget;
             }
         }
