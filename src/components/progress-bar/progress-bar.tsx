@@ -20,15 +20,7 @@ export class ProgressBar {
     @State() isTapOverlayActive: boolean = false;
 
     private resizeObserver: ResizeObserver;
-
-    // @Listen('window:resize')
-    // handleResize() {
-    //     this.updateSizing();
-    // }
-    // @Listen('window:orientationChange')
-    // handleOrientationChange() {
-    //     this.updateSizing();
-    // }
+    private resizeLagTimeout: number;
 
     @Watch('totalValue')
     totalValueHandler() {
@@ -40,23 +32,23 @@ export class ProgressBar {
     }
 
     componentDidLoad() {
-        setTimeout(this.updateSizing.bind(this), 30);
-
         this.resizeObserver = new ResizeObserver(entries => {
-            for (const entry of entries) {
-                const {width} = entry.contentRect;
+            for (const _entry of entries) {
+                if (this.elemWidth != this.progressElem.querySelector('.progressBar_inner').clientWidth - 2) {
+                    window.clearTimeout(this.resizeLagTimeout);
+                    this.updateSizing();
 
-                console.log(`entry with: ${width}; this.elemWidth: ${this.elemWidth}`);
-                this.updateSizing();
+                    this.resizeLagTimeout = window.setTimeout(this.updateSizing.bind(this), 100);
+                }
             }
         });
 
-        this.resizeObserver.observe(this.progressElem);
+        this.resizeObserver.observe(this.progressElem.querySelector('.progressBar_inner'));
     }
 
     updateSizing() {
-        this.elemWidth = this.progressElem.querySelector('.progressBar_inner').clientWidth;
-        this.calculateChars();
+            this.elemWidth = this.progressElem.querySelector('.progressBar_inner').clientWidth - 2;
+            this.calculateChars();
     }
     
     calculateChars() {
