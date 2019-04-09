@@ -1,6 +1,6 @@
 import '@ionic/core';
-
-import {Component, Prop, Element, State, Listen, Watch } from '@stencil/core';
+import {Component, Prop, Element, State, Watch } from '@stencil/core';
+import ResizeObserver from 'resize-observer-polyfill';
 
 const CHAR_WIDTH = 10.8;
 
@@ -19,14 +19,16 @@ export class ProgressBar {
     @State() currentChars: number;
     @State() isTapOverlayActive: boolean = false;
 
-    @Listen('window:resize')
-    handleResize() {
-        this.updateSizing();
-    }
-    @Listen('window:orientationChange')
-    handleOrientationChange() {
-        this.updateSizing();
-    }
+    private resizeObserver: ResizeObserver;
+
+    // @Listen('window:resize')
+    // handleResize() {
+    //     this.updateSizing();
+    // }
+    // @Listen('window:orientationChange')
+    // handleOrientationChange() {
+    //     this.updateSizing();
+    // }
 
     @Watch('totalValue')
     totalValueHandler() {
@@ -39,6 +41,17 @@ export class ProgressBar {
 
     componentDidLoad() {
         setTimeout(this.updateSizing.bind(this), 30);
+
+        this.resizeObserver = new ResizeObserver(entries => {
+            for (const entry of entries) {
+                const {width} = entry.contentRect;
+
+                console.log(`entry with: ${width}; this.elemWidth: ${this.elemWidth}`);
+                this.updateSizing();
+            }
+        });
+
+        this.resizeObserver.observe(this.progressElem);
     }
 
     updateSizing() {
