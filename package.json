@@ -1,7 +1,7 @@
 {
   "name": "selecquest",
   "private": true,
-  "version": "0.0.5",
+  "version": "0.0.6",
   "author": "Urtrope Designs",
   "description": "SelecQuest",
   "license": "MIT",
@@ -16,13 +16,13 @@
     "test.watch": "stencil test --spec --e2e --watch"
   },
   "dependencies": {
-    "@ionic/core": "^4.0.0",
-    "@stencil/core": "^0.17.0",
+    "@ionic/core": "^4.3.0",
+    "@stencil/core": "^0.18.1",
     "@stencil/sass": "^0.1.1",
-    "localforage": "^1.7.2",
+    "localforage": "^1.7.3",
     "localforage-cordovasqlitedriver": "^1.7.0",
     "npm": "^6.9.0",
-    "rxjs": "^5.5.6"
+    "rxjs": "^6.4.0"
   },
   "devDependencies": {
     "@types/jest": "23.3.13",

@@ -1,7 +1,4 @@
-import { Observable } from 'rxjs/Observable';
-import { timer } from 'rxjs/observable/timer';
-import { combineLatest } from 'rxjs/observable/combineLatest';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable, BehaviorSubject, timer, combineLatest } from 'rxjs';
 
 import { Task, AppState } from '../models/models';
 import { SetActiveTask, TaskCompleted, Action } from '../global/actions';

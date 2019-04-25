@@ -1,5 +1,5 @@
 import { AppState } from "../models/models";
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import { tap } from "rxjs/operators";
 
 import Storage from './storage';

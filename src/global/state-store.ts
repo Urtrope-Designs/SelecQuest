@@ -1,7 +1,5 @@
-import { Observable } from 'rxjs/Observable';
-import { zip } from 'rxjs/observable/zip';
-import { scan } from 'rxjs/operators/scan';
-import { map } from 'rxjs/operators/map';
+import { Observable, zip } from 'rxjs';
+import { scan, map } from 'rxjs/operators';
 import { Action, SetActiveTask, TaskCompleted, ChangeActiveTaskMode, ActionType, SetActiveHero } from './actions';
 import { Task, AppState, Hero } from '../models/models';
 import { wrapIntoBehavior } from './utils';
