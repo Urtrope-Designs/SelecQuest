@@ -79,6 +79,10 @@ export class CreateHeroScreen {
         return stats;
     }
 
+    private rerollName() {
+        this.handleChange('name', generateRandomName(this.selectedGameSetting));
+    }
+
     render() {
         return (
             <ion-page class='ion-page show-page'>
@@ -94,7 +98,7 @@ export class CreateHeroScreen {
                         <h3>Create a new Hero</h3>
                     </section>
                     <section>
-                        <div>
+                        <div class="nameRow">
                             <label>
                                 Name:
                                 <input
@@ -105,6 +109,7 @@ export class CreateHeroScreen {
                                     autocomplete="off" autocorrect="off" autocapitalize="off" spellCheck={false}
                                 />
                             </label>
+                            <button class="selected nameRerollButton" onClick={() => this.rerollName()}>Reroll</button>
                         </div>
                     </section>
                     <section>
