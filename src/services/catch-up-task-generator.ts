@@ -14,13 +14,13 @@ export class CatchUpTaskGenerator implements ITaskGenerator{
     }
 
     generateNextTask(state: AppState): Task {
-        if (!state.activeTask) {
+        if (!state.currentTask) {
             return null;
         }
 
         const nowTime = new Date().getTime();
         const oneWeekAgo = nowTime - (1000 * 60 * 60 * 24 * 7);
-        const startingPoint = Math.min(Math.max((state.activeTask.taskStartTime + state.activeTask.durationMs), oneWeekAgo), nowTime);
+        const startingPoint = Math.min(Math.max((state.currentTask.taskStartTime + state.currentTask.durationMs), oneWeekAgo), nowTime);
         const totalTimeToCatchUpMs = nowTime - startingPoint;
         const averageAdvancementTaskLength = 6.5;
         const isEnvironmentalLimitBroken = state.activeTaskMode == TaskMode.LOOT_MODE ? state.hero.lootEnvironmentalLimit >= state.hero.maxLootEnvironmentalLimit

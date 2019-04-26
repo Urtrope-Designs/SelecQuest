@@ -142,13 +142,13 @@ export class SqApp {
         }
     }
 
-    private isCatchUpTask(activeTask: Task): boolean {
+    private isCatchUpTask(currentTask: Task): boolean {
         const catchUpCutoff = new Date().getTime() - 200;
-        return activeTask.taskStartTime + activeTask.durationMs < catchUpCutoff;
+        return currentTask.taskStartTime + currentTask.durationMs < catchUpCutoff;
     }
 
     render() {
-        if (!this.state || !!this.state.activeTask && this.isCatchUpTask(this.state.activeTask)) {
+        if (!this.state || !!this.state.currentTask && this.isCatchUpTask(this.state.currentTask)) {
             return (
                 <div class="appLoading">
                     Loading...
@@ -175,7 +175,7 @@ export class SqApp {
 
 const DEFAULT_APP_STATE: AppState = {
     hero: null,
-    activeTask: null,
+    currentTask: null,
     hasActiveTask: false,
     activeTaskMode: TaskMode.LOOT_MODE,
 };

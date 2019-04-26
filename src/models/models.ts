@@ -181,7 +181,7 @@ export enum TrialMajorRewardType {
 /** Other :) */
 
 export interface AppState {
-    activeTask: Task;
+    currentTask: Task;
     hasActiveTask: boolean;
     hero: Hero;
     activeTaskMode: TaskMode;

@@ -2,14 +2,14 @@ import { Task, AppState } from "../models/models";
 import { TaskMode } from "../models/task-models";
 
 export enum ActionType {
-    SetActiveTask,
+    SetCurrentTask,
     TaskCompleted,
     ChangeActiveTaskMode,
     SetActiveHero,
 }
 
-export class SetActiveTask {
-    public actionType = ActionType.SetActiveTask;
+export class SetCurrentTask {
+    public actionType = ActionType.SetCurrentTask;
     constructor(public newTask: Task) {}
 }
 
@@ -29,7 +29,7 @@ export class SetActiveHero {
 }
 
 
-export type Action =    SetActiveTask |
+export type Action =    SetCurrentTask |
                         TaskCompleted |
                         ChangeActiveTaskMode |
                         SetActiveHero;

@@ -1,7 +1,7 @@
 import { Observable, BehaviorSubject, timer, combineLatest } from 'rxjs';
 
 import { Task, AppState } from '../models/models';
-import { SetActiveTask, TaskCompleted, Action } from '../global/actions';
+import { SetCurrentTask, TaskCompleted, Action } from '../global/actions';
 import { ITaskGenerator } from '../models/task-models';
 
 export class PlayTaskManager {
@@ -17,10 +17,10 @@ export class PlayTaskManager {
                 if (!!state && !!state.hero && !state.hasActiveTask) {
                     let nextTask = this.constructNextTask(state);
 
-                    this.taskAction$.next(new SetActiveTask(nextTask));
+                    this.taskAction$.next(new SetCurrentTask(nextTask));
                 }
-                if (!!state && !!state.activeTask && state.hasActiveTask && this.isTaskCompleted(state.activeTask)) {
-                    this.completeTask(state.activeTask);
+                if (!!state && !!state.currentTask && state.hasActiveTask && this.isTaskCompleted(state.currentTask)) {
+                    this.completeTask(state.currentTask);
                 }
             });
     }
@@ -36,7 +36,7 @@ export class PlayTaskManager {
         if (newTask == null) {
             newTask = this.playTaskGenerator.generateNextTask(state);
             const nowTime = new Date().getTime();
-            const startTime = !!state.activeTask ? Math.min(state.activeTask.taskStartTime + state.activeTask.durationMs, nowTime) : nowTime;
+            const startTime = !!state.currentTask ? Math.min(state.currentTask.taskStartTime + state.currentTask.durationMs, nowTime) : nowTime;
             newTask.taskStartTime = startTime;
         }
         

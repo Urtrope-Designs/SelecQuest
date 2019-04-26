@@ -42,10 +42,10 @@ export class PlayScreen {
 
     _updateTaskTimer() {
         clearInterval(this.activeTaskProgressInterval);
-        this.activeTaskProgressMs = new Date().getTime() - this.appState.activeTask.taskStartTime;
+        this.activeTaskProgressMs = new Date().getTime() - this.appState.currentTask.taskStartTime;
         this.activeTaskProgressInterval = window.setInterval((activeTask: Task) => {
             this.activeTaskProgressMs = new Date().getTime() - activeTask.taskStartTime;
-        }, 100, this.appState.activeTask);
+        }, 100, this.appState.currentTask);
     }
 
     componentWillLoad() {
@@ -565,17 +565,17 @@ export class PlayScreen {
                             ]
                         }
                         {
-                            !!this.appState.activeTask
+                            !!this.appState.currentTask
                             ? [
                                 <div 
                                     class="textRow textRow-scroll"
                                     onScroll={(e) => this._textRowScrollHandler(e)}
-                                >{this.appState.activeTask.description}&hellip;</div>,
+                                >{this.appState.currentTask.description}&hellip;</div>,
                                 <div class="indentRow">
                                     <sq-progress-bar
-                                        totalValue={this.appState.activeTask.durationMs}
+                                        totalValue={this.appState.currentTask.durationMs}
                                         currentValue={this.activeTaskProgressMs}
-                                        tapOverlayText={`${Math.floor(100 * this.activeTaskProgressMs / this.appState.activeTask.durationMs)}%`}
+                                        tapOverlayText={`${Math.floor(100 * this.activeTaskProgressMs / this.appState.currentTask.durationMs)}%`}
                                     ></sq-progress-bar>
                                 </div>
                             ]

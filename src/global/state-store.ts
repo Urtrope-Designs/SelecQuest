@@ -1,17 +1,17 @@
 import { Observable, zip } from 'rxjs';
 import { scan, map } from 'rxjs/operators';
-import { Action, SetActiveTask, TaskCompleted, ChangeActiveTaskMode, ActionType, SetActiveHero } from './actions';
+import { Action, SetCurrentTask, TaskCompleted, ChangeActiveTaskMode, ActionType, SetActiveHero } from './actions';
 import { Task, AppState, Hero } from '../models/models';
 import { wrapIntoBehavior } from './utils';
 import { TaskMode } from '../models/task-models';
 
-function activeTask(initState: Task, actions: Observable<Action>) {
+function currentTask(initState: Task, actions: Observable<Action>) {
     return actions.pipe(
         scan((state: Task, action: Action) => {
-            if (action.actionType === ActionType.SetActiveTask) {
-                return (action as SetActiveTask).newTask;
+            if (action.actionType === ActionType.SetCurrentTask) {
+                return (action as SetCurrentTask).newTask;
             } else if (action.actionType === ActionType.SetActiveHero) {
-                return (action as SetActiveHero).newGameState.activeTask;
+                return (action as SetActiveHero).newGameState.currentTask;
             } else {
                 return state;
             }
@@ -22,7 +22,7 @@ function activeTask(initState: Task, actions: Observable<Action>) {
 function hasActiveTask(initState: boolean, actions: Observable<Action>): Observable<boolean> {
     return actions.pipe(
         scan((state: boolean, action: Action) => {
-            if (action.actionType === ActionType.SetActiveTask) {
+            if (action.actionType === ActionType.SetCurrentTask) {
                 return true;
             } else if (action.actionType === ActionType.TaskCompleted) {
                 return false;
@@ -68,14 +68,14 @@ function activeTaskMode(initState: TaskMode, actions: Observable<Action>): Obser
 export function stateFn(initState: AppState, actions: Observable<Action>): Observable<AppState> {
     const combine = s => ({
         hero: s[0],
-        activeTask: s[1],
+        currentTask: s[1],
         hasActiveTask: s[2],
         activeTaskMode: s[3],
     });
     const appStateObs: Observable<AppState> = 
         zip(
             hero(initState.hero, actions),
-            activeTask(initState.activeTask, actions),
+            currentTask(initState.currentTask, actions),
             hasActiveTask(initState.hasActiveTask, actions),
             activeTaskMode(initState.activeTaskMode, actions),
         ).pipe(
