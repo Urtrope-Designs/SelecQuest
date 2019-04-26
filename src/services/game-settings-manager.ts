@@ -17,7 +17,8 @@ export class GameSettingsManager {
             messagingSenderId: "434339253679"
         };
         firebase.initializeApp(firebaseConfig);
-        this.db = firebase.firestore();
+        this.db = firebase.firestore()
+        this.db.enablePersistence();
     }
 
     async init(availableGameSettingFiles: string[]) {
