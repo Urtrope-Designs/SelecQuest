@@ -7,7 +7,7 @@ import { HeroInitData } from "../../models/hero-models";
 
 @Component({
     tag: 'sq-create-hero-screen',
-    styleUrl: 'create-hero-screen.scss',
+    styleUrl: 'create-hero-screen.css',
 })
 export class CreateHeroScreen {
     @Prop() gameSettingsMgr: GameSettingsManager;
@@ -162,12 +162,12 @@ export class CreateHeroScreen {
                             <button class="selected" disabled={this.rolledHero.statsIndex==0} onClick={() => this.unroll()}>Unroll</button>
                         </div>
                     </section>
-                    <section>
-                        <div style={{textAlign:'right'}}>
-                            <button class="selected" onClick={() => this.handleSubmit()}>Sold!</button>
-                        </div>
-                    </section>
                 </ion-content>
+                <ion-footer>
+                    <div class="soldButtonRow">
+                        <button class="selected" onClick={() => this.handleSubmit()}>Sold!</button>
+                    </div>
+                </ion-footer>
             </ion-page>
         );
     }
