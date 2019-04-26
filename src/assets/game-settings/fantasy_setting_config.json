@@ -242,11 +242,11 @@
         "Copperfunt",
         "Xexzyzx"
     ],
-    "randomNameParts": [
-        ["br", "cr", "dr", "fr", "gr", "j", "kr", "l", "m", "n", "pr", "r", "sh", "tr", "v", "wh", "x", "y", "z", ""],
-        ["a", "a", "e", "e", "i", "i", "o", "o", "u", "u", "ae", "ie", "oo", "ou"],
-        ["b", "ck", "d", "g", "k", "m", "n", "p", "t", "v", "x", "z"]
-    ],
+    "randomNameParts": {
+        "0": ["br", "cr", "dr", "fr", "gr", "j", "kr", "l", "m", "n", "pr", "r", "sh", "tr", "v", "wh", "x", "y", "z", ""],
+        "1": ["a", "a", "e", "e", "i", "i", "o", "o", "u", "u", "ae", "ie", "oo", "ou"],
+        "2": ["b", "ck", "d", "g", "k", "m", "n", "p", "t", "v", "x", "z"]
+    },
     "basicTaskTargets": [
         {
             "type": "location",

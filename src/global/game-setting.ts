@@ -61,7 +61,7 @@ export class GameSetting {
         this.prologueTasks = config.prologueTasks;
         this.adventureTransitionTaskDescriptions = config.adventureTransitionTaskDescriptions;
         this.staticNames = config.staticNames;
-        this.randomNameParts = config.randomNameParts;
+        this.randomNameParts = config.randomNameParts.map(partsList => partsList.split('|'));
         this.basicTaskTargets = config.basicTaskTargets;
 
         if (config.lootMajorRewardTypes.some(et => !config.lootMajorRewardMaterialTypes.some(emt => et.materialType === emt.name))) {

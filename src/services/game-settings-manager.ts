@@ -1,35 +1,37 @@
 import { GameSettingConfig } from "../models/game-setting-models";
 import { GameSetting } from "../global/game-setting";
+import firebase from 'firebase/app';
+import 'firebase/firestore';
 
 export class GameSettingsManager {
     private availableGameSettings: Map<string, GameSetting>;
+    private db: firebase.firestore.Firestore;
 
-    constructor() {}
+    constructor() {
+        const firebaseConfig = {
+            apiKey: "AIzaSyBw73BRk-qWeZm-fp3-Ijf7s0EemdaWuCQ",
+            authDomain: "selecquest.firebaseapp.com",
+            databaseURL: "https://selecquest.firebaseio.com",
+            projectId: "selecquest",
+            storageBucket: "selecquest.appspot.com",
+            messagingSenderId: "434339253679"
+        };
+        firebase.initializeApp(firebaseConfig);
+        this.db = firebase.firestore();
+    }
 
     async init(availableGameSettingFiles: string[]) {
         this.availableGameSettings = new Map<string, GameSetting>();
         for (let file of availableGameSettingFiles) {
-            const nextGameSetting = new GameSetting(await this.loadGameSettingFile(file + '.json'));
-            this.availableGameSettings.set(nextGameSetting.gameSettingId, nextGameSetting);
+            const fsDoc = await this.db.collection('game-settings').doc(file).get();
+            if (fsDoc.exists) {
+                const nextGameSettingConfig = fsDoc.data();
+                const nextGameSetting = new GameSetting((nextGameSettingConfig as GameSettingConfig));
+                this.availableGameSettings.set(nextGameSetting.gameSettingId, nextGameSetting);
+            }
         }
 
         return true;
-    }
-
-    private async loadGameSettingFile(filename: string): Promise<GameSettingConfig> {
-        return new Promise((resolve, reject) => {
-            let req = new XMLHttpRequest();
-            req.addEventListener('load', () => {
-                if (req.status === 200) {
-                    resolve(req.response);
-                } else {
-                    reject(req.status)
-                }
-            });
-            req.open('GET', '/assets/game-settings/' + filename);
-            req.responseType = 'json';
-            req.send();
-        })
     }
 
     getAvailableGameSettingNames(): string[] {

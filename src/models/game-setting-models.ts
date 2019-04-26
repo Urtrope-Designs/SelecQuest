@@ -16,7 +16,7 @@ export interface GameSettingConfig {
     prologueTasks: PrologueTask[];
     adventureTransitionTaskDescriptions: string[];
     staticNames: string[];
-    randomNameParts: string[][];
+    randomNameParts: string[];
     basicTaskTargets: TaskTarget[];
     lootMajorRewardTypes: LootMajorRewardType[];
     lootMajorRewardMaterialTypes: LootMajorRewardMaterialType[];

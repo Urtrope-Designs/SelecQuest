@@ -93,7 +93,8 @@ export class SqApp {
     async componentWillLoad() {
         // todo: probably need to pull available Game Setting names from gameDataMgr eventually
         this.gameSettingsMgr = new GameSettingsManager();
-        await this.gameSettingsMgr.init(['fantasy_setting_config']);
+        await this.gameSettingsMgr.init(['fantasy-setting']);
+        // await this.gameSettingsMgr.init(['fantasy_setting_config']);
 
         this.gameDataMgr = new GameDataManager();
         this.heroMgr = new HeroManager(this.gameSettingsMgr);
