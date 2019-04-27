@@ -18,7 +18,7 @@ export class GameSettingsManager {
         };
         firebase.initializeApp(firebaseConfig);
         this.db = firebase.firestore()
-        this.db.enablePersistence();
+        this.db.enablePersistence({experimentalTabSynchronization: true});
     }
 
     async init(availableGameSettingFiles: string[]) {
