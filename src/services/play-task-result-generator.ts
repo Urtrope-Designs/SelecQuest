@@ -1,5 +1,5 @@
 import { GameSettingsManager } from "./game-settings-manager";
-import { Adventure, HeroAbilityType, LootMajorRewardType, LootMajorReward } from "../models/hero-models";
+import { Adventure, HeroAbilityType, LootMajorReward } from "../models/hero-models";
 import { IS_DEBUG } from "../global/config";
 import { Hero, HeroModification, HeroModificationType, TrialMajorReward, TrialMajorRewardType, HeroTitlePosition, QuestMajorReward, HeroConnection, HeroStat } from "../models/models";
 import { randRange, randFromList, randFromListLow, capitalizeInitial, randFromListHigh, generateRandomName } from "../global/utils";
@@ -35,7 +35,13 @@ export class PlayTaskResultGenerator {
             },
         ];
         if (includeReward) {
-            results.push(randRange(0, 1) ? this.generateNewLootMajorRewardModification(currentHero.level, this.gameSettingsMgr.getGameSettingById(currentHero.gameSettingId)) : this.generateAbilityModification(currentHero));
+            results.push(randRange(0, 1)
+                ? this.generateNewLootMajorRewardModification(
+                        currentHero.level,
+                        currentHero.lootMajorRewards,
+                        this.gameSettingsMgr.getGameSettingById(currentHero.gameSettingId)
+                    )
+                : this.generateAbilityModification(currentHero));
         }
         return results;
     }
@@ -63,8 +69,8 @@ export class PlayTaskResultGenerator {
         return mod;
     }
     
-    public generateNewLootMajorRewardModification(requestedLevel: number, gameSetting: GameSetting): HeroModification {
-        const newLootMajorRewardData = this.generateRandomLootMajorReward(requestedLevel, gameSetting);
+    public generateNewLootMajorRewardModification(requestedLevel: number, existingRewards: LootMajorReward[], gameSetting: GameSetting): HeroModification {
+        const newLootMajorRewardData = this.generateRandomLootMajorReward(requestedLevel, existingRewards, gameSetting);
         
         const mod: HeroModification = {
             type: HeroModificationType.SET_LOOT_MAJOR_REWARD,
@@ -75,11 +81,10 @@ export class PlayTaskResultGenerator {
         return mod;
     }
     
-    private generateRandomLootMajorReward(requestedLevel: number, gameSetting: GameSetting): LootMajorReward {
-        // const gameSetting = this.gameSettingsMgr.getGameSettingById(hero.gameSettingId);
-        // const requestedLevel = hero.level;
-        //     randomly pick LootMajorReward type
-        const newLootMajorRewardType: LootMajorRewardType = randFromList(gameSetting.lootMajorRewardTypes);
+    private generateRandomLootMajorReward(requestedLevel: number, existingRewards: LootMajorReward[], gameSetting: GameSetting): LootMajorReward {
+        //     pick LootMajorReward type, favoring types with lower "effective levels"
+        const newLootMajorRewardTypeName: string = randFromListLow(existingRewards.sort((a, b) => a.effectiveLevel || 0 - b.effectiveLevel || 0).map(r => r.type));
+        const newLootMajorRewardType = gameSetting.lootMajorRewardTypes.find(t => t.name == newLootMajorRewardTypeName);
         // 2. randomly pick 5 items of selected LootMajorReward type, & pick the one closest to hero level
         const targetList = gameSetting.lootMajorRewardMaterialTypes.find(emt => emt.name == newLootMajorRewardType.materialType).options;
         
@@ -119,6 +124,7 @@ export class PlayTaskResultGenerator {
         const newLootMajorReward: LootMajorReward = {
             type: newLootMajorRewardType.name,
             description: newLootMajorRewardDescription,
+            effectiveLevel: requestedLevel,
         };
     
         return newLootMajorReward;

@@ -36,4 +36,5 @@ export interface LootMajorRewardType {
 export interface LootMajorReward {
     type: string,
     description: string,
+    effectiveLevel: number,
 };

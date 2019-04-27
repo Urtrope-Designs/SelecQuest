@@ -412,7 +412,7 @@ export class PlayTaskGenerator implements ITaskGenerator{
         generateTask: (state: AppState) => {
             const gameSetting = this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId);
             const rewardLevel = Math.max(Math.min(PlayTaskGenerator.randomizeTargetLevel(state.hero.level), state.hero.level), state.hero.level-4, 1);
-            const newLootMajorRewardMod = this.taskResultGenerator.generateNewLootMajorRewardModification(rewardLevel, gameSetting);
+            const newLootMajorRewardMod = this.taskResultGenerator.generateNewLootMajorRewardModification(rewardLevel, state.hero.lootMajorRewards, gameSetting);
             const modifications = [
                 newLootMajorRewardMod,
                 {

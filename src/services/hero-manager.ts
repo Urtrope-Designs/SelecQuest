@@ -31,7 +31,7 @@ export class HeroManager {
             maxMagicStat: {name: gameSetting.magicStatName, value: randRange(0, 7) + Math.floor(heroling.stats[gameSetting.magicBaseStatIndex].value / 6)},
             currentXp: 0,
             abilities: gameSetting.abilityTypes.map(aT => {return {name: aT.displayName, received: []}}),
-            lootMajorRewards: gameSetting.lootMajorRewardTypes.map(rt => ({type: rt.name, description: ''})),
+            lootMajorRewards: gameSetting.lootMajorRewardTypes.map(rt => ({type: rt.name, description: '', effectiveLevel: 0})),
             trialMajorRewards: gameSetting.trialMajorRewardTypes.map(rt => ({type: rt, received: []})),
             questMajorRewards: [],
             get maxLootBuildUp() {return this.stats[gameSetting.taskModeData[TaskMode.LOOT_MODE].buildUpLimitBaseStatIndex].value + 10},
@@ -142,6 +142,7 @@ export class HeroManager {
                             return r.type == reward.type;
                         })
                         existingReward.description = reward.description;
+                        existingReward.effectiveLevel = reward.effectiveLevel;
                         newHero.latestModifications.push({attributeName: result.attributeName, data: reward.type});
                     })
                     break;
