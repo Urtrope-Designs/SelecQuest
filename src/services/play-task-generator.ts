@@ -222,7 +222,7 @@ export class PlayTaskGenerator implements ITaskGenerator{
 
 
     static getTradeInCostForLevel(level: number): number {
-        return IS_DEBUG ? (10 * level + 4) : (5 * level**2 + 10 * level + 20);
+        return IS_DEBUG ? (10 * level + 4) : (2 * level**2 + 12 * level + 30);
     }
 
     private generateResultingHero(baseHero: Hero, modifications: HeroModification[]): Hero {
@@ -411,7 +411,8 @@ export class PlayTaskGenerator implements ITaskGenerator{
         },
         generateTask: (state: AppState) => {
             const gameSetting = this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId);
-            const newLootMajorRewardMod = this.taskResultGenerator.generateNewLootMajorRewardModification(state.hero);
+            const rewardLevel = Math.max(Math.min(PlayTaskGenerator.randomizeTargetLevel(state.hero.level), state.hero.level), state.hero.level-4, 1);
+            const newLootMajorRewardMod = this.taskResultGenerator.generateNewLootMajorRewardModification(rewardLevel, gameSetting);
             const modifications = [
                 newLootMajorRewardMod,
                 {

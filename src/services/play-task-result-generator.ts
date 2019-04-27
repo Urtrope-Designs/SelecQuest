@@ -35,7 +35,7 @@ export class PlayTaskResultGenerator {
             },
         ];
         if (includeReward) {
-            results.push(randRange(0, 1) ? this.generateNewLootMajorRewardModification(currentHero) : this.generateAbilityModification(currentHero));
+            results.push(randRange(0, 1) ? this.generateNewLootMajorRewardModification(currentHero.level, this.gameSettingsMgr.getGameSettingById(currentHero.gameSettingId)) : this.generateAbilityModification(currentHero));
         }
         return results;
     }
@@ -63,8 +63,8 @@ export class PlayTaskResultGenerator {
         return mod;
     }
     
-    public generateNewLootMajorRewardModification(hero: Hero): HeroModification {
-        const newLootMajorRewardData = this.generateRandomLootMajorReward(hero);
+    public generateNewLootMajorRewardModification(requestedLevel: number, gameSetting: GameSetting): HeroModification {
+        const newLootMajorRewardData = this.generateRandomLootMajorReward(requestedLevel, gameSetting);
         
         const mod: HeroModification = {
             type: HeroModificationType.SET_LOOT_MAJOR_REWARD,
@@ -75,9 +75,9 @@ export class PlayTaskResultGenerator {
         return mod;
     }
     
-    private generateRandomLootMajorReward(hero: Hero): LootMajorReward {
-        const gameSetting = this.gameSettingsMgr.getGameSettingById(hero.gameSettingId);
-        const targetLevel = hero.level;
+    private generateRandomLootMajorReward(requestedLevel: number, gameSetting: GameSetting): LootMajorReward {
+        // const gameSetting = this.gameSettingsMgr.getGameSettingById(hero.gameSettingId);
+        // const requestedLevel = hero.level;
         //     randomly pick LootMajorReward type
         const newLootMajorRewardType: LootMajorRewardType = randFromList(gameSetting.lootMajorRewardTypes);
         // 2. randomly pick 5 items of selected LootMajorReward type, & pick the one closest to hero level
@@ -86,13 +86,13 @@ export class PlayTaskResultGenerator {
         let material = randFromList(targetList);
         for (let i = 0; i <= 5; i++) {
             let compare = randFromList(targetList);
-            if (Math.abs(targetLevel - material.baseLevel) > Math.abs(targetLevel - compare.baseLevel)) {
+            if (Math.abs(requestedLevel - material.baseLevel) > Math.abs(requestedLevel - compare.baseLevel)) {
                 material = compare;
             }
         }
     
         // 3. add up to 2 modifiers (no duplicates) to bring quality of selected item closer to hero level (don't allow it to go over)
-        let qualityDifference = targetLevel - material.baseLevel;
+        let qualityDifference = requestedLevel - material.baseLevel;
         let newLootMajorRewardDescription = material.name;
         const modifierList = gameSetting.lootMajorRewardModifierTypes.find(emt => emt.name === material.modifierType).options
             .filter(i => qualityDifference > 0 ? i.levelModifier >= 0 : i.levelModifier < 0);
