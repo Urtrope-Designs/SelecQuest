@@ -83,7 +83,8 @@ export class PlayTaskResultGenerator {
     
     private generateRandomLootMajorReward(requestedLevel: number, existingRewards: LootMajorReward[], gameSetting: GameSetting): LootMajorReward {
         //     pick LootMajorReward type, favoring types with lower "effective levels"
-        const newLootMajorRewardTypeName: string = randFromListLow(existingRewards.sort((a, b) => a.effectiveLevel || 0 - b.effectiveLevel || 0).map(r => r.type));
+        const sortedExistingRewards = [...existingRewards].sort((a, b) => a.effectiveLevel || 0 - b.effectiveLevel || 0);
+        const newLootMajorRewardTypeName: string = randFromListLow(sortedExistingRewards.map(r => r.type));
         const newLootMajorRewardType = gameSetting.lootMajorRewardTypes.find(t => t.name == newLootMajorRewardTypeName);
         // 2. randomly pick 5 items of selected LootMajorReward type, & pick the one closest to hero level
         const targetList = gameSetting.lootMajorRewardMaterialTypes.find(emt => emt.name == newLootMajorRewardType.materialType).options;
