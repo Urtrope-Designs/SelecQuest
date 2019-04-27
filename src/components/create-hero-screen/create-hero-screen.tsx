@@ -92,11 +92,13 @@ export class CreateHeroScreen {
                         <h1>SelecQuest</h1>
                         <hr/>
                     </div>
+                    <h3>Create a new Hero</h3>
+                    <p class="niceText">
+                        Welcome to SelecQuest, with three adventuring modes! Roll up your hero below and get started. Download in the app store or save to your device's desktop for a fully immersive mobile experience!
+                    </p>
+                    <hr/>
                 </ion-header>
                 <ion-content>
-                    <section>
-                        <h3>Create a new Hero</h3>
-                    </section>
                     <section>
                         <div class="nameRow">
                             <label>
@@ -169,6 +171,7 @@ export class CreateHeroScreen {
                     </section>
                 </ion-content>
                 <ion-footer>
+                    <hr/>
                     <div class="soldButtonRow">
                         <button class="selected" onClick={() => this.handleSubmit()}>Sold!</button>
                     </div>

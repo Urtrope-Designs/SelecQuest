@@ -18,6 +18,10 @@ html {
     }
 }
 
+* {
+    -webkit-overflow-scrolling: auto;
+}
+
 body {
     margin: 0px;
     padding: 0px;
@@ -70,6 +74,11 @@ p:first-child {
 p, button, div {
     font-size: 1rem;
 }
+
+p.niceText {
+    line-height: .9;
+}
+
 button {
     padding: .4rem;
     line-height: initial;
