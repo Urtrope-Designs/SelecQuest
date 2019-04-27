@@ -11,7 +11,12 @@ function currentTask(initState: Task, actions: Observable<Action>) {
             if (action.actionType === ActionType.SetCurrentTask) {
                 return (action as SetCurrentTask).newTask;
             } else if (action.actionType === ActionType.SetActiveHero) {
-                return (action as SetActiveHero).newGameState.currentTask;
+                // bypass "catch-up" mode when switching active heroes
+                const newHeroCurrentTask = (action as SetActiveHero).newGameState.currentTask;
+                if (!!newHeroCurrentTask) {
+                    newHeroCurrentTask.taskStartTime = Math.max(new Date().getTime() - newHeroCurrentTask.durationMs, newHeroCurrentTask.taskStartTime || 0);
+                }
+                return newHeroCurrentTask;
             } else {
                 return state;
             }
