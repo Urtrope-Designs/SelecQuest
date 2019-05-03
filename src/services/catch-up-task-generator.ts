@@ -3,6 +3,7 @@ import { AppState, Task, Hero, HeroModification, HeroModificationType } from "..
 import { HeroManager } from "./hero-manager";
 import { PlayTaskResultGenerator } from "./play-task-result-generator";
 import { GameSettingsManager } from "./game-settings-manager";
+import { PlayTaskGenerator } from "./play-task-generator";
 
 export class CatchUpTaskGenerator implements ITaskGenerator{
 
@@ -41,17 +42,17 @@ export class CatchUpTaskGenerator implements ITaskGenerator{
     private determineNearestMilestone(state: AppState, totalTimeToCatchUpMs: number, buildUpLimit: number, averageAdvancementTaskLength: number, isEnvironmentalLimitBroken: boolean): { nearestMilestone: CatchUpMilestones, cyclesToNextMilestone: number, timeToNextMilestoneMs: number } {
         let cyclesToNextMilestone = this.determineCyclesToCatchUp(totalTimeToCatchUpMs, state.activeTaskMode, buildUpLimit, averageAdvancementTaskLength);
         let nearestMilestone = CatchUpMilestones.CATCH_UP;
-
-        const cyclesToLevelUp = this.determineCyclesToLevelUp(state.hero, buildUpLimit, averageAdvancementTaskLength, isEnvironmentalLimitBroken);
-        if (cyclesToLevelUp < cyclesToNextMilestone) {
-            cyclesToNextMilestone = cyclesToLevelUp;
-            nearestMilestone = CatchUpMilestones.LEVEL_UP;
-        }
         
         const cyclesToNextAdventure = this.determineCyclesToAdventureComplete(state.hero, buildUpLimit, averageAdvancementTaskLength, isEnvironmentalLimitBroken);
         if (cyclesToNextAdventure < cyclesToNextMilestone) {
             cyclesToNextMilestone = cyclesToNextAdventure;
             nearestMilestone = CatchUpMilestones.COMPLETE_ADVENTURE;
+        }
+        
+        const cyclesToLevelUp = this.determineCyclesToLevelUp(state.hero, buildUpLimit, averageAdvancementTaskLength, isEnvironmentalLimitBroken);
+        if (cyclesToLevelUp < cyclesToNextMilestone) {
+            cyclesToNextMilestone = cyclesToLevelUp;
+            nearestMilestone = CatchUpMilestones.LEVEL_UP;
         }
         
         if (!isEnvironmentalLimitBroken) {
@@ -64,7 +65,7 @@ export class CatchUpTaskGenerator implements ITaskGenerator{
 
         // get us closer to catching up without going over
         if (nearestMilestone == CatchUpMilestones.CATCH_UP) {
-            cyclesToNextMilestone = cyclesToNextMilestone - 2;
+            cyclesToNextMilestone -= 2;
         }
 
         const timeToNextMilestoneMs = this.determineTotalTimeFromCyclesMs(cyclesToNextMilestone, state.activeTaskMode, buildUpLimit, averageAdvancementTaskLength);
@@ -103,7 +104,7 @@ export class CatchUpTaskGenerator implements ITaskGenerator{
     }
     
     private determineCyclesToAdventureComplete(hero: Hero, buildUpLimit: number, averageAdvancementTaskLength: number, isEnvironmentalLimitBroken: boolean): number {
-        const apNeededToCompleteAdventure = hero.currentAdventure.progressRequired;
+        const apNeededToCompleteAdventure = hero.currentAdventure.progressRequired - hero.adventureProgress;
         const apGainedPerCycle = this.determineApGainedPerCycle(buildUpLimit, averageAdvancementTaskLength, isEnvironmentalLimitBroken);
 
         if (apNeededToCompleteAdventure < apGainedPerCycle) {
@@ -162,7 +163,8 @@ export class CatchUpTaskGenerator implements ITaskGenerator{
 
         const catchUpTaskDescription = CatchUpMilestones[nearestMilestone] + ' Catchup';
 
-        const prologueAdventureName = this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId).prologueAdventureName;
+        const curGameSetting = this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId)
+        const prologueAdventureName = curGameSetting.prologueAdventureName;
         if (state.hero.currentAdventure.name == prologueAdventureName) {
             const actualDurationSeconds = state.hero.currentAdventure.progressRequired;
             const modifications = this.taskResultGenerator.generateNewAdventureResults(state.hero, false);
@@ -195,7 +197,7 @@ export class CatchUpTaskGenerator implements ITaskGenerator{
         const activevModeEnvironmentalLimitAttributeName = allEnvironmentalLimitAttributeNames[state.activeTaskMode];
         const offModeEnvironmentalLimitAttributeNames = allEnvironmentalLimitAttributeNames.filter(n => n != activevModeEnvironmentalLimitAttributeName);
 
-        const currencyGained = buildUpLimit;
+        const currencyGained = buildUpLimit * state.hero.level * cyclesToNextMilestone;
 
         const allBuildUpRewardAttributeNames = [
             'lootBuildUpRewards',
@@ -247,7 +249,32 @@ export class CatchUpTaskGenerator implements ITaskGenerator{
             },
         ];
 
-        const resultingHero = this.generateResultingHero(state.hero, modifications);
+        let resultingHero = this.generateResultingHero(state.hero, modifications);
+        console.log('doing a catchup task', nearestMilestone, resultingHero);
+
+        const minCurrency = PlayTaskGenerator.getTradeInCostForLevel(state.hero.level);
+        while ((resultingHero.currency[state.activeTaskMode] - resultingHero.spentCurrency[state.activeTaskMode]) >= minCurrency) {
+            let rewardLevel = state.hero.level;
+            let newMajorRewardMod;
+            if (state.activeTaskMode == TaskMode.LOOT_MODE) {
+                rewardLevel = Math.max(Math.min(PlayTaskGenerator.randomizeTargetLevel(rewardLevel), rewardLevel), rewardLevel-4, 1);
+                newMajorRewardMod = this.taskResultGenerator.generateNewLootMajorRewardModification(rewardLevel, resultingHero.lootMajorRewards, curGameSetting);
+            } else if (state.activeTaskMode == TaskMode.TRIAL_MODE) {
+                newMajorRewardMod = this.taskResultGenerator.generateNewTrialMajorRewardModification(resultingHero);
+            } else {
+                newMajorRewardMod = this.taskResultGenerator.generateNewQuestMajorRewardModification(resultingHero);
+            }
+            const modifications = [
+                newMajorRewardMod,
+                {
+                    type: HeroModificationType.ADD_CURRENCY,
+                    attributeName: 'spentCurrency',
+                    data: [{index: state.activeTaskMode, value: PlayTaskGenerator.getTradeInCostForLevel(rewardLevel)}],
+                },
+            ];
+            resultingHero = this.generateResultingHero(resultingHero, modifications);
+            console.log('buying gear!', resultingHero);
+        }
 
         const newTask: Task = {
             description: catchUpTaskDescription,

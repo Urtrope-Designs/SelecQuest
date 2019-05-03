@@ -222,7 +222,7 @@ export class PlayTaskGenerator implements ITaskGenerator{
 
 
     static getTradeInCostForLevel(level: number): number {
-        return IS_DEBUG ? (10 * level + 4) : (2.5 * level**2 + 15 * level + 30);
+        return IS_DEBUG ? (10 * level + 4) : Math.floor(3 * level**2 + 15 * level + 30);
     }
 
     private generateResultingHero(baseHero: Hero, modifications: HeroModification[]): Hero {
@@ -418,7 +418,7 @@ export class PlayTaskGenerator implements ITaskGenerator{
                 {
                     type: HeroModificationType.ADD_CURRENCY,
                     attributeName: 'spentCurrency',
-                    data: [{index: TaskMode.LOOT_MODE, value: PlayTaskGenerator.getTradeInCostForLevel(state.hero.level)}],
+                    data: [{index: TaskMode.LOOT_MODE, value: PlayTaskGenerator.getTradeInCostForLevel(rewardLevel)}],
                 },
             ];
             const updatedHero = this.generateResultingHero(state.hero, modifications);

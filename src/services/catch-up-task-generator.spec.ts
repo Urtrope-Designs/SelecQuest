@@ -3,12 +3,21 @@ import { PlayTaskResultGenerator } from './play-task-result-generator';
 import { HeroManager } from './hero-manager';
 import { GameSettingsManager } from './game-settings-manager';
 
-const taskResultGeneratorStub = {} as PlayTaskResultGenerator;
-const heroMgrStub = {} as HeroManager;
-const gameSettingsMgrStub = {} as GameSettingsManager;
+// TODO: need to mock everything needed from GameSettingConfig in catch-up tasks
+const gameSettingsMgrStub: GameSettingsManager = {
+    getGameSettingById: () => {return {prologueAdventureName: 'testPrologueAdventureName'}},
+} as any;
+const taskResultGeneratorStub = new PlayTaskResultGenerator(gameSettingsMgrStub);
+const heroMgrStub = new HeroManager(gameSettingsMgrStub);
+
+// TODO: need to mock AppState object...
 
 describe('CatchUpTaskGenerator', () => {
-    it('should build', () => {
+    test('should build', () => {
         expect(new CatchUpTaskGenerator(taskResultGeneratorStub, heroMgrStub, gameSettingsMgrStub)).toBeTruthy();
     })
+
+    // test('should test for major rewards with every catchup task', () => {
+    //     const cutg = new CatchUpTaskGenerator(taskResultGeneratorStub, heroMgrStub, gameSettingsMgrStub);
+    // })
 })
