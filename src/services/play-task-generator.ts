@@ -222,7 +222,7 @@ export class PlayTaskGenerator implements ITaskGenerator{
 
 
     static getTradeInCostForLevel(level: number): number {
-        return IS_DEBUG ? (10 * level + 4) : Math.floor(3 * level**2 + 15 * level + 30);
+        return IS_DEBUG ? (10 * level + 4) : Math.floor(5 * level**2 + 10 * level + 20);
     }
 
     private generateResultingHero(baseHero: Hero, modifications: HeroModification[]): Hero {
