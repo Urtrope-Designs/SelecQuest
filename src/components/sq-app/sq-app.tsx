@@ -15,6 +15,7 @@ import { PlayTaskResultGenerator } from '../../services/play-task-result-generat
 import { TaskMode, ITaskGenerator } from '../../models/task-models';
 import { PlayTaskManager } from '../../services/play-task-manager';
 import { CatchUpTaskGenerator } from '../../services/catch-up-task-generator';
+import { GameDataTransformManager } from '../../services/game-data-transform-manager';
 
 @Component({
     tag: 'sq-app',
@@ -27,6 +28,7 @@ export class SqApp {
     
     private taskMgr: PlayTaskManager;
     private gameDataMgr: GameDataManager;
+    private gameDataTransformMgr: GameDataTransformManager;
     private heroMgr: HeroManager;
     private gameSettingsMgr: GameSettingsManager;
     private playTaskGenerator: ITaskGenerator;
@@ -96,6 +98,7 @@ export class SqApp {
         await this.gameSettingsMgr.init(['fantasy-setting']);
 
         this.gameDataMgr = new GameDataManager();
+        this.gameDataTransformMgr = new GameDataTransformManager();
         this.heroMgr = new HeroManager(this.gameSettingsMgr);
         this.taskResultGenerator = new PlayTaskResultGenerator(this.gameSettingsMgr);
         this.playTaskGenerator = new PlayTaskGenerator(this.taskResultGenerator, this.heroMgr, this.gameSettingsMgr);
@@ -109,6 +112,7 @@ export class SqApp {
                             if (state == null) {
                                 return DEFAULT_APP_STATE;
                             } else {
+                                state = this.gameDataTransformMgr.transformGameData(state);
                                 return state;
                             }
                         });
