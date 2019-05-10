@@ -1,7 +1,7 @@
 {
   "name": "selecquest",
   "private": true,
-  "version": "0.0.6",
+  "version": "0.1.0",
   "author": "Urtrope Designs",
   "description": "SelecQuest",
   "license": "MIT",
@@ -16,6 +16,9 @@
     "test.watch": "stencil test --spec --e2e --watch"
   },
   "dependencies": {
+    "@capacitor/android": "^1.0.0-beta.22",
+    "@capacitor/cli": "^1.0.0-beta.22",
+    "@capacitor/core": "^1.0.0-beta.22",
     "@ionic/core": "^4.3.0",
     "@stencil/core": "^0.18.1",
     "@stencil/sass": "^0.1.1",

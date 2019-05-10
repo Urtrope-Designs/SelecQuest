@@ -25,8 +25,6 @@ html {
 body {
     margin: 0px;
     padding: 0px;
-    font-family: 'bitwise', sans-serif;         /* leave uncommented so we can change on fly in browser */
-    font-family: 'whitrabt', sans-serif;
     font-family: '7_12', monospace;
     color: var(--sq-color-primary);
     text-shadow: 0 0 .5rem;
@@ -40,8 +38,6 @@ ion-app {
 }
 
 h1, h2, h3, h4, h5, p, button, div, input {
-    font-family: 'bitwise', sans-serif;
-    font-family: 'whitrabt', sans-serif;
     font-family: '7_12', monospace;
     text-shadow: 0 0 .5rem;
     letter-spacing: .1rem;
@@ -187,8 +183,6 @@ tr, .textRow {
     border: 2px solid;
     min-height: 7rem;
     box-shadow: 0 0 .4rem var(--sq-color-primary), inset 0 0 .4rem var(--sq-color-primary);
-    font-family: 'bitwise', sans-serif;
-    font-family: 'whitrabt', sans-serif;
     font-family: '7_12', monospace;
 }
 
@@ -248,14 +242,6 @@ ion-footer {
     margin-left: auto;
 }
 
-@font-face {
-    font-family: 'bitwise';
-    src: url('/assets/fonts/bitwise.woff');
-}
-@font-face {
-    font-family: 'whitrabt';
-    src: url('/assets/fonts/whitrabt.woff');
-}
 @font-face {
     font-family: '7_12';
     src: url('/assets/fonts/7_12-Serif.woff');
