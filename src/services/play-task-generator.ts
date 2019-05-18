@@ -9,6 +9,13 @@ import { PrologueTask } from "../models/hero-models";
 import { GameSetting } from "../global/game-setting";
 
 export class PlayTaskGenerator implements ITaskGenerator{
+    private static BASIC_MAJOR_REWARD_COST_ALGO = (level) => {return Math.floor(5 * level**2 + 10 * level + 20)};
+    private static QUEST_MAJOR_REWARD_COST_ALGO = (level) => {return Math.floor(4 * level**2 + 12 * level + 30)};
+    static majorRewardAlgorithms = [
+        PlayTaskGenerator.BASIC_MAJOR_REWARD_COST_ALGO,
+        PlayTaskGenerator.BASIC_MAJOR_REWARD_COST_ALGO,
+        PlayTaskGenerator.QUEST_MAJOR_REWARD_COST_ALGO,
+    ]
 
     constructor(
         private taskResultGenerator: PlayTaskResultGenerator,
@@ -221,8 +228,8 @@ export class PlayTaskGenerator implements ITaskGenerator{
     }
 
 
-    static getTradeInCostForLevel(level: number): number {
-        return IS_DEBUG ? (10 * level + 4) : Math.floor(5 * level**2 + 10 * level + 20);
+    static getTradeInCostForLevel(taskMode: TaskMode, level: number): number {
+        return IS_DEBUG ? (10 * level + 4) : PlayTaskGenerator.majorRewardAlgorithms[taskMode](level);
     }
 
     private generateResultingHero(baseHero: Hero, modifications: HeroModification[]): Hero {
@@ -320,7 +327,7 @@ export class PlayTaskGenerator implements ITaskGenerator{
             if (!!sellItem) {
                 const isMarketSaturated = state.hero.lootEnvironmentalLimit >= state.hero.maxLootEnvironmentalLimit;
                 const sellQuantity = sellItem.quantity;
-                const sellValue = Math.ceil((sellQuantity * sellItem.value * state.hero.level) / (isMarketSaturated ? 2 : 1));
+                const sellValue = (sellQuantity * sellItem.value * state.hero.level) / (isMarketSaturated ? 2 : 1);
                 let lootData = [
                     {
                         name: sellItem.name,
@@ -406,7 +413,7 @@ export class PlayTaskGenerator implements ITaskGenerator{
             const currentEncumbrance = state.hero.lootBuildUpRewards.reduce((prevVal, curVal) => {
                 return prevVal + curVal.quantity;
             }, 0);
-            const minGold = PlayTaskGenerator.getTradeInCostForLevel(state.hero.level);
+            const minGold = PlayTaskGenerator.getTradeInCostForLevel(state.activeTaskMode, state.hero.level);
             return currentEncumbrance <= 0 && (state.hero.currency[TaskMode.LOOT_MODE] - state.hero.spentCurrency[TaskMode.LOOT_MODE]) >= minGold;
         },
         generateTask: (state: AppState) => {
@@ -418,7 +425,7 @@ export class PlayTaskGenerator implements ITaskGenerator{
                 {
                     type: HeroModificationType.ADD_CURRENCY,
                     attributeName: 'spentCurrency',
-                    data: [{index: TaskMode.LOOT_MODE, value: PlayTaskGenerator.getTradeInCostForLevel(rewardLevel)}],
+                    data: [{index: TaskMode.LOOT_MODE, value: PlayTaskGenerator.getTradeInCostForLevel(state.activeTaskMode, rewardLevel)}],
                 },
             ];
             const updatedHero = this.generateResultingHero(state.hero, modifications);
@@ -516,7 +523,7 @@ export class PlayTaskGenerator implements ITaskGenerator{
             if (!!boastItem) {
                 const isFatigued = state.hero.trialEnvironmentalLimit >= state.hero.maxTrialEnvironmentalLimit;
                 const boastQuantity = boastItem.quantity;
-                const renownValue = Math.ceil((boastQuantity * boastItem.value * state.hero.level) / (isFatigued ? 2 : 1));
+                const renownValue = (boastQuantity * boastItem.value * state.hero.level) / (isFatigued ? 2 : 1);
                 let trialBuildUpRewards = [
                     {
                         name: boastItem.name,
@@ -602,7 +609,7 @@ export class PlayTaskGenerator implements ITaskGenerator{
             const currentTrialBuildUp = state.hero.trialBuildUpRewards.reduce((prevVal, curVal) => {
                 return prevVal + curVal.quantity;
             }, 0);
-            return currentTrialBuildUp <= 0 && (state.hero.currency[TaskMode.TRIAL_MODE] - state.hero.spentCurrency[TaskMode.TRIAL_MODE]) >= PlayTaskGenerator.getTradeInCostForLevel(state.hero.level);
+            return currentTrialBuildUp <= 0 && (state.hero.currency[TaskMode.TRIAL_MODE] - state.hero.spentCurrency[TaskMode.TRIAL_MODE]) >= PlayTaskGenerator.getTradeInCostForLevel(state.activeTaskMode, state.hero.level);
         },
         generateTask: (state: AppState) => {
             const gameSetting = this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId);
@@ -612,7 +619,7 @@ export class PlayTaskGenerator implements ITaskGenerator{
                 {
                     type: HeroModificationType.ADD_CURRENCY,
                     attributeName: 'spentCurrency',
-                    data: [{index: TaskMode.TRIAL_MODE, value: PlayTaskGenerator.getTradeInCostForLevel(state.hero.level)}],
+                    data: [{index: TaskMode.TRIAL_MODE, value: PlayTaskGenerator.getTradeInCostForLevel(state.activeTaskMode, state.hero.level)}],
                 },
             ];
             const updatedHero = this.generateResultingHero(state.hero, modifications);
@@ -688,7 +695,7 @@ export class PlayTaskGenerator implements ITaskGenerator{
             const leadToFollow = state.hero.questBuildUpRewards[0];
             if (!!leadToFollow) {
                 const isOverexposed = state.hero.questEnvironmentalLimit >= state.hero.maxQuestEnvironmentalLimit;
-                const reputationValue = Math.ceil((leadToFollow.value * state.hero.level) / (isOverexposed ? 2 : 1));
+                const reputationValue = (leadToFollow.value * state.hero.level) / (isOverexposed ? 2 : 1);
                 const durationSeconds = randRange(5, 8);
                 const modifications: HeroModification[] = [
                     {
@@ -780,7 +787,7 @@ export class PlayTaskGenerator implements ITaskGenerator{
     
     earnQuestMajorRewardTaskGenerator: TaskGeneratorAlgorithm = {
         shouldRun: (state: AppState) => {
-            return state.hero.questBuildUpRewards.length <= 0 && (state.hero.currency[TaskMode.QUEST_MODE] - state.hero.spentCurrency[TaskMode.QUEST_MODE]) >= PlayTaskGenerator.getTradeInCostForLevel(state.hero.level);
+            return state.hero.questBuildUpRewards.length <= 0 && (state.hero.currency[TaskMode.QUEST_MODE] - state.hero.spentCurrency[TaskMode.QUEST_MODE]) >= PlayTaskGenerator.getTradeInCostForLevel(state.activeTaskMode, state.hero.level);
         },
         generateTask: (state: AppState) => {
             const gameSetting = this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId);
@@ -790,7 +797,7 @@ export class PlayTaskGenerator implements ITaskGenerator{
                 {
                     type: HeroModificationType.ADD_CURRENCY,
                     attributeName: 'spentCurrency',
-                    data: [{index: TaskMode.QUEST_MODE, value: PlayTaskGenerator.getTradeInCostForLevel(state.hero.level)}],
+                    data: [{index: TaskMode.QUEST_MODE, value: PlayTaskGenerator.getTradeInCostForLevel(state.activeTaskMode, state.hero.level)}],
                 },
             ];
             const updatedHero = this.generateResultingHero(state.hero, modifications);

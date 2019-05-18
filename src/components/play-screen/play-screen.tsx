@@ -117,7 +117,7 @@ export class PlayScreen {
                 ? hero.currency[taskMode]
                 : hero.currency[taskMode] - this.appState.hero.spentCurrency[taskMode];
 
-        return currencyDisplay;
+        return Math.floor(currencyDisplay);
     }
 
     _textRowScrollHandler(ev: Event) {
@@ -368,7 +368,7 @@ export class PlayScreen {
                                             : this.appState.hero.questMajorRewards
                                                 .map((reward: QuestMajorReward) => 
                                                     <tr {...this.findUpdate('questMajorRewards', (data: QuestMajorReward) => data.connection != null && data.groupName == reward.groupName) ? {class: 'textRow-highlight'} : {}}>
-                                                        <td>{reward.connection.personName}, the {reward.connection.personTitle}</td>
+                                                        <td>{reward.connection.personName}, {reward.connection.personTitle}</td>
                                                         <td>{capitalizeInitial(reward.groupName)}</td>
                                                     </tr>
                                                 )
