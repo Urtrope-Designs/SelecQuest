@@ -2,7 +2,7 @@ import { Component, Prop, State, Event, EventEmitter, Element, Watch } from '@st
 
 import { AppState, Task, Hero, QuestMajorReward, HeroStat } from '../../models/models';
 import { HeroManager } from '../../services/hero-manager';
-import { capitalizeInitial, getRoughTime, generateHeroHashFromHero, toRoman } from '../../global/utils';
+import { capitalizeInitial, getRoughTime, generateHeroHashFromHero, toRoman, toOrdinal } from '../../global/utils';
 import { HeroAbilityType, HeroAbility } from '../../models/hero-models';
 import { GameSetting } from '../../global/game-setting';
 import { TaskMode } from '../../models/task-models';
@@ -391,7 +391,7 @@ export class PlayScreen {
                                                 .map((reward: QuestMajorReward) => 
                                                     <tr {...this.findUpdate('questMajorRewards', (data: QuestMajorReward) => data.office != null && data.groupName == reward.groupName) ? {class: 'textRow-highlight'} : {}}>
                                                         <td>{capitalizeInitial(reward.groupName)}</td>
-                                                        <td>{reward.office}</td>
+                                                        <td>{reward.office.officeIterationCount > 1 ? toOrdinal(reward.office.officeIterationCount) + ' ' + this.gameSetting.officeIterationName + ' ' : ''}{reward.office.officeName}</td>
                                                     </tr>
                                                 )
                                         }

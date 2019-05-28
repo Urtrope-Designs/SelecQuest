@@ -143,12 +143,18 @@ export interface TrialMajorReward {
 export interface QuestMajorReward {
     groupName: string,
     connection: HeroConnection,
-    office: string,
+    office: HeroOffice,
 }
 
 export interface HeroConnection {
     personName: string,
     personTitle: string,
+}
+
+export interface HeroOffice {
+    officeName: string;
+    officeRank: number;
+    officeIterationCount: number;
 }
 
 export interface LootBuildUpReward {

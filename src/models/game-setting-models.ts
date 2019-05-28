@@ -31,6 +31,7 @@ export interface GameSettingConfig {
     leadGatheringTargets: LeadGatheringTarget[];
     leadTargets: LeadTarget[];
     officePositionsAll: string[];
+    officeIterationName: string;
     taskModeData: TaskModeData[];
     gameViewTabDisplayNames: string[];          // length of array must be 5, each string must be 8 or fewer characters
     locationTaskGerund: string;

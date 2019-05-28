@@ -1,7 +1,7 @@
 import { GameSettingsManager } from "./game-settings-manager";
 import { Adventure, HeroAbilityType, LootMajorReward } from "../models/hero-models";
 import { IS_DEBUG } from "../global/config";
-import { Hero, HeroModification, HeroModificationType, TrialMajorReward, TrialMajorRewardType, HeroTitlePosition, QuestMajorReward, HeroConnection, HeroStat } from "../models/models";
+import { Hero, HeroModification, HeroModificationType, TrialMajorReward, TrialMajorRewardType, HeroTitlePosition, QuestMajorReward, HeroConnection, HeroStat, HeroOffice } from "../models/models";
 import { randRange, randFromList, randFromListLow, capitalizeInitial, randFromListHigh, generateRandomName } from "../global/utils";
 import { GameSetting } from "../global/game-setting";
 
@@ -256,13 +256,11 @@ export class PlayTaskResultGenerator {
         let newRewardFactories: ((hero: Hero) => QuestMajorReward)[] = [];
         if (hero.questMajorRewards.length < gameSetting.nameSources.find(s => s.source == 'groups').options.length) {
             newRewardFactories.push(this.generateRandomDistinctConnection);
-            newRewardFactories.push(this.generateRandomDistinctConnection); // double the odds
         }
         if (hero.questMajorRewards.some(a => a.office == null)) {
             newRewardFactories.push(this.generateRandomDistinctMembership);
-            newRewardFactories.push(this.generateRandomDistinctMembership); // double the odds
         }
-        if (hero.questMajorRewards.some(a => this.isNonNullNonHighestOffice(a.office, gameSetting))) {
+        if (hero.questMajorRewards.some(r => r.office != null)) {
             newRewardFactories.push(this.generateRandomDistinctHigherOffice);
         }
     
@@ -309,7 +307,11 @@ export class PlayTaskResultGenerator {
         }
     
         const newMembershipGroupName = randFromList(availableMembershipGroups);
-        const newOffice = gameSetting.officePositionsAll[0];
+        const newOffice: HeroOffice = {
+            officeName: gameSetting.officePositionsAll[0],
+            officeRank: 1,
+            officeIterationCount: 1,
+        };
         const returnData: QuestMajorReward = {
             groupName: newMembershipGroupName,
             office: newOffice,
@@ -320,32 +322,48 @@ export class PlayTaskResultGenerator {
     
     private generateRandomDistinctHigherOffice(hero: Hero): QuestMajorReward {
         const gameSetting = this.gameSettingsMgr.getGameSettingById(hero.gameSettingId);
-        // list of all groups with a non-null office that is also not the highest office
-        const availableOfficeGroups: string[] = hero.questMajorRewards.filter(a => this.isNonNullNonHighestOffice(a.office, gameSetting)).map(a => a.groupName);
+
+        // list of all groups with a non-null office
+        const availableOfficeGroups: QuestMajorReward[] = hero.questMajorRewards.filter(r => r.office != null);
         if (availableOfficeGroups.length === 0) {
             return nullQuestMajorReward;
         }
-        const group = randFromList(availableOfficeGroups);
+        const rewardToUpgrade = Object.assign({}, randFromList(availableOfficeGroups));
         
-        const existingReward: QuestMajorReward = hero.questMajorRewards.find(a => a.groupName == group);
-        // list of all positions higher than currently "held" office, non-dup with the same group's Connection
-        const availableOfficePositions: string[] = gameSetting.officePositionsAll.slice(gameSetting.officePositionsAll.indexOf(existingReward.office) + 1).filter(o => {
-                return o != existingReward.connection.personTitle;
-            });
-        
-        const newOffice = randFromListLow(availableOfficePositions, 3);
-        const returnData: QuestMajorReward = {
-            groupName: group,
-            office: newOffice,
-            connection: null,
+        let nextHigherOfficeName = this.getNextHigherOfficeName(rewardToUpgrade.office, gameSetting);
+
+        // Just add office iteration
+        if (nextHigherOfficeName == null || !!randRange(0, 2)) {
+            rewardToUpgrade.office.officeIterationCount += 1;
+        } else {
+            // increase office rank, and swap with connection person if they have the next higher office
+            if (rewardToUpgrade.connection.personTitle == nextHigherOfficeName) {
+                rewardToUpgrade.connection.personTitle = rewardToUpgrade.office.officeName;
+            }
+            rewardToUpgrade.office = {
+                officeName: nextHigherOfficeName,
+                officeRank: gameSetting.officePositionsAll.indexOf(nextHigherOfficeName),
+                officeIterationCount: 1,
+            }
         }
-        return returnData;
-    }
-    
-    private isNonNullNonHighestOffice(officeName: string, gameSetting: GameSetting) {
-        return !!officeName && gameSetting.officePositionsAll.indexOf(officeName) < (gameSetting.officePositionsAll.length - 1)
+        
+        return rewardToUpgrade;
     }
 
+    private getNextHigherOfficeName(office: HeroOffice, gameSetting: GameSetting): string {
+        if (office == null || office.officeName == null) {
+            return null;
+        }
+        let officeIndex = gameSetting.officePositionsAll.indexOf(office.officeName);
+        if (officeIndex === -1) {
+            officeIndex = office.officeRank;
+        }
+        if (officeIndex + 1 >= gameSetting.officePositionsAll.length) {
+            return null;
+        }
+        return gameSetting.officePositionsAll[officeIndex+1];
+    }
+    
     public generateLevelUpModifications(hero: Hero): HeroModification[] {
         const curGameSetting = this.gameSettingsMgr.getGameSettingById(hero.gameSettingId);
     

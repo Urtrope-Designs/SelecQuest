@@ -232,6 +232,24 @@ export function toRoman(n: number) {
     }
     return s;
   }
+
+  export function toOrdinal(cardinal: number): string {
+      let sigDig = cardinal % 100;
+      if (sigDig == 11 || sigDig == 12 || sigDig == 13) {
+          return cardinal + 'th';
+      }
+      sigDig = sigDig % 10;
+      if (sigDig == 1) {
+          return cardinal + 'st';
+      }
+      if (sigDig == 2) {
+          return cardinal + 'nd';
+      }
+      if (sigDig == 3) {
+          return cardinal + 'rd';
+      }
+      return cardinal + 'th';
+  }
   
 //   function toArabic(s) {
 //     n = 0;

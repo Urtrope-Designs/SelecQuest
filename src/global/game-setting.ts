@@ -40,6 +40,7 @@ export class GameSetting {
     readonly leadGatheringTargets: LeadGatheringTarget[];
     readonly leadTargets: LeadTarget[];
     readonly officePositionsAll: string[];
+    readonly officeIterationName: string;
     readonly taskPrefixes: TaskPrefix[];
     readonly nameSources: NameSource[];
 
@@ -88,6 +89,7 @@ export class GameSetting {
         this.leadGatheringTargets = config.leadGatheringTargets;
         this.leadTargets = config.leadTargets;
         this.officePositionsAll = config.officePositionsAll;
+        this.officeIterationName = config.officeIterationName;
 
         if (config.gameViewTabDisplayNames.length != 5) {
             throw 'Length of gameViewTabDisplayNames array not equal to 5 in ' + config.gameSettingName;
