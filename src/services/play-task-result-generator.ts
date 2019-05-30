@@ -257,10 +257,12 @@ export class PlayTaskResultGenerator {
         if (hero.questMajorRewards.length < gameSetting.nameSources.find(s => s.source == 'groups').options.length) {
             newRewardFactories.push(this.generateRandomDistinctConnection);
         }
-        if (hero.questMajorRewards.some(a => a.office == null)) {
+        if (hero.questMajorRewards.some(r => r.office == null)) {
             newRewardFactories.push(this.generateRandomDistinctMembership);
         }
         if (hero.questMajorRewards.some(r => r.office != null)) {
+            // want advancement to occur more frequently than new connections/memberships
+            newRewardFactories.push(this.generateRandomDistinctHigherOffice);
             newRewardFactories.push(this.generateRandomDistinctHigherOffice);
         }
     
@@ -274,7 +276,7 @@ export class PlayTaskResultGenerator {
     
     private generateRandomDistinctConnection(hero: Hero): QuestMajorReward {
         const gameSetting = this.gameSettingsMgr.getGameSettingById(hero.gameSettingId);
-        const availableDistinctGroups: string[] = gameSetting.nameSources.find(s => s.source == 'groups').options.filter((groupName: string) => {
+        const availableDistinctGroups: string[] = gameSetting.questMajorRewardGroups.map(g => g.groupName).filter((groupName: string) => {
             return !hero.questMajorRewards.some(a => a.groupName == groupName);
         });
     
@@ -329,20 +331,24 @@ export class PlayTaskResultGenerator {
             return nullQuestMajorReward;
         }
         const rewardToUpgrade = Object.assign({}, randFromList(availableOfficeGroups));
+        const rewardToUpgradeGroup = this.gameSetting.questMajorRewardGroups.find(g => g.groupName === rewardToUpgrade.groupName);
         
-        let nextHigherOfficeName = this.getNextHigherOfficeName(rewardToUpgrade.office, gameSetting);
-
         // Just add office iteration
-        if (nextHigherOfficeName == null || !!randRange(0, 2)) {
+        if (rewardToUpgrade.office.officeName === rewardToUpgradeGroup.topOfficeName || !!randRange(0, 2)) {
             rewardToUpgrade.office.officeIterationCount += 1;
         } else {
-            // increase office rank, and swap with connection person if they have the next higher office
+            // increase office rank
+            const nextHigherOfficeName = this.getNextHigherOfficeName(rewardToUpgrade.office, rewardToUpgradeGroup.topOfficeName, gameSetting);
+
+            // swap with connection person if they have the next higher office
             if (rewardToUpgrade.connection.personTitle == nextHigherOfficeName) {
                 rewardToUpgrade.connection.personTitle = rewardToUpgrade.office.officeName;
             }
+            
+            const nextHigherOfficeRank = nextHigherOfficeName === rewardToUpgradeGroup.topOfficeName ? gameSetting.officePositionsAll.length : gameSetting.officePositionsAll.indexOf(nextHigherOfficeName);
             rewardToUpgrade.office = {
                 officeName: nextHigherOfficeName,
-                officeRank: gameSetting.officePositionsAll.indexOf(nextHigherOfficeName),
+                officeRank: nextHigherOfficeRank,
                 officeIterationCount: 1,
             }
         }
@@ -350,16 +356,13 @@ export class PlayTaskResultGenerator {
         return rewardToUpgrade;
     }
 
-    private getNextHigherOfficeName(office: HeroOffice, gameSetting: GameSetting): string {
-        if (office == null || office.officeName == null) {
-            return null;
-        }
+    private getNextHigherOfficeName(office: HeroOffice, groupTopOfficeName: string, gameSetting: GameSetting): string {
         let officeIndex = gameSetting.officePositionsAll.indexOf(office.officeName);
         if (officeIndex === -1) {
             officeIndex = office.officeRank;
         }
         if (officeIndex + 1 >= gameSetting.officePositionsAll.length) {
-            return null;
+            return groupTopOfficeName;
         }
         return gameSetting.officePositionsAll[officeIndex+1];
     }
