@@ -197,7 +197,7 @@ export class CatchUpTaskGenerator implements ITaskGenerator{
         const activevModeEnvironmentalLimitAttributeName = allEnvironmentalLimitAttributeNames[state.activeTaskMode];
         const offModeEnvironmentalLimitAttributeNames = allEnvironmentalLimitAttributeNames.filter(n => n != activevModeEnvironmentalLimitAttributeName);
 
-        const currencyGained = buildUpLimit * state.hero.level * cyclesToNextMilestone;
+        const currencyGained = buildUpLimit * state.hero.level * cyclesToNextMilestone / (isEnvironmentalLimitBroken ? 2 : 1);
 
         const allBuildUpRewardAttributeNames = [
             'lootBuildUpRewards',
@@ -250,7 +250,6 @@ export class CatchUpTaskGenerator implements ITaskGenerator{
         ];
 
         let resultingHero = this.generateResultingHero(state.hero, modifications);
-        console.log('doing a catchup task', nearestMilestone, resultingHero);
 
         const minCurrency = PlayTaskGenerator.getTradeInCostForLevel(state.activeTaskMode, state.hero.level);
         while ((resultingHero.currency[state.activeTaskMode] - resultingHero.spentCurrency[state.activeTaskMode]) >= minCurrency) {
@@ -273,7 +272,6 @@ export class CatchUpTaskGenerator implements ITaskGenerator{
                 },
             ];
             resultingHero = this.generateResultingHero(resultingHero, modifications);
-            console.log('buying gear!', resultingHero);
         }
 
         const newTask: Task = {

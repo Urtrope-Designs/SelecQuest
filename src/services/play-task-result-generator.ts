@@ -284,7 +284,7 @@ export class PlayTaskResultGenerator {
             return nullQuestMajorReward;
         }
         
-        const newConnectionName = generateRandomName(this.gameSettingsMgr.getGameSettingById(hero.gameSettingId));
+        const newConnectionName = generateRandomName(gameSetting);
         const newConnectionTitle = randFromList(gameSetting.officePositionsAll.slice(1));
         const newGroupName = randFromList(availableDistinctGroups);
         const newConnection: HeroConnection = {
@@ -331,21 +331,22 @@ export class PlayTaskResultGenerator {
             return nullQuestMajorReward;
         }
         const rewardToUpgrade = Object.assign({}, randFromList(availableOfficeGroups));
-        const rewardToUpgradeGroup = gameSetting.questMajorRewardGroups.find(g => g.groupName === rewardToUpgrade.groupName);
+        const groupToUpgrade = gameSetting.questMajorRewardGroups.find(g => g.groupName === rewardToUpgrade.groupName);
+        const topOfficeName = !!groupToUpgrade ? groupToUpgrade.topOfficeName : gameSetting.officePositionsAll[gameSetting.officePositionsAll.length - 1];
         
         // Just add office iteration
-        if (rewardToUpgrade.office.officeName === rewardToUpgradeGroup.topOfficeName || !!randRange(0, 2)) {
+        if (rewardToUpgrade.office.officeName === topOfficeName || !!randRange(0, 2)) {
             rewardToUpgrade.office.officeIterationCount += 1;
         } else {
             // increase office rank
-            const nextHigherOfficeName = this.getNextHigherOfficeName(rewardToUpgrade.office, rewardToUpgradeGroup.topOfficeName, gameSetting);
+            const nextHigherOfficeName = this.getNextHigherOfficeName(rewardToUpgrade.office, topOfficeName, gameSetting);
 
             // swap with connection person if they have the next higher office
             if (rewardToUpgrade.connection.personTitle == nextHigherOfficeName) {
                 rewardToUpgrade.connection.personTitle = rewardToUpgrade.office.officeName;
             }
             
-            const nextHigherOfficeRank = nextHigherOfficeName === rewardToUpgradeGroup.topOfficeName ? gameSetting.officePositionsAll.length : gameSetting.officePositionsAll.indexOf(nextHigherOfficeName);
+            const nextHigherOfficeRank = nextHigherOfficeName === topOfficeName ? gameSetting.officePositionsAll.length : gameSetting.officePositionsAll.indexOf(nextHigherOfficeName);
             rewardToUpgrade.office = {
                 officeName: nextHigherOfficeName,
                 officeRank: nextHigherOfficeRank,
