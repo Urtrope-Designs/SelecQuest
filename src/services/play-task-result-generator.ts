@@ -254,7 +254,7 @@ export class PlayTaskResultGenerator {
         let newRewardData: QuestMajorReward;
     
         let newRewardFactories: ((hero: Hero) => QuestMajorReward)[] = [];
-        if (hero.questMajorRewards.length < gameSetting.nameSources.find(s => s.source == 'groups').options.length) {
+        if (hero.questMajorRewards.length < gameSetting.questMajorRewardGroups.length) {
             newRewardFactories.push(this.generateRandomDistinctConnection);
         }
         if (hero.questMajorRewards.some(r => r.office == null)) {
@@ -331,7 +331,7 @@ export class PlayTaskResultGenerator {
             return nullQuestMajorReward;
         }
         const rewardToUpgrade = Object.assign({}, randFromList(availableOfficeGroups));
-        const rewardToUpgradeGroup = this.gameSetting.questMajorRewardGroups.find(g => g.groupName === rewardToUpgrade.groupName);
+        const rewardToUpgradeGroup = gameSetting.questMajorRewardGroups.find(g => g.groupName === rewardToUpgrade.groupName);
         
         // Just add office iteration
         if (rewardToUpgrade.office.officeName === rewardToUpgradeGroup.topOfficeName || !!randRange(0, 2)) {
