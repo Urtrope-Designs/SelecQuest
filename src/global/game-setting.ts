@@ -1,4 +1,4 @@
-import { GameSettingConfig, LootMajorRewardMaterialType, LootMajorRewardModifierType, TaskModeData, TaskPrefix, NameSource } from "../models/game-setting-models";
+import { GameSettingConfig, LootMajorRewardMaterialType, LootMajorRewardModifierType, TaskModeData, TaskPrefix, NameSource, QuestMajorRewardGroup } from "../models/game-setting-models";
 import { HeroRace, TaskTarget, LeadGatheringTarget, HeroTitlePosition, HeroClass, TaskTargetType, LeadTarget } from "../models/models";
 import { AbilityType } from "../models/game-setting-models";
 import { PrologueTask, LootMajorRewardType } from "../models/hero-models";
@@ -37,6 +37,7 @@ export class GameSetting {
     readonly sobriquetModifiers: string[];
     readonly sobriquetNounPortions: string[];
     readonly honorificTemplates: string[];
+    readonly questMajorRewardGroups: QuestMajorRewardGroup[];
     readonly leadGatheringTargets: LeadGatheringTarget[];
     readonly leadTargets: LeadTarget[];
     readonly officePositionsAll: string[];
@@ -86,6 +87,7 @@ export class GameSetting {
         this.sobriquetNounPortions = config.sobriquetNounPortions;
         this.honorificTemplates = config.honorificTemplates;
         
+        this.questMajorRewardGroups = config.questMajorRewardGroups;
         this.leadGatheringTargets = config.leadGatheringTargets;
         this.leadTargets = config.leadTargets;
         this.officePositionsAll = config.officePositionsAll;

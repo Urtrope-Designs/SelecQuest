@@ -22,6 +22,7 @@ export interface GameSettingConfig {
     lootMajorRewardMaterialTypes: LootMajorRewardMaterialType[];
     lootMajorRewardModifierTypes: LootMajorRewardModifierType[];
     trialMajorRewardTypes: string[];
+    questMajorRewardGroups: QuestMajorRewardGroup[];
     epithetDescriptors: string[];
     epithetBeingAll: string[];
     titlePositionsAll: HeroTitlePosition[];
@@ -94,4 +95,9 @@ export interface TaskPrefix {
 export interface NameSource {
     source: string;
     options: string[];
+}
+
+export interface QuestMajorRewardGroup {
+    groupName: string;
+    topOfficeName: string;
 }
