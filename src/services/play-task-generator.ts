@@ -210,7 +210,7 @@ export class PlayTaskGenerator implements ITaskGenerator{
 
         const investigatingTarget = randFromList(gameSetting.leadGatheringTargets);
 
-        investigatingTaskName = capitalizeInitial(`${investigatingTarget.gerundPhrase} ${gameSetting.hydrateFromNameSources(randFromList(investigatingTarget.predicateOptions))}`);
+        investigatingTaskName = capitalizeInitial(`${gameSetting.hydrateFromNameSources(investigatingTarget.gerundPhrase)} ${gameSetting.hydrateFromNameSources(randFromList(investigatingTarget.predicateOptions))}`);
 
         const leadTargetType: LeadType = randFromList(investigatingTarget.leadTypes);
 
