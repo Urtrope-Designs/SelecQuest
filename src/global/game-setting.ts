@@ -127,6 +127,7 @@ export class GameSetting {
      * Additionally, the static Template Markers "FOE", "LOCATION", and "TRIAL" can be used to pull random results from the filtered lists of names
      * from this.basicTaskTargets where "type" matches the Template Marker. In addition to the "INDEF_" prefix, these Template Markers can make use of
      * the prefix "PLURAL_" to use the corresponding "namePlural" attribute instead of "name".
+     * Static template marker "QUESTGROUPS" will pull from the "groupName" attribute of the "questMajorRewardGroups" array.
      */
     public hydrateFromNameSources(sourceString: string): string {
         const indefPrefix = 'INDEF_';
@@ -163,16 +164,24 @@ export class GameSetting {
                     if (makeIndef) {
                         replacementValue = 'some ' + replacementValue;
                     }
+                } else if (source.toLocaleLowerCase() === 'questgroups') {
+                    const replacementGroupName = randFromList(this.questMajorRewardGroups).groupName;
+                    
+                    // can't make plural or indefinite
+                    replacementValue = replacementGroupName;
                 } else {
                     // pull from nameSources
                     const matchedSource = this.nameSources.find(ns => ns.source == source);
                     
                     if (matchedSource != null) {
                         replacementValue = randFromList(matchedSource.options);
-                    }
 
-                    if (makeIndef) {
-                        replacementValue = makeStringIndefinite(replacementValue, 1);
+                        if (makeIndef) {
+                            replacementValue = makeStringIndefinite(replacementValue, 1);
+                        }
+                    } else {
+                        // make for easier debugging if invalid marker is used
+                        replacementValue = marker;
                     }
                 }
 

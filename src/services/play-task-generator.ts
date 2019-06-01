@@ -10,7 +10,7 @@ import { GameSetting } from "../global/game-setting";
 
 export class PlayTaskGenerator implements ITaskGenerator{
     private static BASIC_MAJOR_REWARD_COST_ALGO = (level) => {return Math.floor(5 * level**2 + 10 * level + 20)};
-    private static QUEST_MAJOR_REWARD_COST_ALGO = (level) => {return Math.floor(2.5 * level**2 + 30 * level + 50)};
+    private static QUEST_MAJOR_REWARD_COST_ALGO = (level) => {return Math.floor(2 * level**2 + 25 * level + 40)};
     static majorRewardAlgorithms = [
         PlayTaskGenerator.BASIC_MAJOR_REWARD_COST_ALGO,
         PlayTaskGenerator.BASIC_MAJOR_REWARD_COST_ALGO,
