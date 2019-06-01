@@ -1,5 +1,5 @@
 import { TaskGeneratorAlgorithm, GameTaskGeneratorList, TaskMode, ITaskGenerator } from "../models/task-models";
-import { AppState, HeroModification, HeroModificationType, Task, TaskTarget, TaskTargetType, QuestBuildUpReward, LeadType, TrialBuildUpReward, LootBuildUpReward, Hero, HeroClass } from "../models/models";
+import { AppState, HeroModification, HeroModificationType, Task, TaskTarget, TaskTargetType, QuestBuildUpReward, LeadType, TrialBuildUpReward, LootBuildUpReward, Hero, HeroClass, LeadTarget } from "../models/models";
 import { makeStringIndefinite, randRange, randFromList, randSign, capitalizeInitial, generateRandomName } from "../global/utils";
 import { IS_DEBUG } from "../global/config";
 import { PlayTaskResultGenerator } from "./play-task-result-generator";
@@ -214,8 +214,13 @@ export class PlayTaskGenerator implements ITaskGenerator{
 
         const leadTargetType: LeadType = randFromList(investigatingTarget.leadTypes);
 
-        const selectedLeadTarget = randFromList(gameSetting.leadTargets.filter(t => t.leadType == leadTargetType));
-        const leadPredicate = gameSetting.hydrateFromNameSources(randFromList(selectedLeadTarget.predicateOptions));
+        let selectedLeadTarget: LeadTarget;
+        let leadPredicate: string;
+        
+        do {
+            selectedLeadTarget = randFromList(gameSetting.leadTargets.filter(t => t.leadType == leadTargetType));
+            leadPredicate = gameSetting.hydrateFromNameSources(randFromList(selectedLeadTarget.predicateOptions));
+        } while (hero.questBuildUpRewards.some(r => r.questlogName.toLocaleLowerCase().includes(leadPredicate.toLocaleLowerCase())));
         const lead: QuestBuildUpReward = {
             questlogName: capitalizeInitial(`${selectedLeadTarget.verb} ${leadPredicate}`),
             taskName: capitalizeInitial(`${selectedLeadTarget.gerund} ${leadPredicate}`),
