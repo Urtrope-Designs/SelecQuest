@@ -251,7 +251,7 @@ export class CatchUpTaskGenerator implements ITaskGenerator{
 
         let resultingHero = this.generateResultingHero(state.hero, modifications);
 
-        const minCurrency = PlayTaskGenerator.getTradeInCostForLevel(state.activeTaskMode, state.hero.level);
+        const minCurrency = this.taskResultGenerator.getTradeInCostForLevel(state.activeTaskMode, state.hero.level);
         while ((resultingHero.currency[state.activeTaskMode] - resultingHero.spentCurrency[state.activeTaskMode]) >= minCurrency) {
             let rewardLevel = state.hero.level;
             let newMajorRewardMod;
@@ -268,7 +268,7 @@ export class CatchUpTaskGenerator implements ITaskGenerator{
                 {
                     type: HeroModificationType.ADD_CURRENCY,
                     attributeName: 'spentCurrency',
-                    data: [{index: state.activeTaskMode, value: PlayTaskGenerator.getTradeInCostForLevel(state.activeTaskMode, rewardLevel)}],
+                    data: [{index: state.activeTaskMode, value: this.taskResultGenerator.getTradeInCostForLevel(state.activeTaskMode, rewardLevel)}],
                 },
             ];
             resultingHero = this.generateResultingHero(resultingHero, modifications);

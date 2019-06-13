@@ -84,6 +84,9 @@ export interface TaskModeData {
     startBuildUpTaskDescriptionOptions: string[];
     startTearDownTaskDescriptionOptions: string[];
     earnMajorRewardTaskDescriptionOptions: string[];
+    majorRewardCostQuadraticCoefficient: number;
+    majorRewardCostLinearCoefficient: number;
+    majorRewardCostYIntercept: number;
 };
 
 export interface TaskPrefix {

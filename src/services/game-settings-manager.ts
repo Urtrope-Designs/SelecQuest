@@ -1,32 +1,20 @@
 import { GameSettingConfig } from "../models/game-setting-models";
 import { GameSetting } from "../global/game-setting";
-import firebase from 'firebase/app';
-import 'firebase/firestore';
+import { NosqlDatastoreManager } from "./nosql-datastore-manager";
 
 export class GameSettingsManager {
     private availableGameSettings: Map<string, GameSetting>;
-    private db: firebase.firestore.Firestore;
 
-    constructor() {
-        const firebaseConfig = {
-            apiKey: "AIzaSyBw73BRk-qWeZm-fp3-Ijf7s0EemdaWuCQ",
-            authDomain: "selecquest.firebaseapp.com",
-            databaseURL: "https://selecquest.firebaseio.com",
-            projectId: "selecquest",
-            storageBucket: "selecquest.appspot.com",
-            messagingSenderId: "434339253679"
-        };
-        firebase.initializeApp(firebaseConfig);
-        this.db = firebase.firestore()
-        this.db.enablePersistence({experimentalTabSynchronization: true});
+    constructor(
+        private datastoreMgr: NosqlDatastoreManager,
+    ) {
     }
 
     async init(availableGameSettingFiles: string[]) {
         this.availableGameSettings = new Map<string, GameSetting>();
         for (let file of availableGameSettingFiles) {
-            const fsDoc = await this.db.collection('game-settings').doc(file).get();
-            if (fsDoc.exists) {
-                const nextGameSettingConfig = fsDoc.data();
+            const nextGameSettingConfig = await this.datastoreMgr.getDocument('game-settings', file);
+            if (nextGameSettingConfig != null) {
                 const nextGameSetting = new GameSetting((nextGameSettingConfig as GameSettingConfig));
                 this.availableGameSettings.set(nextGameSetting.gameSettingId, nextGameSetting);
             }

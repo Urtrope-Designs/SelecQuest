@@ -1,7 +1,6 @@
 import { TaskGeneratorAlgorithm, GameTaskGeneratorList, TaskMode, ITaskGenerator } from "../models/task-models";
 import { AppState, HeroModification, HeroModificationType, Task, TaskTarget, TaskTargetType, QuestBuildUpReward, LeadType, TrialBuildUpReward, LootBuildUpReward, Hero, HeroClass, LeadTarget } from "../models/models";
 import { makeStringIndefinite, randRange, randFromList, randSign, capitalizeInitial, generateRandomName } from "../global/utils";
-import { IS_DEBUG } from "../global/config";
 import { PlayTaskResultGenerator } from "./play-task-result-generator";
 import { HeroManager } from "./hero-manager";
 import { GameSettingsManager } from "./game-settings-manager";
@@ -10,11 +9,10 @@ import { GameSetting } from "../global/game-setting";
 
 export class PlayTaskGenerator implements ITaskGenerator{
     private static BASIC_MAJOR_REWARD_COST_ALGO = (level) => {return Math.floor(5 * level**2 + 10 * level + 20)};
-    private static QUEST_MAJOR_REWARD_COST_ALGO = (level) => {return Math.floor(2 * level**2 + 25 * level + 40)};
     static majorRewardAlgorithms = [
         PlayTaskGenerator.BASIC_MAJOR_REWARD_COST_ALGO,
         PlayTaskGenerator.BASIC_MAJOR_REWARD_COST_ALGO,
-        PlayTaskGenerator.QUEST_MAJOR_REWARD_COST_ALGO,
+        PlayTaskGenerator.BASIC_MAJOR_REWARD_COST_ALGO,
     ]
 
     constructor(
@@ -233,9 +231,6 @@ export class PlayTaskGenerator implements ITaskGenerator{
     }
 
 
-    static getTradeInCostForLevel(taskMode: TaskMode, level: number): number {
-        return IS_DEBUG ? (10 * level + 4) : PlayTaskGenerator.majorRewardAlgorithms[taskMode](level);
-    }
 
     private generateResultingHero(baseHero: Hero, modifications: HeroModification[]): Hero {
         let updatedHero: Hero = this.heroMgr.applyHeroTaskUpdates(baseHero, modifications);
@@ -418,7 +413,7 @@ export class PlayTaskGenerator implements ITaskGenerator{
             const currentEncumbrance = state.hero.lootBuildUpRewards.reduce((prevVal, curVal) => {
                 return prevVal + curVal.quantity;
             }, 0);
-            const minGold = PlayTaskGenerator.getTradeInCostForLevel(state.activeTaskMode, state.hero.level);
+            const minGold = this.taskResultGenerator.getTradeInCostForLevel(state.activeTaskMode, state.hero.level);
             return currentEncumbrance <= 0 && (state.hero.currency[TaskMode.LOOT_MODE] - state.hero.spentCurrency[TaskMode.LOOT_MODE]) >= minGold;
         },
         generateTask: (state: AppState) => {
@@ -430,7 +425,7 @@ export class PlayTaskGenerator implements ITaskGenerator{
                 {
                     type: HeroModificationType.ADD_CURRENCY,
                     attributeName: 'spentCurrency',
-                    data: [{index: TaskMode.LOOT_MODE, value: PlayTaskGenerator.getTradeInCostForLevel(state.activeTaskMode, rewardLevel)}],
+                    data: [{index: TaskMode.LOOT_MODE, value: this.taskResultGenerator.getTradeInCostForLevel(state.activeTaskMode, rewardLevel)}],
                 },
             ];
             const updatedHero = this.generateResultingHero(state.hero, modifications);
@@ -614,7 +609,7 @@ export class PlayTaskGenerator implements ITaskGenerator{
             const currentTrialBuildUp = state.hero.trialBuildUpRewards.reduce((prevVal, curVal) => {
                 return prevVal + curVal.quantity;
             }, 0);
-            return currentTrialBuildUp <= 0 && (state.hero.currency[TaskMode.TRIAL_MODE] - state.hero.spentCurrency[TaskMode.TRIAL_MODE]) >= PlayTaskGenerator.getTradeInCostForLevel(state.activeTaskMode, state.hero.level);
+            return currentTrialBuildUp <= 0 && (state.hero.currency[TaskMode.TRIAL_MODE] - state.hero.spentCurrency[TaskMode.TRIAL_MODE]) >= this.taskResultGenerator.getTradeInCostForLevel(state.activeTaskMode, state.hero.level);
         },
         generateTask: (state: AppState) => {
             const gameSetting = this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId);
@@ -624,7 +619,7 @@ export class PlayTaskGenerator implements ITaskGenerator{
                 {
                     type: HeroModificationType.ADD_CURRENCY,
                     attributeName: 'spentCurrency',
-                    data: [{index: TaskMode.TRIAL_MODE, value: PlayTaskGenerator.getTradeInCostForLevel(state.activeTaskMode, state.hero.level)}],
+                    data: [{index: TaskMode.TRIAL_MODE, value: this.taskResultGenerator.getTradeInCostForLevel(state.activeTaskMode, state.hero.level)}],
                 },
             ];
             const updatedHero = this.generateResultingHero(state.hero, modifications);
@@ -792,7 +787,7 @@ export class PlayTaskGenerator implements ITaskGenerator{
     
     earnQuestMajorRewardTaskGenerator: TaskGeneratorAlgorithm = {
         shouldRun: (state: AppState) => {
-            return state.hero.questBuildUpRewards.length <= 0 && (state.hero.currency[TaskMode.QUEST_MODE] - state.hero.spentCurrency[TaskMode.QUEST_MODE]) >= PlayTaskGenerator.getTradeInCostForLevel(state.activeTaskMode, state.hero.level);
+            return state.hero.questBuildUpRewards.length <= 0 && (state.hero.currency[TaskMode.QUEST_MODE] - state.hero.spentCurrency[TaskMode.QUEST_MODE]) >= this.taskResultGenerator.getTradeInCostForLevel(state.activeTaskMode, state.hero.level);
         },
         generateTask: (state: AppState) => {
             const gameSetting = this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId);
@@ -802,7 +797,7 @@ export class PlayTaskGenerator implements ITaskGenerator{
                 {
                     type: HeroModificationType.ADD_CURRENCY,
                     attributeName: 'spentCurrency',
-                    data: [{index: TaskMode.QUEST_MODE, value: PlayTaskGenerator.getTradeInCostForLevel(state.activeTaskMode, state.hero.level)}],
+                    data: [{index: TaskMode.QUEST_MODE, value: this.taskResultGenerator.getTradeInCostForLevel(state.activeTaskMode, state.hero.level)}],
                 },
             ];
             const updatedHero = this.generateResultingHero(state.hero, modifications);

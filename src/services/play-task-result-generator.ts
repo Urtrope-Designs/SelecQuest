@@ -4,9 +4,15 @@ import { IS_DEBUG } from "../global/config";
 import { Hero, HeroModification, HeroModificationType, TrialMajorReward, TrialMajorRewardType, HeroTitlePosition, QuestMajorReward, HeroConnection, HeroStat, HeroOffice } from "../models/models";
 import { randRange, randFromList, randFromListLow, capitalizeInitial, randFromListHigh, generateRandomName } from "../global/utils";
 import { GameSetting } from "../global/game-setting";
+import { TaskMode } from "../models/task-models";
+import { GameConfigManager } from "./game-config-manager";
 
 export class PlayTaskResultGenerator {
-    constructor(private gameSettingsMgr: GameSettingsManager) {
+
+    constructor(
+        private gameSettingsMgr: GameSettingsManager,
+        private gameConfigMgr: GameConfigManager,
+    ) {
     }
 
     private generateNextAdventure(completedAdventure: Adventure): Adventure {
@@ -69,6 +75,15 @@ export class PlayTaskResultGenerator {
         return mod;
     }
     
+    public getTradeInCostForLevel(taskMode: TaskMode, level: number): number {
+        if (IS_DEBUG) {
+            return 10 * level + 4;
+        }
+        const modeCoefficients = this.gameConfigMgr.majorRewardCoefficients[taskMode];
+        const cost = (level**2 * modeCoefficients.quadraticCoefficient) + (level * modeCoefficients.linearCoefficient) + modeCoefficients.yIntercept;
+        return cost;
+    }
+
     public generateNewLootMajorRewardModification(requestedLevel: number, existingRewards: LootMajorReward[], gameSetting: GameSetting): HeroModification {
         const newLootMajorRewardData = this.generateRandomLootMajorReward(requestedLevel, existingRewards, gameSetting);
         
@@ -251,19 +266,23 @@ export class PlayTaskResultGenerator {
     
     private generateRandomQuestMajorReward(hero: Hero): QuestMajorReward {
         const gameSetting = this.gameSettingsMgr.getGameSettingById(hero.gameSettingId);
+        const rewardTypeOdds = this.gameConfigMgr.questMajorRewardTypeOdds;
         let newRewardData: QuestMajorReward;
     
         let newRewardFactories: ((hero: Hero) => QuestMajorReward)[] = [];
         if (hero.questMajorRewards.length < gameSetting.questMajorRewardGroups.length) {
-            newRewardFactories.push(this.generateRandomDistinctConnection);
+            const connectionChances = Array(rewardTypeOdds.connectionOdds).fill(this.generateRandomDistinctConnection);
+            newRewardFactories.push(...connectionChances);
         }
         if (hero.questMajorRewards.some(r => r.office == null)) {
-            newRewardFactories.push(this.generateRandomDistinctMembership);
+            // want memberships to occur more frequently than new connections
+            const membershipChances = Array(rewardTypeOdds.membershipOdds).fill(this.generateRandomDistinctMembership);
+            newRewardFactories.push(...membershipChances);
         }
         if (hero.questMajorRewards.some(r => r.office != null)) {
             // want advancement to occur more frequently than new connections/memberships
-            newRewardFactories.push(this.generateRandomDistinctHigherOffice);
-            newRewardFactories.push(this.generateRandomDistinctHigherOffice);
+            const officeChances = Array(rewardTypeOdds.officeOdds).fill(this.generateRandomDistinctHigherOffice);
+            newRewardFactories.push(...officeChances);
         }
     
         

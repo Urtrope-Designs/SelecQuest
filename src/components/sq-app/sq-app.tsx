@@ -16,6 +16,8 @@ import { TaskMode, ITaskGenerator } from '../../models/task-models';
 import { PlayTaskManager } from '../../services/play-task-manager';
 import { CatchUpTaskGenerator } from '../../services/catch-up-task-generator';
 import { GameDataTransformManager } from '../../services/game-data-transform-manager';
+import { NosqlDatastoreManager } from '../../services/nosql-datastore-manager';
+import { GameConfigManager } from '../../services/game-config-manager';
 
 @Component({
     tag: 'sq-app',
@@ -26,6 +28,8 @@ export class SqApp {
     @State() state: AppState;
     private availableHeroes: {hash: string, name: string}[];
     
+    private datastoreMgr: NosqlDatastoreManager;
+    private gameConfigMgr: GameConfigManager;
     private taskMgr: PlayTaskManager;
     private gameDataMgr: GameDataManager;
     private gameDataTransformMgr: GameDataTransformManager;
@@ -93,14 +97,16 @@ export class SqApp {
     }
 
     async componentWillLoad() {
+        this.datastoreMgr = new NosqlDatastoreManager();
         // todo: probably need to pull available Game Setting names from gameDataMgr eventually
-        this.gameSettingsMgr = new GameSettingsManager();
+        this.gameSettingsMgr = new GameSettingsManager(this.datastoreMgr);
         await this.gameSettingsMgr.init(['fantasy-setting']);
+        this.gameConfigMgr = new GameConfigManager(this.datastoreMgr);
 
         this.gameDataMgr = new GameDataManager();
         this.gameDataTransformMgr = new GameDataTransformManager();
         this.heroMgr = new HeroManager(this.gameSettingsMgr);
-        this.taskResultGenerator = new PlayTaskResultGenerator(this.gameSettingsMgr);
+        this.taskResultGenerator = new PlayTaskResultGenerator(this.gameSettingsMgr, this.gameConfigMgr);
         this.playTaskGenerator = new PlayTaskGenerator(this.taskResultGenerator, this.heroMgr, this.gameSettingsMgr);
         this.catchUpTaskGenerator = new CatchUpTaskGenerator(this.taskResultGenerator, this.heroMgr, this.gameSettingsMgr);
 
