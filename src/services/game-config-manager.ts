@@ -9,7 +9,7 @@ const DEFAULT_COEFFICIENTS: MajorRewardCoefficient = {
 };
 const DEFAULT_QUEST_MAJOR_REWARD_TYPE_ODDS: QuestMajorRewardTypeOdds = {
     membershipOdds: 1,
-    officeOdds: 10,
+    officeOdds: 15,
 }
 
 export class GameConfigManager {
