@@ -200,18 +200,15 @@ export class HeroManager {
                 case HeroModificationType.ADD_QUEST_MAJOR_REWARD:
                     /* questMajorRewards */
                     result.data.map((newQuestMajorReward: QuestMajorReward) => {
-                        if (newQuestMajorReward.office == null) {
-                            newHero.questMajorRewards.push(newQuestMajorReward);
-                        } else {
-                            const existingQuestMajorReward: QuestMajorReward = newHero.questMajorRewards.find(a => {
-                                return a.groupName == newQuestMajorReward.groupName;
-                            });
+                        const existingQuestMajorReward: QuestMajorReward = newHero.questMajorRewards.find(a => {
+                            return a.groupName == newQuestMajorReward.groupName;
+                        });
+                        if (!!existingQuestMajorReward) {
                             existingQuestMajorReward.office = newQuestMajorReward.office;
-                            if (newQuestMajorReward.connection != null) {
-                                existingQuestMajorReward.connection = newQuestMajorReward.connection;
-                            }
+                        } else {
+                            newHero.questMajorRewards.push(newQuestMajorReward);
                         }
-                        
+
                         newHero.latestModifications.push({attributeName: result.attributeName, data: newQuestMajorReward});
                     })
                     break;
