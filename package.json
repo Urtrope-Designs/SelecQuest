@@ -22,7 +22,7 @@
     "@ionic/core": "^4.3.0",
     "@stencil/core": "^0.18.1",
     "@stencil/sass": "^0.1.1",
-    "firebase": "^5.10.0",
+    "firebase": "^6.2.0",
     "localforage": "^1.7.3",
     "localforage-cordovasqlitedriver": "^1.7.0",
     "npm": "^6.9.0",

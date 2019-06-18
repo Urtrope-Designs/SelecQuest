@@ -14,8 +14,8 @@ export class NosqlDatastoreManager {
             messagingSenderId: "434339253679"
         };
         firebase.initializeApp(firebaseConfig);
-        this.db = firebase.firestore()
-        this.db.enablePersistence({experimentalTabSynchronization: true});
+        this.db = firebase.firestore();
+        this.db.enablePersistence({synchronizeTabs: true});
     }
 
     async getDocument(collectionName, docName) {
