@@ -5,15 +5,18 @@ import { GameSettingsManager } from './game-settings-manager';
 import { HeroInitData, HeroAbilityType, LootMajorReward, HeroAbility } from '../models/hero-models';
 import { GameSetting } from '../global/game-setting';
 import { TaskMode } from '../models/task-models';
+import { GameConfigManager } from './game-config-manager';
 
 export class HeroManager {
 
-    constructor(private gameSettingsMgr: GameSettingsManager) {
-    }
+    constructor(
+        private gameSettingsMgr: GameSettingsManager,
+        private gameConfigMgr: GameConfigManager,
+    ) {}
 
     public createNewHero(heroling: HeroInitData): Hero {
         const gameSetting: GameSetting = this.gameSettingsMgr.getGameSettingById(heroling.gameSettingId);
-        const LONG_TERM_LIMIT_FACTOR = 25;
+        const gameConfig = this.gameConfigMgr;
         const newHero: Hero = {
             name: heroling.name,
             raceName: heroling.raceName,
@@ -48,7 +51,11 @@ export class HeroManager {
                 if (IS_DEBUG) {
                     return 35;
                 } else {
-                    return LONG_TERM_LIMIT_FACTOR * (this.level + this.stats[gameSetting.taskModeData[TaskMode.LOOT_MODE].environmentalLimitBaseStatIndex].value);
+                    const limitingStatValue = this.stats[gameSetting.taskModeData[TaskMode.LOOT_MODE].environmentalLimitBaseStatIndex].value;
+                    const coefficients = gameConfig.environmentalLimitCoefficients[TaskMode.LOOT_MODE];
+                    const levelImpact = (coefficients.levelCoefficient * this.level + coefficients.levelAddend);
+                    const limitingStatImpact = (coefficients.limitingStatCoefficient * Math.pow(limitingStatValue, coefficients.limitingStatExponent) * Math.pow(this.level, coefficients.limitingStatLevelExponent) + coefficients.limitingStatAddend);
+                    return (levelImpact + limitingStatImpact);
                 }
             },
             trialEnvironmentalLimit: 0,
@@ -56,7 +63,11 @@ export class HeroManager {
                 if (IS_DEBUG) {
                     return 35;
                 } else {
-                    return LONG_TERM_LIMIT_FACTOR * (this.level + this.stats[gameSetting.taskModeData[TaskMode.TRIAL_MODE].environmentalLimitBaseStatIndex].value);
+                    const limitingStatValue = this.stats[gameSetting.taskModeData[TaskMode.TRIAL_MODE].environmentalLimitBaseStatIndex].value;
+                    const coefficients = gameConfig.environmentalLimitCoefficients[TaskMode.TRIAL_MODE];
+                    const levelImpact = (coefficients.levelCoefficient * this.level + coefficients.levelAddend);
+                    const limitingStatImpact = (coefficients.limitingStatCoefficient * Math.pow(limitingStatValue, coefficients.limitingStatExponent) * Math.pow(this.level, coefficients.limitingStatLevelExponent) + coefficients.limitingStatAddend);
+                    return (levelImpact + limitingStatImpact);
                 }
             },
             questEnvironmentalLimit: 0,
@@ -64,7 +75,11 @@ export class HeroManager {
                 if (IS_DEBUG) {
                     return 35;
                 } else {
-                    return LONG_TERM_LIMIT_FACTOR * (this.level + this.stats[gameSetting.taskModeData[TaskMode.QUEST_MODE].environmentalLimitBaseStatIndex].value);
+                    const limitingStatValue = this.stats[gameSetting.taskModeData[TaskMode.QUEST_MODE].environmentalLimitBaseStatIndex].value;
+                    const coefficients = gameConfig.environmentalLimitCoefficients[TaskMode.QUEST_MODE];
+                    const levelImpact = (coefficients.levelCoefficient * this.level + coefficients.levelAddend);
+                    const limitingStatImpact = (coefficients.limitingStatCoefficient * Math.pow(limitingStatValue, coefficients.limitingStatExponent) * Math.pow(this.level, coefficients.limitingStatLevelExponent) + coefficients.limitingStatAddend);
+                    return (levelImpact + limitingStatImpact);
                 }
             },
             currentAdventure: IS_DEBUG 

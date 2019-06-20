@@ -9,3 +9,12 @@ export interface QuestRewardTypeOdds {
     membershipOdds: number;
     officeOdds: number;
 }
+
+export interface EnvironmentalLimitCoefficient {
+    levelAddend: number;
+    levelCoefficient: number;
+    limitingStatAddend: number;
+    limitingStatCoefficient: number;
+    limitingStatExponent: number;
+    limitingStatLevelExponent: number;
+}
