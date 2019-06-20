@@ -8,7 +8,8 @@ const DEFAULT_COEFFICIENTS: MajorRewardCoefficient = {
     yIntercept: 20,
 };
 const DEFAULT_QUEST_MAJOR_REWARD_TYPE_ODDS: QuestMajorRewardTypeOdds = {
-    membershipOdds: 1,
+    connectionOdds: 1,
+    membershipOdds: 5,
     officeOdds: 15,
 }
 

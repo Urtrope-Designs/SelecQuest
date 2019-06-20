@@ -5,6 +5,7 @@ export interface MajorRewardCoefficient {
 }
 
 export interface QuestRewardTypeOdds {
+    connectionOdds: number;
     membershipOdds: number;
     officeOdds: number;
 }

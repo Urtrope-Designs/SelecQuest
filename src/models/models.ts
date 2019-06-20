@@ -142,7 +142,13 @@ export interface TrialMajorReward {
 
 export interface QuestMajorReward {
     groupName: string,
+    connection: HeroConnection,
     office: HeroOffice,
+}
+
+export interface HeroConnection {
+    personName: string,
+    personTitle: string,
 }
 
 export interface HeroOffice {

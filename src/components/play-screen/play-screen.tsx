@@ -357,6 +357,28 @@ export class PlayScreen {
                                 <table class="listBox">
                                     <thead>
                                         <tr>
+                                            <th style={{width: "50%"}}>{this.gameSetting.taskModeData[2].majorRewardDisplayName[0]}</th>
+                                            <th>{this.gameSetting.taskModeData[2].majorRewardDisplayName[1]}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            this.appState.hero.questMajorRewards.length <= 0
+                                            ? <tr><td colSpan={2}>[None]</td></tr>
+                                            : this.appState.hero.questMajorRewards
+                                                .map((reward: QuestMajorReward) => 
+                                                    <tr {...this.findUpdate('questMajorRewards', (data: QuestMajorReward) => data.connection != null && data.groupName == reward.groupName) ? {class: 'textRow-highlight'} : {}}>
+                                                        <td>{reward.connection.personName}, {reward.connection.personTitle}</td>
+                                                        <td>{capitalizeInitial(reward.groupName)}</td>
+                                                    </tr>
+                                                )
+                                        }
+                                        <tr><td colSpan={2} class="placeholderRow"></td></tr>
+                                    </tbody>
+                                </table>
+                                <table class="listBox">
+                                    <thead>
+                                        <tr>
                                             <th style={{width: "50%"}}>{this.gameSetting.taskModeData[2].majorRewardDisplayName[2]}</th>
                                             <th>{this.gameSetting.taskModeData[2].majorRewardDisplayName[3]}</th>
                                         </tr>
