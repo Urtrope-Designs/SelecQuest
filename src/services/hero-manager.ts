@@ -2,7 +2,7 @@ import { Hero, HeroModificationType, HeroModification, TrialMajorReward, QuestMa
 import { randRange, deepCopyObject } from '../global/utils';
 import { IS_DEBUG } from '../global/config';
 import { GameSettingsManager } from './game-settings-manager';
-import { HeroInitData, HeroAbilityType, LootMajorReward, HeroAbility } from '../models/hero-models';
+import { HeroInitData, HeroAbilityType, LootMajorReward, HeroAbility, TrialRanking } from '../models/hero-models';
 import { GameSetting } from '../global/game-setting';
 import { TaskMode } from '../models/task-models';
 import { GameConfigManager } from './game-config-manager';
@@ -36,7 +36,11 @@ export class HeroManager {
             abilities: gameSetting.abilityTypes.map(aT => {return {name: aT.displayName, received: []}}),
             lootMajorRewards: gameSetting.lootMajorRewardTypes.map(rt => ({type: rt.name, description: '', effectiveLevel: 0})),
             trialMajorRewards: gameSetting.trialMajorRewardTypes.map(rt => ({type: rt, received: []})),
-            trialRankings: Array(3).fill({rankingSystemName: 'Test System', currentRanking: 10, worstRanking: 10}) 
+            trialRankings: [
+                {rankingSystemName: 'Test System1', currentRanking: 10, worstRanking: 10},
+                {rankingSystemName: 'Test System2', currentRanking: 10, worstRanking: 10},
+                {rankingSystemName: 'Test System3', currentRanking: 10, worstRanking: 10},
+            ]
                 // gameSetting.trialRankingSystems.map(rS => {
                 // const compClass = gameSetting.trialCompetitiveClasses[0];
                 // const rank =  compClass.totalRankCount + randRange(-1*compClass.totalRankCount * rS.maxRankCountDeviationPercent, compClass.totalRankCount * rS.maxRankCountDeviationPercent);
@@ -217,6 +221,19 @@ export class HeroManager {
                         }
                         newHero.latestModifications.push({attributeName: result.attributeName, data: newTrialMajorReward.type});
                     })
+                    break;
+                case HeroModificationType.SET_TRIAL_RANKING:
+                    /* trialRanking */
+                    result.data.map((newTrialRanking: TrialRanking) => {
+                        const existingRanking: TrialRanking = newHero[result.attributeName].find(r => r.rankingSystemName == newTrialRanking.rankingSystemName);
+                        if (!!existingRanking) {
+                            existingRanking.currentRanking = newTrialRanking.currentRanking;
+                            if (newTrialRanking.worstRanking != null) {
+                                existingRanking.worstRanking = newTrialRanking.worstRanking;
+                            }
+                            newHero.latestModifications.push({attributeName: result.attributeName, data: newTrialRanking.rankingSystemName});
+                        }
+                    });
                     break;
                 case HeroModificationType.ADD_QUEST_MAJOR_REWARD:
                     /* questMajorRewards */

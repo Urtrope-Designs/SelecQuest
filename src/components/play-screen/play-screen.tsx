@@ -302,7 +302,7 @@ export class PlayScreen {
                                 <table class="listBox">
                                     <thead>
                                         <tr>
-                                            <th style={{width: "60%"}}>System</th>
+                                            <th style={{width: "65%"}}>System</th>
                                             <th>Ranking</th>
                                         </tr>
                                     </thead>

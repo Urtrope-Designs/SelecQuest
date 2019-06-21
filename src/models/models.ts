@@ -73,6 +73,7 @@ export enum HeroModificationType {
     REMOVE_QUANTITY,
     SET_TEARDOWN_MODE,
     ADD_CURRENCY,
+    SET_TRIAL_RANKING,
 }
 
 export interface HeroStat {
