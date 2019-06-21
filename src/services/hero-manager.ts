@@ -36,6 +36,12 @@ export class HeroManager {
             abilities: gameSetting.abilityTypes.map(aT => {return {name: aT.displayName, received: []}}),
             lootMajorRewards: gameSetting.lootMajorRewardTypes.map(rt => ({type: rt.name, description: '', effectiveLevel: 0})),
             trialMajorRewards: gameSetting.trialMajorRewardTypes.map(rt => ({type: rt, received: []})),
+            trialRankings: Array(3).fill({rankingSystemName: 'Test System', currentRanking: 10, worstRanking: 10}) 
+                // gameSetting.trialRankingSystems.map(rS => {
+                // const compClass = gameSetting.trialCompetitiveClasses[0];
+                // const rank =  compClass.totalRankCount + randRange(-1*compClass.totalRankCount * rS.maxRankCountDeviationPercent, compClass.totalRankCount * rS.maxRankCountDeviationPercent);
+                ,
+            trialCurrentCompetitiveClassName: 'Test Weight', /*gameSetting.trialCompetitiveClasses[0].competitiveClassName,*/
             questMajorRewards: [],
             get maxLootBuildUp() {return this.stats[gameSetting.taskModeData[TaskMode.LOOT_MODE].buildUpLimitBaseStatIndex].value + 10},
             get maxTrialBuildUp() {return this.stats[gameSetting.taskModeData[TaskMode.TRIAL_MODE].buildUpLimitBaseStatIndex].value + 10},

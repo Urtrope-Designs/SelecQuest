@@ -294,6 +294,29 @@ export class PlayScreen {
                             </section>
                             : this.activeGameViewTab == this.gameSetting.gameViewTabDisplayNames[GameViewTab.DEEDS]
                             ? <section>
+                                <p>
+                                    <div sq-flex class="textRow">
+                                        <span sq-mr-auto>Competitive Class</span> {this.appState.hero.trialCurrentCompetitiveClassName}
+                                    </div>
+                                </p>
+                                <table class="listBox">
+                                    <thead>
+                                        <tr>
+                                            <th style={{width: "60%"}}>System</th>
+                                            <th>Ranking</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            this.appState.hero.trialRankings.map(trialRanking =>
+                                                <tr>
+                                                    <td>{trialRanking.rankingSystemName}</td>
+                                                    <td>{trialRanking.currentRanking}</td>
+                                                </tr>
+                                            )
+                                        }
+                                    </tbody>
+                                </table>
                                 <table class="listBox">
                                     <thead>
                                         <tr>

@@ -38,3 +38,9 @@ export interface LootMajorReward {
     description: string,
     effectiveLevel: number,
 };
+
+export interface TrialRanking {
+    rankingSystemName: string;
+    worstRanking: number;
+    currentRanking: number;
+}

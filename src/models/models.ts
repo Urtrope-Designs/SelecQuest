@@ -1,4 +1,4 @@
-import { HeroAbilityType, Adventure, LootMajorReward } from "./hero-models";
+import { HeroAbilityType, Adventure, LootMajorReward, TrialRanking } from "./hero-models";
 import { TaskMode } from "./task-models";
 
 /** Task related */
@@ -118,6 +118,8 @@ export interface Hero {
     // major rewards
     lootMajorRewards: LootMajorReward[];
     trialMajorRewards: TrialMajorReward[];
+    trialCurrentCompetitiveClassName: string;
+    trialRankings: TrialRanking[];
     questMajorRewards: QuestMajorReward[];
 
     // long-term limits

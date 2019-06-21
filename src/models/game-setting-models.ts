@@ -22,6 +22,8 @@ export interface GameSettingConfig {
     lootMajorRewardMaterialTypes: LootMajorRewardMaterialType[];
     lootMajorRewardModifierTypes: LootMajorRewardModifierType[];
     trialMajorRewardTypes: string[];
+    trialCompetitiveClasses: TrialCompetitiveClass[];
+    trialRankingSystems: TrialRankingSystem[];
     questMajorRewardGroups: QuestMajorRewardGroup[];
     epithetDescriptors: string[];
     epithetBeingAll: string[];
@@ -102,4 +104,14 @@ export interface NameSource {
 export interface QuestMajorRewardGroup {
     groupName: string;
     topOfficeName: string;
+}
+
+export interface TrialCompetitiveClass {
+    competitiveClassName: string;
+    totalRankCount: number;
+}
+
+export interface TrialRankingSystem {
+    rankingSystemName: string;
+    maxRankCountDeviationPercent: number;
 }

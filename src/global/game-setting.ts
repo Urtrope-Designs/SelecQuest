@@ -1,4 +1,4 @@
-import { GameSettingConfig, LootMajorRewardMaterialType, LootMajorRewardModifierType, TaskModeData, TaskPrefix, NameSource, QuestMajorRewardGroup } from "../models/game-setting-models";
+import { GameSettingConfig, LootMajorRewardMaterialType, LootMajorRewardModifierType, TaskModeData, TaskPrefix, NameSource, QuestMajorRewardGroup, TrialCompetitiveClass, TrialRankingSystem } from "../models/game-setting-models";
 import { HeroRace, TaskTarget, LeadGatheringTarget, HeroClass, TaskTargetType, LeadTarget } from "../models/models";
 import { AbilityType } from "../models/game-setting-models";
 import { PrologueTask, LootMajorRewardType } from "../models/hero-models";
@@ -31,6 +31,8 @@ export class GameSetting {
     readonly duelTaskGerund: string;
     readonly trialTaskGerund: string;
     readonly trialMajorRewardTypes: string[];
+    readonly trialCompetitiveClasses: TrialCompetitiveClass[];
+    readonly trialRankingSystems: TrialRankingSystem[];
     readonly epithetDescriptors: string[];
     readonly epithetBeingAll: string[];
     readonly sobriquetModifiers: string[];
@@ -78,6 +80,8 @@ export class GameSetting {
             throw 'Length of trialMajorRewardTypes array not equal to 2 in ' + config.gameSettingName;
         }
         this.trialMajorRewardTypes = config.trialMajorRewardTypes;
+        this.trialCompetitiveClasses = config.trialCompetitiveClasses;
+        this.trialRankingSystems = config.trialRankingSystems;
         this.epithetDescriptors = config.epithetDescriptors;
         this.epithetBeingAll = config.epithetBeingAll;
         this.sobriquetModifiers = config.sobriquetModifiers;
