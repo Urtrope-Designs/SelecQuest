@@ -1,0 +1,1753 @@
+{
+    "abilityTypes": [
+        {
+            "availableValues": [
+                "Summon Snack",
+                "Make water",
+                "Tonguehairs",
+                "Eggsmoke",
+                "Miasmatic Ward",
+                "Goatsneeze",
+                "Digest",
+                "Trace Outline",
+                "Dutch Whisper",
+                "Gamey Aftertaste",
+                "Whistlenut",
+                "Sinterslix’s Bottomless Bundle",
+                "Heatherlips",
+                "Doubleflush",
+                "Dedandify",
+                "Hide Agenda",
+                "Protection from Geometry",
+                "Undigest",
+                "Bisonic Sphere",
+                "Detect Limp",
+                "Bamboozle",
+                "Suddenly Sand Wedge",
+                "Boggrum’s Mighty Hush"
+            ],
+            "baseStatIndex": 3,
+            "displayName": "spells"
+        },
+        {
+            "availableValues": [
+                "Left Hook",
+                "Rope Tow",
+                "Jab",
+                "Preemptive shriek",
+                "Swingsies",
+                "Appropriate snack",
+                "Uppercut",
+                "Twist and Trout",
+                "Rope Climb",
+                "Omnilateral strike",
+                "Toothwhistle",
+                "Back attack",
+                "Soul Prick",
+                "Sonically weld",
+                "Half-time March",
+                "Imitate Mating Call",
+                "Chondromalacia Patella",
+                "Unnerving wink",
+                "Approach Infinity"
+            ],
+            "baseStatIndex": 1,
+            "displayName": "skills"
+        }
+    ],
+    "adventureTransitionTaskDescriptions": [
+        "Experiencing an enigmatic and foreboding night vision"
+    ],
+    "basicTaskTargets": [
+        {
+            "level": 1,
+            "name": "Barber Shop",
+            "namePlural": "Barber Shops",
+            "reward": "barber's cleaver",
+            "rewardPlural": "barber's cleavers",
+            "type": "location"
+        },
+        {
+            "level": 2,
+            "name": "Loamy Shoal",
+            "namePlural": "Loamy Shoals",
+            "reward": "loam brick",
+            "rewardPlural": "loam bricks",
+            "type": "location"
+        },
+        {
+            "level": 3,
+            "name": "NagaMart",
+            "namePlural": "NagaMarts",
+            "reward": "nagamart loyalty card",
+            "rewardPlural": "nagamart loyalty cards",
+            "type": "location"
+        },
+        {
+            "level": 4,
+            "name": "Mt. Kilowattauer",
+            "namePlural": "Mt. Kilowattauers",
+            "reward": "kilowatt surge",
+            "rewardPlural": "kilowatt surges",
+            "type": "location"
+        },
+        {
+            "level": 1,
+            "name": "Orkey",
+            "namePlural": "Orkeys",
+            "reward": "orkey giblet",
+            "rewardPlural": "orkey giblets",
+            "type": "foe"
+        },
+        {
+            "level": 1,
+            "name": "Frankenstork",
+            "namePlural": "Frankenstorks",
+            "reward": "frankenstork beak",
+            "rewardPlural": "frankenstork beaks",
+            "type": "foe"
+        },
+        {
+            "level": 1,
+            "name": "Bison",
+            "namePlural": "Bison",
+            "reward": "bison beard",
+            "rewardPlural": "bison beards",
+            "type": "foe"
+        },
+        {
+            "level": 3,
+            "name": "Mechanical marzipan",
+            "namePlural": "Mechanical marzipans",
+            "reward": "mechanical marzipan crumb",
+            "rewardPlural": "mechanical marzipan crumbs",
+            "type": "foe"
+        },
+        {
+            "level": 1,
+            "name": "Grumpkin",
+            "namePlural": "Grumpkins",
+            "reward": "grumpkin frown",
+            "rewardPlural": "grumpkin frowns",
+            "type": "foe"
+        },
+        {
+            "level": 5,
+            "name": "Sofa king",
+            "namePlural": "Sofa kings",
+            "reward": "sofa king cushion",
+            "rewardPlural": "sofa king cushions",
+            "type": "foe"
+        },
+        {
+            "level": 7,
+            "name": "Ratking",
+            "namePlural": "Ratkings",
+            "reward": "ratking tooth",
+            "rewardPlural": "ratking teeth",
+            "type": "foe"
+        },
+        {
+            "level": 4,
+            "name": "Debbie downer",
+            "namePlural": "Debbie downers",
+            "reward": "debbie downer miserabilium",
+            "rewardPlural": "debbie downer miserabilia",
+            "type": "foe"
+        },
+        {
+            "level": 2,
+            "name": "Feral butterfly",
+            "namePlural": "Feral butterflies",
+            "reward": "feral butterfly mandible",
+            "rewardPlural": "feral butterfly mandibles",
+            "type": "foe"
+        },
+        {
+            "level": 3,
+            "name": "Craptooth",
+            "namePlural": "Crapteeth",
+            "reward": "craptooth apology",
+            "rewardPlural": "craptooth apologies",
+            "type": "foe"
+        },
+        {
+            "level": 3,
+            "name": "Fire imp",
+            "namePlural": "Fire imps",
+            "reward": "fire imp cinder",
+            "rewardPlural": "fire imp cinders",
+            "type": "foe"
+        },
+        {
+            "level": 10,
+            "name": "Atoll troll",
+            "namePlural": "Atoll trolls",
+            "reward": "atoll troll coral cowl",
+            "rewardPlural": "atoll troll coral cowls",
+            "type": "foe"
+        },
+        {
+            "level": 1,
+            "name": "Goblin",
+            "namePlural": "Goblins",
+            "reward": "goblin gob",
+            "rewardPlural": "goblin gobs",
+            "type": "foe"
+        },
+        {
+            "level": 4,
+            "name": "Hobgoblin",
+            "namePlural": "Hobgoblins",
+            "reward": "hobgoblin hob",
+            "rewardPlural": "hobgoblin hobs",
+            "type": "foe"
+        },
+        {
+            "level": 6,
+            "name": "Knobgoblin",
+            "namePlural": "Knobgoblins",
+            "reward": "knobgoblin knob",
+            "rewardPlural": "knobgoblin knobs",
+            "type": "foe"
+        },
+        {
+            "level": 9,
+            "name": "Bloboblin",
+            "namePlural": "Bloboblins",
+            "reward": "bloboblin blob",
+            "rewardPlural": "bloboblin blobs",
+            "type": "foe"
+        },
+        {
+            "level": 2,
+            "name": "Street urchin",
+            "namePlural": "Street urchins",
+            "reward": "street urchin grime",
+            "rewardPlural": "street urchin grimes",
+            "type": "foe"
+        },
+        {
+            "level": 3,
+            "name": "Cutpurse",
+            "namePlural": "Cutpurses",
+            "reward": "cutpurse shiv",
+            "rewardPlural": "cutpurse shivs",
+            "type": "foe"
+        },
+        {
+            "level": 14,
+            "name": "Mindwheeler",
+            "namePlural": "Mindwheelers",
+            "reward": "mindwheeler kickstand",
+            "rewardPlural": "mindwheeler kickstands",
+            "type": "foe"
+        },
+        {
+            "level": 7,
+            "name": "Street magician",
+            "namePlural": "Street magicians",
+            "reward": "street magician illusion",
+            "rewardPlural": "street magician illusions",
+            "type": "foe"
+        },
+        {
+            "level": 5,
+            "name": "Ratprince",
+            "namePlural": "Ratprinces",
+            "reward": "ratprince tail",
+            "rewardPlural": "ratprince tails",
+            "type": "foe"
+        },
+        {
+            "level": 1,
+            "name": "Ratknave",
+            "namePlural": "Ratknaves",
+            "reward": "ratknave whisker",
+            "rewardPlural": "ratknave whiskers",
+            "type": "foe"
+        },
+        {
+            "level": 11,
+            "name": "Carbon genie",
+            "namePlural": "Carbon genies",
+            "reward": "carbon genie carbonaceous char",
+            "rewardPlural": "carbon genie carbonaceous chars",
+            "type": "foe"
+        },
+        {
+            "level": 7,
+            "name": "Plant-based protein golem",
+            "namePlural": "Plant-based protein golems",
+            "reward": "plant-based protein golem smoothie",
+            "rewardPlural": "plant-based protein golem smoothies",
+            "type": "foe"
+        },
+        {
+            "level": 14,
+            "name": "Superfood elemental",
+            "namePlural": "Superfood elementals",
+            "reward": "superfood elemental recipe",
+            "rewardPlural": "superfood elemental recipes",
+            "type": "foe"
+        },
+        {
+            "level": 1,
+            "name": "endurance challenge",
+            "namePlural": "endurance challenges",
+            "reward": "gold star",
+            "rewardPlural": "gold stars",
+            "type": "trial"
+        },
+        {
+            "level": 1,
+            "name": "bowling championship",
+            "namePlural": "bowling championships",
+            "reward": "bowling trophy",
+            "rewardPlural": "bowling trophies",
+            "type": "trial"
+        },
+        {
+            "level": 33,
+            "name": "Meme elemental",
+            "namePlural": "Meme elementals",
+            "reward": "Meme elemental gif",
+            "rewardPlural": "Meme elemental gifs",
+            "type": "foe"
+        },
+        {
+            "level": 13,
+            "name": "Dreadfodil",
+            "namePlural": "Dreadfodils",
+            "reward": "Dreadfodil petal",
+            "rewardPlural": "Dreadfodil petals",
+            "type": "foe"
+        },
+        {
+            "level": 15,
+            "name": "Skeleton",
+            "namePlural": "Skeletons",
+            "reward": "Skeleton scapula",
+            "rewardPlural": "Skeleton scapulae",
+            "type": "foe"
+        },
+        {
+            "level": 23,
+            "name": "Wraith",
+            "namePlural": "Wraiths",
+            "reward": "Wraith cape",
+            "rewardPlural": "Wraith capes",
+            "type": "foe"
+        },
+        {
+            "level": 9,
+            "name": "Grizzly",
+            "namePlural": "Grizzlies",
+            "reward": "Grizzly paw",
+            "rewardPlural": "Grizzly paws",
+            "type": "foe"
+        },
+        {
+            "level": 22,
+            "name": "Milk dragon",
+            "namePlural": "Milk dragons",
+            "reward": "Milk dragon carton",
+            "rewardPlural": "Milk dragon cartons",
+            "type": "foe"
+        },
+        {
+            "level": 26,
+            "name": "Myst wyrm",
+            "namePlural": "Myst wyrms",
+            "reward": "Myst wyrm secret page",
+            "rewardPlural": "Myst wyrm secret pages",
+            "type": "foe"
+        },
+        {
+            "level": 3,
+            "name": "spelling bee",
+            "namePlural": "spelling bees",
+            "reward": "spelling T-R-O-P-H-Y",
+            "rewardPlural": "spelling T-R-O-P-H-I-E-S",
+            "type": "trial"
+        },
+        {
+            "level": 10,
+            "name": "staring contest",
+            "namePlural": "staring contests",
+            "reward": "staring eye trophy",
+            "rewardPlural": "staring eye trophies",
+            "type": "trial"
+        },
+        {
+            "level": 4,
+            "name": "all-nighter",
+            "namePlural": "all-nighters",
+            "reward": "all-nighter eye bag",
+            "rewardPlural": "all-nighter eye bags",
+            "type": "trial"
+        },
+        {
+            "level": 18,
+            "name": "hot coal walk",
+            "namePlural": "hot coal walks",
+            "reward": "hot coal brand",
+            "rewardPlural": "hot coal brands",
+            "type": "trial"
+        },
+        {
+            "level": 99,
+            "name": "idle game run",
+            "namePlural": "idle game runs",
+            "reward": "idle game Easter Eggs",
+            "rewardPlural": "idle game Easter Eggs",
+            "type": "trial"
+        },
+        {
+            "level": 12,
+            "name": "two minute drill",
+            "namePlural": "two minute drills",
+            "reward": "two minute stratagem",
+            "rewardPlural": "two minute stratagems",
+            "type": "trial"
+        },
+        {
+            "level": 16,
+            "name": "vow of silence",
+            "namePlural": "vows of silence",
+            "reward": "vow of silence",
+            "rewardPlural": "vows of silence",
+            "type": "trial"
+        },
+        {
+            "level": 22,
+            "name": "fantastic voyage",
+            "namePlural": "fantastic voyages",
+            "reward": "fantastic voyage travelogue",
+            "rewardPlural": "fantastic voyage travelogues",
+            "type": "trial"
+        },
+        {
+            "level": 9,
+            "name": "thumb war",
+            "namePlural": "thumb wars",
+            "reward": "thumb war declaration",
+            "rewardPlural": "thumb war declarations",
+            "type": "trial"
+        },
+        {
+            "level": 8,
+            "name": "bones championship",
+            "namePlural": "bones championship",
+            "reward": "bones championship ring",
+            "rewardPlural": "bones championship rings",
+            "type": "trial"
+        },
+        {
+            "level": 18,
+            "name": "stones tournament",
+            "namePlural": "stones tournaments",
+            "reward": "stones plaque",
+            "rewardPlural": "stones plaques",
+            "type": "trial"
+        },
+        {
+            "level": 25,
+            "name": "jousting tourney",
+            "namePlural": "jousting tourneys",
+            "reward": "jousting victory",
+            "rewardPlural": "jousting victories",
+            "type": "trial"
+        },
+        {
+            "level": 35,
+            "name": "caber toss",
+            "namePlural": "caber tosses",
+            "reward": "12 o'clock caber toss",
+            "rewardPlural": "12 o'clock caber tosses",
+            "type": "trial"
+        },
+        {
+            "level": 7,
+            "name": "Sea weasel",
+            "namePlural": "Sea weasels",
+            "reward": "Sea weasel fur",
+            "rewardPlural": "Sea weasel furs",
+            "type": "foe"
+        },
+        {
+            "level": 1,
+            "name": "Greensward",
+            "namePlural": "Greenswards",
+            "reward": "greensward clipping",
+            "rewardPlural": "greensward clippings",
+            "type": "location"
+        },
+        {
+            "level": 2,
+            "name": "Man Cave",
+            "namePlural": "Man Caves",
+            "reward": "man cave funk",
+            "rewardPlural": "man cave funks",
+            "type": "location"
+        },
+        {
+            "level": 3,
+            "name": "Cheese Cave",
+            "namePlural": "Cheese Caves",
+            "reward": "cheese cave wheel",
+            "rewardPlural": "cheese cave wheels",
+            "type": "location"
+        },
+        {
+            "level": 5,
+            "name": "Cave",
+            "namePlural": "Caves",
+            "reward": "cave dropping",
+            "rewardPlural": "cave droppings",
+            "type": "location"
+        }
+    ],
+    "duelTaskGerund": "Dueling",
+    "epithetBeingAll": [
+        "Bard",
+        "Traveler",
+        "Wanderer",
+        "Adventurer",
+        "Conqueror"
+    ],
+    "epithetDescriptors": [
+        "Cow-eyed",
+        "Soggy",
+        "Milk-white",
+        "Weather-worn",
+        "Jaunty",
+        "Bronzed",
+        "Ruthless",
+        "Fleet-footed"
+    ],
+    "foeTaskGerund": "Executing",
+    "gameSettingId": "1",
+    "gameSettingName": "Fantasy",
+    "gameViewTabDisplayNames": [
+        "Hero",
+        "Gear",
+        "Deeds",
+        "Story",
+        "Game"
+    ],
+    "healthBaseStatIndex": 2,
+    "healthStatName": "HP",
+    "heroClasses": [
+        {
+            "name": "Veg Crisper",
+            "namePlural": "Veg Crispers"
+        },
+        {
+            "name": "Cat-caller",
+            "namePlural": "Cat-callers"
+        },
+        {
+            "name": "Metanarc",
+            "namePlural": "Metanarcs"
+        },
+        {
+            "name": "War Flautist",
+            "namePlural": "War Flautists"
+        },
+        {
+            "name": "Sarcasminista",
+            "namePlural": "Sarcasministas"
+        },
+        {
+            "name": "Meter Beater",
+            "namePlural": "Meter Beaters"
+        },
+        {
+            "name": "Chef de Cuisine",
+            "namePlural": "Chefs de Cuisine"
+        },
+        {
+            "name": "Basher",
+            "namePlural": "Bashers"
+        },
+        {
+            "name": "Smasher",
+            "namePlural": "Smashers"
+        },
+        {
+            "name": "Warlock",
+            "namePlural": "Warlocks"
+        },
+        {
+            "name": "Lumberjack",
+            "namePlural": "Lumberjacks"
+        },
+        {
+            "name": "Fighter",
+            "namePlural": "Fighters"
+        },
+        {
+            "name": "Boulderer",
+            "namePlural": "Boulderers"
+        },
+        {
+            "name": "Semaphorist",
+            "namePlural": "Semaphorists"
+        },
+        {
+            "name": "Load",
+            "namePlural": "Loads"
+        },
+        {
+            "name": "Rogue",
+            "namePlural": "Rogues"
+        },
+        {
+            "name": "Semi-retired Heckler",
+            "namePlural": "Semi-retired Hecklers"
+        }
+    ],
+    "heroRaces": [
+        {
+            "raceName": "Demimutant",
+            "trophyName": "genome",
+            "trophyNamePlural": "genomes"
+        },
+        {
+            "raceName": "Werefellow",
+            "trophyName": "bowler hat",
+            "trophyNamePlural": "bowler hats"
+        },
+        {
+            "raceName": "Fartling",
+            "trophyName": "cloud",
+            "trophyNamePlural": "clouds"
+        },
+        {
+            "raceName": "Owl-head",
+            "trophyName": "hoot",
+            "trophyNamePlural": "hoots"
+        },
+        {
+            "raceName": "Anthropomorphic Slug",
+            "trophyName": "trail",
+            "trophyNamePlural": "trails"
+        },
+        {
+            "raceName": "Wookipecker",
+            "trophyName": "braid",
+            "trophyNamePlural": "braids"
+        },
+        {
+            "raceName": "Trippelganger",
+            "trophyName": "triflection",
+            "trophyNamePlural": "triflections"
+        },
+        {
+            "raceName": "Genie",
+            "trophyName": "wish",
+            "trophyNamePlural": "wishes"
+        },
+        {
+            "raceName": "Butterfolk",
+            "trophyName": "churn",
+            "trophyNamePlural": "churns"
+        },
+        {
+            "raceName": "Pygmy Giant",
+            "trophyName": "vastus medialis",
+            "trophyNamePlural": "vastus mediales"
+        },
+        {
+            "raceName": "Half-mermaid",
+            "trophyName": "bident",
+            "trophyNamePlural": "bidents"
+        }
+    ],
+    "honorificTemplates": [
+        "%NAME%, Esquire",
+        "Prof %NAME%",
+        "Reverend %NAME%",
+        "Professor %NAME%",
+        "Swami %NAME%",
+        "%NAME%, MD",
+        "The Right Reverend %NAME%",
+        "Herr Doktor %NAME%",
+        "Frau Doktor %NAME%",
+        "Elder %NAME%",
+        "Your Excellency, %NAME%",
+        "The Most Honorable %NAME%",
+        "Primus %NAME%"
+    ],
+    "leadGatheringTargets": [
+        {
+            "gerundPhrase": "%gossipingGerunds% with",
+            "leadTypes": [
+                "fetch",
+                "deliver",
+                "defend"
+            ],
+            "predicateOptions": [
+                "%animateLeadSources%",
+                "%QUESTGROUPS%"
+            ]
+        },
+        {
+            "gerundPhrase": "scouring",
+            "leadTypes": [
+                "seek",
+                "exterminate"
+            ],
+            "predicateOptions": [
+                "%inanimateLeadSources%"
+            ]
+        }
+    ],
+    "leadTargets": [
+        {
+            "gerund": "fetching",
+            "leadType": "fetch",
+            "predicateOptions": [
+                "%INDEF_fetchTargetObjects%"
+            ],
+            "verb": "fetch"
+        },
+        {
+            "gerund": "delivering",
+            "leadType": "deliver",
+            "predicateOptions": [
+                "this %fetchTargetObjects%"
+            ],
+            "verb": "deliver"
+        },
+        {
+            "gerund": "seeking",
+            "leadType": "seek",
+            "predicateOptions": [
+                "the %seekTargetObjects%"
+            ],
+            "verb": "seek"
+        },
+        {
+            "gerund": "exterminating",
+            "leadType": "exterminate",
+            "predicateOptions": [
+                "the %PLURAL_FOE%"
+            ],
+            "verb": "exterminate"
+        },
+        {
+            "gerund": "defending",
+            "leadType": "defend",
+            "predicateOptions": [
+                "%places%"
+            ],
+            "verb": "defend"
+        }
+    ],
+    "locationTaskGerund": "Ransacking",
+    "lootMajorRewardMaterialTypes": [
+        {
+            "name": "Weapon",
+            "options": [
+                {
+                    "baseLevel": 3,
+                    "modifierType": "Offense",
+                    "name": "Ski Pole"
+                },
+                {
+                    "baseLevel": 15,
+                    "modifierType": "Offense",
+                    "name": "Power Glove™"
+                },
+                {
+                    "baseLevel": 4,
+                    "modifierType": "Offense",
+                    "name": "De-icer"
+                },
+                {
+                    "baseLevel": 8,
+                    "modifierType": "Offense",
+                    "name": "Wolf-eater"
+                },
+                {
+                    "baseLevel": 12,
+                    "modifierType": "Offense",
+                    "name": "Taserclaw"
+                },
+                {
+                    "baseLevel": 6,
+                    "modifierType": "Offense",
+                    "name": "Snagglesword"
+                },
+                {
+                    "baseLevel": 1,
+                    "modifierType": "Offense",
+                    "name": "Dowsing Rod"
+                },
+                {
+                    "baseLevel": 5,
+                    "modifierType": "Offense",
+                    "name": "Smart Iron"
+                },
+                {
+                    "baseLevel": 3,
+                    "modifierType": "Offense",
+                    "name": "Battle Tines"
+                },
+                {
+                    "baseLevel": 2,
+                    "modifierType": "Offense",
+                    "name": "Bâton"
+                },
+                {
+                    "baseLevel": 6,
+                    "modifierType": "Offense",
+                    "name": "Cat-o-nine-tails"
+                },
+                {
+                    "baseLevel": 3,
+                    "modifierType": "Offense",
+                    "name": "Gatortooth"
+                },
+                {
+                    "baseLevel": 3,
+                    "modifierType": "Offense",
+                    "name": "Unicorn Femur"
+                },
+                {
+                    "baseLevel": 1,
+                    "modifierType": "Offense",
+                    "name": "Skipping Stones"
+                },
+                {
+                    "baseLevel": 2,
+                    "modifierType": "Offense",
+                    "name": "Atl-atl"
+                },
+                {
+                    "baseLevel": 3,
+                    "modifierType": "Offense",
+                    "name": "Bo Staff"
+                },
+                {
+                    "baseLevel": 5,
+                    "modifierType": "Offense",
+                    "name": "War Knuckles"
+                },
+                {
+                    "baseLevel": 4,
+                    "modifierType": "Offense",
+                    "name": "Limb Wrench"
+                },
+                {
+                    "baseLevel": 6,
+                    "modifierType": "Offense",
+                    "name": "Pike"
+                },
+                {
+                    "baseLevel": 8,
+                    "modifierType": "Offense",
+                    "name": "Trepanner"
+                },
+                {
+                    "baseLevel": 5,
+                    "modifierType": "Offense",
+                    "name": "Power Trowel"
+                },
+                {
+                    "baseLevel": 4,
+                    "modifierType": "Offense",
+                    "name": "Halberd"
+                },
+                {
+                    "baseLevel": 3,
+                    "modifierType": "Offense",
+                    "name": "Poignard"
+                },
+                {
+                    "baseLevel": 5,
+                    "modifierType": "Offense",
+                    "name": "Truncheon"
+                },
+                {
+                    "baseLevel": 7,
+                    "modifierType": "Offense",
+                    "name": "Saber"
+                },
+                {
+                    "baseLevel": 9,
+                    "modifierType": "Offense",
+                    "name": "Fancy Fist"
+                },
+                {
+                    "baseLevel": 3,
+                    "modifierType": "Offense",
+                    "name": "Spiked Club"
+                }
+            ]
+        },
+        {
+            "name": "Shield",
+            "options": [
+                {
+                    "baseLevel": 1,
+                    "modifierType": "Defense",
+                    "name": "Frolf Disc"
+                },
+                {
+                    "baseLevel": 2,
+                    "modifierType": "Defense",
+                    "name": "Oak Burl"
+                },
+                {
+                    "baseLevel": 2,
+                    "modifierType": "Defense",
+                    "name": "Hide Shield"
+                },
+                {
+                    "baseLevel": 3,
+                    "modifierType": "Defense",
+                    "name": "Wicker Targe"
+                },
+                {
+                    "baseLevel": 3,
+                    "modifierType": "Defense",
+                    "name": "Ishlangu"
+                },
+                {
+                    "baseLevel": 3,
+                    "modifierType": "Defense",
+                    "name": "Wooden Buckler"
+                },
+                {
+                    "baseLevel": 4,
+                    "modifierType": "Defense",
+                    "name": "Heater Shield"
+                },
+                {
+                    "baseLevel": 5,
+                    "modifierType": "Defense",
+                    "name": "Hoplon"
+                },
+                {
+                    "baseLevel": 6,
+                    "modifierType": "Defense",
+                    "name": "Scutum"
+                },
+                {
+                    "baseLevel": 8,
+                    "modifierType": "Defense",
+                    "name": "Fridge Door"
+                }
+            ]
+        },
+        {
+            "name": "Armor",
+            "options": [
+                {
+                    "baseLevel": 1,
+                    "modifierType": "Defense",
+                    "name": "Oat Mail"
+                },
+                {
+                    "baseLevel": 1,
+                    "modifierType": "Defense",
+                    "name": "Mulch Mail"
+                },
+                {
+                    "baseLevel": 1,
+                    "modifierType": "Defense",
+                    "name": "Hair Mail"
+                },
+                {
+                    "baseLevel": 2,
+                    "modifierType": "Defense",
+                    "name": "Shingle Mail"
+                },
+                {
+                    "baseLevel": 2,
+                    "modifierType": "Defense",
+                    "name": "Denim"
+                },
+                {
+                    "baseLevel": 2,
+                    "modifierType": "Defense",
+                    "name": "Scrap Mail"
+                },
+                {
+                    "baseLevel": 3,
+                    "modifierType": "Defense",
+                    "name": "Kindling Mail"
+                },
+                {
+                    "baseLevel": 3,
+                    "modifierType": "Defense",
+                    "name": "Vegan Leather"
+                },
+                {
+                    "baseLevel": 3,
+                    "modifierType": "Defense",
+                    "name": "Bungee Mail"
+                },
+                {
+                    "baseLevel": 4,
+                    "modifierType": "Defense",
+                    "name": "Splinter Mail"
+                },
+                {
+                    "baseLevel": 5,
+                    "modifierType": "Defense",
+                    "name": "Mahogany"
+                },
+                {
+                    "baseLevel": 6,
+                    "modifierType": "Defense",
+                    "name": "Terra Cotta"
+                },
+                {
+                    "baseLevel": 7,
+                    "modifierType": "Defense",
+                    "name": "Stone"
+                },
+                {
+                    "baseLevel": 8,
+                    "modifierType": "Defense",
+                    "name": "Chain"
+                },
+                {
+                    "baseLevel": 9,
+                    "modifierType": "Defense",
+                    "name": "Ring Mail"
+                },
+                {
+                    "baseLevel": 10,
+                    "modifierType": "Defense",
+                    "name": "Fiberglass"
+                },
+                {
+                    "baseLevel": 12,
+                    "modifierType": "Defense",
+                    "name": "Kevlar"
+                }
+            ]
+        }
+    ],
+    "lootMajorRewardModifierTypes": [
+        {
+            "name": "Offense",
+            "options": [
+                {
+                    "levelModifier": 2,
+                    "name": "Precious"
+                },
+                {
+                    "levelModifier": 3,
+                    "name": "Leeching"
+                },
+                {
+                    "levelModifier": 4,
+                    "name": "Enforcing"
+                },
+                {
+                    "levelModifier": -2,
+                    "name": "Twee"
+                },
+                {
+                    "levelModifier": -3,
+                    "name": "Bungled"
+                }
+            ]
+        },
+        {
+            "name": "Defense",
+            "options": [
+                {
+                    "levelModifier": -1,
+                    "name": "Naff"
+                },
+                {
+                    "levelModifier": 2,
+                    "name": "Mixolydian"
+                },
+                {
+                    "levelModifier": 5,
+                    "name": "Tectonic"
+                },
+                {
+                    "levelModifier": -3,
+                    "name": "Bungled"
+                },
+                {
+                    "levelModifier": 4,
+                    "name": "Bespoke"
+                },
+                {
+                    "levelModifier": 1,
+                    "name": "Hardened"
+                },
+                {
+                    "levelModifier": -2,
+                    "name": "Ill-fitting"
+                },
+                {
+                    "levelModifier": 2,
+                    "name": "Distressed"
+                },
+                {
+                    "levelModifier": 3,
+                    "name": "Acid wash"
+                },
+                {
+                    "levelModifier": -4,
+                    "name": "Thunderlogged"
+                }
+            ]
+        }
+    ],
+    "lootMajorRewardTypes": [
+        {
+            "materialType": "Weapon",
+            "name": "Weapon"
+        },
+        {
+            "materialType": "Shield",
+            "name": "Shield"
+        },
+        {
+            "materialType": "Armor",
+            "name": "Helm"
+        },
+        {
+            "materialType": "Armor",
+            "name": "Hauberk"
+        },
+        {
+            "materialType": "Armor",
+            "name": "Brassairts"
+        },
+        {
+            "materialType": "Armor",
+            "name": "Vambraces"
+        },
+        {
+            "materialType": "Armor",
+            "name": "Gauntlets"
+        },
+        {
+            "materialType": "Armor",
+            "name": "Gambeson"
+        },
+        {
+            "materialType": "Armor",
+            "name": "Cuisses"
+        },
+        {
+            "materialType": "Armor",
+            "name": "Greaves"
+        },
+        {
+            "materialType": "Armor",
+            "name": "Sollerets"
+        }
+    ],
+    "magicBaseStatIndex": 3,
+    "magicStatName": "MP",
+    "nameSources": [
+        {
+            "options": [
+                "Funk",
+                "Audacity",
+                "Courage",
+                "Fecklessness"
+            ],
+            "source": "titleObjects"
+        },
+        {
+            "options": [
+                "Sturtevant",
+                "Duplainville",
+                "Kankakee",
+                "Reno",
+                "Swington",
+                "the Marshes of Mediocrity",
+                "the Tower of Trifling",
+                "Beggarton",
+                "Monrovia",
+                "the Misty Isles",
+                "the Seas of Cheese",
+                "Allbrainia",
+                "Bald Mountain",
+                "Hell",
+                "the Cranky Podiatrist",
+                "Big Floppy"
+            ],
+            "source": "places"
+        },
+        {
+            "options": [
+                "the local women's circle",
+                "your brew-pub crew",
+                "a bunch of retired ditch-diggers",
+                "a Traveling Circus",
+                "three ancient crones",
+                "some very venerated veterinarians",
+                "a happy-go-lucky chain gang"
+            ],
+            "source": "animateLeadSources"
+        },
+        {
+            "options": [
+                "the MonsterHunterz bulletin board",
+                "the latest issue of \"Spelunker's Booty\"",
+                "the trash heap behind the inn",
+                "the attic of the abandoned manor house",
+                "the catacombs",
+                "the town's dilapidated sewers",
+                "the taproom at The Whispered Whistle"
+            ],
+            "source": "inanimateLeadSources"
+        },
+        {
+            "options": [
+                "hot",
+                "fresh",
+                "new",
+                "buzzworthy",
+                "salacious"
+            ],
+            "source": "leadGatheringTaskModifiers"
+        },
+        {
+            "options": [
+                "nail",
+                "lunchpail",
+                "sock",
+                "I.O.U.",
+                "cookie",
+                "pint",
+                "toothpick",
+                "writ",
+                "newspaper",
+                "letter",
+                "plank",
+                "hat",
+                "egg",
+                "coin",
+                "needle",
+                "bucket",
+                "ladder",
+                "chicken",
+                "twig",
+                "dirtclod",
+                "counterpane",
+                "vest",
+                "teratoma",
+                "bunny",
+                "rock",
+                "pole",
+                "carrot",
+                "canoe",
+                "inkwell",
+                "hoe",
+                "bandage",
+                "trowel",
+                "towel",
+                "planter box",
+                "anvil",
+                "axle",
+                "tuppence",
+                "casket",
+                "nosegay",
+                "trinket",
+                "credenza",
+                "writ",
+                "roller skate",
+                "tutleneck",
+                "meat pouch",
+                "leg bag",
+                "pretzel"
+            ],
+            "source": "fetchTargetObjects"
+        },
+        {
+            "options": [
+                "Stewboots",
+                "Last Boner in Belfast",
+                "Standard of Mediocrity",
+                "Turgid Trumpet",
+                "Cumberbund of Combobulation",
+                "Secret Source Code",
+                "Colonel's Right Recipe",
+                "Fountain of Lamneth",
+                "Smooth Tube",
+                "Gelatinous Load ",
+                "Black Treacle",
+                "Dire Hydrant",
+                "Water Soluble Chews"
+            ],
+            "source": "seekTargetObjects"
+        },
+        {
+            "options": [
+                "gossiping",
+                "shooting the shit",
+                "commiserating",
+                "conversating",
+                "chatting"
+            ],
+            "source": "gossipingGerunds"
+        }
+    ],
+    "officeIterationName": "term",
+    "officePositionsAll": [
+        "Noob",
+        "Pawn",
+        "Lackey",
+        "Patsy",
+        "Court Jester",
+        "Mascot",
+        "Treasurer",
+        "Transliterator",
+        "Artist-in-Residence",
+        "Reconnoitrer",
+        "Striker",
+        "Fixer",
+        "Speaker",
+        "Secretary General",
+        "Captain",
+        "Director"
+    ],
+    "prologueAdventureName": "Prologue",
+    "prologueTasks": [
+        {
+            "durationSeconds": 10,
+            "taskDescription": "Experiencing an enigmatic and foreboding night vision"
+        },
+        {
+            "durationSeconds": 6,
+            "taskDescription": "Much is revealed about that wise old bastard you'd underestimated"
+        },
+        {
+            "durationSeconds": 6,
+            "taskDescription": "A shocking series of events leaves you alone and bewildered, but resolute"
+        },
+        {
+            "durationSeconds": 4,
+            "taskDescription": "Drawing upon an unrealized reserve of determination, you set out on a long and dangerous journey"
+        },
+        {
+            "durationSeconds": 2,
+            "taskDescription": "Loading"
+        }
+    ],
+    "questMajorRewardGroups": [
+        {
+            "groupName": "the Hawkers",
+            "topOfficeName": "Lord Raptor"
+        },
+        {
+            "groupName": "the Thieves Guild",
+            "topOfficeName": "Gloommaster"
+        },
+        {
+            "groupName": "the Volleyball Team",
+            "topOfficeName": "God-Captain"
+        },
+        {
+            "groupName": "the Young Neocons Chapter",
+            "topOfficeName": "Messiah"
+        },
+        {
+            "groupName": "the Trappers Guild",
+            "topOfficeName": "Clampmaster"
+        },
+        {
+            "groupName": "the Wingnut Gang",
+            "topOfficeName": "Big Cheese"
+        },
+        {
+            "groupName": "the International Association for Hobbyist Bloodletters",
+            "topOfficeName": "Arch-leech"
+        },
+        {
+            "groupName": "the Dungeoneers Guild",
+            "topOfficeName": "Chief Digger"
+        },
+        {
+            "groupName": "the Scissors Wizards",
+            "topOfficeName": "Prime Prestidigitator"
+        },
+        {
+            "groupName": "the Circle of Fourteen",
+            "topOfficeName": "Master Möbian"
+        },
+        {
+            "groupName": "the Triumphant Tragedians",
+            "topOfficeName": "Principal Wailer"
+        },
+        {
+            "groupName": "Bards without Borders",
+            "topOfficeName": "Crooner Captain"
+        },
+        {
+            "groupName": "Undead Anonymous",
+            "topOfficeName": "Great Grand-Lich"
+        },
+        {
+            "groupName": "the Keepers of the Timeless Flame",
+            "topOfficeName": "Last Trapper-Keeper"
+        },
+        {
+            "groupName": "the Ancient Anachrons",
+            "topOfficeName": "Super Vizier"
+        }
+    ],
+    "randomNameParts": [
+        "br|cr|dr|fr|gr|j|kr|l|m|n|pr|r|sh|tr|v|wh|x|y|z|",
+        "a|a|e|e|i|i|o|o|u|u|ae|ie|oo|ou",
+        "b|ck|d|g|k|m|n|p|t|v|x|z"
+    ],
+    "sobriquetModifiers": [
+        "Old",
+        "The",
+        "Copper",
+        "Big"
+    ],
+    "sobriquetNounPortions": [
+        "fox",
+        "tims",
+        "soul",
+        "crank",
+        "munch",
+        "tugger",
+        "tower",
+        "blossom",
+        "sweet",
+        "silver",
+        "bell",
+        "dale",
+        "horn",
+        "way",
+        "star",
+        "spark",
+        "fen",
+        "dew"
+    ],
+    "statNames": [
+        "str",
+        "dex",
+        "con",
+        "int",
+        "wis",
+        "cha"
+    ],
+    "staticNames": [
+        "Scutabrix",
+        "Crinkle",
+        "Garg",
+        "Swindlefoot",
+        "Melse",
+        "Kriiblin",
+        "Sklinther",
+        "Dax",
+        "Micker",
+        "Timpa",
+        "Obopomopa",
+        "Benjin",
+        "Kroolkis",
+        "Roloc",
+        "Zephlan",
+        "Youlil",
+        "Copperfunt",
+        "Xexzyzx"
+    ],
+    "taskModeData": [
+        {
+            "buildUpLimitBaseStatIndex": 0,
+            "buildUpLimitDisplayName": "Encumbrance",
+            "buildUpRewardDisplayName": "Loot",
+            "currencyDisplayName": "Gold",
+            "earnMajorRewardTaskDescriptionOptions": [
+                "Negotiating the purchase of better equipment"
+            ],
+            "environmentalLimitBaseStatIndex": 3,
+            "environmentalLimitBreakDisplayName": "Market Saturated",
+            "environmentalLimitDisplayName": "Market Saturation",
+            "isCurrencyCumulative": false,
+            "majorRewardDisplayName": [
+                "Equipment"
+            ],
+            "startBuildUpTaskDescriptionOptions": [
+                "Heading out to find some swag"
+            ],
+            "startTearDownTaskDescriptionOptions": [
+                "Heading to market to pawn your loot"
+            ],
+            "taskModeActionName": "Loot Mode"
+        },
+        {
+            "buildUpLimitBaseStatIndex": 2,
+            "buildUpLimitDisplayName": "Fatigue",
+            "buildUpRewardDisplayName": "Trophies",
+            "currencyDisplayName": "Renown",
+            "earnMajorRewardTaskDescriptionOptions": [
+                "Being honored for your glorious achievements"
+            ],
+            "environmentalLimitBaseStatIndex": 5,
+            "environmentalLimitBreakDisplayName": "Overhyped",
+            "environmentalLimitDisplayName": "Competitive Demand",
+            "isCurrencyCumulative": true,
+            "majorRewardDisplayName": [
+                "Accolades"
+            ],
+            "startBuildUpTaskDescriptionOptions": [
+                "Heading off in search of glory"
+            ],
+            "startTearDownTaskDescriptionOptions": [
+                "Heading to the nearest inn to boast of your recent deeds"
+            ],
+            "taskModeActionName": "Trial Mode"
+        },
+        {
+            "buildUpLimitBaseStatIndex": 3,
+            "buildUpLimitDisplayName": "Questlog",
+            "buildUpRewardDisplayName": "Quests",
+            "currencyDisplayName": "Reputation",
+            "earnMajorRewardTaskDescriptionOptions": [
+                "Solidifying a new connection"
+            ],
+            "environmentalLimitBaseStatIndex": 4,
+            "environmentalLimitBreakDisplayName": "Overexposed",
+            "environmentalLimitDisplayName": "Social Exposure",
+            "isCurrencyCumulative": true,
+            "majorRewardDisplayName": [
+                "Connections",
+                "Group",
+                "Memberships",
+                "Office"
+            ],
+            "startBuildUpTaskDescriptionOptions": [
+                "Rooting out some %leadGatheringTaskModifiers% leads"
+            ],
+            "startTearDownTaskDescriptionOptions": [
+                "Organizing your Questlog"
+            ],
+            "taskModeActionName": "Quest Mode"
+        }
+    ],
+    "taskPrefixes": [
+        {
+            "degree": "minimal",
+            "options": [
+                "imaginary"
+            ],
+            "taskTargetType": "location"
+        },
+        {
+            "degree": "bad first",
+            "options": [
+                "dank",
+                "desolate",
+                "vandalized",
+                "cobwebby",
+                "dreary"
+            ],
+            "taskTargetType": "location"
+        },
+        {
+            "degree": "bad second",
+            "options": [
+                "abandoned",
+                "underwhelming",
+                "uninviting",
+                "crumbling",
+                "ramshackle"
+            ],
+            "taskTargetType": "location"
+        },
+        {
+            "degree": "maximal",
+            "options": [
+                "preeminent"
+            ],
+            "taskTargetType": "location"
+        },
+        {
+            "degree": "good first",
+            "options": [
+                "posh",
+                "thriving",
+                "sturdy",
+                "fortified",
+                "sinister",
+                "sprawling"
+            ],
+            "taskTargetType": "location"
+        },
+        {
+            "degree": "good second",
+            "options": [
+                "booby-trapped",
+                "ominous",
+                "creepy",
+                "renovated",
+                "massive"
+            ],
+            "taskTargetType": "location"
+        },
+        {
+            "degree": "minimal",
+            "options": [
+                "imaginary"
+            ],
+            "taskTargetType": "foe"
+        },
+        {
+            "degree": "bad first",
+            "options": [
+                "dead",
+                "comatose",
+                "crippled",
+                "sick",
+                "undernourished",
+                "long-winded"
+            ],
+            "taskTargetType": "foe"
+        },
+        {
+            "degree": "bad second",
+            "options": [
+                "foetal",
+                "baby",
+                "preadolescent",
+                "teenage",
+                "underage"
+            ],
+            "taskTargetType": "foe"
+        },
+        {
+            "degree": "maximal",
+            "options": [
+                "messianic"
+            ],
+            "taskTargetType": "foe"
+        },
+        {
+            "degree": "good first",
+            "options": [
+                "greater",
+                "massive",
+                "enormous",
+                "giant",
+                "titanic"
+            ],
+            "taskTargetType": "foe"
+        },
+        {
+            "degree": "good second",
+            "options": [
+                "veteran",
+                "cursed",
+                "warrior",
+                "undead",
+                "demon"
+            ],
+            "taskTargetType": "foe"
+        },
+        {
+            "degree": "minimal",
+            "options": [
+                "mock"
+            ],
+            "taskTargetType": "trial"
+        },
+        {
+            "degree": "bad first",
+            "options": [
+                "short",
+                "quick",
+                "basic",
+                "underwhelming",
+                "brief"
+            ],
+            "taskTargetType": "trial"
+        },
+        {
+            "degree": "bad second",
+            "options": [
+                "easy",
+                "unceremonious",
+                "casual",
+                "impromptu",
+                "lite",
+                "predictable"
+            ],
+            "taskTargetType": "trial"
+        },
+        {
+            "degree": "maximal",
+            "options": [
+                "insane"
+            ],
+            "taskTargetType": "trial"
+        },
+        {
+            "degree": "good first",
+            "options": [
+                "neverending",
+                "long",
+                "draining",
+                "enduring",
+                "extended"
+            ],
+            "taskTargetType": "trial"
+        },
+        {
+            "degree": "good second",
+            "options": [
+                "arduous",
+                "onerous",
+                "demanding",
+                "challenging",
+                "herculean"
+            ],
+            "taskTargetType": "trial"
+        }
+    ],
+    "titlePositionsAll": [
+        {
+            "description": "Vice-corporal",
+            "titleObjectList": [
+                "%places%",
+                "%titleObjects%"
+            ]
+        },
+        {
+            "description": "Poet Laureate",
+            "titleObjectList": [
+                "%places%"
+            ]
+        },
+        {
+            "description": "Blue Ribbon Winner",
+            "titleObjectList": [
+                "%titleObjects%"
+            ]
+        },
+        {
+            "description": "Connoisseur",
+            "titleObjectList": [
+                "%titleObjects%"
+            ]
+        }
+    ],
+    "trialMajorRewardTypes": [
+        "Epithets",
+        "Titles",
+        "Sobriquets",
+        "Honorifics"
+    ],
+    "trialTaskGerund": "Undertaking"
+}

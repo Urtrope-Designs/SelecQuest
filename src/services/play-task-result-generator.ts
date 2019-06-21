@@ -1,8 +1,8 @@
 import { GameSettingsManager } from "./game-settings-manager";
 import { Adventure, HeroAbilityType, LootMajorReward } from "../models/hero-models";
 import { IS_DEBUG } from "../global/config";
-import { Hero, HeroModification, HeroModificationType, TrialMajorReward, TrialMajorRewardType, HeroTitlePosition, QuestMajorReward, HeroStat, HeroOffice, HeroConnection } from "../models/models";
-import { randRange, randFromList, randFromListLow, capitalizeInitial, randFromListHigh, generateRandomName } from "../global/utils";
+import { Hero, HeroModification, HeroModificationType, TrialMajorReward, TrialMajorRewardType, QuestMajorReward, HeroStat, HeroOffice, HeroConnection } from "../models/models";
+import { randRange, randFromList, randFromListLow, capitalizeInitial, generateRandomName } from "../global/utils";
 import { GameSetting } from "../global/game-setting";
 import { TaskMode } from "../models/task-models";
 import { GameConfigManager } from "./game-config-manager";
@@ -168,17 +168,9 @@ export class PlayTaskResultGenerator {
                 exclusions = hero.trialMajorRewards[TrialMajorRewardType.Epithets].received.join(' ');
                 newTrialMajorRewardDescription = this.generateRandomEpithetDescription(exclusions, gameSetting);
                 break;
-            case TrialMajorRewardType.Titles:
-                exclusions = hero.trialMajorRewards[TrialMajorRewardType.Titles].received.join(' ');
-                newTrialMajorRewardDescription = this.generateRandomTitleDescription(exclusions, gameSetting);
-                break;
             case TrialMajorRewardType.Sobriquets:
                 exclusions = hero.trialMajorRewards[TrialMajorRewardType.Sobriquets].received.join(' ');
                 newTrialMajorRewardDescription = this.generateRandomSobriquetDescription(exclusions, gameSetting);
-                break;
-            case TrialMajorRewardType.Honorifics:
-                exclusions = hero.trialMajorRewards[TrialMajorRewardType.Honorifics].received.join(' ');
-                newTrialMajorRewardDescription = this.generateRandomHonorificDescription(exclusions, hero.level, hero.name, gameSetting);
                 break;
         }
     
@@ -204,20 +196,6 @@ export class PlayTaskResultGenerator {
         let epithetDescription = `${epithetDescriptor} ${epithetBeing}`;
         return epithetDescription;
     };
-    private generateRandomTitleDescription(exclusions: string, gameSetting: GameSetting) {
-        let titlePosition: HeroTitlePosition;
-        let titleObject: string;
-        do {
-            titlePosition = randFromList(gameSetting.titlePositionsAll);
-        } while (exclusions.toLocaleLowerCase().includes(titlePosition.description.toLocaleLowerCase()));
-        do {
-            titleObject = gameSetting.hydrateFromNameSources(randFromList(titlePosition.titleObjectList));
-        } while (exclusions.toLocaleLowerCase().includes(titleObject.toLocaleLowerCase()));
-    
-        const titleDescription = `${titlePosition.description} of ${titleObject}`;
-    
-        return titleDescription;
-    }
     private generateRandomSobriquetDescription(exclusions: string, gameSetting: GameSetting) {
         let modifier = ''
         do {
@@ -236,20 +214,6 @@ export class PlayTaskResultGenerator {
     
         const sobriquetDescription = `${modifier} ${capitalizeInitial(noun)}`;
         return sobriquetDescription;
-    }
-    private generateRandomHonorificDescription(exclusions: string, targetLevel: number, heroName: string, gameSetting: GameSetting) {
-        let honorificTemplate: string;
-        let honorificDescription: string;
-        
-        const deviation = 4;
-        const minIndex = Math.min(targetLevel - deviation, gameSetting.honorificTemplates.length - deviation);
-        const maxIndex = Math.max(targetLevel + deviation, deviation);
-        do {
-            honorificTemplate = randFromListHigh(gameSetting.honorificTemplates, 1, minIndex, maxIndex);
-            honorificDescription = honorificTemplate.replace('%NAME%', heroName);
-        } while (exclusions.toLocaleLowerCase().includes(honorificDescription.toLocaleLowerCase()));
-        
-        return honorificDescription;
     }
     
     public generateNewQuestMajorRewardModification(hero: Hero): HeroModification {

@@ -1,4 +1,4 @@
-import { HeroRace, TaskTarget, LeadGatheringTarget, TaskTargetType, HeroTitlePosition, HeroClass, LeadTarget } from "./models";
+import { HeroRace, TaskTarget, LeadGatheringTarget, TaskTargetType, HeroClass, LeadTarget } from "./models";
 import { PrologueTask, LootMajorRewardType } from "./hero-models";
 
 export interface GameSettingConfig {
@@ -25,7 +25,6 @@ export interface GameSettingConfig {
     questMajorRewardGroups: QuestMajorRewardGroup[];
     epithetDescriptors: string[];
     epithetBeingAll: string[];
-    titlePositionsAll: HeroTitlePosition[];
     sobriquetModifiers: string[];
     sobriquetNounPortions: string[];
     honorificTemplates: string[];

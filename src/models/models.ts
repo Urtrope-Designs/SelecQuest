@@ -179,9 +179,7 @@ export interface QuestBuildUpReward {
 
 export enum TrialMajorRewardType {
     Epithets,
-    Titles,
     Sobriquets,
-    Honorifics,
 }
 
 /** Other :) */
@@ -202,9 +200,4 @@ export interface HeroRace {
 export interface HeroClass {
     name: string,
     namePlural: string,
-}
-
-export interface HeroTitlePosition {
-    description: string,
-    titleObjectList: string[],
 }

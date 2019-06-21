@@ -298,7 +298,7 @@ export class PlayScreen {
                                     <thead>
                                         <tr>
                                             <th style={{width: "45%"}}>{this.gameSetting.taskModeData[1].majorRewardDisplayName[0]}</th>
-                                            <th></th>    
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>

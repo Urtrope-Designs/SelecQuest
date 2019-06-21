@@ -1,5 +1,5 @@
 import { GameSettingConfig, LootMajorRewardMaterialType, LootMajorRewardModifierType, TaskModeData, TaskPrefix, NameSource, QuestMajorRewardGroup } from "../models/game-setting-models";
-import { HeroRace, TaskTarget, LeadGatheringTarget, HeroTitlePosition, HeroClass, TaskTargetType, LeadTarget } from "../models/models";
+import { HeroRace, TaskTarget, LeadGatheringTarget, HeroClass, TaskTargetType, LeadTarget } from "../models/models";
 import { AbilityType } from "../models/game-setting-models";
 import { PrologueTask, LootMajorRewardType } from "../models/hero-models";
 import { randFromList, makeStringIndefinite } from "./utils";
@@ -33,10 +33,8 @@ export class GameSetting {
     readonly trialMajorRewardTypes: string[];
     readonly epithetDescriptors: string[];
     readonly epithetBeingAll: string[];
-    readonly titlePositionsAll: HeroTitlePosition[];
     readonly sobriquetModifiers: string[];
     readonly sobriquetNounPortions: string[];
-    readonly honorificTemplates: string[];
     readonly questMajorRewardGroups: QuestMajorRewardGroup[];
     readonly leadGatheringTargets: LeadGatheringTarget[];
     readonly leadTargets: LeadTarget[];
@@ -76,16 +74,14 @@ export class GameSetting {
         this.lootMajorRewardMaterialTypes = config.lootMajorRewardMaterialTypes;
         this.lootMajorRewardModifierTypes = config.lootMajorRewardModifierTypes;
 
-        if(config.trialMajorRewardTypes.length != 4) {
-            throw 'Length of trialMajorRewardTypes array not equal to 4 in ' + config.gameSettingName;
+        if(config.trialMajorRewardTypes.length != 2) {
+            throw 'Length of trialMajorRewardTypes array not equal to 2 in ' + config.gameSettingName;
         }
         this.trialMajorRewardTypes = config.trialMajorRewardTypes;
         this.epithetDescriptors = config.epithetDescriptors;
         this.epithetBeingAll = config.epithetBeingAll;
-        this.titlePositionsAll = config.titlePositionsAll;
         this.sobriquetModifiers = config.sobriquetModifiers;
         this.sobriquetNounPortions = config.sobriquetNounPortions;
-        this.honorificTemplates = config.honorificTemplates;
         
         this.questMajorRewardGroups = config.questMajorRewardGroups;
         this.leadGatheringTargets = config.leadGatheringTargets;
