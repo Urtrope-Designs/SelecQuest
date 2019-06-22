@@ -37,9 +37,9 @@ export class HeroManager {
             lootMajorRewards: gameSetting.lootMajorRewardTypes.map(rt => ({type: rt.name, description: '', effectiveLevel: 0})),
             trialMajorRewards: gameSetting.trialMajorRewardTypes.map(rt => ({type: rt, received: []})),
             trialRankings: [
-                {rankingSystemName: 'Test System1', currentRanking: 10, worstRanking: 10},
-                {rankingSystemName: 'Test System2', currentRanking: 10, worstRanking: 10},
-                {rankingSystemName: 'Test System3', currentRanking: 10, worstRanking: 10},
+                {rankingSystemName: 'Test System 1', currentRanking: 10, worstRanking: 10},
+                {rankingSystemName: 'Test System 2', currentRanking: 10, worstRanking: 10},
+                {rankingSystemName: 'Test System 3', currentRanking: 10, worstRanking: 10},
             ]
                 // gameSetting.trialRankingSystems.map(rS => {
                 // const compClass = gameSetting.trialCompetitiveClasses[0];

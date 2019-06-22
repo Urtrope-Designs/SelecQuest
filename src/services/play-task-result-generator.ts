@@ -1,5 +1,5 @@
 import { GameSettingsManager } from "./game-settings-manager";
-import { Adventure, HeroAbilityType, LootMajorReward } from "../models/hero-models";
+import { Adventure, HeroAbilityType, LootMajorReward, TrialRanking } from "../models/hero-models";
 import { IS_DEBUG } from "../global/config";
 import { Hero, HeroModification, HeroModificationType, TrialMajorReward, TrialMajorRewardType, QuestMajorReward, HeroStat, HeroOffice, HeroConnection } from "../models/models";
 import { randRange, randFromList, randFromListLow, capitalizeInitial, generateRandomName } from "../global/utils";
@@ -145,6 +145,30 @@ export class PlayTaskResultGenerator {
     
         return newLootMajorReward;
     }
+
+    public generateTrialRankingUpdateModifications(hero: Hero): HeroModification {
+        const updateData = this.generateTrialRankingUpdateData(hero);
+
+        const mod: HeroModification = {
+            type: HeroModificationType.SET_TRIAL_RANKING,
+            attributeName: 'trialRankings',
+            data: updateData,
+        };
+
+        return mod;
+    }
+
+    public generateTrialRankingUpdateData(_hero: Hero): TrialRanking[] {
+        const updateData: TrialRanking[] = [
+            {
+                rankingSystemName: 'Test System 2',
+                worstRanking: null,
+                currentRanking: 8,
+            }
+        ];
+
+        return updateData;
+    } 
     
     public generateNewTrialMajorRewardModification(hero: Hero): HeroModification {
         const newTrialMajorRewardData = this.generateRandomTrialMajorReward(hero);

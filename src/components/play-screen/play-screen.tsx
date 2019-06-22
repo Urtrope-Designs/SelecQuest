@@ -309,7 +309,7 @@ export class PlayScreen {
                                     <tbody>
                                         {
                                             this.appState.hero.trialRankings.map(trialRanking =>
-                                                <tr>
+                                                <tr {...this.highlightModifiedAttribute('trialRankings', trialRanking.rankingSystemName)}>
                                                     <td>{trialRanking.rankingSystemName}</td>
                                                     <td>{trialRanking.currentRanking}</td>
                                                 </tr>

@@ -390,7 +390,9 @@ export class PlayTaskGenerator implements ITaskGenerator{
         },
         generateTask: (state: AppState) => {
             const gameSetting = this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId);
+            const rankingUpdates = this.taskResultGenerator.generateTrialRankingUpdateModifications(state.hero);
             const modifications = [
+                rankingUpdates,
                 {
                     type: HeroModificationType.SET_TEARDOWN_MODE,
                     attributeName: 'isInTeardownMode',
