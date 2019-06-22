@@ -46,6 +46,7 @@ export class HeroManager {
                 // const rank =  compClass.totalRankCount + randRange(-1*compClass.totalRankCount * rS.maxRankCountDeviationPercent, compClass.totalRankCount * rS.maxRankCountDeviationPercent);
                 ,
             trialCurrentCompetitiveClassName: 'Test Weight', /*gameSetting.trialCompetitiveClasses[0].competitiveClassName,*/
+            trialLastRankedCurrency: 0,
             questMajorRewards: [],
             get maxLootBuildUp() {return this.stats[gameSetting.taskModeData[TaskMode.LOOT_MODE].buildUpLimitBaseStatIndex].value + 10},
             get maxTrialBuildUp() {return this.stats[gameSetting.taskModeData[TaskMode.TRIAL_MODE].buildUpLimitBaseStatIndex].value + 10},

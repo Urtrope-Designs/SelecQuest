@@ -119,10 +119,13 @@ export interface Hero {
     // major rewards
     lootMajorRewards: LootMajorReward[];
     trialMajorRewards: TrialMajorReward[];
-    trialCurrentCompetitiveClassName: string;
-    trialRankings: TrialRanking[];
     questMajorRewards: QuestMajorReward[];
 
+    // ranking-related stuff
+    trialRankings: TrialRanking[];
+    trialCurrentCompetitiveClassName: string;
+    trialLastRankedCurrency: number;
+    
     // long-term limits
     lootEnvironmentalLimit: number;
     maxLootEnvironmentalLimit: number;
