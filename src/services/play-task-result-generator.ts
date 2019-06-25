@@ -158,12 +158,14 @@ export class PlayTaskResultGenerator {
         return mod;
     }
 
-    public generateTrialRankingUpdateData(_hero: Hero): TrialRanking[] {
+    public generateTrialRankingUpdateData(hero: Hero): TrialRanking[] {
+        const rankingValue = hero.currency[TaskMode.TRIAL_MODE] + hero.trialEnvironmentalLimit;
         const updateData: TrialRanking[] = [
             {
                 rankingSystemName: 'Test System 2',
                 worstRanking: null,
                 currentRanking: 8,
+                lastRankedValue: rankingValue,
             }
         ];
 

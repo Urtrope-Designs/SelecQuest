@@ -124,7 +124,6 @@ export interface Hero {
     // ranking-related stuff
     trialRankings: TrialRanking[];
     trialCurrentCompetitiveClassName: string;
-    trialLastRankedValue: number;
     trialLastCalculatedRankingSystemIndex: number;
     hasTrialRankingBeenRecalculated: boolean;
     

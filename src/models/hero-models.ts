@@ -43,4 +43,5 @@ export interface TrialRanking {
     rankingSystemName: string;
     worstRanking: number;
     currentRanking: number;
+    lastRankedValue: number;
 }
