@@ -275,6 +275,11 @@ export class PlayTaskGenerator implements ITaskGenerator{
                     attributeName: 'adventureProgress',
                     data: (Math.ceil(durationSeconds / (isMarketSaturated ? 2 : 1))),
                 },
+                {
+                    type: HeroModificationType.SET,
+                    attributeName: 'hasTrialRankingBeenRecalculated',
+                    data: false,
+                },
             ];
 
             const updatedHero = this.generateResultingHero(state.hero, modifications);
@@ -351,6 +356,11 @@ export class PlayTaskGenerator implements ITaskGenerator{
                         attributeName: 'lootEnvironmentalLimit',
                         data: sellQuantity,
                     },
+                    {
+                        type: HeroModificationType.SET,
+                        attributeName: 'hasTrialRankingBeenRecalculated',
+                        data: false,
+                    },
                 ]
                 const updatedHero = this.generateResultingHero(state.hero, modifications);
 
@@ -390,9 +400,7 @@ export class PlayTaskGenerator implements ITaskGenerator{
         },
         generateTask: (state: AppState) => {
             const gameSetting = this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId);
-            const rankingUpdates = this.taskResultGenerator.generateTrialRankingUpdateModifications(state.hero);
             const modifications = [
-                rankingUpdates,
                 {
                     type: HeroModificationType.SET_TEARDOWN_MODE,
                     attributeName: 'isInTeardownMode',
@@ -474,6 +482,11 @@ export class PlayTaskGenerator implements ITaskGenerator{
                     attributeName: 'adventureProgress',
                     data: (Math.ceil(durationSeconds / (isFatigued ? 2 : 1))),
                 },
+                {
+                    type: HeroModificationType.SET,
+                    attributeName: 'hasTrialRankingBeenRecalculated',
+                    data: false,
+                },
             ]
             const updatedHero = this.generateResultingHero(state.hero, modifications);
             const newTask: Task = {
@@ -548,6 +561,11 @@ export class PlayTaskGenerator implements ITaskGenerator{
                         type: HeroModificationType.INCREASE,
                         attributeName: 'trialEnvironmentalLimit',
                         data: 1,
+                    },
+                    {
+                        type: HeroModificationType.SET,
+                        attributeName: 'hasTrialRankingBeenRecalculated',
+                        data: false,
                     },
                 ];
                 const updatedHero = this.generateResultingHero(state.hero, modifications);
@@ -735,6 +753,11 @@ export class PlayTaskGenerator implements ITaskGenerator{
                         attributeName: 'adventureProgress',
                         data: (Math.ceil(durationSeconds / (isOverexposed ? 2 : 1))),
                     },
+                    {
+                        type: HeroModificationType.SET,
+                        attributeName: 'hasTrialRankingBeenRecalculated',
+                        data: false,
+                    },
                 ];
                 const updatedHero = this.generateResultingHero(state.hero, modifications);
                 
@@ -811,6 +834,42 @@ export class PlayTaskGenerator implements ITaskGenerator{
             return newTask;
         },
     };
+
+    recalculateTrialRankingsTaskGenerator: TaskGeneratorAlgorithm = {
+        shouldRun: (state: AppState) => {
+            let buildUpRewardLength;
+            switch(state.activeTaskMode) {
+                case TaskMode.LOOT_MODE:
+                    buildUpRewardLength = state.hero.lootBuildUpRewards.length;
+                    break;
+                case TaskMode.TRIAL_MODE:
+                    buildUpRewardLength = state.hero.trialBuildUpRewards.length;
+                    break;
+                case TaskMode.QUEST_MODE:
+                    buildUpRewardLength = state.hero.questBuildUpRewards.length;
+                    break;
+            }
+            return buildUpRewardLength <= 0 && !state.hero.hasTrialRankingBeenRecalculated;
+        },
+        generateTask: (state: AppState) => {
+            const rankingUpdates = this.taskResultGenerator.generateTrialRankingUpdateModifications(state.hero);
+            const modifications = [
+                rankingUpdates,
+                {
+                    type: HeroModificationType.SET,
+                    attributeName: 'hasTrialRankingBeenRecalculated',
+                    data: true,
+                },
+            ]
+            const updatedHero = this.generateResultingHero(state.hero, modifications);
+            const newTask: Task = {
+                description: 'Recalculating rankings...',
+                durationMs: 3 * 1000,
+                resultingHero: updatedHero,
+            };
+            return newTask;
+        }
+    }
     
     prologueTaskGenerator: TaskGeneratorAlgorithm = {
         shouldRun: (state: AppState) => {
@@ -889,6 +948,7 @@ export class PlayTaskGenerator implements ITaskGenerator{
                     this.lootBuildUpTaskGenerator,
                 ],
                 [       // teardownMode[0] == true
+                    this.recalculateTrialRankingsTaskGenerator,
                     this.earnLootMajorRewardTaskGenerator,
                     this.startLootBuildUpTaskGenerator,
                     this.lootTearDownTaskGenerator,
@@ -900,6 +960,7 @@ export class PlayTaskGenerator implements ITaskGenerator{
                     this.trialBuildUpTaskGenerator,
                 ],
                 [       // teardownMode[1] == true
+                    this.recalculateTrialRankingsTaskGenerator,
                     this.earnTrialMajorRewardTaskGenerator,
                     this.startTrialBuildUpTaskGenerator,
                     this.trialTearDownTaskGenerator,
@@ -911,6 +972,7 @@ export class PlayTaskGenerator implements ITaskGenerator{
                     this.questBuildUpTaskGenerator,
                 ],
                 [       // teardownMode[2] == true
+                    this.recalculateTrialRankingsTaskGenerator,
                     this.earnQuestMajorRewardTaskGenerator,
                     this.startQuestBuildUpTaskGenerator,
                     this.questTearDownTaskGenerator,

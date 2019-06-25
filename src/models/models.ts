@@ -124,7 +124,9 @@ export interface Hero {
     // ranking-related stuff
     trialRankings: TrialRanking[];
     trialCurrentCompetitiveClassName: string;
-    trialLastRankedCurrency: number;
+    trialLastRankedValue: number;
+    trialLastCalculatedRankingSystemIndex: number;
+    hasTrialRankingBeenRecalculated: boolean;
     
     // long-term limits
     lootEnvironmentalLimit: number;
