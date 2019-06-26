@@ -852,24 +852,15 @@ export class PlayTaskGenerator implements ITaskGenerator{
             return buildUpRewardLength <= 0 && !state.hero.hasTrialRankingBeenRecalculated;
         },
         generateTask: (state: AppState) => {
-            const gameSetting = this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId);
             const rankingUpdates = this.taskResultGenerator.generateTrialRankingUpdateModifications(state.hero);
-            let rankingSystemIndex = state.hero.trialLastCalculatedRankingSystemIndex + 1;
-            if (rankingSystemIndex >= gameSetting.trialRankingSystems.length) {
-                rankingSystemIndex = 0;
-            } 
+            
 
             const modifications = [
-                rankingUpdates,
+                ...rankingUpdates,
                 {
                     type: HeroModificationType.SET,
                     attributeName: 'hasTrialRankingBeenRecalculated',
                     data: true,
-                },
-                {
-                    type: HeroModificationType.SET,
-                    attributeName: 'trialLastCalculatedRankingSystemIndex',
-                    data: rankingSystemIndex,
                 },
             ]
             const updatedHero = this.generateResultingHero(state.hero, modifications);

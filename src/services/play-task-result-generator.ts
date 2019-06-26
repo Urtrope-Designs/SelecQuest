@@ -146,32 +146,40 @@ export class PlayTaskResultGenerator {
         return newLootMajorReward;
     }
 
-    public generateTrialRankingUpdateModifications(hero: Hero): HeroModification {
-        const updateData = this.generateTrialRankingUpdateData(hero);
-
-        const mod: HeroModification = {
-            type: HeroModificationType.SET_TRIAL_RANKING,
-            attributeName: 'trialRankings',
-            data: updateData,
-        };
-
-        return mod;
-    }
-
-    public generateTrialRankingUpdateData(hero: Hero): TrialRanking[] {
+    public generateTrialRankingUpdateModifications(hero: Hero): HeroModification[] {
+        const gameSetting = this.gameSettingsMgr.getGameSettingById(hero.gameSettingId);
+        let rankingSystemIndex = hero.trialLastCalculatedRankingSystemIndex + 1;
+        if (rankingSystemIndex >= gameSetting.trialRankingSystems.length) {
+            rankingSystemIndex = 0;
+        } 
+        const rankingSystemName = gameSetting.trialRankingSystems[rankingSystemIndex].rankingSystemName;
         const rankingValue = hero.currency[TaskMode.TRIAL_MODE] + hero.trialEnvironmentalLimit;
+        const newRanking = hero.trialRankings.find(r => r.rankingSystemName == rankingSystemName).currentRanking + 1;
         const updateData: TrialRanking[] = [
             {
-                rankingSystemName: 'Test System 2',
+                rankingSystemName: rankingSystemName,
                 worstRanking: null,
-                currentRanking: 8,
+                currentRanking: newRanking,
                 lastRankedValue: rankingValue,
             }
         ];
 
-        return updateData;
-    } 
-    
+        const mods: HeroModification[] = [
+            {
+                type: HeroModificationType.SET_TRIAL_RANKING,
+                attributeName: 'trialRankings',
+                data: updateData,
+            },
+            {
+                type: HeroModificationType.SET,
+                attributeName: 'trialLastCalculatedRankingSystemIndex',
+                data: rankingSystemIndex,
+            },
+        ];
+
+        return mods;
+    }
+
     public generateNewTrialMajorRewardModification(hero: Hero): HeroModification {
         const newTrialMajorRewardData = this.generateRandomTrialMajorReward(hero);
         
