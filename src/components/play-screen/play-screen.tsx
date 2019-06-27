@@ -296,7 +296,7 @@ export class PlayScreen {
                             ? <section>
                                 <p>
                                     <div sq-flex class="textRow">
-                                        <span sq-mr-auto>Competitive Class</span> {this.appState.hero.trialCurrentCompetitiveClassName}
+                                        <span sq-mr-auto>Competitive Class</span> {this.appState.hero.trialCurrentCompetitiveClass.competitiveClassName}
                                     </div>
                                 </p>
                                 <table class="listBox">

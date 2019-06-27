@@ -36,19 +36,12 @@ export class HeroManager {
             abilities: gameSetting.abilityTypes.map(aT => {return {name: aT.displayName, received: []}}),
             lootMajorRewards: gameSetting.lootMajorRewardTypes.map(rt => ({type: rt.name, description: '', effectiveLevel: 0})),
             trialMajorRewards: gameSetting.trialMajorRewardTypes.map(rt => ({type: rt, received: []})),
-            trialRankings: 
-            // [
-            //     {rankingSystemName: 'Test System 1', currentRanking: 10, worstRanking: 10, lastRankedValue: 0},
-            //     {rankingSystemName: 'Test System 2', currentRanking: 10, worstRanking: 10, lastRankedValue: 0},
-            //     {rankingSystemName: 'Test System 3', currentRanking: 10, worstRanking: 10, lastRankedValue: 0},
-            // ]
-                gameSetting.trialRankingSystems.map(rS => {
+            trialRankings: gameSetting.trialRankingSystems.map(rS => {
+                    // const compClass = gameSetting.trialCompetitiveClasses[0];
+                    // const rank =  compClass.totalRankCount + randRange(-1*compClass.totalRankCount * rS.maxRankCountDeviationPercent, compClass.totalRankCount * rS.maxRankCountDeviationPercent);
                     return {rankingSystemName: rS.rankingSystemName, currentRanking: 10, worstRanking: 10, lastRankedValue: 0};
-                })
-                // const compClass = gameSetting.trialCompetitiveClasses[0];
-                // const rank =  compClass.totalRankCount + randRange(-1*compClass.totalRankCount * rS.maxRankCountDeviationPercent, compClass.totalRankCount * rS.maxRankCountDeviationPercent);
-                ,
-            trialCurrentCompetitiveClassName: 'Test Weight', /*gameSetting.trialCompetitiveClasses[0].competitiveClassName,*/
+                }),
+            trialCurrentCompetitiveClass: {competitiveClassName: 'Test Weight', totalValueRequired: 150, startingCurrencyValue: 0}, /*gameSetting.trialCompetitiveClasses[0].competitiveClassName,*/
             trialLastCalculatedRankingSystemIndex: -1,
             hasTrialRankingBeenRecalculated: true,
             questMajorRewards: [],

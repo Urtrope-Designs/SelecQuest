@@ -37,6 +37,20 @@ export function randRange(min: number, max: number): number {
     return spread + min;
 }
 
+export function randomizeNumber(num: number, oddsInTenths: number, min = 1) {
+    let res = num;
+    for (let i = num; i >= 1; --i) {
+        if (randRange(1, 10) <= oddsInTenths) {
+            res += randSign();
+        }
+    }
+    if (min != null && res < min) {
+        res = min;
+    }
+
+    return res;
+}
+
 export function randSign(): number {
     return (randRange(0, 1) * 2) - 1;
 }

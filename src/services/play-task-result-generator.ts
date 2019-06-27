@@ -2,7 +2,7 @@ import { GameSettingsManager } from "./game-settings-manager";
 import { Adventure, HeroAbilityType, LootMajorReward, TrialRanking } from "../models/hero-models";
 import { IS_DEBUG } from "../global/config";
 import { Hero, HeroModification, HeroModificationType, TrialMajorReward, TrialMajorRewardType, QuestMajorReward, HeroStat, HeroOffice, HeroConnection } from "../models/models";
-import { randRange, randFromList, randFromListLow, capitalizeInitial, generateRandomName } from "../global/utils";
+import { randRange, randFromList, randFromListLow, capitalizeInitial, generateRandomName, randomizeNumber } from "../global/utils";
 import { GameSetting } from "../global/game-setting";
 import { TaskMode } from "../models/task-models";
 import { GameConfigManager } from "./game-config-manager";
@@ -148,19 +148,24 @@ export class PlayTaskResultGenerator {
 
     public generateTrialRankingUpdateModifications(hero: Hero): HeroModification[] {
         const gameSetting = this.gameSettingsMgr.getGameSettingById(hero.gameSettingId);
+
         let rankingSystemIndex = hero.trialLastCalculatedRankingSystemIndex + 1;
         if (rankingSystemIndex >= gameSetting.trialRankingSystems.length) {
             rankingSystemIndex = 0;
-        } 
+        }
+
         const rankingSystemName = gameSetting.trialRankingSystems[rankingSystemIndex].rankingSystemName;
-        const rankingValue = hero.currency[TaskMode.TRIAL_MODE] + hero.trialEnvironmentalLimit;
-        const newRanking = hero.trialRankings.find(r => r.rankingSystemName == rankingSystemName).currentRanking + 1;
+        const existingRanking = hero.trialRankings.find(r => r.rankingSystemName == rankingSystemName);
+        const newRankingValue = hero.currency[TaskMode.TRIAL_MODE] + hero.trialEnvironmentalLimit;
+        const valueRemainingToClassGoalCoefficient = Math.max(0, (hero.trialCurrentCompetitiveClass.totalValueRequired - newRankingValue) / (hero.trialCurrentCompetitiveClass.totalValueRequired - hero.trialCurrentCompetitiveClass.startingCurrencyValue));
+        const newRanking = randomizeNumber(Math.max(1, Math.ceil(existingRanking.currentRanking * valueRemainingToClassGoalCoefficient)), 1, 1);
+
         const updateData: TrialRanking[] = [
             {
                 rankingSystemName: rankingSystemName,
                 worstRanking: null,
                 currentRanking: newRanking,
-                lastRankedValue: rankingValue,
+                lastRankedValue: newRankingValue,
             }
         ];
 

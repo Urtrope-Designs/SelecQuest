@@ -1,4 +1,4 @@
-import { HeroAbilityType, Adventure, LootMajorReward, TrialRanking } from "./hero-models";
+import { HeroAbilityType, Adventure, LootMajorReward, TrialRanking, HeroCompetitiveClass } from "./hero-models";
 import { TaskMode } from "./task-models";
 
 /** Task related */
@@ -123,7 +123,7 @@ export interface Hero {
 
     // ranking-related stuff
     trialRankings: TrialRanking[];
-    trialCurrentCompetitiveClassName: string;
+    trialCurrentCompetitiveClass: HeroCompetitiveClass;
     trialLastCalculatedRankingSystemIndex: number;
     hasTrialRankingBeenRecalculated: boolean;
     

@@ -45,3 +45,9 @@ export interface TrialRanking {
     currentRanking: number;
     lastRankedValue: number;
 }
+
+export interface HeroCompetitiveClass {
+    competitiveClassName: string;
+    startingCurrencyValue: number;
+    totalValueRequired: number;
+}

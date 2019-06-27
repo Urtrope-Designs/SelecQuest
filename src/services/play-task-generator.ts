@@ -1,6 +1,6 @@
 import { TaskGeneratorAlgorithm, GameTaskGeneratorList, TaskMode, ITaskGenerator } from "../models/task-models";
 import { AppState, HeroModification, HeroModificationType, Task, TaskTarget, TaskTargetType, QuestBuildUpReward, LeadType, TrialBuildUpReward, LootBuildUpReward, Hero, HeroClass, LeadTarget } from "../models/models";
-import { makeStringIndefinite, randRange, randFromList, randSign, capitalizeInitial, generateRandomName } from "../global/utils";
+import { makeStringIndefinite, randRange, randFromList, capitalizeInitial, generateRandomName, randomizeNumber } from "../global/utils";
 import { PlayTaskResultGenerator } from "./play-task-result-generator";
 import { HeroManager } from "./hero-manager";
 import { GameSettingsManager } from "./game-settings-manager";
@@ -79,15 +79,7 @@ export class PlayTaskGenerator implements ITaskGenerator{
     }
 
     static randomizeTargetLevel(heroLevel: number): number {
-        let targetLevel = heroLevel;
-        for (let i = heroLevel; i >= 1; --i) {
-            if (randRange(1, 5) <= 2)
-                targetLevel += randSign();
-            }
-        if (targetLevel < 1) {
-            targetLevel = 1;
-        } 
-    
+        const targetLevel = randomizeNumber(heroLevel, 4, 1);
         return targetLevel;
     }
 
