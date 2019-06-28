@@ -841,7 +841,7 @@ export class PlayTaskGenerator implements ITaskGenerator{
                     buildUpRewardLength = state.hero.questBuildUpRewards.length;
                     break;
             }
-            return buildUpRewardLength <= 0 && !state.hero.hasTrialRankingBeenRecalculated;
+            return buildUpRewardLength <= 0 && !state.hero.hasTrialRankingBeenRecalculated && state.hero.currency[state.activeTaskMode] > 0;
         },
         generateTask: (state: AppState) => {
             const rankingUpdates = this.taskResultGenerator.generateTrialRankingUpdateModifications(state.hero);

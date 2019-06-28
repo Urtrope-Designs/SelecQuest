@@ -315,6 +315,7 @@ export class PlayScreen {
                                                 </tr>
                                             )
                                         }
+                                        <tr><td colSpan={2} class="placeholderRow"></td></tr>
                                     </tbody>
                                 </table>
                                 <table class="listBox">
