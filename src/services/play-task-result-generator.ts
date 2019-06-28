@@ -158,7 +158,7 @@ export class PlayTaskResultGenerator {
         const existingRanking = hero.trialRankings.find(r => r.rankingSystemName == rankingSystemName);
         const newRankingValue = hero.currency[TaskMode.TRIAL_MODE] + hero.trialEnvironmentalLimit;
         const valueRemainingToClassGoalCoefficient = Math.max(0, (hero.trialCurrentCompetitiveClass.totalValueRequired - newRankingValue) / (hero.trialCurrentCompetitiveClass.totalValueRequired - hero.trialCurrentCompetitiveClass.startingCurrencyValue));
-        const newRanking = randomizeNumber(Math.max(1, Math.ceil(existingRanking.currentRanking * valueRemainingToClassGoalCoefficient)), 1, 1);
+        const newRanking = Math.min(existingRanking.worstRanking, randomizeNumber(Math.max(1, Math.ceil(existingRanking.currentRanking * valueRemainingToClassGoalCoefficient)), 1, 1));
 
         const updateData: TrialRanking[] = [
             {

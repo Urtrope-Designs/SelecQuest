@@ -37,11 +37,12 @@ export class HeroManager {
             lootMajorRewards: gameSetting.lootMajorRewardTypes.map(rt => ({type: rt.name, description: '', effectiveLevel: 0})),
             trialMajorRewards: gameSetting.trialMajorRewardTypes.map(rt => ({type: rt, received: []})),
             trialRankings: gameSetting.trialRankingSystems.map(rS => {
-                    // const compClass = gameSetting.trialCompetitiveClasses[0];
-                    // const rank =  compClass.totalRankCount + randRange(-1*compClass.totalRankCount * rS.maxRankCountDeviationPercent, compClass.totalRankCount * rS.maxRankCountDeviationPercent);
-                    return {rankingSystemName: rS.rankingSystemName, currentRanking: 10, worstRanking: 10, lastRankedValue: 0};
+                    const compClass = gameSetting.trialCompetitiveClasses[0];
+                    const maxDeviation = Math.round(compClass.totalRankCount * (rS.maxRankCountDeviationPercent / 100));
+                    const rank = randRange(compClass.totalRankCount - maxDeviation, compClass.totalRankCount + maxDeviation);
+                    return {rankingSystemName: rS.rankingSystemName, currentRanking: rank, worstRanking: rank, lastRankedValue: 0};
                 }),
-            trialCurrentCompetitiveClass: {competitiveClassName: 'Test Weight', totalValueRequired: 150, startingCurrencyValue: 0}, /*gameSetting.trialCompetitiveClasses[0].competitiveClassName,*/
+            trialCurrentCompetitiveClass: {competitiveClassName: gameSetting.trialCompetitiveClasses[0].competitiveClassName, totalValueRequired: 150, startingCurrencyValue: 0},
             trialLastCalculatedRankingSystemIndex: -1,
             hasTrialRankingBeenRecalculated: true,
             questMajorRewards: [],
