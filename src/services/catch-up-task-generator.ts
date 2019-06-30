@@ -243,7 +243,7 @@ export class CatchUpTaskGenerator implements ITaskGenerator{
                 data: [],
             },
             {
-                type: HeroModificationType.SET_TEARDOWN_MODE,
+                type: HeroModificationType.SET_FOR_MODE,
                 attributeName: 'isInTeardownMode',
                 data: [{index: state.activeTaskMode, value: true}],
             },

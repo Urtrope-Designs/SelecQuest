@@ -1,5 +1,5 @@
 import { Hero, HeroModificationType, HeroModification, TrialMajorReward, QuestMajorReward } from '../models/models';
-import { randRange, deepCopyObject } from '../global/utils';
+import { randRange, deepCopyObject, factorialReduce } from '../global/utils';
 import { IS_DEBUG } from '../global/config';
 import { GameSettingsManager } from './game-settings-manager';
 import { HeroInitData, HeroAbilityType, LootMajorReward, HeroAbility, TrialRanking } from '../models/hero-models';
@@ -42,9 +42,13 @@ export class HeroManager {
                     const rank = randRange(compClass.totalRankCount - maxDeviation, compClass.totalRankCount + maxDeviation);
                     return {rankingSystemName: rS.rankingSystemName, currentRanking: rank, worstRanking: rank, lastRankedValue: 0};
                 }),
-            trialCurrentCompetitiveClass: {competitiveClassName: gameSetting.trialCompetitiveClasses[0].competitiveClassName, totalValueRequired: 150, startingCurrencyValue: 0},
+            trialCurrentCompetitiveClass: {
+                competitiveClassName: gameSetting.trialCompetitiveClasses[0].competitiveClassName,
+                totalValueRequired: factorialReduce(5, 1, (value => Math.ceil(HeroManager.getXpRequiredForNextLevel(value) / 6.5) * value)),
+                startingCurrencyValue: 0
+            },
             trialLastCalculatedRankingSystemIndex: -1,
-            hasTrialRankingBeenRecalculated: true,
+            hasTrialRankingBeenRecalculated: [true, true, true],
             questMajorRewards: [],
             get maxLootBuildUp() {return this.stats[gameSetting.taskModeData[TaskMode.LOOT_MODE].buildUpLimitBaseStatIndex].value + 10},
             get maxTrialBuildUp() {return this.stats[gameSetting.taskModeData[TaskMode.TRIAL_MODE].buildUpLimitBaseStatIndex].value + 10},
@@ -253,7 +257,7 @@ export class HeroManager {
                         newHero.latestModifications.push({attributeName: result.attributeName, data: newQuestMajorReward});
                     })
                     break;
-                case HeroModificationType.SET_TEARDOWN_MODE:
+                case HeroModificationType.SET_FOR_MODE:
                     /* teardown modes */
                     result.data.forEach((teardownUpdate: {index: TaskMode, value: boolean}) => {
                         newHero.isInTeardownMode[teardownUpdate.index] = teardownUpdate.value;

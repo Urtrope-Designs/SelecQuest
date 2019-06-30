@@ -71,7 +71,7 @@ export enum HeroModificationType {
     ADD_QUEST_MAJOR_REWARD,
     REMOVE,
     REMOVE_QUANTITY,
-    SET_TEARDOWN_MODE,
+    SET_FOR_MODE,
     ADD_CURRENCY,
     SET_TRIAL_RANKING,
 }
@@ -125,8 +125,8 @@ export interface Hero {
     trialRankings: TrialRanking[];
     trialCurrentCompetitiveClass: HeroCompetitiveClass;
     trialLastCalculatedRankingSystemIndex: number;
-    hasTrialRankingBeenRecalculated: boolean;
-    
+    hasTrialRankingBeenRecalculated: boolean[];
+
     // long-term limits
     lootEnvironmentalLimit: number;
     maxLootEnvironmentalLimit: number;

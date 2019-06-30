@@ -62,18 +62,18 @@ export function randFromList<T>(list: T[]): T {
 
 export function randFromListLow<T>(list: T[], weightFactor = 2, maxIndex = -1): T {
     if (weightFactor < 1) weightFactor = 1;
-    if (maxIndex === -1) maxIndex = list.length-1;
+    if (maxIndex === -1) maxIndex = list.length - 1;
     let indices: number[] = [];
     for (let i = 0; i < weightFactor; i++) {
         indices.push(randRange(0, maxIndex));
     }
-    const finalIndex = Math.min(...indices, list.length-1);
+    const finalIndex = Math.min(...indices, list.length - 1);
     return list[finalIndex];
 }
 
 export function randFromListHigh<T>(list: T[], weightFactor = 2, minIndex = 0, maxIndex = -1): T {
     if (weightFactor < 1) weightFactor = 1;
-    if (maxIndex < 0 || maxIndex > list.length-1) maxIndex = list.length-1;
+    if (maxIndex < 0 || maxIndex > list.length - 1) maxIndex = list.length - 1;
     if (minIndex < 0) minIndex = 0;
     if (minIndex > maxIndex) minIndex = maxIndex;
 
@@ -88,9 +88,9 @@ export function randFromListHigh<T>(list: T[], weightFactor = 2, minIndex = 0, m
 export function makeStringIndefinite(baseString: string, quantity: number): string {
     if (quantity === 1) {
         if ('AEIOUaeiou'.indexOf(baseString.charAt(0)) > -1)
-          return 'an ' + baseString;
+            return 'an ' + baseString;
         else
-          return 'a ' + baseString;
+            return 'a ' + baseString;
     } else {
         return quantity + ' ' + baseString;
     }
@@ -173,7 +173,7 @@ export function deepCopyObject(original: any): any {
 }
 
 export function getRoughTime(timeSeconds: number): string {
-    if (timeSeconds < 120){
+    if (timeSeconds < 120) {
         return timeSeconds + ' seconds';
     }
     else if (timeSeconds < 60 * 120) {
@@ -186,7 +186,7 @@ export function getRoughTime(timeSeconds: number): string {
         return Math.floor(timeSeconds / (3600 * 24)) + ' days';
     }
     else if (timeSeconds < 60 * 60 * 24 * 30 * 24) {
-        return Math.floor(timeSeconds / (3600 * 24 * 30)) +" months";
+        return Math.floor(timeSeconds / (3600 * 24 * 30)) + " months";
     }
     else {
         return Math.floor(timeSeconds / (3600 * 24 * 30 * 12)) + " years";
@@ -211,60 +211,71 @@ export function toRoman(n: number) {
 
     let s = "";
     function _rome(dn: number, ds: string) {
-      if (n >= dn) {
-        n -= dn;
-        s += ds;
-        return true;
-      } else {
-        return false;
-      }
+        if (n >= dn) {
+            n -= dn;
+            s += ds;
+            return true;
+        } else {
+            return false;
+        }
     }
     if (n < 0) {
-      s = "-";
-      n = -n;
+        s = "-";
+        n = -n;
     }
-    while (_rome(1000,"M")) {
+    while (_rome(1000, "M")) {
         0;
     }
-    _rome(900,"CM");
-    _rome(500,"D");
-    _rome(400,"CD");
-    while (_rome(100,"C")) {
+    _rome(900, "CM");
+    _rome(500, "D");
+    _rome(400, "CD");
+    while (_rome(100, "C")) {
         0;
     }
-    _rome(90,"XC");
-    _rome(50,"L");
-    _rome(40,"XL");
-    while (_rome(10,"X")) {
+    _rome(90, "XC");
+    _rome(50, "L");
+    _rome(40, "XL");
+    while (_rome(10, "X")) {
         0;
     }
-    _rome(9,"IX");
-    _rome(5,"V");
-    _rome(4,"IV");
-    while (_rome(1,"I")) {
+    _rome(9, "IX");
+    _rome(5, "V");
+    _rome(4, "IV");
+    while (_rome(1, "I")) {
         0;
     }
     return s;
-  }
+}
 
-  export function toOrdinal(cardinal: number): string {
-      let sigDig = cardinal % 100;
-      if (sigDig == 11 || sigDig == 12 || sigDig == 13) {
-          return cardinal + 'th';
-      }
-      sigDig = sigDig % 10;
-      if (sigDig == 1) {
-          return cardinal + 'st';
-      }
-      if (sigDig == 2) {
-          return cardinal + 'nd';
-      }
-      if (sigDig == 3) {
-          return cardinal + 'rd';
-      }
-      return cardinal + 'th';
-  }
-  
+export function toOrdinal(cardinal: number): string {
+    let sigDig = cardinal % 100;
+    if (sigDig == 11 || sigDig == 12 || sigDig == 13) {
+        return cardinal + 'th';
+    }
+    sigDig = sigDig % 10;
+    if (sigDig == 1) {
+        return cardinal + 'st';
+    }
+    if (sigDig == 2) {
+        return cardinal + 'nd';
+    }
+    if (sigDig == 3) {
+        return cardinal + 'rd';
+    }
+    return cardinal + 'th';
+}
+
+export function factorialReduce(highValue: number, lowValue: number, callback: (value: number) => number): number {
+    let total = 0;
+    if (highValue < lowValue) {
+        [highValue, lowValue] = [lowValue, highValue];
+    }
+    for (let i = highValue; i >= lowValue; i--) {
+        total += callback(i);
+    }
+    return total;
+}
+
 //   function toArabic(s) {
 //     n = 0;
 //     s = s.toUpperCase();
