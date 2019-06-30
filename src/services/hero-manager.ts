@@ -259,9 +259,9 @@ export class HeroManager {
                     })
                     break;
                 case HeroModificationType.SET_FOR_MODE:
-                    /* teardown modes */
-                    result.data.forEach((teardownUpdate: {index: TaskMode, value: boolean}) => {
-                        newHero.isInTeardownMode[teardownUpdate.index] = teardownUpdate.value;
+                    /* teardown modes, hasTrialRankingBeenRecalculated */
+                    result.data.forEach((update: {index: TaskMode, value: boolean}) => {
+                        newHero[result.attributeName][update.index] = update.value;
                     });
                     break;
                 case HeroModificationType.ADD_CURRENCY:
