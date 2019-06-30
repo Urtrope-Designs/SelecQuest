@@ -847,7 +847,7 @@ export class PlayTaskGenerator implements ITaskGenerator{
             ]
             const updatedHero = this.generateResultingHero(state.hero, modifications);
             const newTask: Task = {
-                description: 'Recalculating rankings...',
+                description: 'Recalculating rankings',
                 durationMs: 3 * 1000,
                 resultingHero: updatedHero,
             };
@@ -855,42 +855,41 @@ export class PlayTaskGenerator implements ITaskGenerator{
         }
     }
 
-    // graduateCompetitiveClassTaskGenerator: TaskGeneratorAlgorithm = {
-    //     shouldRun: (state: AppState) => {
-    //         let buildUpRewardLength;
-    //         switch(state.activeTaskMode) {
-    //             case TaskMode.LOOT_MODE:
-    //                 buildUpRewardLength = state.hero.lootBuildUpRewards.length;
-    //                 break;
-    //             case TaskMode.TRIAL_MODE:
-    //                 buildUpRewardLength = state.hero.trialBuildUpRewards.length;
-    //                 break;
-    //             case TaskMode.QUEST_MODE:
-    //                 buildUpRewardLength = state.hero.questBuildUpRewards.length;
-    //                 break;
-    //         }
-    //         if (buildUpRewardLength <= 0 && state.hero.hasTrialRankingBeenRecalculated[state.activeTaskMode]) {
-    //             const totalRankings = state.hero.trialRankings.reduce((total, r) => total += r.currentRanking, 0);
-    //             if (state.hero.trialRankings.every(r => r.currentRanking <= 5) && !randRange(0, totalRankings)) {
-    //                 return true;
-    //             } 
-    //         }
+    graduateCompetitiveClassTaskGenerator: TaskGeneratorAlgorithm = {
+        shouldRun: (state: AppState) => {
+            let buildUpRewardLength;
+            switch(state.activeTaskMode) {
+                case TaskMode.LOOT_MODE:
+                    buildUpRewardLength = state.hero.lootBuildUpRewards.length;
+                    break;
+                case TaskMode.TRIAL_MODE:
+                    buildUpRewardLength = state.hero.trialBuildUpRewards.length;
+                    break;
+                case TaskMode.QUEST_MODE:
+                    buildUpRewardLength = state.hero.questBuildUpRewards.length;
+                    break;
+            }
+            if (buildUpRewardLength <= 0 && state.hero.hasTrialRankingBeenRecalculated[state.activeTaskMode]) {
+                const totalRankings = state.hero.trialRankings.reduce((total, r) => total += r.currentRanking, 0);
+                if (state.hero.trialRankings.every(r => r.currentRanking <= 5) && !randRange(0, totalRankings)) {
+                    return true;
+                } 
+            }
 
-    //         return false;
-    //     },
-    //     generateTask: (state: AppState) => {
-    //         // update competitive class to next in config
-    //         // or increase "multiplier" prefix if on last in config
-    //         // reset rankings based on new competitive class
-    //         const modifications = [
-    //             {
-    //                 type: HeroModificationType.INCREASE,
-    //                 attributeName: 'adventureProgress',
-    //                 data: curPrologueTask.durationSeconds,
-    //             },
-    //         ];
-    //     }
-    // }
+            return false;
+        },
+        generateTask: (state: AppState) => {
+            const newCompetitiveClassModifications = this.taskResultGenerator.generateNewCompetitiveClassModifications(state.hero);
+
+            const updatedHero = this.generateResultingHero(state.hero, newCompetitiveClassModifications);
+            const newTask: Task = {
+                description: 'Taking your skillz to the next level of competition',
+                durationMs: 4 * 1000,
+                resultingHero: updatedHero,
+            };
+            return newTask;
+        }
+    }
     
     prologueTaskGenerator: TaskGeneratorAlgorithm = {
         shouldRun: (state: AppState) => {
@@ -982,6 +981,7 @@ export class PlayTaskGenerator implements ITaskGenerator{
                 ],
                 [       // teardownMode[1] == true
                     this.recalculateTrialRankingsTaskGenerator,
+                    this.graduateCompetitiveClassTaskGenerator,
                     this.earnTrialMajorRewardTaskGenerator,
                     this.startTrialBuildUpTaskGenerator,
                     this.trialTearDownTaskGenerator,

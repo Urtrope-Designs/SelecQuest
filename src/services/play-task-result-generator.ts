@@ -1,14 +1,15 @@
 import { GameSettingsManager } from "./game-settings-manager";
-import { Adventure, HeroAbilityType, LootMajorReward, TrialRanking } from "../models/hero-models";
+import { Adventure, HeroAbilityType, LootMajorReward, TrialRanking, HeroCompetitiveClass } from "../models/hero-models";
 import { IS_DEBUG } from "../global/config";
 import { Hero, HeroModification, HeroModificationType, TrialMajorReward, TrialMajorRewardType, QuestMajorReward, HeroStat, HeroOffice, HeroConnection } from "../models/models";
-import { randRange, randFromList, randFromListLow, capitalizeInitial, generateRandomName, randomizeNumber } from "../global/utils";
+import { randRange, randFromList, randFromListLow, capitalizeInitial, generateRandomName, randomizeNumber, factorialReduce } from "../global/utils";
 import { GameSetting } from "../global/game-setting";
 import { TaskMode } from "../models/task-models";
 import { GameConfigManager } from "./game-config-manager";
+import { HeroManager } from "./hero-manager";
+import { TrialCompetitiveClass } from "../models/game-setting-models";
 
 export class PlayTaskResultGenerator {
-
     constructor(
         private gameSettingsMgr: GameSettingsManager,
         private gameConfigMgr: GameConfigManager,
@@ -183,6 +184,48 @@ export class PlayTaskResultGenerator {
         ];
 
         return mods;
+    }
+
+    public generateNewCompetitiveClassModifications(hero: Hero): HeroModification[] {
+        const gameSetting = this.gameSettingsMgr.getGameSettingById(hero.gameSettingId);
+        const existingSettingCompClassIndex = gameSetting.trialCompetitiveClasses.findIndex(c => c.competitiveClassName == hero.trialCurrentCompetitiveClass.competitiveClassName);
+        let newSettingCompClass: TrialCompetitiveClass;
+        let newCompClass: HeroCompetitiveClass;
+        if (existingSettingCompClassIndex === -1 || existingSettingCompClassIndex + 1 >= gameSetting.trialCompetitiveClasses.length) {
+            // or increase "multiplier" prefix if on last in config
+            newCompClass = hero.trialCurrentCompetitiveClass;
+            newCompClass.competitiveClassMultiplier += 1;
+            newSettingCompClass = gameSetting.trialCompetitiveClasses[existingSettingCompClassIndex];
+        } else {
+            // update competitive class to next in config
+            newSettingCompClass = gameSetting.trialCompetitiveClasses[existingSettingCompClassIndex + 1];
+            newCompClass = {
+                competitiveClassName: newSettingCompClass.competitiveClassName,
+                competitiveClassMultiplier: 1,
+                startingCurrencyValue: hero.currency[TaskMode.TRIAL_MODE],
+                totalValueRequired: factorialReduce(hero.level + this.gameConfigMgr.competitiveClassLevelRange, hero.level, (value => Math.ceil(HeroManager.getXpRequiredForNextLevel(value) / 6.5) * value))
+            }
+        }
+        const compClassMod: HeroModification = {
+            type: HeroModificationType.SET,
+            attributeName: 'trialCurrentCompetitiveClass',
+            data: newCompClass,
+        };
+        // reset rankings based on new competitive class
+        const rankingMod: HeroModification = {
+            type: HeroModificationType.SET_TRIAL_RANKING,
+            attributeName: 'trialRankings',
+            data: gameSetting.trialRankingSystems.map(rS => {
+                const maxDeviation = Math.round(newSettingCompClass.totalRankCount * (rS.maxRankCountDeviationPercent / 100));
+                const rank = randRange(newSettingCompClass.totalRankCount - maxDeviation, newSettingCompClass.totalRankCount + maxDeviation);
+                return {rankingSystemName: rS.rankingSystemName, currentRanking: rank, worstRanking: rank, lastRankedValue: hero.currency[TaskMode.TRIAL_MODE] + hero.trialEnvironmentalLimit};
+            }),
+        };
+
+        return [
+            compClassMod,
+            rankingMod,
+        ]
     }
 
     public generateNewTrialMajorRewardModification(hero: Hero): HeroModification {

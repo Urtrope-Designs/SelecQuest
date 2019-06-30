@@ -265,6 +265,37 @@ export function toOrdinal(cardinal: number): string {
     return cardinal + 'th';
 }
 
+export function toMultiplier(value: number): string {
+    switch(value) {
+        case 1:
+            return 'single';
+        case 2:
+            return 'double';
+        case 3:
+            return 'triple';
+        case 4:
+            return 'quadruple';
+        case 5:
+            return 'quintuple';
+        case 6:
+            return 'sextuple';
+        case 7:
+            return 'septuple';
+        case 8:
+            return 'octuple';
+        case 9:
+            return 'nonuple';
+        case 10:
+            return 'decuple';
+        case 11:
+            return 'undecuple';
+        case 12:
+            return 'duodecuple';
+        default:
+            return value + 'x';
+    }
+}
+
 export function factorialReduce(highValue: number, lowValue: number, callback: (value: number) => number): number {
     let total = 0;
     if (highValue < lowValue) {

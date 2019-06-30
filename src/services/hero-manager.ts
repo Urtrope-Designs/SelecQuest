@@ -44,6 +44,7 @@ export class HeroManager {
                 }),
             trialCurrentCompetitiveClass: {
                 competitiveClassName: gameSetting.trialCompetitiveClasses[0].competitiveClassName,
+                competitiveClassMultiplier: 1,
                 totalValueRequired: factorialReduce(1 + gameConfig.competitiveClassLevelRange, 1, (value => Math.ceil(HeroManager.getXpRequiredForNextLevel(value) / 6.5) * value)),
                 startingCurrencyValue: 0
             },

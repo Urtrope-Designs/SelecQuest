@@ -48,6 +48,7 @@ export interface TrialRanking {
 
 export interface HeroCompetitiveClass {
     competitiveClassName: string;
+    competitiveClassMultiplier: number;
     startingCurrencyValue: number;
     totalValueRequired: number;
 }
