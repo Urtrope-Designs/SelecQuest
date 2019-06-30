@@ -880,6 +880,7 @@ export class PlayTaskGenerator implements ITaskGenerator{
     //     },
     //     generateTask: (state: AppState) => {
     //         // update competitive class to next in config
+    //         // or increase "multiplier" prefix if on last in config
     //         // reset rankings based on new competitive class
     //         const modifications = [
     //             {

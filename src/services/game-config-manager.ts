@@ -20,11 +20,13 @@ const DEFAULT_ENVIRONMENTAL_LIMIT_COEFFICIENT: EnvironmentalLimitCoefficient = {
     limitingStatExponent: 0.8,
     limitingStatLevelExponent: 0.5,
 }
+const DEFAULT_COMPETITIVE_CLASS_LEVEL_RANGE: number = 6;
 
 export class GameConfigManager {
     public majorRewardCoefficients: MajorRewardCoefficient[];
     public questMajorRewardTypeOdds: QuestMajorRewardTypeOdds;
     public environmentalLimitCoefficients: EnvironmentalLimitCoefficient[];
+    public competitiveClassLevelRange: number;
     private unsubscribeFunctions: Function[] = [];
 
     constructor (
@@ -58,6 +60,14 @@ export class GameConfigManager {
                     updateData[TaskMode.TRIAL_MODE],
                     updateData[TaskMode.QUEST_MODE],
                 ]
+            }
+        });
+        this.unsubscribeFunctions.push(unsubscribe);
+
+        this.competitiveClassLevelRange = DEFAULT_COMPETITIVE_CLASS_LEVEL_RANGE;
+        unsubscribe = this.datastoreMgr.watchDocument('game-config', 'competitive-class-level-range', (updateData) => {
+            if (!!updateData) {
+                this.competitiveClassLevelRange = updateData.competitiveClassLevelRange;
             }
         });
         this.unsubscribeFunctions.push(unsubscribe);
