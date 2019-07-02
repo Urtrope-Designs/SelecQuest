@@ -2,7 +2,7 @@ import { Hero, HeroModificationType, HeroModification, TrialMajorReward, QuestMa
 import { randRange, deepCopyObject, factorialReduce } from '../global/utils';
 import { IS_DEBUG } from '../global/config';
 import { GameSettingsManager } from './game-settings-manager';
-import { HeroInitData, HeroAbilityType, LootMajorReward, HeroAbility, TrialRanking } from '../models/hero-models';
+import { HeroInitData, HeroAbilityType, LootMajorReward, HeroAbility, TrialRanking, HeroTitle, HeroTitlesForCompetitiveClass } from '../models/hero-models';
 import { GameSetting } from '../global/game-setting';
 import { TaskMode } from '../models/task-models';
 import { GameConfigManager } from './game-config-manager';
@@ -49,6 +49,7 @@ export class HeroManager {
                 startingCurrencyValue: 0
             },
             trialLastCalculatedRankingSystemIndex: -1,
+            trialTitles: [],
             hasTrialRankingBeenRecalculated: [true, true, true],
             questMajorRewards: [],
             get maxLootBuildUp() {return this.stats[gameSetting.taskModeData[TaskMode.LOOT_MODE].buildUpLimitBaseStatIndex].value + 10},
@@ -240,6 +241,24 @@ export class HeroManager {
                         }
                     });
                     break;
+                case HeroModificationType.ADD_TITLE:
+                    /* titles */
+                    result.data.forEach((element: HeroTitlesForCompetitiveClass) => {
+                        const existingCompClass = newHero.trialTitles.find(tForCC => tForCC.competitiveClassName == element.competitiveClassName);
+                        if (!existingCompClass) {
+                            newHero.trialTitles.push(element);
+                        } else {
+                            element.titles.forEach((title: HeroTitle) => {
+                                const existingTitle = existingCompClass.titles.find(t => t.titleName == title.titleName);
+                                if (!existingTitle) {
+                                    existingCompClass.titles.push(title);
+                                } else {
+                                    existingTitle.titleTimesEarned += title.titleTimesEarned;
+                                }
+                                newHero.latestModifications.push({attributeName: result.attributeName, data: {competitiveClassName: element.competitiveClassName, titleName: title.titleName }});
+                            });
+                        }
+                    });
                 case HeroModificationType.ADD_QUEST_MAJOR_REWARD:
                     /* questMajorRewards */
                     result.data.map((newQuestMajorReward: QuestMajorReward) => {

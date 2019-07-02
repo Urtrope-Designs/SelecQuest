@@ -19,6 +19,9 @@ export class GameDataTransformManager {
                 }
             })
         }
+        if (!loadedState.hero.trialTitles) {
+            loadedState.hero.trialTitles = [];
+        }
         return loadedState;
     }
 }

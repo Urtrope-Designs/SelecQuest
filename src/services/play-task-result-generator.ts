@@ -1,8 +1,8 @@
 import { GameSettingsManager } from "./game-settings-manager";
 import { Adventure, HeroAbilityType, LootMajorReward, TrialRanking, HeroCompetitiveClass } from "../models/hero-models";
 import { IS_DEBUG } from "../global/config";
-import { Hero, HeroModification, HeroModificationType, TrialMajorReward, TrialMajorRewardType, QuestMajorReward, HeroStat, HeroOffice, HeroConnection } from "../models/models";
-import { randRange, randFromList, randFromListLow, capitalizeInitial, generateRandomName, randomizeNumber, factorialReduce } from "../global/utils";
+import { Hero, HeroModification, HeroModificationType, /*TrialMajorReward, TrialMajorRewardType,*/ QuestMajorReward, HeroStat, HeroOffice, HeroConnection } from "../models/models";
+import { randRange, randFromList, randFromListLow, /*capitalizeInitial,*/ generateRandomName, randomizeNumber, factorialReduce } from "../global/utils";
 import { GameSetting } from "../global/game-setting";
 import { TaskMode } from "../models/task-models";
 import { GameConfigManager } from "./game-config-manager";
@@ -229,75 +229,90 @@ export class PlayTaskResultGenerator {
         ]
     }
 
-    public generateNewTrialMajorRewardModification(hero: Hero): HeroModification {
-        const newTrialMajorRewardData = this.generateRandomTrialMajorReward(hero);
-        
+    public generateNewTrialMajorRewardModification(_hero: Hero): HeroModification {
         const mod: HeroModification = {
-            type: HeroModificationType.ADD_TRIAL_MAJOR_REWARD,
-            attributeName: 'trialMajorRewards',
-            data: [newTrialMajorRewardData],
-        };
+            type: HeroModificationType.ADD_TITLE,
+            attributeName: 'trialTitles',
+            data: [
+                {
+                    competitiveClassName: 'Toddler League',
+                    titles: [
+                        {
+                            titleName: 'Local Champion',
+                            titleTimesEarned: 1,
+                        }
+                    ]
+                }
+            ]
+        }
+        // const newTrialMajorRewardData = this.generateRandomTrialMajorReward(hero);
+        
+        // const mod: HeroModification = {
+        //     type: HeroModificationType.ADD_TRIAL_MAJOR_REWARD,
+        //     attributeName: 'trialMajorRewards',
+        //     data: [newTrialMajorRewardData],
+        // };
     
         return mod;
     }
     
-    private generateRandomTrialMajorReward(hero: Hero): TrialMajorReward {
-        const gameSetting = this.gameSettingsMgr.getGameSettingById(hero.gameSettingId);
-        const newTrialMajorRewardTypeIndex = randRange(0, gameSetting.trialMajorRewardTypes.length-1);
-        let newTrialMajorRewardDescription = '';
-        let exclusions: string = '';
-        switch(newTrialMajorRewardTypeIndex) {
-            case TrialMajorRewardType.Epithets:
-                exclusions = hero.trialMajorRewards[TrialMajorRewardType.Epithets].received.join(' ');
-                newTrialMajorRewardDescription = this.generateRandomEpithetDescription(exclusions, gameSetting);
-                break;
-            case TrialMajorRewardType.Sobriquets:
-                exclusions = hero.trialMajorRewards[TrialMajorRewardType.Sobriquets].received.join(' ');
-                newTrialMajorRewardDescription = this.generateRandomSobriquetDescription(exclusions, gameSetting);
-                break;
-        }
+    // private generateRandomTrialMajorReward(hero: Hero): TrialMajorReward {
+    //     const gameSetting = this.gameSettingsMgr.getGameSettingById(hero.gameSettingId);
+    //     const newTrialMajorRewardTypeIndex = randRange(0, gameSetting.trialMajorRewardTypes.length-1);
+    //     let newTrialMajorRewardDescription = '';
+    //     let exclusions: string = '';
+    //     switch(newTrialMajorRewardTypeIndex) {
+    //         case TrialMajorRewardType.Epithets:
+    //             exclusions = hero.trialMajorRewards[TrialMajorRewardType.Epithets].received.join(' ');
+    //             newTrialMajorRewardDescription = this.generateRandomEpithetDescription(exclusions, gameSetting);
+    //             break;
+    //         case TrialMajorRewardType.Sobriquets:
+    //             exclusions = hero.trialMajorRewards[TrialMajorRewardType.Sobriquets].received.join(' ');
+    //             newTrialMajorRewardDescription = this.generateRandomSobriquetDescription(exclusions, gameSetting);
+    //             break;
+    //     }
     
-        const newTrialMajorReward: TrialMajorReward = {
-            type: gameSetting.trialMajorRewardTypes[newTrialMajorRewardTypeIndex],
-            received: [newTrialMajorRewardDescription]
-        }
+    //     const newTrialMajorReward: TrialMajorReward = {
+    //         type: gameSetting.trialMajorRewardTypes[newTrialMajorRewardTypeIndex],
+    //         received: [newTrialMajorRewardDescription]
+    //     }
     
-        return newTrialMajorReward;
-    }
+    //     return newTrialMajorReward;
+    // }
     
-    private generateRandomEpithetDescription(exclusions: string, gameSetting: GameSetting) {
-        let epithetDescriptor: string;
-        let epithetBeing: string;
+    // private generateRandomEpithetDescription(exclusions: string, gameSetting: GameSetting) {
+    //     let epithetDescriptor: string;
+    //     let epithetBeing: string;
     
-        do {
-            epithetDescriptor = randFromList(gameSetting.epithetDescriptors);
-        } while (exclusions.toLocaleLowerCase().includes(epithetDescriptor.toLocaleLowerCase()));
-        do {
-            epithetBeing = randFromList(gameSetting.epithetBeingAll);
-        } while (exclusions.toLocaleLowerCase().includes(epithetBeing.toLocaleLowerCase()));
+    //     do {
+    //         epithetDescriptor = randFromList(gameSetting.epithetDescriptors);
+    //     } while (exclusions.toLocaleLowerCase().includes(epithetDescriptor.toLocaleLowerCase()));
+    //     do {
+    //         epithetBeing = randFromList(gameSetting.epithetBeingAll);
+    //     } while (exclusions.toLocaleLowerCase().includes(epithetBeing.toLocaleLowerCase()));
     
-        let epithetDescription = `${epithetDescriptor} ${epithetBeing}`;
-        return epithetDescription;
-    };
-    private generateRandomSobriquetDescription(exclusions: string, gameSetting: GameSetting) {
-        let modifier = ''
-        do {
-            modifier = randFromList(gameSetting.sobriquetModifiers);
-        } while (exclusions.toLocaleLowerCase().includes(modifier.toLocaleLowerCase()));
+    //     let epithetDescription = `${epithetDescriptor} ${epithetBeing}`;
+    //     return epithetDescription;
+    // };
+    // private generateRandomSobriquetDescription(exclusions: string, gameSetting: GameSetting) {
+    //     let modifier = ''
+    //     do {
+    //         modifier = randFromList(gameSetting.sobriquetModifiers);
+    //     } while (exclusions.toLocaleLowerCase().includes(modifier.toLocaleLowerCase()));
     
-        // one or two (twice as likely) SOBRIQUET_NOUN_PORTIONs
-        let noun = '';
-        for (let i = 0; i < (randRange(0, 2) || 2); i++) {
-            let nounPortion = '';
-            do {
-                nounPortion = randFromList(gameSetting.sobriquetNounPortions);
-            } while (exclusions.toLocaleLowerCase().includes(nounPortion.toLocaleLowerCase()) || noun.toLocaleLowerCase().includes(nounPortion.toLocaleLowerCase()));
-            noun += nounPortion;
-        }
+    //     // one or two (twice as likely) SOBRIQUET_NOUN_PORTIONs
+    //     let noun = '';
+    //     for (let i = 0; i < (randRange(0, 2) || 2); i++) {
+    //         let nounPortion = '';
+    //         do {
+    //             nounPortion = randFromList(gameSetting.sobriquetNounPortions);
+    //         } while (exclusions.toLocaleLowerCase().includes(nounPortion.toLocaleLowerCase()) || noun.toLocaleLowerCase().includes(nounPortion.toLocaleLowerCase()));
+    //         noun += nounPortion;
+    //     }
     
-        const sobriquetDescription = `${modifier} ${capitalizeInitial(noun)}`;
-        return sobriquetDescription;
-    }
+    //     const sobriquetDescription = `${modifier} ${capitalizeInitial(noun)}`;
+    //     return sobriquetDescription;
+    // }
     
     public generateNewQuestMajorRewardModification(hero: Hero): HeroModification {
         const newQuestMajorRewardData = this.generateRandomQuestMajorReward(hero);

@@ -52,3 +52,13 @@ export interface HeroCompetitiveClass {
     startingCurrencyValue: number;
     totalValueRequired: number;
 }
+
+export interface HeroTitlesForCompetitiveClass {
+    competitiveClassName: string;
+    titles: HeroTitle[];
+}
+
+export interface HeroTitle {
+    titleName: string;
+    titleTimesEarned: number;
+}

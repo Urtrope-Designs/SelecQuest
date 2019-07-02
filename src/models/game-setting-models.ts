@@ -24,6 +24,7 @@ export interface GameSettingConfig {
     trialMajorRewardTypes: string[];
     trialCompetitiveClasses: TrialCompetitiveClass[];
     trialRankingSystems: TrialRankingSystem[];
+    trialTitles: TrialTitle[];
     questMajorRewardGroups: QuestMajorRewardGroup[];
     epithetDescriptors: string[];
     epithetBeingAll: string[];
@@ -114,4 +115,9 @@ export interface TrialCompetitiveClass {
 export interface TrialRankingSystem {
     rankingSystemName: string;
     maxRankCountDeviationPercent: number;
+}
+
+export interface TrialTitle {
+    titleName: string;
+    maxRankAvailabilityPercent: number;
 }

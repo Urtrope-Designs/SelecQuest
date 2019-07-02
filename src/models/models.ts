@@ -1,4 +1,4 @@
-import { HeroAbilityType, Adventure, LootMajorReward, TrialRanking, HeroCompetitiveClass } from "./hero-models";
+import { HeroAbilityType, Adventure, LootMajorReward, TrialRanking, HeroCompetitiveClass, HeroTitlesForCompetitiveClass } from "./hero-models";
 import { TaskMode } from "./task-models";
 
 /** Task related */
@@ -74,6 +74,7 @@ export enum HeroModificationType {
     SET_FOR_MODE,
     ADD_CURRENCY,
     SET_TRIAL_RANKING,
+    ADD_TITLE,
 }
 
 export interface HeroStat {
@@ -125,6 +126,7 @@ export interface Hero {
     trialRankings: TrialRanking[];
     trialCurrentCompetitiveClass: HeroCompetitiveClass;
     trialLastCalculatedRankingSystemIndex: number;
+    trialTitles: HeroTitlesForCompetitiveClass[];
     hasTrialRankingBeenRecalculated: boolean[];
 
     // long-term limits
