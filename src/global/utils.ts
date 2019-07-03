@@ -37,10 +37,14 @@ export function randRange(min: number, max: number): number {
     return spread + min;
 }
 
-export function randomizeNumber(num: number, oddsInTenths: number, min = 1) {
+export function testPercentage(percentChance: number) {
+    return (randRange(1, 100) <= percentChance);
+}
+
+export function randomizeNumber(num: number, percentChance: number, min = 1) {
     let res = num;
     for (let i = num; i >= 1; --i) {
-        if (randRange(1, 10) <= oddsInTenths) {
+        if (testPercentage(percentChance)) {
             res += randSign();
         }
     }

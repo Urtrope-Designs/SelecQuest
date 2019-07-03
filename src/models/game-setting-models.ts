@@ -120,4 +120,5 @@ export interface TrialRankingSystem {
 export interface TrialTitle {
     titleName: string;
     maxRankAvailabilityPercent: number;
+    percentChanceToEarnAccolade: number;
 }

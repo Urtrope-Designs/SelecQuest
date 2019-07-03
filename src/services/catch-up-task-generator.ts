@@ -254,17 +254,17 @@ export class CatchUpTaskGenerator implements ITaskGenerator{
         const minCurrency = this.taskResultGenerator.getTradeInCostForLevel(state.activeTaskMode, state.hero.level);
         while ((resultingHero.currency[state.activeTaskMode] - resultingHero.spentCurrency[state.activeTaskMode]) >= minCurrency) {
             let rewardLevel = state.hero.level;
-            let newMajorRewardMod;
+            let newMajorRewardMods: HeroModification[];
             if (state.activeTaskMode == TaskMode.LOOT_MODE) {
                 rewardLevel = Math.max(Math.min(PlayTaskGenerator.randomizeTargetLevel(rewardLevel), rewardLevel), rewardLevel-4, 1);
-                newMajorRewardMod = this.taskResultGenerator.generateNewLootMajorRewardModification(rewardLevel, resultingHero.lootMajorRewards, curGameSetting);
+                newMajorRewardMods = [this.taskResultGenerator.generateNewLootMajorRewardModification(rewardLevel, resultingHero.lootMajorRewards, curGameSetting)];
             } else if (state.activeTaskMode == TaskMode.TRIAL_MODE) {
-                newMajorRewardMod = this.taskResultGenerator.generateNewTrialMajorRewardModification(resultingHero);
+                newMajorRewardMods = this.taskResultGenerator.generateNewTrialMajorRewardModifications(resultingHero);
             } else {
-                newMajorRewardMod = this.taskResultGenerator.generateNewQuestMajorRewardModification(resultingHero);
+                newMajorRewardMods = [this.taskResultGenerator.generateNewQuestMajorRewardModification(resultingHero)];
             }
             const modifications = [
-                newMajorRewardMod,
+                ...newMajorRewardMods,
                 {
                     type: HeroModificationType.ADD_CURRENCY,
                     attributeName: 'spentCurrency',

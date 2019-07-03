@@ -79,7 +79,7 @@ export class PlayTaskGenerator implements ITaskGenerator{
     }
 
     static randomizeTargetLevel(heroLevel: number): number {
-        const targetLevel = randomizeNumber(heroLevel, 4, 1);
+        const targetLevel = randomizeNumber(heroLevel, 40, 1);
         return targetLevel;
     }
 
@@ -615,9 +615,9 @@ export class PlayTaskGenerator implements ITaskGenerator{
         },
         generateTask: (state: AppState) => {
             const gameSetting = this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId);
-            const newTrialMajorRewardMod = this.taskResultGenerator.generateNewTrialMajorRewardModification(state.hero);
+            const newTrialMajorRewardMods = this.taskResultGenerator.generateNewTrialMajorRewardModifications(state.hero);
             const modifications = [
-                newTrialMajorRewardMod,
+                ...newTrialMajorRewardMods,
                 {
                     type: HeroModificationType.ADD_CURRENCY,
                     attributeName: 'spentCurrency',
