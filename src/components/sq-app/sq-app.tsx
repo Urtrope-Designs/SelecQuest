@@ -118,7 +118,7 @@ export class SqApp {
                             if (state == null) {
                                 return DEFAULT_APP_STATE;
                             } else {
-                                state = this.gameDataTransformMgr.transformGameData(state);
+                                state = this.gameDataTransformMgr.transformGameData(state, this.gameSettingsMgr, this.gameConfigMgr);
                                 return state;
                             }
                         });
