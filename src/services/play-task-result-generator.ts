@@ -156,7 +156,7 @@ export class PlayTaskResultGenerator {
         }
 
         const rankingSystemName = gameSetting.trialRankingSystems[rankingSystemIndex].rankingSystemName;
-        const existingRanking = hero.trialRankings.find(r => r.rankingSystemName == rankingSystemName);
+        const existingRanking = hero.trialRankings[rankingSystemIndex];
         const isEnvironmentalLimitBroken = hero.trialEnvironmentalLimit >= hero.maxTrialEnvironmentalLimit;
         const newRankingValue = hero.currency[TaskMode.TRIAL_MODE] + (hero.trialEnvironmentalLimit / (isEnvironmentalLimitBroken ? 2 : 1));
         const valueRemainingToClassGoalCoefficient = Math.max(0, (hero.trialCurrentCompetitiveClass.totalValueRequired - newRankingValue) / (hero.trialCurrentCompetitiveClass.totalValueRequired - hero.trialCurrentCompetitiveClass.startingCurrencyValue));
@@ -263,12 +263,23 @@ export class PlayTaskResultGenerator {
         return mods;
     }
 
-    private determineTrialTitleData(_hero: Hero): TrialTitle {
-        const newTitle: TrialTitle = {
-            titleName: 'Local Champion',
-            maxRankAvailabilityPercent: -1,
-            percentChanceToEarnAccolade: 5,
-        }
+    private determineTrialTitleData(hero: Hero): TrialTitle {
+        const gameSetting = this.gameSettingsMgr.getGameSettingById(hero.gameSettingId);
+        const heroAverageRankingAsPercent = hero.trialRankings.reduce((total, tR) => total + (tR.currentRanking / tR.worstRanking), 0) / hero.trialRankings.length * 100;
+        const availableTitles = gameSetting.trialTitles.filter(t => heroAverageRankingAsPercent <= t.maxRankAvailabilityPercent).sort((t1, t2) => t1.maxRankAvailabilityPercent - t2.maxRankAvailabilityPercent);
+        const totalOdds = availableTitles.reduce((total, t) => total + t.maxRankAvailabilityPercent, 0);
+        let straw = randRange(0, totalOdds - 1);
+        const newTitle = availableTitles.find(t => {
+            const odds = t.maxRankAvailabilityPercent - heroAverageRankingAsPercent;
+            straw -= odds;
+            return straw <= 0;
+        }) || availableTitles[availableTitles.length - 1];
+
+        // const newTitle: TrialTitle = {
+        //     titleName: 'Local Champion',
+        //     maxRankAvailabilityPercent: 100,
+        //     percentChanceToEarnAccolade: 5,
+        // }
         return newTitle;
     }
     
