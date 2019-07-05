@@ -4,6 +4,8 @@ import { HeroManager } from "./hero-manager";
 import { PlayTaskResultGenerator } from "./play-task-result-generator";
 import { GameSettingsManager } from "./game-settings-manager";
 import { PlayTaskGenerator } from "./play-task-generator";
+import { GameConfigManager } from "./game-config-manager";
+import { randRange } from "../global/utils";
 
 export class CatchUpTaskGenerator implements ITaskGenerator{
 
@@ -11,6 +13,7 @@ export class CatchUpTaskGenerator implements ITaskGenerator{
         private taskResultGenerator: PlayTaskResultGenerator,
         private heroMgr: HeroManager,
         private gameSettingsMgr: GameSettingsManager,
+        private gameConfigMgr: GameConfigManager,
     ) {
     }
 
@@ -206,7 +209,7 @@ export class CatchUpTaskGenerator implements ITaskGenerator{
         ]
         const activeModeBuildUpRewardAttributeName = allBuildUpRewardAttributeNames[state.activeTaskMode];
 
-        const modifications: HeroModification[] = [
+        let modifications: HeroModification[] = [
             {
                 type: HeroModificationType.INCREASE,
                 attributeName: 'currentXp',
@@ -251,6 +254,20 @@ export class CatchUpTaskGenerator implements ITaskGenerator{
 
         let resultingHero = this.generateResultingHero(state.hero, modifications);
 
+        // update all ranking systems
+        const systemsToRank = Math.min(cyclesToNextMilestone, curGameSetting.trialRankingSystems.length);
+        for (let i = 0; i < systemsToRank; i++) {
+            modifications = [
+                ...this.taskResultGenerator.generateTrialRankingUpdateModifications(resultingHero),
+                {
+                    type: HeroModificationType.SET_FOR_MODE,
+                    attributeName: 'hasTrialRankingBeenRecalculated',
+                    data: [{index: state.activeTaskMode, value: true}],
+                },
+            ];
+            resultingHero = this.generateResultingHero(resultingHero, modifications);
+        }
+
         const minCurrency = this.taskResultGenerator.getTradeInCostForLevel(state.activeTaskMode, state.hero.level);
         while ((resultingHero.currency[state.activeTaskMode] - resultingHero.spentCurrency[state.activeTaskMode]) >= minCurrency) {
             let rewardLevel = state.hero.level;
@@ -273,6 +290,12 @@ export class CatchUpTaskGenerator implements ITaskGenerator{
             ];
             resultingHero = this.generateResultingHero(resultingHero, modifications);
         }
+        // test for competitive class upgrade
+        const averageRanking = resultingHero.trialRankings.reduce((total, r) => total += r.currentRanking, 0) / resultingHero.trialRankings.length;
+            const score = Math.round(averageRanking ** 2 * this.gameConfigMgr.competitiveClassGraduationChanceCoefficient);
+            if (resultingHero.trialRankings.every(r => r.currentRanking <= 5) && !randRange(0, score)) {
+                // graduate to next competitive class
+            } 
 
         const newTask: Task = {
             description: catchUpTaskDescription,

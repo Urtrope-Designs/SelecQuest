@@ -6,6 +6,7 @@ import { HeroManager } from "./hero-manager";
 import { GameSettingsManager } from "./game-settings-manager";
 import { PrologueTask } from "../models/hero-models";
 import { GameSetting } from "../global/game-setting";
+import { GameConfigManager } from "./game-config-manager";
 
 export class PlayTaskGenerator implements ITaskGenerator{
     private static BASIC_MAJOR_REWARD_COST_ALGO = (level) => {return Math.floor(5 * level**2 + 10 * level + 20)};
@@ -19,6 +20,7 @@ export class PlayTaskGenerator implements ITaskGenerator{
         private taskResultGenerator: PlayTaskResultGenerator,
         private heroMgr: HeroManager,
         private gameSettingsMgr: GameSettingsManager,
+        private gameConfigMgr: GameConfigManager,
         ) {
     }
 
@@ -870,8 +872,9 @@ export class PlayTaskGenerator implements ITaskGenerator{
                     break;
             }
             if (buildUpRewardLength <= 0 && state.hero.hasTrialRankingBeenRecalculated[state.activeTaskMode]) {
-                const totalRankings = state.hero.trialRankings.reduce((total, r) => total += r.currentRanking, 0);
-                if (state.hero.trialRankings.every(r => r.currentRanking <= 5) && !randRange(0, totalRankings)) {
+                const averageRanking = state.hero.trialRankings.reduce((total, r) => total += r.currentRanking, 0) / state.hero.trialRankings.length;
+                const score = Math.round(averageRanking ** 2 * this.gameConfigMgr.competitiveClassGraduationChanceCoefficient);
+                if (state.hero.trialRankings.every(r => r.currentRanking <= 5) && !randRange(0, score)) {
                     return true;
                 } 
             }
