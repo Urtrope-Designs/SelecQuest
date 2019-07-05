@@ -280,7 +280,7 @@ export class CatchUpTaskGenerator implements ITaskGenerator{
             } else {
                 newMajorRewardMods = [this.taskResultGenerator.generateNewQuestMajorRewardModification(resultingHero)];
             }
-            const modifications = [
+            modifications = [
                 ...newMajorRewardMods,
                 {
                     type: HeroModificationType.ADD_CURRENCY,
@@ -292,10 +292,12 @@ export class CatchUpTaskGenerator implements ITaskGenerator{
         }
         // test for competitive class upgrade
         const averageRanking = resultingHero.trialRankings.reduce((total, r) => total += r.currentRanking, 0) / resultingHero.trialRankings.length;
-            const score = Math.round(averageRanking ** 2 * this.gameConfigMgr.competitiveClassGraduationChanceCoefficient);
-            if (resultingHero.trialRankings.every(r => r.currentRanking <= 5) && !randRange(0, score)) {
-                // graduate to next competitive class
-            } 
+        const score = Math.round(averageRanking ** 2 * this.gameConfigMgr.competitiveClassGraduationChanceCoefficient);
+        if (resultingHero.trialRankings.every(r => r.currentRanking <= 5) && !randRange(0, score)) {
+            // graduate to next competitive class
+            modifications = this.taskResultGenerator.generateNewCompetitiveClassModifications(resultingHero);
+            resultingHero = this.generateResultingHero(resultingHero, modifications);
+        }
 
         const newTask: Task = {
             description: catchUpTaskDescription,

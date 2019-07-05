@@ -2,7 +2,7 @@ import { Component, Prop, State, Event, EventEmitter, Element, Watch } from '@st
 
 import { AppState, Task, Hero, QuestMajorReward, HeroStat } from '../../models/models';
 import { HeroManager } from '../../services/hero-manager';
-import { capitalizeInitial, getRoughTime, generateHeroHashFromHero, toRoman, toOrdinal } from '../../global/utils';
+import { capitalizeInitial, getRoughTime, generateHeroHashFromHero, toRoman, toOrdinal, toMultiplier } from '../../global/utils';
 import { HeroAbilityType, HeroAbility } from '../../models/hero-models';
 import { GameSetting } from '../../global/game-setting';
 import { TaskMode } from '../../models/task-models';
@@ -312,6 +312,29 @@ export class PlayScreen {
                                                 <tr {...this.highlightModifiedAttribute('trialRankings', trialRanking.rankingSystemName)}>
                                                     <td>{trialRanking.rankingSystemName}</td>
                                                     <td>{trialRanking.currentRanking}</td>
+                                                </tr>
+                                            )
+                                        }
+                                        <tr><td colSpan={2} class="placeholderRow"></td></tr>
+                                    </tbody>
+                                </table>
+                                <table class="listBox">
+                                    <thead>
+                                        <tr>
+                                            <th style={{width: "40%"}}>Class</th>
+                                            <th>Titles</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            this.appState.hero.trialTitles.map(trialTitles =>
+                                                <tr {...this.highlightModifiedAttribute('trialTitles', trialTitles.competitiveClassName)}>
+                                                    <td>{trialTitles.competitiveClassName}</td>
+                                                    {
+                                                        trialTitles.titles.length <= 0
+                                                        ? <td>[None]</td>
+                                                        : <td>{trialTitles.titles.map(t => `${toMultiplier(t.titleTimesEarned)} ${t.titleName}`).join('\n')}</td>
+                                                    }
                                                 </tr>
                                             )
                                         }
