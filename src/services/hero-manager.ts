@@ -259,6 +259,7 @@ export class HeroManager {
                             });
                         }
                     });
+                    break;
                 case HeroModificationType.ADD_QUEST_MAJOR_REWARD:
                     /* questMajorRewards */
                     result.data.map((newQuestMajorReward: QuestMajorReward) => {
