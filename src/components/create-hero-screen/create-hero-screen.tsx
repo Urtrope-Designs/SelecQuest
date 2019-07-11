@@ -101,17 +101,22 @@ export class CreateHeroScreen {
                 <ion-content>
                     <section>
                         <div class="nameRow">
-                            <label>
+                            <label htmlFor="name">
                                 Name:
-                                <input
-                                    type="text"
-                                    value={this.rolledHero.name} onInput={(event: any) => this.handleChange('name', event.target.value)}
-                                    maxlength="24"
-                                    placeholder="_"
-                                    autocomplete="off" autocorrect="off" autocapitalize="off"
-                                />
                             </label>
-                            <button class="selected nameRerollButton" onClick={() => this.rerollName()}>Reroll</button>
+                            <input
+                                id="name"
+                                type="text"
+                                name="name"
+                                value={this.rolledHero.name} onInput={(event: any) => this.handleChange('name', event.target.value)}
+                                maxlength="24"
+                                placeholder="_"
+                                class="nameInput"
+                                autocomplete="off" autocorrect="off" autocapitalize="off"
+                            />
+                            <div class="nameRerollButton">
+                                <button class="selected" onClick={() => this.rerollName()}>Reroll</button>
+                            </div>
                         </div>
                     </section>
                     <section>
