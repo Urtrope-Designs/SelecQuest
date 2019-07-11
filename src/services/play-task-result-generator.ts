@@ -2,7 +2,7 @@ import { GameSettingsManager } from "./game-settings-manager";
 import { Adventure, HeroAbilityType, LootMajorReward, TrialRanking, HeroCompetitiveClass } from "../models/hero-models";
 import { IS_DEBUG } from "../global/config";
 import { Hero, HeroModification, HeroModificationType, TrialMajorReward, TrialMajorRewardType, QuestMajorReward, HeroStat, HeroOffice, HeroConnection } from "../models/models";
-import { randRange, randFromList, randFromListLow, capitalizeInitial, generateRandomName, randomizeNumber, factorialReduce, testPercentage } from "../global/utils";
+import { randRange, randFromList, randFromListLow, capitalizeInitial, generateRandomName, randomizeNumber, factorialReduce, testPercentage, toMultiplier } from "../global/utils";
 import { GameSetting } from "../global/game-setting";
 import { TaskMode } from "../models/task-models";
 import { GameConfigManager } from "./game-config-manager";
@@ -232,12 +232,16 @@ export class PlayTaskResultGenerator {
     public generateNewTrialMajorRewardModifications(hero: Hero): HeroModification[] {
         const mods: HeroModification[] = [];
         const newTitle = this.determineTrialTitleData(hero);
+        let  baseCompClassName = hero.trialCurrentCompetitiveClass.competitiveClassName;
+        if (hero.trialCurrentCompetitiveClass.competitiveClassMultiplier > 1) {
+            baseCompClassName = `${toMultiplier(hero.trialCurrentCompetitiveClass.competitiveClassMultiplier)} ${baseCompClassName}`;
+        }
         const titleMod: HeroModification = {
             type: HeroModificationType.ADD_TITLE,
             attributeName: 'trialTitles',
             data: [
                 {
-                    competitiveClassName: hero.trialCurrentCompetitiveClass.competitiveClassName,
+                    competitiveClassName: capitalizeInitial(baseCompClassName),
                     titles: [
                         {
                             titleName: newTitle.titleName,

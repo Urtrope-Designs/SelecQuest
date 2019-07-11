@@ -120,6 +120,11 @@ export class PlayScreen {
         return Math.floor(currencyDisplay);
     }
 
+    getDisplayNameWithMultiplier(baseDisplayName: string, multiplier: number): string {
+        baseDisplayName = multiplier > 1 ? `${toMultiplier(multiplier)} ${baseDisplayName}` :  baseDisplayName;
+        return capitalizeInitial(baseDisplayName); 
+    }
+
     _textRowScrollHandler(ev: Event) {
         ev.srcElement.setAttribute('scrolled', ev.srcElement.scrollLeft != 0 ? 'true' : 'false');
     }
@@ -296,7 +301,7 @@ export class PlayScreen {
                             ? <section>
                                 <p>
                                     <div sq-flex class="textRow">
-                                        <span sq-mr-auto>Competitive Class</span> {this.appState.hero.trialCurrentCompetitiveClass.competitiveClassName}
+                                        <span sq-mr-auto>Competitive Class</span> {this.getDisplayNameWithMultiplier(this.appState.hero.trialCurrentCompetitiveClass.competitiveClassName, this.appState.hero.trialCurrentCompetitiveClass.competitiveClassMultiplier)}
                                     </div>
                                 </p>
                                 <table class="listBox">
@@ -333,7 +338,7 @@ export class PlayScreen {
                                                     {
                                                         trialTitles.titles.length <= 0
                                                         ? <td>[None]</td>
-                                                        : <td>{trialTitles.titles.map(t => `${toMultiplier(t.titleTimesEarned)} ${t.titleName}`).join('\n')}</td>
+                                                        : <td>{trialTitles.titles.map(t => this.getDisplayNameWithMultiplier(t.titleName, t.titleTimesEarned)).join('\n')}</td>
                                                     }
                                                 </tr>
                                             )
