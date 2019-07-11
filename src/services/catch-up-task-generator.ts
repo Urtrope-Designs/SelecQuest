@@ -291,12 +291,17 @@ export class CatchUpTaskGenerator implements ITaskGenerator{
             resultingHero = this.generateResultingHero(resultingHero, modifications);
         }
         // test for competitive class upgrade
-        const averageRanking = resultingHero.trialRankings.reduce((total, r) => total += r.currentRanking, 0) / resultingHero.trialRankings.length;
-        const score = Math.round(averageRanking ** 2 * this.gameConfigMgr.competitiveClassGraduationChanceCoefficient);
-        if (resultingHero.trialRankings.every(r => r.currentRanking <= 5) && !randRange(0, score)) {
-            // graduate to next competitive class
-            modifications = this.taskResultGenerator.generateNewCompetitiveClassModifications(resultingHero);
-            resultingHero = this.generateResultingHero(resultingHero, modifications);
+        // we can't know how many cycles it's been since the "every ranking < 5" condition has been met, so just divide total cycles by 3 to guesstimate but maybe preference play mode
+        if (resultingHero.trialRankings.every(r => r.currentRanking <= 5)) {
+            for (let i = Math.ceil(cyclesToNextMilestone / 3); i > 0; i--) {
+                const averageRanking = resultingHero.trialRankings.reduce((total, r) => total += r.currentRanking, 0) / resultingHero.trialRankings.length;
+                const score = Math.round(averageRanking ** 2 * this.gameConfigMgr.competitiveClassGraduationChanceCoefficient);
+                if (!randRange(0, score)) {
+                    // graduate to next competitive class
+                    modifications = this.taskResultGenerator.generateNewCompetitiveClassModifications(resultingHero);
+                    resultingHero = this.generateResultingHero(resultingHero, modifications);
+                }
+            }
         }
 
         const newTask: Task = {
