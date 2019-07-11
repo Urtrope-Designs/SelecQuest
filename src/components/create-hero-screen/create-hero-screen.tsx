@@ -108,7 +108,7 @@ export class CreateHeroScreen {
                                     value={this.rolledHero.name} onInput={(event: any) => this.handleChange('name', event.target.value)}
                                     maxlength="24"
                                     placeholder="_"
-                                    autocomplete="off" autocorrect="off" autocapitalize="off" spellCheck={false}
+                                    autocomplete="off" autocorrect="off" autocapitalize="off"
                                 />
                             </label>
                             <button class="selected nameRerollButton" onClick={() => this.rerollName()}>Reroll</button>
