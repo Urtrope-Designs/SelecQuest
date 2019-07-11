@@ -318,74 +318,54 @@ export class PlayTaskGenerator implements ITaskGenerator{
     };
 
     lootTearDownTaskGenerator: TaskGeneratorAlgorithm = {
-        shouldRun: (_state: AppState) => {
-            return true;
+        shouldRun: (state: AppState) => {
+            return state.hero.lootBuildUpRewards.length > 0;
         },
         generateTask: (state: AppState) => {
             const sellItem = state.hero.lootBuildUpRewards[0];
-            if (!!sellItem) {
-                const isMarketSaturated = state.hero.lootEnvironmentalLimit >= state.hero.maxLootEnvironmentalLimit;
-                const sellQuantity = sellItem.quantity;
-                const sellValue = (sellQuantity * sellItem.value * state.hero.level) / (isMarketSaturated ? 2 : 1);
-                let lootData = [
-                    {
-                        name: sellItem.name,
-                        quantity: -1 * sellQuantity,
-                        value: 0
-                    }
-                ];
-                const modifications: HeroModification[] = [
-                    {
-                        type: HeroModificationType.REMOVE,
-                        attributeName: 'lootBuildUpRewards',
-                        data: lootData,
-                    },
-                    {
-                        type: HeroModificationType.ADD_CURRENCY,
-                        attributeName: 'currency',
-                        data: [{index: TaskMode.LOOT_MODE, value: sellValue}],
-                    },
-                    {
-                        type: HeroModificationType.INCREASE,
-                        attributeName: 'lootEnvironmentalLimit',
-                        data: sellQuantity,
-                    },
-                ]
-                const updatedHero = this.generateResultingHero(state.hero, modifications);
+            const isMarketSaturated = state.hero.lootEnvironmentalLimit >= state.hero.maxLootEnvironmentalLimit;
+            const sellQuantity = sellItem.quantity;
+            const sellValue = (sellQuantity * sellItem.value * state.hero.level) / (isMarketSaturated ? 2 : 1);
+            let lootData = [
+                {
+                    name: sellItem.name,
+                    quantity: -1 * sellQuantity,
+                    value: 0
+                }
+            ];
+            const modifications: HeroModification[] = [
+                {
+                    type: HeroModificationType.REMOVE,
+                    attributeName: 'lootBuildUpRewards',
+                    data: lootData,
+                },
+                {
+                    type: HeroModificationType.ADD_CURRENCY,
+                    attributeName: 'currency',
+                    data: [{index: TaskMode.LOOT_MODE, value: sellValue}],
+                },
+                {
+                    type: HeroModificationType.INCREASE,
+                    attributeName: 'lootEnvironmentalLimit',
+                    data: sellQuantity,
+                },
+            ]
+            const updatedHero = this.generateResultingHero(state.hero, modifications);
 
-                const sellName = sellQuantity === 1 ? sellItem.name : sellItem.namePlural;
-    
-                const newTask: Task = {
-                    description: 'Selling ' + makeStringIndefinite(sellName, sellQuantity),
-                    durationMs: 1000,
-                    resultingHero: updatedHero,
-                }
-                return newTask;
-            } else {
-                const modifications = [
-                    {
-                        type: HeroModificationType.SET_FOR_MODE,
-                        attributeName: 'isInTeardownMode',
-                        data: [{index: TaskMode.LOOT_MODE, value: false}],
-                    }
-                ];
-                const updatedHero = this.generateResultingHero(state.hero, modifications);
-                const newTask: Task = {
-                    description: 'Cleanup',
-                    durationMs: 10,
-                    resultingHero: updatedHero,
-                }
-                return newTask;
+            const sellName = sellQuantity === 1 ? sellItem.name : sellItem.namePlural;
+
+            const newTask: Task = {
+                description: 'Selling ' + makeStringIndefinite(sellName, sellQuantity),
+                durationMs: 1000,
+                resultingHero: updatedHero,
             }
+            return newTask;
         }
     };
     
     startLootBuildUpTaskGenerator: TaskGeneratorAlgorithm = {
         shouldRun: (state: AppState) => {
-            const currentEncumbrance = state.hero.lootBuildUpRewards.reduce((prevVal, curVal) => {
-                return prevVal + curVal.quantity;
-            }, 0);
-            return currentEncumbrance <= 0;
+            return state.hero.lootBuildUpRewards.length <= 0;
         },
         generateTask: (state: AppState) => {
             const gameSetting = this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId);
@@ -519,74 +499,54 @@ export class PlayTaskGenerator implements ITaskGenerator{
     };
     
     trialTearDownTaskGenerator: TaskGeneratorAlgorithm = {
-        shouldRun: (_state: AppState) => {
-            return true;
+        shouldRun: (state: AppState) => {
+            return state.hero.trialBuildUpRewards.length > 0;
         },
         generateTask: (state: AppState) => {
             const boastItem = state.hero.trialBuildUpRewards[0];
-            if (!!boastItem) {
-                const isFatigued = state.hero.trialEnvironmentalLimit >= state.hero.maxTrialEnvironmentalLimit;
-                const boastQuantity = boastItem.quantity;
-                const renownValue = (boastQuantity * boastItem.value * state.hero.level) / (isFatigued ? 2 : 1);
-                let trialBuildUpRewards = [
-                    {
-                        name: boastItem.name,
-                        quantity: -1 * boastQuantity,
-                        value: 0
-                    }
-                ];
-                const modifications: HeroModification[] = [
-                    {
-                        type: HeroModificationType.REMOVE,
-                        attributeName: 'trialBuildUpRewards',
-                        data: trialBuildUpRewards,
-                    },
-                    {
-                        type: HeroModificationType.ADD_CURRENCY,
-                        attributeName: 'currency',
-                        data: [{index: TaskMode.TRIAL_MODE, value: renownValue}],
-                    },
-                    {
-                        type: HeroModificationType.INCREASE,
-                        attributeName: 'trialEnvironmentalLimit',
-                        data: 1,
-                    },
-                ];
-                const updatedHero = this.generateResultingHero(state.hero, modifications);
+            const isFatigued = state.hero.trialEnvironmentalLimit >= state.hero.maxTrialEnvironmentalLimit;
+            const boastQuantity = boastItem.quantity;
+            const renownValue = (boastQuantity * boastItem.value * state.hero.level) / (isFatigued ? 2 : 1);
+            let trialBuildUpRewards = [
+                {
+                    name: boastItem.name,
+                    quantity: -1 * boastQuantity,
+                    value: 0
+                }
+            ];
+            const modifications: HeroModification[] = [
+                {
+                    type: HeroModificationType.REMOVE,
+                    attributeName: 'trialBuildUpRewards',
+                    data: trialBuildUpRewards,
+                },
+                {
+                    type: HeroModificationType.ADD_CURRENCY,
+                    attributeName: 'currency',
+                    data: [{index: TaskMode.TRIAL_MODE, value: renownValue}],
+                },
+                {
+                    type: HeroModificationType.INCREASE,
+                    attributeName: 'trialEnvironmentalLimit',
+                    data: 1,
+                },
+            ];
+            const updatedHero = this.generateResultingHero(state.hero, modifications);
 
-                const boastName = boastQuantity === 1 ? boastItem.name : boastItem.namePlural;
-                
-                const newTask: Task = {
-                    description: 'Boasting of ' + makeStringIndefinite(boastName, boastQuantity),
-                    durationMs: 1000,
-                    resultingHero: updatedHero,
-                }
-                return newTask;
-            } else {
-                const modifications = [
-                    {
-                        type: HeroModificationType.SET_FOR_MODE,
-                        attributeName: 'isInTeardownMode',
-                        data: [{index: TaskMode.TRIAL_MODE, value: false}],
-                    },
-                ];
-                const updatedHero = this.generateResultingHero(state.hero, modifications);
-                const newTask: Task = {
-                    description: 'Cleanup',
-                    durationMs: 10,
-                    resultingHero: updatedHero,
-                }
-                return newTask;
+            const boastName = boastQuantity === 1 ? boastItem.name : boastItem.namePlural;
+            
+            const newTask: Task = {
+                description: 'Boasting of ' + makeStringIndefinite(boastName, boastQuantity),
+                durationMs: 1000,
+                resultingHero: updatedHero,
             }
+            return newTask;
         }
     };
     
     startTrialBuildUpTaskGenerator: TaskGeneratorAlgorithm = {
         shouldRun: (state: AppState) => {
-            const currentTrialBuildUp = state.hero.trialBuildUpRewards.reduce((prevVal, curVal) => {
-                return prevVal + curVal.quantity;
-            }, 0);
-            return currentTrialBuildUp <= 0;
+            return state.hero.trialBuildUpRewards.length <= 0;
         },
         generateTask: (state: AppState) => {
             const gameSetting = this.gameSettingsMgr.getGameSettingById(state.hero.gameSettingId);
@@ -697,76 +657,59 @@ export class PlayTaskGenerator implements ITaskGenerator{
     };
     
     questTearDownTaskGenerator: TaskGeneratorAlgorithm = {
-        shouldRun: (_state: AppState) => {
-            return true;
+        shouldRun: (state: AppState) => {
+            return state.hero.questBuildUpRewards.length > 0;
         },
         generateTask: (state: AppState) => {
             const leadToFollow = state.hero.questBuildUpRewards[0];
-            if (!!leadToFollow) {
-                const isOverexposed = state.hero.questEnvironmentalLimit >= state.hero.maxQuestEnvironmentalLimit;
-                const reputationValue = (leadToFollow.value * state.hero.level) / (isOverexposed ? 2 : 1);
-                const durationSeconds = randRange(5, 8);
-                const modifications: HeroModification[] = [
-                    {
-                        type: HeroModificationType.REMOVE,
-                        attributeName: 'questBuildUpRewards',
-                        data: [leadToFollow],
-                    },
-                    {
-                        type: HeroModificationType.ADD_CURRENCY,
-                        attributeName: 'currency',
-                        data: [{index: TaskMode.QUEST_MODE, value: reputationValue}],
-                    },
-                    {
-                        type: HeroModificationType.INCREASE,
-                        attributeName: 'questEnvironmentalLimit',
-                        data: 1,
-                    },
-                    {
-                        type: HeroModificationType.DECREASE,
-                        attributeName: 'lootEnvironmentalLimit',
-                        data: -2,
-                    },
-                    {
-                        type: HeroModificationType.DECREASE,
-                        attributeName: 'trialEnvironmentalLimit',
-                        data: -2,
-                    },
-                    {
-                        type: HeroModificationType.INCREASE,
-                        attributeName: 'currentXp',
-                        data: (Math.ceil(durationSeconds / (isOverexposed ? 2 : 1))),
-                    },
-                    {
-                        type: HeroModificationType.INCREASE,
-                        attributeName: 'adventureProgress',
-                        data: (Math.ceil(durationSeconds / (isOverexposed ? 2 : 1))),
-                    },
-                ];
-                const updatedHero = this.generateResultingHero(state.hero, modifications);
-                
-                const newTask: Task = {
-                    description: leadToFollow.taskName,
-                    durationMs: durationSeconds * 1000,
-                    resultingHero: updatedHero,
-                };
-                return newTask;
-            } else {
-                const modifications = [
-                    {
-                        type: HeroModificationType.SET_FOR_MODE,
-                        attributeName: 'isInTeardownMode',
-                        data: [{index: TaskMode.QUEST_MODE, value: false}],
-                    },
-                ];
-                const updatedHero = this.generateResultingHero(state.hero, modifications);
-                const newTask: Task = {
-                    description: 'Cleanup',
-                    durationMs: 10,
-                    resultingHero: updatedHero,
-                }
-                return newTask;
-            }
+            const isOverexposed = state.hero.questEnvironmentalLimit >= state.hero.maxQuestEnvironmentalLimit;
+            const reputationValue = (leadToFollow.value * state.hero.level) / (isOverexposed ? 2 : 1);
+            const durationSeconds = randRange(5, 8);
+            const modifications: HeroModification[] = [
+                {
+                    type: HeroModificationType.REMOVE,
+                    attributeName: 'questBuildUpRewards',
+                    data: [leadToFollow],
+                },
+                {
+                    type: HeroModificationType.ADD_CURRENCY,
+                    attributeName: 'currency',
+                    data: [{index: TaskMode.QUEST_MODE, value: reputationValue}],
+                },
+                {
+                    type: HeroModificationType.INCREASE,
+                    attributeName: 'questEnvironmentalLimit',
+                    data: 1,
+                },
+                {
+                    type: HeroModificationType.DECREASE,
+                    attributeName: 'lootEnvironmentalLimit',
+                    data: -2,
+                },
+                {
+                    type: HeroModificationType.DECREASE,
+                    attributeName: 'trialEnvironmentalLimit',
+                    data: -2,
+                },
+                {
+                    type: HeroModificationType.INCREASE,
+                    attributeName: 'currentXp',
+                    data: (Math.ceil(durationSeconds / (isOverexposed ? 2 : 1))),
+                },
+                {
+                    type: HeroModificationType.INCREASE,
+                    attributeName: 'adventureProgress',
+                    data: (Math.ceil(durationSeconds / (isOverexposed ? 2 : 1))),
+                },
+            ];
+            const updatedHero = this.generateResultingHero(state.hero, modifications);
+            
+            const newTask: Task = {
+                description: leadToFollow.taskName,
+                durationMs: durationSeconds * 1000,
+                resultingHero: updatedHero,
+            };
+            return newTask;
         }
     };
     
@@ -973,8 +916,8 @@ export class PlayTaskGenerator implements ITaskGenerator{
                 [       // teardownMode[0] == true
                     this.recalculateTrialRankingsTaskGenerator,
                     this.earnLootMajorRewardTaskGenerator,
-                    this.startLootBuildUpTaskGenerator,
                     this.lootTearDownTaskGenerator,
+                    this.startLootBuildUpTaskGenerator,
                 ],
             ],
             [           // Adventuring Mode 1
@@ -986,8 +929,8 @@ export class PlayTaskGenerator implements ITaskGenerator{
                     this.recalculateTrialRankingsTaskGenerator,
                     this.graduateCompetitiveClassTaskGenerator,
                     this.earnTrialMajorRewardTaskGenerator,
-                    this.startTrialBuildUpTaskGenerator,
                     this.trialTearDownTaskGenerator,
+                    this.startTrialBuildUpTaskGenerator,
                 ],
             ],
             [           // Adventuring Mode 2
@@ -998,8 +941,8 @@ export class PlayTaskGenerator implements ITaskGenerator{
                 [       // teardownMode[2] == true
                     this.recalculateTrialRankingsTaskGenerator,
                     this.earnQuestMajorRewardTaskGenerator,
-                    this.startQuestBuildUpTaskGenerator,
                     this.questTearDownTaskGenerator,
+                    this.startQuestBuildUpTaskGenerator,
                 ]
             ]
         ]
