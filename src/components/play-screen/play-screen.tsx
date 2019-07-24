@@ -1,4 +1,5 @@
 import { Component, Prop, State, Event, EventEmitter, Element, Watch } from '@stencil/core';
+import OverlayScrollbars from 'overlayscrollbars';
 
 import { AppState, Task, Hero, QuestMajorReward, HeroStat } from '../../models/models';
 import { HeroManager } from '../../services/hero-manager';
@@ -55,14 +56,19 @@ export class PlayScreen {
         }
     }
 
+    componentDidLoad() {
+        const scrollableElements = document.querySelectorAll('[sq-scrollable]');
+        OverlayScrollbars(scrollableElements, {});
+    }
+
     taskModeButtonClicked(newTaskModeIndex: number) {
         this.taskModeAction.emit(TaskMode[TaskMode[newTaskModeIndex]]);
     }
 
     gameViewTabClicked(selectedGameViewTab: string) {
         this.activeGameViewTab = selectedGameViewTab;
-        const contentElem: HTMLIonContentElement = this.homeEl.querySelector('ion-content');
-        contentElem.scrollToTop(0);
+        const contentElem = this.homeEl.querySelector('.coreContent');
+        contentElem.scrollTop = 0;
     }
 
     setSelectedAvailableHeroHash(newHash: string) {
@@ -126,7 +132,7 @@ export class PlayScreen {
     }
 
     _textRowScrollHandler(ev: Event) {
-        ev.srcElement.setAttribute('scrolled', ev.srcElement.scrollLeft != 0 ? 'true' : 'false');
+        (ev.target as Element).setAttribute('scrolled', (ev.target as Element).scrollLeft != 0 ? 'true' : 'false');
     }
 
     render() {
@@ -141,6 +147,7 @@ export class PlayScreen {
                         </div>
                         <div
                             class="textRow textRow-scroll"
+                            sq-scrollable
                             onScroll={(e) => this._textRowScrollHandler(e)}
                         >
                             {this.appState.hero.name}, the {this.appState.hero.raceName} {this.appState.hero.class}
@@ -167,7 +174,7 @@ export class PlayScreen {
                         </div>
                         <hr/>
                     </ion-header>
-                    <ion-content>
+                    <div sq-scrollable class="coreContent">
                         {
                             this.activeGameViewTab == this.gameSetting.gameViewTabDisplayNames[GameViewTab.HERO]
                             ? <section>
@@ -551,7 +558,7 @@ export class PlayScreen {
                                 </div>
                             </section>
                         }
-                    </ion-content>
+                    </div>
                     <ion-footer>
                         <hr />
                         <div class="buttonRow">
@@ -624,6 +631,7 @@ export class PlayScreen {
                             ? [
                                 <div 
                                     class="textRow textRow-scroll"
+                                    sq-scrollable
                                     onScroll={(e) => this._textRowScrollHandler(e)}
                                 >{this.appState.currentTask.description}&hellip;</div>,
                                 <div class="indentRow">

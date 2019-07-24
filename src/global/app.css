@@ -9,6 +9,8 @@
 @import "~@ionic/core/css/text-alignment.css";
 @import "~@ionic/core/css/text-transformation.css";
 
+@import "~overlayscrollbars/css/OverlayScrollbars.css";
+
 html {
     font-size: 16px;
 }
@@ -30,6 +32,34 @@ body {
     text-shadow: 0 0 .5rem;
     background-color: var(--sq-color-primary-contrast);
 }
+
+/* *::-webkit-scrollbar-track {
+    background-color: rgba(0,0,0,0);
+}
+*::-webkit-scrollbar:vertical {
+    border-left: .25rem solid var(--sq-color-primary-contrast);
+    padding-right: .25rem;
+}
+*::-webkit-scrollbar:horizontal {
+    border-top: .25rem solid var(--sq-color-primary-contrast);
+    border-bottom: .25rem solid var(--sq-color-primary-contrast);
+}
+*::-webkit-scrollbar {
+    width: .75rem;
+    height: .75rem;
+    opacity: 1;
+    background-color: var(--sq-color-primary-contrast);
+}
+*::-webkit-scrollbar-thumb {
+    background-color: var(--sq-color-primary);
+    box-shadow: 0 0 .3rem var(--sq-color-primary);
+}
+*::-webkit-scrollbar-thumb:vertical {
+    min-height: 2rem;
+}
+*::-webkit-scrollbar-thumb:horizontal {
+    min-width: 2rem;
+} */
 
 ion-app {
     max-width: 900px;
@@ -61,6 +91,12 @@ hr {
     box-shadow: 0 0 .3rem var(--sq-color-primary);
     margin-bottom: 4px;
     margin-top: 4px;
+}
+
+.coreContent {
+    background-color: var(--sq-color-primary-contrast) !important;
+    overflow: auto;
+    height: 100%;
 }
 
 p:first-child {
@@ -194,20 +230,6 @@ tr, .textRow {
     padding: .4rem
 }
 
-ion-header, ion-footer, section {
-    padding: 12px 15px;
-}
-section:last-child {
-    padding-bottom: 0;
-}
-ion-header {
-    padding-bottom: 0;
-}
-ion-footer {
-    padding-top: 0;
-}
-
-
 
 :root {
     --sq-color-primary-contrast: #222922;
@@ -242,9 +264,91 @@ ion-footer {
     margin-left: auto;
 }
 
+/* [sq-scrollable] {
+
+} */
+
 @font-face {
     font-family: '7_12';
     src: url('/assets/fonts/7_12-Serif.woff');
 }
 
 /** Ionic overrides **/
+ion-header, ion-footer, .coreContent {
+    padding: 12px 15px;
+}
+section:last-child {
+    padding-bottom: 0;
+}
+ion-header {
+    padding-bottom: 0;
+}
+ion-footer {
+    padding-top: 0;
+}
+
+
+/** SimpleBar overrides **/
+/* sq-app .simplebar-scrollbar {
+    box-shadow: 0 0 .3rem var(--sq-color-primary);
+}
+sq-app .simplebar-track.simplebar-vertical {
+    width: 15px;
+}
+sq-app .simplebar-vertical .simplebar-scrollbar {
+    right: 5px;
+    width: 10px;
+    max-height: 5rem;
+    min-height: 5rem;
+}
+sq-app .simplebar-track.simplebar-horizontal {
+    height: 15px;
+}
+sq-app .simplebar-horizontal .simplebar-scrollbar {
+    bottom: 5px;
+    height: 10px;
+    max-width: 5rem;
+    min-width: 5rem;
+}
+sq-app .simplebar-scrollbar::before {
+    background-color: var(--sq-color-primary);
+    border-radius: 0;
+}
+sq-app .simplebar-track .simplebar-scrollbar.simplebar-visible::before{
+    opacity: 1;
+} */
+
+/** OverlayScrollbars overrides & styles **/
+sq-app [sq-scrollable]:not(.os-host-scrollbar-vertical-hidden) {
+    padding-right: 20px;
+}
+sq-app [sq-scrollable]:not(.os-host-scrollbar-horizontal-hidden) {
+    padding-bottom: 20px;
+}
+sq-app [sq-scrollable] .os-scrollbar>.os-scrollbar-track>.os-scrollbar-handle {
+    background-color: var(--sq-color-primary);
+    box-shadow: 0 0 .3rem var(--sq-color-primary);
+    border-radius: 0;
+}
+sq-app [sq-scrollable] .os-scrollbar>.os-scrollbar-track>.os-scrollbar-handle.active {
+    background-color: var(--sq-color-primary);
+}
+sq-app [sq-scrollable] .os-scrollbar:hover>.os-scrollbar-track>.os-scrollbar-handle {
+    background-color: var(--sq-color-primary);
+}
+sq-app [sq-scrollable] .os-scrollbar.os-scrollbar-vertical {
+    width: 20px;
+    padding: 4px;
+}
+sq-app [sq-scrollable] .os-scrollbar.os-scrollbar-vertical>.os-scrollbar-track>.os-scrollbar-handle {
+    min-height: 5rem;
+    max-height: 5rem;
+}
+sq-app [sq-scrollable] .os-scrollbar.os-scrollbar-horizontal {
+    height: 20px;
+    padding: 4px;
+}
+sq-app [sq-scrollable] .os-scrollbar.os-scrollbar-horizontal>.os-scrollbar-track>.os-scrollbar-handle {
+    min-width: 5rem;
+    max-width: 5rem;
+}
