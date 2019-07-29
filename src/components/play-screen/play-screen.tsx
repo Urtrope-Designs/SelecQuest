@@ -174,390 +174,392 @@ export class PlayScreen {
                         </div>
                         <hr/>
                     </ion-header>
-                    <div sq-scrollable class="coreContent">
-                        {
-                            this.activeGameViewTab == this.gameSetting.gameViewTabDisplayNames[GameViewTab.HERO]
-                            ? <section>
-                                <table class="listBox">
-                                    <thead>
-                                        <tr>
-                                            <th style={{width: "35%"}}>Trait</th>
-                                            <th>Value</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr><td>Name</td><td>{this.appState.hero.name}</td></tr>
-                                        <tr><td>Race</td><td>{this.appState.hero.raceName}</td></tr>
-                                        <tr><td>Class</td><td>{this.appState.hero.class}</td></tr>
-                                        <tr {...this.highlightModifiedAttribute('level')}><td>Level</td><td>{this.appState.hero.level}</td></tr>
-                                        <tr><td colSpan={2} class="placeholderRow"></td></tr>
-                                    </tbody>
-                                </table>
-                                <table class="listBox">
-                                    <thead>
-                                        <tr>
-                                            <th style={{width: "65%"}}>Stat</th>
-                                            <th>Value</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            this.appState.hero.stats.map((stat: HeroStat) =>
-                                                <tr {...(this.highlightModifiedAttribute('stats', stat.name))}>
-                                                    <td>{capitalizeInitial(stat.name)}</td>
-                                                    <td>{stat.value}</td>
-                                                </tr>
-                                            )
-                                        }
-                                        <tr {...this.highlightModifiedAttribute('maxHealthStat')}>
-                                            <td>Max {this.appState.hero.maxHealthStat.name}</td>
-                                            <td>{this.appState.hero.maxHealthStat.value}</td>
-                                        </tr>
-                                        <tr {...this.highlightModifiedAttribute('maxMagicStat')}>
-                                            <td>Max {this.appState.hero.maxMagicStat.name}</td>
-                                            <td>{this.appState.hero.maxMagicStat.value}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                {
-                                    this.appState.hero.abilities.map((abilityType: HeroAbilityType) =>
-                                        <table class="listBox">
-                                            <thead>
-                                                <tr>
-                                                    <th style={{width: "65%"}}>{capitalizeInitial(abilityType.name)}</th>
-                                                    <th>Rank</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {
-                                                    abilityType.received.length == 0
-                                                    ? <tr><td colSpan={2}>[None]</td></tr>
-                                                    : abilityType.received.map((ability: HeroAbility) =>
-                                                        <tr {...(this.highlightOrNot(this.findUpdate('abilities', ((data: HeroAbilityType) => data.name == abilityType.name && data.received.some(a => a.name == ability.name)))))}>
-                                                            <td>{ability.name}</td>
-                                                            <td>{toRoman(ability.rank)}</td>
+                    <div class="coreContent">
+                        <div style={{height: "100%", paddingRight: "17px"}} sq-scrollable>
+                            {
+                                this.activeGameViewTab == this.gameSetting.gameViewTabDisplayNames[GameViewTab.HERO]
+                                ? <section>
+                                    <table class="listBox">
+                                        <thead>
+                                            <tr>
+                                                <th style={{width: "35%"}}>Trait</th>
+                                                <th>Value</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td>Name</td><td>{this.appState.hero.name}</td></tr>
+                                            <tr><td>Race</td><td>{this.appState.hero.raceName}</td></tr>
+                                            <tr><td>Class</td><td>{this.appState.hero.class}</td></tr>
+                                            <tr {...this.highlightModifiedAttribute('level')}><td>Level</td><td>{this.appState.hero.level}</td></tr>
+                                            <tr><td colSpan={2} class="placeholderRow"></td></tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="listBox">
+                                        <thead>
+                                            <tr>
+                                                <th style={{width: "65%"}}>Stat</th>
+                                                <th>Value</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                this.appState.hero.stats.map((stat: HeroStat) =>
+                                                    <tr {...(this.highlightModifiedAttribute('stats', stat.name))}>
+                                                        <td>{capitalizeInitial(stat.name)}</td>
+                                                        <td>{stat.value}</td>
+                                                    </tr>
+                                                )
+                                            }
+                                            <tr {...this.highlightModifiedAttribute('maxHealthStat')}>
+                                                <td>Max {this.appState.hero.maxHealthStat.name}</td>
+                                                <td>{this.appState.hero.maxHealthStat.value}</td>
+                                            </tr>
+                                            <tr {...this.highlightModifiedAttribute('maxMagicStat')}>
+                                                <td>Max {this.appState.hero.maxMagicStat.name}</td>
+                                                <td>{this.appState.hero.maxMagicStat.value}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    {
+                                        this.appState.hero.abilities.map((abilityType: HeroAbilityType) =>
+                                            <table class="listBox">
+                                                <thead>
+                                                    <tr>
+                                                        <th style={{width: "65%"}}>{capitalizeInitial(abilityType.name)}</th>
+                                                        <th>Rank</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {
+                                                        abilityType.received.length == 0
+                                                        ? <tr><td colSpan={2}>[None]</td></tr>
+                                                        : abilityType.received.map((ability: HeroAbility) =>
+                                                            <tr {...(this.highlightOrNot(this.findUpdate('abilities', ((data: HeroAbilityType) => data.name == abilityType.name && data.received.some(a => a.name == ability.name)))))}>
+                                                                <td>{ability.name}</td>
+                                                                <td>{toRoman(ability.rank)}</td>
+                                                            </tr>
+                                                        )
+                                                    }
+                                                    <tr><td colSpan={2} class="placeholderRow"></td></tr>
+                                                </tbody>
+                                            </table>
+                                        )
+                                    }
+                                </section>
+                                : this.activeGameViewTab == this.gameSetting.gameViewTabDisplayNames[GameViewTab.GEAR]
+                                ? <section>
+                                    <table class="listBox">
+                                        <thead>
+                                            <tr>
+                                                <th style={{width:"43%"}}>{this.gameSetting.taskModeData[0].majorRewardDisplayName[0]}</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                this.appState.hero.lootMajorRewards.map(equip => 
+                                                    <tr {...this.highlightModifiedAttribute('lootMajorRewards', equip.type)}>
+                                                        <td style={{width: "40%"}}>{equip.type}</td>
+                                                        {
+                                                            !!equip.description
+                                                            ? <td>{equip.description}</td>
+                                                            : <td>[None]</td>
+                                                        }
+                                                    </tr>
+                                                )
+                                            }
+                                        </tbody>
+                                    </table>
+                                    <p>
+                                        <div sq-flex class={this.findUpdate('currency', ((data: TaskMode[]) => data.includes(TaskMode.LOOT_MODE))) ? 'textRow textRow-highlight' : 'textRow'}>
+                                            <span sq-mr-auto>{this.gameSetting.taskModeData[0].currencyDisplayName}</span> {this.getCurrencyDisplayValue(this.appState.hero, TaskMode.LOOT_MODE)}
+                                        </div>
+                                        <div class="textRow">{this.gameSetting.taskModeData[0].buildUpLimitDisplayName}</div>
+                                        <div class="indentRow">
+                                            <sq-progress-bar
+                                                totalValue={this.appState.hero.maxLootBuildUp}
+                                                currentValue={this.appState.hero.lootBuildUpRewards.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}
+                                                tapOverlayText={`${this.appState.hero.lootBuildUpRewards.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}/${this.appState.hero.maxLootBuildUp}`}
+                                            ></sq-progress-bar>
+                                        </div>
+                                    </p>
+                                    <table class="listBox">
+                                        <thead>
+                                            <tr>
+                                                <th style={{width: "65%"}}>{this.gameSetting.taskModeData[0].buildUpRewardDisplayName}</th>
+                                                <th>Qty</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                this.appState.hero.lootBuildUpRewards.length == 0
+                                                ? <tr><td colSpan={2}>[None]</td></tr>
+                                                : this.appState.hero.lootBuildUpRewards.map((item) => 
+                                                <tr {...this.highlightModifiedAttribute('lootBuildUpRewards', item.name)}>
+                                                            <td>{capitalizeInitial(item.name)}</td>
+                                                            <td>{item.quantity}</td>
                                                         </tr>
                                                     )
-                                                }
-                                                <tr><td colSpan={2} class="placeholderRow"></td></tr>
-                                            </tbody>
-                                        </table>
-                                    )
-                                }
-                            </section>
-                            : this.activeGameViewTab == this.gameSetting.gameViewTabDisplayNames[GameViewTab.GEAR]
-                            ? <section>
-                                <table class="listBox">
-                                    <thead>
-                                        <tr>
-                                            <th style={{width:"43%"}}>{this.gameSetting.taskModeData[0].majorRewardDisplayName[0]}</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            this.appState.hero.lootMajorRewards.map(equip => 
-                                                <tr {...this.highlightModifiedAttribute('lootMajorRewards', equip.type)}>
-                                                    <td style={{width: "40%"}}>{equip.type}</td>
-                                                    {
-                                                        !!equip.description
-                                                        ? <td>{equip.description}</td>
-                                                        : <td>[None]</td>
-                                                    }
-                                                </tr>
-                                            )
-                                        }
-                                    </tbody>
-                                </table>
-                                <p>
-                                    <div sq-flex class={this.findUpdate('currency', ((data: TaskMode[]) => data.includes(TaskMode.LOOT_MODE))) ? 'textRow textRow-highlight' : 'textRow'}>
-                                        <span sq-mr-auto>{this.gameSetting.taskModeData[0].currencyDisplayName}</span> {this.getCurrencyDisplayValue(this.appState.hero, TaskMode.LOOT_MODE)}
-                                    </div>
-                                    <div class="textRow">{this.gameSetting.taskModeData[0].buildUpLimitDisplayName}</div>
-                                    <div class="indentRow">
-                                        <sq-progress-bar
-                                            totalValue={this.appState.hero.maxLootBuildUp}
-                                            currentValue={this.appState.hero.lootBuildUpRewards.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}
-                                            tapOverlayText={`${this.appState.hero.lootBuildUpRewards.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}/${this.appState.hero.maxLootBuildUp}`}
-                                        ></sq-progress-bar>
-                                    </div>
-                                </p>
-                                <table class="listBox">
-                                    <thead>
-                                        <tr>
-                                            <th style={{width: "65%"}}>{this.gameSetting.taskModeData[0].buildUpRewardDisplayName}</th>
-                                            <th>Qty</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            this.appState.hero.lootBuildUpRewards.length == 0
-                                            ? <tr><td colSpan={2}>[None]</td></tr>
-                                            : this.appState.hero.lootBuildUpRewards.map((item) => 
-                                            <tr {...this.highlightModifiedAttribute('lootBuildUpRewards', item.name)}>
-                                                        <td>{capitalizeInitial(item.name)}</td>
+                                            }
+                                            <tr><td colSpan={2} class="placeholderRow"></td></tr>
+                                        </tbody>
+                                    </table>
+                                </section>
+                                : this.activeGameViewTab == this.gameSetting.gameViewTabDisplayNames[GameViewTab.DEEDS]
+                                ? <section>
+                                    <p>
+                                        <div sq-flex class="textRow">
+                                            <span sq-mr-auto>Competitive Class</span> {this.getDisplayNameWithMultiplier(this.appState.hero.trialCurrentCompetitiveClass.competitiveClassName, this.appState.hero.trialCurrentCompetitiveClass.competitiveClassMultiplier)}
+                                        </div>
+                                    </p>
+                                    <table class="listBox">
+                                        <thead>
+                                            <tr>
+                                                <th style={{width: "65%"}}>System</th>
+                                                <th>Ranking</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                this.appState.hero.trialRankings.map(trialRanking =>
+                                                    <tr {...this.highlightModifiedAttribute('trialRankings', trialRanking.rankingSystemName)}>
+                                                        <td>{trialRanking.rankingSystemName}</td>
+                                                        <td>{trialRanking.currentRanking}</td>
+                                                    </tr>
+                                                )
+                                            }
+                                            <tr><td colSpan={2} class="placeholderRow"></td></tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="listBox">
+                                        <thead>
+                                            <tr>
+                                                <th style={{width: "40%"}}>Class</th>
+                                                <th>Titles</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                this.appState.hero.trialTitles.map(trialTitles =>
+                                                    <tr {...this.highlightModifiedAttribute('trialTitles', trialTitles.competitiveClassName)}>
+                                                        <td>{trialTitles.competitiveClassName}</td>
+                                                        {
+                                                            trialTitles.titles.length <= 0
+                                                            ? <td>[None]</td>
+                                                            : <td>{trialTitles.titles.map(t => this.getDisplayNameWithMultiplier(t.titleName, t.titleTimesEarned)).join('\n')}</td>
+                                                        }
+                                                    </tr>
+                                                )
+                                            }
+                                            <tr><td colSpan={2} class="placeholderRow"></td></tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="listBox">
+                                        <thead>
+                                            <tr>
+                                                <th style={{width: "45%"}}>{this.gameSetting.taskModeData[1].majorRewardDisplayName[0]}</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                this.appState.hero.trialMajorRewards.map(trialMajorReward =>
+                                                    <tr {...this.highlightModifiedAttribute('trialMajorRewards', ''+trialMajorReward.type)}>
+                                                        <td>{trialMajorReward.type}</td>
+                                                        {
+                                                            trialMajorReward.received.length <= 0
+                                                            ? <td>[None]</td>
+                                                            : <td>{trialMajorReward.received.join(', ')}</td>
+                                                        }
+                                                    </tr>
+                                                )
+                                            }
+                                            <tr><td colSpan={2} class="placeholderRow"></td></tr>
+                                        </tbody>
+                                    </table>
+                                    <p>
+                                        <div sq-flex class={this.findUpdate('currency', ((data: TaskMode[]) => data.includes(TaskMode.TRIAL_MODE))) ? 'textRow textRow-highlight' : 'textRow'}>
+                                            <span sq-mr-auto>{this.gameSetting.taskModeData[1].currencyDisplayName}</span> {this.getCurrencyDisplayValue(this.appState.hero, TaskMode.TRIAL_MODE)}
+                                        </div>
+                                        <div class="textRow">{this.gameSetting.taskModeData[1].buildUpLimitDisplayName}</div>
+                                        <div class="indentRow">
+                                            <sq-progress-bar
+                                                totalValue={this.appState.hero.maxTrialBuildUp}
+                                                currentValue={this.appState.hero.trialBuildUpRewards.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}
+                                                tapOverlayText={`${this.appState.hero.trialBuildUpRewards.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}/${this.appState.hero.maxTrialBuildUp}`}
+                                            ></sq-progress-bar>
+                                        </div>
+                                    </p>    
+                                    <table class="listBox">
+                                        <thead>
+                                            <tr>
+                                                <th style={{width: "65%"}}>{this.gameSetting.taskModeData[1].buildUpRewardDisplayName}</th>
+                                                <th>Qty</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                this.appState.hero.trialBuildUpRewards.length == 0
+                                                ? <tr><td colSpan={2}>[None]</td></tr>
+                                                : this.appState.hero.trialBuildUpRewards.map((item) => 
+                                                <tr {...this.highlightModifiedAttribute('trialBuildUpRewards', item.name)}>
+                                                        <td>{item.name}</td>
                                                         <td>{item.quantity}</td>
                                                     </tr>
                                                 )
-                                        }
-                                        <tr><td colSpan={2} class="placeholderRow"></td></tr>
-                                    </tbody>
-                                </table>
-                            </section>
-                            : this.activeGameViewTab == this.gameSetting.gameViewTabDisplayNames[GameViewTab.DEEDS]
-                            ? <section>
-                                <p>
-                                    <div sq-flex class="textRow">
-                                        <span sq-mr-auto>Competitive Class</span> {this.getDisplayNameWithMultiplier(this.appState.hero.trialCurrentCompetitiveClass.competitiveClassName, this.appState.hero.trialCurrentCompetitiveClass.competitiveClassMultiplier)}
-                                    </div>
-                                </p>
-                                <table class="listBox">
-                                    <thead>
-                                        <tr>
-                                            <th style={{width: "65%"}}>System</th>
-                                            <th>Ranking</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            this.appState.hero.trialRankings.map(trialRanking =>
-                                                <tr {...this.highlightModifiedAttribute('trialRankings', trialRanking.rankingSystemName)}>
-                                                    <td>{trialRanking.rankingSystemName}</td>
-                                                    <td>{trialRanking.currentRanking}</td>
-                                                </tr>
-                                            )
-                                        }
-                                        <tr><td colSpan={2} class="placeholderRow"></td></tr>
-                                    </tbody>
-                                </table>
-                                <table class="listBox">
-                                    <thead>
-                                        <tr>
-                                            <th style={{width: "40%"}}>Class</th>
-                                            <th>Titles</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            this.appState.hero.trialTitles.map(trialTitles =>
-                                                <tr {...this.highlightModifiedAttribute('trialTitles', trialTitles.competitiveClassName)}>
-                                                    <td>{trialTitles.competitiveClassName}</td>
-                                                    {
-                                                        trialTitles.titles.length <= 0
-                                                        ? <td>[None]</td>
-                                                        : <td>{trialTitles.titles.map(t => this.getDisplayNameWithMultiplier(t.titleName, t.titleTimesEarned)).join('\n')}</td>
-                                                    }
-                                                </tr>
-                                            )
-                                        }
-                                        <tr><td colSpan={2} class="placeholderRow"></td></tr>
-                                    </tbody>
-                                </table>
-                                <table class="listBox">
-                                    <thead>
-                                        <tr>
-                                            <th style={{width: "45%"}}>{this.gameSetting.taskModeData[1].majorRewardDisplayName[0]}</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            this.appState.hero.trialMajorRewards.map(trialMajorReward =>
-                                                <tr {...this.highlightModifiedAttribute('trialMajorRewards', ''+trialMajorReward.type)}>
-                                                    <td>{trialMajorReward.type}</td>
-                                                    {
-                                                        trialMajorReward.received.length <= 0
-                                                        ? <td>[None]</td>
-                                                        : <td>{trialMajorReward.received.join(', ')}</td>
-                                                    }
-                                                </tr>
-                                            )
-                                        }
-                                        <tr><td colSpan={2} class="placeholderRow"></td></tr>
-                                    </tbody>
-                                </table>
-                                <p>
-                                    <div sq-flex class={this.findUpdate('currency', ((data: TaskMode[]) => data.includes(TaskMode.TRIAL_MODE))) ? 'textRow textRow-highlight' : 'textRow'}>
-                                        <span sq-mr-auto>{this.gameSetting.taskModeData[1].currencyDisplayName}</span> {this.getCurrencyDisplayValue(this.appState.hero, TaskMode.TRIAL_MODE)}
-                                    </div>
-                                    <div class="textRow">{this.gameSetting.taskModeData[1].buildUpLimitDisplayName}</div>
-                                    <div class="indentRow">
-                                        <sq-progress-bar
-                                            totalValue={this.appState.hero.maxTrialBuildUp}
-                                            currentValue={this.appState.hero.trialBuildUpRewards.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}
-                                            tapOverlayText={`${this.appState.hero.trialBuildUpRewards.reduce((prevVal, curItem) => {return prevVal + curItem.quantity}, 0)}/${this.appState.hero.maxTrialBuildUp}`}
-                                        ></sq-progress-bar>
-                                    </div>
-                                </p>    
-                                <table class="listBox">
-                                    <thead>
-                                        <tr>
-                                            <th style={{width: "65%"}}>{this.gameSetting.taskModeData[1].buildUpRewardDisplayName}</th>
-                                            <th>Qty</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            this.appState.hero.trialBuildUpRewards.length == 0
-                                            ? <tr><td colSpan={2}>[None]</td></tr>
-                                            : this.appState.hero.trialBuildUpRewards.map((item) => 
-                                            <tr {...this.highlightModifiedAttribute('trialBuildUpRewards', item.name)}>
-                                                    <td>{item.name}</td>
-                                                    <td>{item.quantity}</td>
-                                                </tr>
-                                            )
-                                        }
-                                        <tr><td colSpan={2} class="placeholderRow"></td></tr>
-                                    </tbody>
-                                </table>
-                            </section>
-                            : this.activeGameViewTab == this.gameSetting.gameViewTabDisplayNames[GameViewTab.STORY]
-                            ? <section>
-                                <table class="listBox">
-                                    <thead>
-                                        <tr>
-                                            <th style={{width: "50%"}}>{this.gameSetting.taskModeData[2].majorRewardDisplayName[0]}</th>
-                                            <th>{this.gameSetting.taskModeData[2].majorRewardDisplayName[1]}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            this.appState.hero.questMajorRewards.length <= 0
-                                            ? <tr><td colSpan={2}>[None]</td></tr>
-                                            : this.appState.hero.questMajorRewards
-                                                .map((reward: QuestMajorReward) => 
-                                                    <tr {...this.findUpdate('questMajorRewards', (data: QuestMajorReward) => data.connection != null && data.groupName == reward.groupName) ? {class: 'textRow-highlight'} : {}}>
-                                                        <td>{reward.connection.personName}, {reward.connection.personTitle}</td>
-                                                        <td>{capitalizeInitial(reward.groupName)}</td>
-                                                    </tr>
+                                            }
+                                            <tr><td colSpan={2} class="placeholderRow"></td></tr>
+                                        </tbody>
+                                    </table>
+                                </section>
+                                : this.activeGameViewTab == this.gameSetting.gameViewTabDisplayNames[GameViewTab.STORY]
+                                ? <section>
+                                    <table class="listBox">
+                                        <thead>
+                                            <tr>
+                                                <th style={{width: "50%"}}>{this.gameSetting.taskModeData[2].majorRewardDisplayName[0]}</th>
+                                                <th>{this.gameSetting.taskModeData[2].majorRewardDisplayName[1]}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                this.appState.hero.questMajorRewards.length <= 0
+                                                ? <tr><td colSpan={2}>[None]</td></tr>
+                                                : this.appState.hero.questMajorRewards
+                                                    .map((reward: QuestMajorReward) => 
+                                                        <tr {...this.findUpdate('questMajorRewards', (data: QuestMajorReward) => data.connection != null && data.groupName == reward.groupName) ? {class: 'textRow-highlight'} : {}}>
+                                                            <td>{reward.connection.personName}, {reward.connection.personTitle}</td>
+                                                            <td>{capitalizeInitial(reward.groupName)}</td>
+                                                        </tr>
+                                                    )
+                                            }
+                                            <tr><td colSpan={2} class="placeholderRow"></td></tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="listBox">
+                                        <thead>
+                                            <tr>
+                                                <th style={{width: "50%"}}>{this.gameSetting.taskModeData[2].majorRewardDisplayName[2]}</th>
+                                                <th>{this.gameSetting.taskModeData[2].majorRewardDisplayName[3]}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                this.appState.hero.questMajorRewards.filter(a => a.office != null).length <= 0
+                                                ? <tr><td colSpan={2}>[None]</td></tr>
+                                                : this.appState.hero.questMajorRewards.filter(a => a.office != null)
+                                                    .map((reward: QuestMajorReward) => 
+                                                        <tr {...this.findUpdate('questMajorRewards', (data: QuestMajorReward) => data.office != null && data.groupName == reward.groupName) ? {class: 'textRow-highlight'} : {}}>
+                                                            <td>{capitalizeInitial(reward.groupName)}</td>
+                                                            <td>{reward.office.officeIterationCount > 1 ? toOrdinal(reward.office.officeIterationCount) + ' ' + this.gameSetting.officeIterationName + ' ' : ''}{reward.office.officeName}</td>
+                                                        </tr>
+                                                    )
+                                            }
+                                            <tr><td colSpan={2} class="placeholderRow"></td></tr>
+                                        </tbody>
+                                    </table>
+                                    <p>
+                                        <div sq-flex class={this.findUpdate('currency', ((data: TaskMode[]) => data.includes(TaskMode.QUEST_MODE))) ? 'textRow textRow-highlight' : 'textRow'}>
+                                            <span sq-mr-auto>{this.gameSetting.taskModeData[2].currencyDisplayName}</span> {this.getCurrencyDisplayValue(this.appState.hero, TaskMode.QUEST_MODE)}
+                                        </div>
+                                        <div class="textRow">{this.gameSetting.taskModeData[2].buildUpLimitDisplayName}</div>
+                                        <div class="indentRow">
+                                            <sq-progress-bar
+                                                totalValue={this.appState.hero.maxQuestBuildUp}
+                                                currentValue={this.appState.hero.questBuildUpRewards.length}
+                                                tapOverlayText={`${this.appState.hero.questBuildUpRewards.length}/${this.appState.hero.maxQuestBuildUp}`}
+                                            ></sq-progress-bar>
+                                        </div>
+                                    </p>
+                                    <table class="listBox">
+                                        <thead>
+                                            <tr>
+                                                <th>{this.gameSetting.taskModeData[2].buildUpRewardDisplayName}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                this.appState.hero.questBuildUpRewards.length == 0
+                                                ? <tr><td>[None]</td></tr>
+                                                : this.appState.hero.questBuildUpRewards.map((item, index, array) => 
+                                                        <tr {...this.findUpdate('questBuildUpRewards') && index == array.length-1 ? {class: 'textRow-highlight'} : {}}>
+                                                            <td>{item.questlogName}</td>
+                                                        </tr>
+                                                    )
+                                            }
+                                            <tr><td class="placeholderRow"></td></tr>
+                                        </tbody>
+                                    </table>
+                                    <p>
+                                        <div class={this.findUpdate('currentAdventure') ? 'textRow textRow-highlight' : 'textRow'}>{this.appState.hero.currentAdventure.name}</div>
+                                        <div class="indentRow">
+                                            <sq-progress-bar 
+                                                totalValue={this.appState.hero.currentAdventure.progressRequired}
+                                                currentValue={this.appState.hero.adventureProgress}
+                                                tapOverlayText={PlayScreen._getAdventureTimeRemainingString(this.appState.hero)}
+                                            ></sq-progress-bar>
+                                        </div>
+                                    </p>
+                                    <table class="listBox">
+                                        <thead>
+                                            <tr>
+                                                <th>Completed Adventures</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                this.appState.hero.completedAdventures.length === 0
+                                                ? <tr><td>[None]</td></tr>
+                                                : this.appState.hero.completedAdventures.map((adventure: string, index, array) => 
+                                                    <tr {...this.findUpdate('completedAdventures') && index == array.length-1 ? {class: 'textRow-highlight'} : {}}><td>{adventure}</td></tr>
                                                 )
-                                        }
-                                        <tr><td colSpan={2} class="placeholderRow"></td></tr>
-                                    </tbody>
-                                </table>
-                                <table class="listBox">
-                                    <thead>
-                                        <tr>
-                                            <th style={{width: "50%"}}>{this.gameSetting.taskModeData[2].majorRewardDisplayName[2]}</th>
-                                            <th>{this.gameSetting.taskModeData[2].majorRewardDisplayName[3]}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            this.appState.hero.questMajorRewards.filter(a => a.office != null).length <= 0
-                                            ? <tr><td colSpan={2}>[None]</td></tr>
-                                            : this.appState.hero.questMajorRewards.filter(a => a.office != null)
-                                                .map((reward: QuestMajorReward) => 
-                                                    <tr {...this.findUpdate('questMajorRewards', (data: QuestMajorReward) => data.office != null && data.groupName == reward.groupName) ? {class: 'textRow-highlight'} : {}}>
-                                                        <td>{capitalizeInitial(reward.groupName)}</td>
-                                                        <td>{reward.office.officeIterationCount > 1 ? toOrdinal(reward.office.officeIterationCount) + ' ' + this.gameSetting.officeIterationName + ' ' : ''}{reward.office.officeName}</td>
-                                                    </tr>
+                                            }
+                                            <tr><td class="placeholderRow"></td></tr>
+                                        </tbody>
+                                    </table>
+                                </section>
+                                : <section>
+                                    <p class="niceText">
+                                        Welcome to SelecQuest, with three adventuring modes! Choose between {this.gameSetting.taskModeData[0].taskModeActionName}, {this.gameSetting.taskModeData[1].taskModeActionName}, and {this.gameSetting.taskModeData[2].taskModeActionName} to earn different rewards and advance your hero. Download in the app store or save to your device's desktop for a fully immersive mobile experience!
+                                    </p>
+                                    <p>
+                                        <button class="selected" onClick={() => this.newHeroButtonClicked()}>New Hero</button>
+                                    </p>
+                                    <table class="listBox">
+                                        <thead>
+                                            <tr>
+                                                <th>Available Heroes</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                !this.availableHeroes
+                                                ? <tr><td>Loading...</td></tr>
+                                                : this.availableHeroes.map((hero) => 
+                                                    <tr {...this.selectedAvailableHeroHash == hero.hash ? {class: 'textRow-highlight'} : {}} onClick={() => this.setSelectedAvailableHeroHash(hero.hash)}><td>{hero.name}</td></tr>
                                                 )
-                                        }
-                                        <tr><td colSpan={2} class="placeholderRow"></td></tr>
-                                    </tbody>
-                                </table>
-                                <p>
-                                    <div sq-flex class={this.findUpdate('currency', ((data: TaskMode[]) => data.includes(TaskMode.QUEST_MODE))) ? 'textRow textRow-highlight' : 'textRow'}>
-                                        <span sq-mr-auto>{this.gameSetting.taskModeData[2].currencyDisplayName}</span> {this.getCurrencyDisplayValue(this.appState.hero, TaskMode.QUEST_MODE)}
+                                            }
+                                            <tr><td class="placeholderRow"></td></tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="buttonRow">
+                                        <button 
+                                            disabled={!this.selectedAvailableHeroHash || this.selectedAvailableHeroHash == generateHeroHashFromHero(this.appState.hero) || !!this.heroHashWeAreWaitingFor}
+                                            class="selected"
+                                            onClick={() => this.playHeroButtonClicked()}
+                                        >Play</button>
+                                        <button
+                                            disabled={!this.selectedAvailableHeroHash || !!this.heroHashWeAreWaitingFor}
+                                            class="selected"
+                                            onClick={() => this.deleteHeroButtonClicked()}
+                                        >Delete</button>
                                     </div>
-                                    <div class="textRow">{this.gameSetting.taskModeData[2].buildUpLimitDisplayName}</div>
-                                    <div class="indentRow">
-                                        <sq-progress-bar
-                                            totalValue={this.appState.hero.maxQuestBuildUp}
-                                            currentValue={this.appState.hero.questBuildUpRewards.length}
-                                            tapOverlayText={`${this.appState.hero.questBuildUpRewards.length}/${this.appState.hero.maxQuestBuildUp}`}
-                                        ></sq-progress-bar>
+                                    <div style={{textAlign: 'right'}}>
+                                        <button class="selected" onClick={() => this.clearDataButtonClicked()}>Clear All Data</button>
                                     </div>
-                                </p>
-                                <table class="listBox">
-                                    <thead>
-                                        <tr>
-                                            <th>{this.gameSetting.taskModeData[2].buildUpRewardDisplayName}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            this.appState.hero.questBuildUpRewards.length == 0
-                                            ? <tr><td>[None]</td></tr>
-                                            : this.appState.hero.questBuildUpRewards.map((item, index, array) => 
-                                                    <tr {...this.findUpdate('questBuildUpRewards') && index == array.length-1 ? {class: 'textRow-highlight'} : {}}>
-                                                        <td>{item.questlogName}</td>
-                                                    </tr>
-                                                )
-                                        }
-                                        <tr><td class="placeholderRow"></td></tr>
-                                    </tbody>
-                                </table>
-                                <p>
-                                    <div class={this.findUpdate('currentAdventure') ? 'textRow textRow-highlight' : 'textRow'}>{this.appState.hero.currentAdventure.name}</div>
-                                    <div class="indentRow">
-                                        <sq-progress-bar 
-                                            totalValue={this.appState.hero.currentAdventure.progressRequired}
-                                            currentValue={this.appState.hero.adventureProgress}
-                                            tapOverlayText={PlayScreen._getAdventureTimeRemainingString(this.appState.hero)}
-                                        ></sq-progress-bar>
-                                    </div>
-                                </p>
-                                <table class="listBox">
-                                    <thead>
-                                        <tr>
-                                            <th>Completed Adventures</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            this.appState.hero.completedAdventures.length === 0
-                                            ? <tr><td>[None]</td></tr>
-                                            : this.appState.hero.completedAdventures.map((adventure: string, index, array) => 
-                                                <tr {...this.findUpdate('completedAdventures') && index == array.length-1 ? {class: 'textRow-highlight'} : {}}><td>{adventure}</td></tr>
-                                            )
-                                        }
-                                        <tr><td class="placeholderRow"></td></tr>
-                                    </tbody>
-                                </table>
-                            </section>
-                            : <section>
-                                <p class="niceText">
-                                    Welcome to SelecQuest, with three adventuring modes! Choose between {this.gameSetting.taskModeData[0].taskModeActionName}, {this.gameSetting.taskModeData[1].taskModeActionName}, and {this.gameSetting.taskModeData[2].taskModeActionName} to earn different rewards and advance your hero. Download in the app store or save to your device's desktop for a fully immersive mobile experience!
-                                </p>
-                                <p>
-                                    <button class="selected" onClick={() => this.newHeroButtonClicked()}>New Hero</button>
-                                </p>
-                                <table class="listBox">
-                                    <thead>
-                                        <tr>
-                                            <th>Available Heroes</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            !this.availableHeroes
-                                            ? <tr><td>Loading...</td></tr>
-                                            : this.availableHeroes.map((hero) => 
-                                                <tr {...this.selectedAvailableHeroHash == hero.hash ? {class: 'textRow-highlight'} : {}} onClick={() => this.setSelectedAvailableHeroHash(hero.hash)}><td>{hero.name}</td></tr>
-                                            )
-                                        }
-                                        <tr><td class="placeholderRow"></td></tr>
-                                    </tbody>
-                                </table>
-                                <div class="buttonRow">
-                                    <button 
-                                        disabled={!this.selectedAvailableHeroHash || this.selectedAvailableHeroHash == generateHeroHashFromHero(this.appState.hero) || !!this.heroHashWeAreWaitingFor}
-                                        class="selected"
-                                        onClick={() => this.playHeroButtonClicked()}
-                                    >Play</button>
-                                    <button
-                                        disabled={!this.selectedAvailableHeroHash || !!this.heroHashWeAreWaitingFor}
-                                        class="selected"
-                                        onClick={() => this.deleteHeroButtonClicked()}
-                                    >Delete</button>
-                                </div>
-                                <div style={{textAlign: 'right'}}>
-                                    <button class="selected" onClick={() => this.clearDataButtonClicked()}>Clear All Data</button>
-                                </div>
-                            </section>
-                        }
+                                </section>
+                            }
+                        </div>
                     </div>
                     <ion-footer>
                         <hr />

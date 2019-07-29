@@ -1,4 +1,5 @@
 import { Component, State, Event, EventEmitter, Prop } from "@stencil/core";
+import OverlayScrollbars from "overlayscrollbars";
 import { HeroStat, HeroRace, HeroClass } from "../../models/models";
 import { generateRandomName, randFromList, randRange, capitalizeInitial } from "../../global/utils";
 import { GameSettingsManager } from '../../services/game-settings-manager';
@@ -36,6 +37,11 @@ export class CreateHeroScreen {
         }
 
         return Promise.resolve(true);
+    }
+
+    componentDidLoad() {
+        const scrollableElements = document.querySelectorAll('[sq-scrollable]');
+        OverlayScrollbars(scrollableElements, {});
     }
 
     private async initGameSettings() {
@@ -98,8 +104,8 @@ export class CreateHeroScreen {
                     </p>
                     <hr/>
                 </ion-header>
-                <ion-content>
-                    <section>
+                <div class="coreContent">
+                    <div style={{height: "100%", paddingRight: "17px"}} sq-scrollable>
                         <div class="nameRow">
                             <label htmlFor="name">
                                 Name:
@@ -118,9 +124,7 @@ export class CreateHeroScreen {
                                 <button class="selected" onClick={() => this.rerollName()}>Reroll</button>
                             </div>
                         </div>
-                    </section>
-                    <section>
-                        <div class="listBox">
+                        <div class="listBox spacedElement">
                             <div class="textRow textRow-highlight">Race</div>
                             <div class="buttonRow">
                                 {
@@ -135,9 +139,7 @@ export class CreateHeroScreen {
                                 }
                             </div>
                         </div>
-                    </section>
-                    <section>
-                        <div class="listBox">
+                        <div class="listBox spacedElement">
                             <div class="textRow textRow-highlight">Class</div>
                             <div class="buttonRow">
                                 {
@@ -152,29 +154,29 @@ export class CreateHeroScreen {
                                 }
                             </div>
                         </div>
-                    </section>
-                    <section>
-                        <table class="listBox">
-                            <thead>
-                                <tr>
-                                    <th style={{width: "65%"}}>Stat</th>
-                                    <th>Value</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    this.rolledHero.rolledStats[this.rolledHero.statsIndex].map((stat: HeroStat) =>
+                        <div class="spacedElement">
+                            <table class="listBox">
+                                <thead>
+                                    <tr>
+                                        <th style={{width: "65%"}}>Stat</th>
+                                        <th>Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        this.rolledHero.rolledStats[this.rolledHero.statsIndex].map((stat: HeroStat) =>
                                         <tr><td>{capitalizeInitial(stat.name)}</td><td>{stat.value}</td></tr>
-                                    )
-                                }
-                            </tbody>
-                        </table>
-                        <div class="buttonRow">
-                            <button class="selected" onClick={() => this.roll()}>Roll</button>
-                            <button class="selected" disabled={this.rolledHero.statsIndex==0} onClick={() => this.unroll()}>Unroll</button>
+                                        )
+                                    }
+                                </tbody>
+                            </table>
+                            <div class="buttonRow">
+                                <button class="selected" onClick={() => this.roll()}>Roll</button>
+                                <button class="selected" disabled={this.rolledHero.statsIndex==0} onClick={() => this.unroll()}>Unroll</button>
+                            </div>
                         </div>
-                    </section>
-                </ion-content>
+                    </div>
+                </div>
                 <ion-footer>
                     <hr/>
                     <div class="soldButtonRow">

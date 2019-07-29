@@ -320,10 +320,13 @@ sq-app .simplebar-track .simplebar-scrollbar.simplebar-visible::before{
 
 /** OverlayScrollbars overrides & styles **/
 sq-app [sq-scrollable]:not(.os-host-scrollbar-vertical-hidden) {
-    padding-right: 20px;
+    padding-right: 12px;
 }
 sq-app [sq-scrollable]:not(.os-host-scrollbar-horizontal-hidden) {
-    padding-bottom: 20px;
+    padding-bottom: 12px;
+}
+sq-app [sq-scrollable] .os-scrollbar {
+    padding: 0;
 }
 sq-app [sq-scrollable] .os-scrollbar>.os-scrollbar-track>.os-scrollbar-handle {
     background-color: var(--sq-color-primary);
@@ -337,16 +340,14 @@ sq-app [sq-scrollable] .os-scrollbar:hover>.os-scrollbar-track>.os-scrollbar-han
     background-color: var(--sq-color-primary);
 }
 sq-app [sq-scrollable] .os-scrollbar.os-scrollbar-vertical {
-    width: 20px;
-    padding: 4px;
+    width: 12px;
 }
 sq-app [sq-scrollable] .os-scrollbar.os-scrollbar-vertical>.os-scrollbar-track>.os-scrollbar-handle {
     min-height: 5rem;
     max-height: 5rem;
 }
 sq-app [sq-scrollable] .os-scrollbar.os-scrollbar-horizontal {
-    height: 20px;
-    padding: 4px;
+    height: 12px;
 }
 sq-app [sq-scrollable] .os-scrollbar.os-scrollbar-horizontal>.os-scrollbar-track>.os-scrollbar-handle {
     min-width: 5rem;
