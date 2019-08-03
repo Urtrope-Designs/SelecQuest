@@ -346,7 +346,13 @@ export class PlayScreen {
                                                         {
                                                             trialTitles.titles.length <= 0
                                                             ? <td>[None]</td>
-                                                            : <td>{trialTitles.titles.map(t => this.getDisplayNameWithMultiplier(t.titleName, t.titleTimesEarned)).join('\n')}</td>
+                                                            : <td>
+                                                            {
+                                                                trialTitles.titles.map(t => 
+                                                                    <div>{this.getDisplayNameWithMultiplier(t.titleName, t.titleTimesEarned)}</div>
+                                                                )
+                                                            }
+                                                            </td>
                                                         }
                                                     </tr>
                                                 )
@@ -369,7 +375,9 @@ export class PlayScreen {
                                                         {
                                                             trialMajorReward.received.length <= 0
                                                             ? <td>[None]</td>
-                                                            : <td>{trialMajorReward.received.join(', ')}</td>
+                                                            : <td>{trialMajorReward.received.map((mR: string) => 
+                                                                    <div>{mR}</div>
+                                                                )}</td>
                                                         }
                                                     </tr>
                                                 )
