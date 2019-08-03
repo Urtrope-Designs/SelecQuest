@@ -221,8 +221,9 @@ export class HeroManager {
                             return r.type == newTrialMajorReward.type;
                         })
                         existingTrialMajorReward.received = existingTrialMajorReward.received.concat(newTrialMajorReward.received);
-                        if (existingTrialMajorReward.received.length > 3) {
-                            existingTrialMajorReward.received.splice(0, existingTrialMajorReward.received.length - 3);
+                        const trialMajorRewardCountLimit = this.gameConfigMgr.trialMajorRewardCountLimit;
+                        if (trialMajorRewardCountLimit > 0 && existingTrialMajorReward.received.length > trialMajorRewardCountLimit) {
+                            existingTrialMajorReward.received.splice(0, existingTrialMajorReward.received.length - trialMajorRewardCountLimit);
                         }
                         newHero.latestModifications.push({attributeName: result.attributeName, data: newTrialMajorReward.type});
                     })

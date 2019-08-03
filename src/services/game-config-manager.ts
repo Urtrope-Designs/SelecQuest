@@ -22,6 +22,7 @@ const DEFAULT_ENVIRONMENTAL_LIMIT_COEFFICIENT: EnvironmentalLimitCoefficient = {
 }
 const DEFAULT_COMPETITIVE_CLASS_LEVEL_RANGE: number = 6;
 const DEFAULT_COMPETITIVE_CLASS_GRADUATION_CHANCE_COEFFICIENT: number = 5;
+const DEFAULT_TRIAL_MAJOR_REWARD_COUNT_LIMIT: number = 8;
 
 export class GameConfigManager {
     public majorRewardCoefficients: MajorRewardCoefficient[];
@@ -29,6 +30,7 @@ export class GameConfigManager {
     public environmentalLimitCoefficients: EnvironmentalLimitCoefficient[];
     public competitiveClassLevelRange: number;
     public competitiveClassGraduationChanceCoefficient: number;
+    public trialMajorRewardCountLimit: number;
     private unsubscribeFunctions: Function[] = [];
 
     constructor (
@@ -78,6 +80,14 @@ export class GameConfigManager {
         unsubscribe = this.datastoreMgr.watchDocument('game-config', 'competitive-class-graduation-chance-coefficient', (updateData) => {
             if (!!updateData) {
                 this.competitiveClassGraduationChanceCoefficient = updateData.competitiveClassGraduationChanceCoefficient;
+            }
+        });
+        this.unsubscribeFunctions.push(unsubscribe);
+
+        this.competitiveClassGraduationChanceCoefficient = DEFAULT_TRIAL_MAJOR_REWARD_COUNT_LIMIT;
+        unsubscribe = this.datastoreMgr.watchDocument('game-config', 'trial-major-reward-count-limit', (updateData) => {
+            if (!!updateData) {
+                this.trialMajorRewardCountLimit = updateData.trialMajorRewardCountLimit;
             }
         });
         this.unsubscribeFunctions.push(unsubscribe);
