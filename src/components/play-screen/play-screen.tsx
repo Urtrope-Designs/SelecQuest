@@ -348,7 +348,11 @@ export class PlayScreen {
                                                             ? <td>[None]</td>
                                                             : <td>
                                                             {
-                                                                trialTitles.titles.map(t => 
+                                                                trialTitles.titles.sort((a, b) => {
+                                                                    const aIndex = this.gameSetting.trialTitles.findIndex(t => t.titleName == a.titleName);
+                                                                    const bIndex = this.gameSetting.trialTitles.findIndex(t => t.titleName == b.titleName);
+                                                                    return aIndex - bIndex;
+                                                                }).map(t => 
                                                                     <div>{this.getDisplayNameWithMultiplier(t.titleName, t.titleTimesEarned)}</div>
                                                                 )
                                                             }
