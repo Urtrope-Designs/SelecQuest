@@ -159,7 +159,10 @@ export class PlayTaskResultGenerator {
         const existingRanking = hero.trialRankings[rankingSystemIndex];
         const isEnvironmentalLimitBroken = hero.trialEnvironmentalLimit >= hero.maxTrialEnvironmentalLimit;
         const newRankingValue = hero.currency[TaskMode.TRIAL_MODE] + (hero.trialEnvironmentalLimit / (isEnvironmentalLimitBroken ? 2 : 1));
-        const valueRemainingToClassGoalCoefficient = Math.max(0, (hero.trialCurrentCompetitiveClass.totalValueRequired - newRankingValue) / (hero.trialCurrentCompetitiveClass.totalValueRequired - hero.trialCurrentCompetitiveClass.startingCurrencyValue));
+
+        const curCompClassValueToGo = hero.trialCurrentCompetitiveClass.totalValueRequired - newRankingValue;
+        const curCompClassTotalValueProgressRequired = hero.trialCurrentCompetitiveClass.totalValueRequired - hero.trialCurrentCompetitiveClass.startingCurrencyValue;
+        const valueRemainingToClassGoalCoefficient = Math.max(0, curCompClassValueToGo / curCompClassTotalValueProgressRequired);
         const newRanking = Math.min(existingRanking.worstRanking, randomizeNumber(Math.max(1, Math.ceil(existingRanking.currentRanking * valueRemainingToClassGoalCoefficient)), 10, 1));
 
         const updateData: TrialRanking[] = [
@@ -196,16 +199,20 @@ export class PlayTaskResultGenerator {
             // or increase "multiplier" prefix if on last in config
             newCompClass = hero.trialCurrentCompetitiveClass;
             newCompClass.competitiveClassMultiplier += 1;
+
+            // TODO: what if index === -1 as in the first conditional case?
             newSettingCompClass = gameSetting.trialCompetitiveClasses[existingSettingCompClassIndex];
         } else {
             // update competitive class to next in config
             newSettingCompClass = gameSetting.trialCompetitiveClasses[existingSettingCompClassIndex + 1];
+            const curCurrencyValue = hero.currency[TaskMode.TRIAL_MODE];
+            const additionalValueRequired = factorialReduce(hero.level + this.gameConfigMgr.competitiveClassLevelRange, hero.level, (value => Math.ceil(HeroManager.getXpRequiredForNextLevel(value) / 6.5) * value));
             newCompClass = {
                 competitiveClassName: newSettingCompClass.competitiveClassName,
                 competitiveClassMultiplier: 1,
-                startingCurrencyValue: hero.currency[TaskMode.TRIAL_MODE],
-                totalValueRequired: factorialReduce(hero.level + this.gameConfigMgr.competitiveClassLevelRange, hero.level, (value => Math.ceil(HeroManager.getXpRequiredForNextLevel(value) / 6.5) * value))
-            }
+                startingCurrencyValue: curCurrencyValue,
+                totalValueRequired: curCurrencyValue + additionalValueRequired,
+            };
         }
         const compClassMod: HeroModification = {
             type: HeroModificationType.SET,
