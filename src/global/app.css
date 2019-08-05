@@ -61,10 +61,23 @@ body {
     min-width: 2rem;
 } */
 
-ion-app {
+sq-app {
     max-width: 900px;
     margin-left: auto;
     margin-right: auto;
+}
+
+sq-app, .sqPage {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    contain: layout size style;
+    overflow: hidden;
 }
 
 h1, h2, h3, h4, h5, p, button, div, input {
@@ -97,6 +110,19 @@ hr {
     background-color: var(--sq-color-primary-contrast) !important;
     overflow: auto;
     height: 100%;
+}
+
+.sqHeader, .sqFooter, .coreContent {
+    padding: 12px 15px;
+}
+.sqHeader {
+    padding-bottom: 0;
+}
+.sqFooter {
+    padding-top: 0;
+}
+section:last-child {
+    padding-bottom: 0;
 }
 
 p:first-child {
@@ -272,21 +298,6 @@ tr, .textRow {
     font-family: '7_12';
     src: url('/assets/fonts/7_12-Serif.woff');
 }
-
-/** Ionic overrides **/
-ion-header, ion-footer, .coreContent {
-    padding: 12px 15px;
-}
-section:last-child {
-    padding-bottom: 0;
-}
-ion-header {
-    padding-bottom: 0;
-}
-ion-footer {
-    padding-top: 0;
-}
-
 
 /** SimpleBar overrides **/
 /* sq-app .simplebar-scrollbar {

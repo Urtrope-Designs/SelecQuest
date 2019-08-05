@@ -166,18 +166,14 @@ export class SqApp {
             )
         } else {
             return (
-                <ion-app>
-                    {
-                        !!this.state.hero
-                        ? <sq-play-screen 
-                                appState={this.state}
-                                gameSetting={this.gameSettingsMgr.getGameSettingById(this.state.hero.gameSettingId)}
-                                availableHeroes={this.availableHeroes}
-                                ref={(el: any) => this.playScreen = el}
-                            ></sq-play-screen>
-                        : <sq-create-hero-screen gameSettingsMgr={this.gameSettingsMgr}></sq-create-hero-screen>
-                    }
-                </ion-app>
+                !!this.state.hero
+                ? <sq-play-screen 
+                        appState={this.state}
+                        gameSetting={this.gameSettingsMgr.getGameSettingById(this.state.hero.gameSettingId)}
+                        availableHeroes={this.availableHeroes}
+                        ref={(el: any) => this.playScreen = el}
+                    ></sq-play-screen>
+                : <sq-create-hero-screen gameSettingsMgr={this.gameSettingsMgr}></sq-create-hero-screen>
             );
         }
     }

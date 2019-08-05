@@ -91,8 +91,8 @@ export class CreateHeroScreen {
 
     render() {
         return (
-            <ion-page class='ion-page show-page'>
-                <ion-header>
+            <div class='sqPage'>
+                <div class="sqHeader">
                     <div class="headlineRow">
                         <hr/>
                         <h1>SelecQuest</h1>
@@ -103,7 +103,7 @@ export class CreateHeroScreen {
                         Welcome to SelecQuest, with three adventuring modes! Roll up your hero below and get started. Download in the app store or save to your device's desktop for a fully immersive mobile experience!
                     </p>
                     <hr/>
-                </ion-header>
+                </div>
                 <div class="coreContent">
                     <div style={{height: "100%", paddingRight: "17px"}} sq-scrollable>
                         <div class="nameRow">
@@ -177,13 +177,13 @@ export class CreateHeroScreen {
                         </div>
                     </div>
                 </div>
-                <ion-footer>
+                <div class="sqFooter">
                     <hr/>
                     <div class="soldButtonRow">
                         <button class="selected" onClick={() => this.handleSubmit()}>Sold!</button>
                     </div>
-                </ion-footer>
-            </ion-page>
+                </div>
+            </div>
         );
     }
 }

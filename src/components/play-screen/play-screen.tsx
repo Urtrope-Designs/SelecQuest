@@ -10,7 +10,7 @@ import { TaskMode } from '../../models/task-models';
 
 @Component({
     tag: 'sq-play-screen',
-    styleUrl: 'play-screen.scss'
+    styleUrl: 'play-screen.css'
 })
 export class PlayScreen {
     @Prop() appState: AppState;
@@ -138,8 +138,8 @@ export class PlayScreen {
     render() {
         if (this.appState != null) {
             return (
-                <ion-page class='ion-page show-page'>
-                    <ion-header>
+                <div class='sqPage'>
+                    <div class="sqHeader">
                         <div class="headlineRow">
                             <hr/>
                             <h1>SelecQuest</h1>
@@ -173,7 +173,7 @@ export class PlayScreen {
                             }
                         </div>
                         <hr/>
-                    </ion-header>
+                    </div>
                     <div class="coreContent">
                         <div style={{height: "100%", paddingRight: "17px"}} sq-scrollable>
                             {
@@ -573,7 +573,7 @@ export class PlayScreen {
                             }
                         </div>
                     </div>
-                    <ion-footer>
+                    <div class="sqFooter">
                         <hr />
                         <div class="buttonRow">
                             {
@@ -659,8 +659,8 @@ export class PlayScreen {
                             : [<div class="textRow">Loading&hellip;</div>,
                             <div class="indentRow"><sq-progress-bar totalValue={1} currentValue={0}></sq-progress-bar></div>]
                         }
-                    </ion-footer>
-                </ion-page>
+                    </div>
+                </div>
             );
         }
     }
