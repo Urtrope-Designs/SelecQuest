@@ -1,5 +1,6 @@
 import { Component, Prop, State, Event, EventEmitter, Element, Watch } from '@stencil/core';
 import OverlayScrollbars from 'overlayscrollbars';
+import 'inobounce';
 
 import { AppState, Task, Hero, QuestMajorReward, HeroStat } from '../../models/models';
 import { HeroManager } from '../../services/hero-manager';

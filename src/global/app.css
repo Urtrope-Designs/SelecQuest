@@ -299,10 +299,6 @@ tr, .textRow {
     margin-left: auto;
 }
 
-/* [sq-scrollable] {
-
-} */
-
 @font-face {
     font-family: '7_12';
     src: url('/assets/fonts/7_12-Serif.woff');

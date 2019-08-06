@@ -1,5 +1,6 @@
 import { Component, Listen, State } from '@stencil/core';
 import { Subject } from 'rxjs';
+import 'inobounce';
 
 import { stateFn } from '../../global/state-store';
 import { AppState, Task } from '../../models/models';

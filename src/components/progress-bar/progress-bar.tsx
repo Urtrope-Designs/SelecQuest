@@ -1,4 +1,3 @@
-import '@ionic/core';
 import {Component, Prop, Element, State, Watch } from '@stencil/core';
 import ResizeObserver from 'resize-observer-polyfill';
 
