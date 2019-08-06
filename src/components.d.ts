@@ -7,8 +7,7 @@
 
 import '@stencil/core';
 
-import '@ionic/core';
-import 'ionicons';
+
 import {
   GameSettingsManager,
 } from './services/game-settings-manager';

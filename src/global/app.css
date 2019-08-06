@@ -1,15 +1,9 @@
 /* Document Level Styles */
-
-@import "~@ionic/core/css/normalize.css";
-@import "~@ionic/core/css/structure.css";
-@import "~@ionic/core/css/core.css";
-
-@import "~@ionic/core/css/padding.css";
-@import "~@ionic/core/css/float-elements.css";
-@import "~@ionic/core/css/text-alignment.css";
-@import "~@ionic/core/css/text-transformation.css";
-
 @import "~overlayscrollbars/css/OverlayScrollbars.css";
+
+* {
+    box-sizing: border-box;
+}
 
 html {
     font-size: 16px;
@@ -138,6 +132,18 @@ p.niceText {
 }
 
 button {
+    /* reset */
+    border-width: 0px;
+    border-style: initial;
+    border-color: initial;
+    border-image: initial;
+    border-radius: 0;
+    font-style: inherit;
+    font-variant: inherit;
+    text-transform: none;
+    -webkit-appearance: button;
+    /* end reset */
+
     padding: .4rem;
     line-height: initial;
     background-color: transparent;
@@ -165,9 +171,12 @@ button[disabled] {
 
 input {
     background-color: var(--sq-color-primary-contrast);
+    color: inherit;
     border: none;
+    margin: 0;
     text-align: right;
     padding-right: .9rem;
+    font: inherit;
 }
 input:focus {
     outline: none;
