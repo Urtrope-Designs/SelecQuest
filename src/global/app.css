@@ -1,10 +1,6 @@
 /* Document Level Styles */
 @import "~overlayscrollbars/css/OverlayScrollbars.css";
 
-* {
-    box-sizing: border-box;
-}
-
 html {
     font-size: 16px;
 }
@@ -15,7 +11,8 @@ html {
 }
 
 * {
-    -webkit-overflow-scrolling: auto;
+    box-sizing: border-box;
+    /* -webkit-overflow-scrolling: auto; */
 }
 
 body {
@@ -369,3 +366,14 @@ sq-app [sq-scrollable] .os-scrollbar.os-scrollbar-horizontal>.os-scrollbar-track
     min-width: 5rem;
     max-width: 5rem;
 }
+
+sq-app [sq-scrollable] .os-padding>.os-viewport {
+    -webkit-overflow-scrolling: auto !important;
+}
+
+/* sq-app [sq-scollable]>.os-padding .os-content>div {
+    -webkit-overflow-scrolling: auto;
+    display: block;
+    border: 1px solid transparent;
+
+} */

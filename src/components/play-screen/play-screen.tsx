@@ -1,6 +1,5 @@
 import { Component, Prop, State, Event, EventEmitter, Element, Watch } from '@stencil/core';
 import OverlayScrollbars from 'overlayscrollbars';
-import 'inobounce';
 
 import { AppState, Task, Hero, QuestMajorReward, HeroStat } from '../../models/models';
 import { HeroManager } from '../../services/hero-manager';
@@ -60,6 +59,26 @@ export class PlayScreen {
     componentDidLoad() {
         const scrollableElements = document.querySelectorAll('[sq-scrollable]');
         OverlayScrollbars(scrollableElements, {});
+
+        // // logic adapted from iNoBounce
+        // let supportsPassiveOption = false;
+        // try {
+        //     const opts = Object.defineProperty({}, 'passive', {
+        //         get: function() {
+        //             supportsPassiveOption = true;
+        //         }
+        //     });
+        //     window.addEventListener('test', null, opts);
+        // } catch (e) {}
+    
+        // window.addEventListener('touchmove', (evt) => {
+        //     // Allow zooming
+        //     const zoom = window.innerWidth / window.document.documentElement.clientWidth;
+        //     if (evt.touches.length > 1 || zoom !== 1) {
+        //         return;
+        //     }
+        //     evt.preventDefault();
+        // }, supportsPassiveOption ? { passive : false } : false);
     }
 
     taskModeButtonClicked(newTaskModeIndex: number) {
@@ -176,10 +195,10 @@ export class PlayScreen {
                         <hr/>
                     </div>
                     <div class="coreContent">
-                        <div style={{height: "100%", paddingRight: "17px"}} sq-scrollable>
+                        <div style={{height: "100%", paddingRight: "17px"}} sq-scrollable onScroll={(e) => this._textRowScrollHandler(e)}>
                             {
                                 this.activeGameViewTab == this.gameSetting.gameViewTabDisplayNames[GameViewTab.HERO]
-                                ? <section>
+                                ? <div>
                                     <table class="listBox">
                                         <thead>
                                             <tr>
@@ -246,7 +265,7 @@ export class PlayScreen {
                                             </table>
                                         )
                                     }
-                                </section>
+                                </div>
                                 : this.activeGameViewTab == this.gameSetting.gameViewTabDisplayNames[GameViewTab.GEAR]
                                 ? <section>
                                     <table class="listBox">
