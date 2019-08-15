@@ -370,10 +370,3 @@ sq-app [sq-scrollable] .os-scrollbar.os-scrollbar-horizontal>.os-scrollbar-track
 sq-app [sq-scrollable] .os-padding>.os-viewport {
     -webkit-overflow-scrolling: auto !important;
 }
-
-/* sq-app [sq-scollable]>.os-padding .os-content>div {
-    -webkit-overflow-scrolling: auto;
-    display: block;
-    border: 1px solid transparent;
-
-} */

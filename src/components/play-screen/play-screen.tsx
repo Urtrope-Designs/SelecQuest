@@ -59,26 +59,6 @@ export class PlayScreen {
     componentDidLoad() {
         const scrollableElements = document.querySelectorAll('[sq-scrollable]');
         OverlayScrollbars(scrollableElements, {});
-
-        // // logic adapted from iNoBounce
-        // let supportsPassiveOption = false;
-        // try {
-        //     const opts = Object.defineProperty({}, 'passive', {
-        //         get: function() {
-        //             supportsPassiveOption = true;
-        //         }
-        //     });
-        //     window.addEventListener('test', null, opts);
-        // } catch (e) {}
-    
-        // window.addEventListener('touchmove', (evt) => {
-        //     // Allow zooming
-        //     const zoom = window.innerWidth / window.document.documentElement.clientWidth;
-        //     if (evt.touches.length > 1 || zoom !== 1) {
-        //         return;
-        //     }
-        //     evt.preventDefault();
-        // }, supportsPassiveOption ? { passive : false } : false);
     }
 
     taskModeButtonClicked(newTaskModeIndex: number) {
@@ -198,7 +178,7 @@ export class PlayScreen {
                         <div style={{height: "100%", paddingRight: "17px"}} sq-scrollable onScroll={(e) => this._textRowScrollHandler(e)}>
                             {
                                 this.activeGameViewTab == this.gameSetting.gameViewTabDisplayNames[GameViewTab.HERO]
-                                ? <div>
+                                ? <section>
                                     <table class="listBox">
                                         <thead>
                                             <tr>
@@ -265,7 +245,7 @@ export class PlayScreen {
                                             </table>
                                         )
                                     }
-                                </div>
+                                </section>
                                 : this.activeGameViewTab == this.gameSetting.gameViewTabDisplayNames[GameViewTab.GEAR]
                                 ? <section>
                                     <table class="listBox">

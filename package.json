@@ -23,7 +23,6 @@
     "@stencil/sass": "^0.1.1",
     "@types/overlayscrollbars": "^1.8.0",
     "firebase": "^6.2.0",
-    "inobounce": "^0.2.0",
     "localforage": "^1.7.3",
     "localforage-cordovasqlitedriver": "^1.7.0",
     "npm": "^6.9.0",
