@@ -335,9 +335,18 @@ sq-app .simplebar-track .simplebar-scrollbar.simplebar-visible::before{
 sq-app [sq-scrollable]:not(.os-host-scrollbar-vertical-hidden) {
     padding-right: 12px;
 }
-sq-app [sq-scrollable]:not(.os-host-scrollbar-horizontal-hidden) {
-    padding-bottom: 12px;
+sq-app .textRow-scroll[sq-scrollable] .os-content {
+    transition: padding .3s;
 }
+sq-app [sq-scrollable]:not(.os-host-scrollbar-horizontal-hidden) .os-content {
+    padding-bottom: 12px !important;
+    padding-top: 0 !important;
+}
+sq-app .textRow-scroll[sq-scrollable].os-host-scrollbar-horizontal-hidden .os-content {
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;    
+}
+
 sq-app [sq-scrollable] .os-scrollbar {
     padding: 0;
 }
