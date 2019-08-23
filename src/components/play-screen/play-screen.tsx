@@ -1,4 +1,4 @@
-import { Component, Prop, State, Event, EventEmitter, Element, Watch } from '@stencil/core';
+import { h, Component, Prop, State, Event, EventEmitter, Element, Watch } from '@stencil/core';
 import OverlayScrollbars from 'overlayscrollbars';
 
 import { AppState, Task, Hero, QuestMajorReward, HeroStat } from '../../models/models';

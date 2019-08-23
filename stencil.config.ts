@@ -5,6 +5,7 @@ export const config: Config = {
   outputTargets: [
     {
       type: 'www',
+      serviceWorker: null,
     }
   ],
   globalStyle: 'src/global/app.css',

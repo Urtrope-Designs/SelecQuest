@@ -1,4 +1,4 @@
-import {Component, Prop, Element, State, Watch } from '@stencil/core';
+import { h, Component, Prop, Element, State, Watch } from '@stencil/core';
 import ResizeObserver from 'resize-observer-polyfill';
 
 const CHAR_WIDTH = 10.8;

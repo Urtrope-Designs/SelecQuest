@@ -24,7 +24,9 @@ export default class Storage {
                 .then(() => {
                     resolve(db);
                 })
-                .catch(reason => reject(reason));
+                .catch(reason => {
+                    reject(reason)
+                });
         }); 
     }
  

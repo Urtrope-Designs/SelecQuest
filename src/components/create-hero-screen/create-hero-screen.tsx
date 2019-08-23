@@ -1,4 +1,4 @@
-import { Component, State, Event, EventEmitter, Prop } from "@stencil/core";
+import { h, Component, State, Event, EventEmitter, Prop } from "@stencil/core";
 import OverlayScrollbars from "overlayscrollbars";
 import { HeroStat, HeroRace, HeroClass } from "../../models/models";
 import { generateRandomName, randFromList, randRange, capitalizeInitial } from "../../global/utils";

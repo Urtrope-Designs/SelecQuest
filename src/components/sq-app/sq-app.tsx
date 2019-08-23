@@ -1,4 +1,4 @@
-import { Component, Listen, State } from '@stencil/core';
+import { h, Component, Listen, State } from '@stencil/core';
 import { Subject } from 'rxjs';
 
 import { stateFn } from '../../global/state-store';

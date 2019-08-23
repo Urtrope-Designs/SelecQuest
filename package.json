@@ -16,18 +16,18 @@
     "test.watch": "stencil test --spec --e2e --watch"
   },
   "dependencies": {
-    "@capacitor/android": "^1.0.0-beta.22",
-    "@capacitor/cli": "^1.0.0-beta.22",
-    "@capacitor/core": "^1.0.0-beta.22",
-    "@stencil/core": "^0.18.1",
-    "@stencil/sass": "^0.1.1",
+    "@capacitor/android": "1.1.1",
+    "@capacitor/cli": "1.1.1",
+    "@capacitor/core": "1.1.1",
+    "@stencil/core": "1.3.0",
+    "@stencil/sass": "1.0.1",
     "@types/overlayscrollbars": "^1.8.0",
-    "firebase": "^6.2.0",
+    "firebase": "6.4.1",
     "localforage": "^1.7.3",
     "localforage-cordovasqlitedriver": "^1.7.0",
     "npm": "^6.9.0",
     "overlayscrollbars": "^1.8.0",
-    "rxjs": "^6.4.0"
+    "rxjs": "6.5.2"
   },
   "devDependencies": {
     "@types/jest": "23.3.13",

@@ -5,15 +5,10 @@
  */
 
 
-import '@stencil/core';
-
-
+import { HTMLStencilElement, JSXBase } from '@stencil/core/internal';
 import {
   GameSettingsManager,
 } from './services/game-settings-manager';
-import {
-  EventEmitter,
-} from '@stencil/core';
 import {
   HeroInitData,
 } from './models/hero-models';
@@ -27,63 +22,31 @@ import {
   TaskMode,
 } from './models/task-models';
 
-
 export namespace Components {
-
+  interface SqApp {}
   interface SqCreateHeroScreen {
     'gameSettingsMgr': GameSettingsManager;
   }
-  interface SqCreateHeroScreenAttributes extends StencilHTMLAttributes {
-    'gameSettingsMgr'?: GameSettingsManager;
-    'onStartNewHero'?: (event: CustomEvent<HeroInitData>) => void;
-  }
-
   interface SqPlayScreen {
     'appState': AppState;
     'availableHeroes': {hash: string, name: string}[];
     'gameSetting': GameSetting;
   }
-  interface SqPlayScreenAttributes extends StencilHTMLAttributes {
-    'appState'?: AppState;
-    'availableHeroes'?: {hash: string, name: string}[];
-    'gameSetting'?: GameSetting;
-    'onBuildNewHero'?: (event: CustomEvent) => void;
-    'onClearAllGameData'?: (event: CustomEvent) => void;
-    'onDeleteHero'?: (event: CustomEvent<string>) => void;
-    'onPlayNewHero'?: (event: CustomEvent<string>) => void;
-    'onTaskModeAction'?: (event: CustomEvent<TaskMode>) => void;
-  }
-
   interface SqProgressBar {
     'currentValue': number;
     'tapOverlayText': string;
     'totalValue': number;
   }
-  interface SqProgressBarAttributes extends StencilHTMLAttributes {
-    'currentValue'?: number;
-    'tapOverlayText'?: string;
-    'totalValue'?: number;
-  }
-
-  interface SqApp {}
-  interface SqAppAttributes extends StencilHTMLAttributes {}
 }
 
 declare global {
-  interface StencilElementInterfaces {
-    'SqCreateHeroScreen': Components.SqCreateHeroScreen;
-    'SqPlayScreen': Components.SqPlayScreen;
-    'SqProgressBar': Components.SqProgressBar;
-    'SqApp': Components.SqApp;
-  }
 
-  interface StencilIntrinsicElements {
-    'sq-create-hero-screen': Components.SqCreateHeroScreenAttributes;
-    'sq-play-screen': Components.SqPlayScreenAttributes;
-    'sq-progress-bar': Components.SqProgressBarAttributes;
-    'sq-app': Components.SqAppAttributes;
-  }
 
+  interface HTMLSqAppElement extends Components.SqApp, HTMLStencilElement {}
+  var HTMLSqAppElement: {
+    prototype: HTMLSqAppElement;
+    new (): HTMLSqAppElement;
+  };
 
   interface HTMLSqCreateHeroScreenElement extends Components.SqCreateHeroScreen, HTMLStencilElement {}
   var HTMLSqCreateHeroScreenElement: {
@@ -102,34 +65,51 @@ declare global {
     prototype: HTMLSqProgressBarElement;
     new (): HTMLSqProgressBarElement;
   };
-
-  interface HTMLSqAppElement extends Components.SqApp, HTMLStencilElement {}
-  var HTMLSqAppElement: {
-    prototype: HTMLSqAppElement;
-    new (): HTMLSqAppElement;
-  };
-
   interface HTMLElementTagNameMap {
-    'sq-create-hero-screen': HTMLSqCreateHeroScreenElement
-    'sq-play-screen': HTMLSqPlayScreenElement
-    'sq-progress-bar': HTMLSqProgressBarElement
-    'sq-app': HTMLSqAppElement
-  }
-
-  interface ElementTagNameMap {
+    'sq-app': HTMLSqAppElement;
     'sq-create-hero-screen': HTMLSqCreateHeroScreenElement;
     'sq-play-screen': HTMLSqPlayScreenElement;
     'sq-progress-bar': HTMLSqProgressBarElement;
-    'sq-app': HTMLSqAppElement;
   }
-
-
-  export namespace JSX {
-    export interface Element {}
-    export interface IntrinsicElements extends StencilIntrinsicElements {
-      [tagName: string]: any;
-    }
-  }
-  export interface HTMLAttributes extends StencilHTMLAttributes {}
-
 }
+
+declare namespace LocalJSX {
+  interface SqApp extends JSXBase.HTMLAttributes<HTMLSqAppElement> {}
+  interface SqCreateHeroScreen extends JSXBase.HTMLAttributes<HTMLSqCreateHeroScreenElement> {
+    'gameSettingsMgr'?: GameSettingsManager;
+    'onStartNewHero'?: (event: CustomEvent<HeroInitData>) => void;
+  }
+  interface SqPlayScreen extends JSXBase.HTMLAttributes<HTMLSqPlayScreenElement> {
+    'appState'?: AppState;
+    'availableHeroes'?: {hash: string, name: string}[];
+    'gameSetting'?: GameSetting;
+    'onBuildNewHero'?: (event: CustomEvent<any>) => void;
+    'onClearAllGameData'?: (event: CustomEvent<any>) => void;
+    'onDeleteHero'?: (event: CustomEvent<string>) => void;
+    'onPlayNewHero'?: (event: CustomEvent<string>) => void;
+    'onTaskModeAction'?: (event: CustomEvent<TaskMode>) => void;
+  }
+  interface SqProgressBar extends JSXBase.HTMLAttributes<HTMLSqProgressBarElement> {
+    'currentValue'?: number;
+    'tapOverlayText'?: string;
+    'totalValue'?: number;
+  }
+
+  interface IntrinsicElements {
+    'sq-app': SqApp;
+    'sq-create-hero-screen': SqCreateHeroScreen;
+    'sq-play-screen': SqPlayScreen;
+    'sq-progress-bar': SqProgressBar;
+  }
+}
+
+export { LocalJSX as JSX };
+
+
+declare module "@stencil/core" {
+  export namespace JSX {
+    interface IntrinsicElements extends LocalJSX.IntrinsicElements {}
+  }
+}
+
+
