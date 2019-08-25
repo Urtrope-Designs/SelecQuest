@@ -28,6 +28,7 @@ export class SqApp {
     private actionSubject: Subject<Action> = new Subject<Action>();
     @State() state: AppState;
     @State() availableHeroes: {hash: string, name: string}[];
+    @State() loadingErrorMsg = '';
 
     private datastoreMgr: NosqlDatastoreManager;
     private gameConfigMgr: GameConfigManager;
@@ -58,7 +59,10 @@ export class SqApp {
     clearAllGameDataHandler() {
         this._queueAction(new SetActiveHero(DEFAULT_APP_STATE));
         setTimeout(() => {
-            this.gameDataMgr.clearAllData().then(() => {this._updateAvailableHeroes()});
+            this.gameDataMgr.clearAllData().then(() => {
+                this._updateAvailableHeroes();
+                this.loadingErrorMsg = '';
+            });
         }, 100)
     }
     @Listen('buildNewHero')
@@ -138,9 +142,11 @@ export class SqApp {
                 })
                 .catch(err => {
                     console.log('hero data load error: ', err);
+                    this.loadingErrorMsg = err;
                 })
         } catch (err) {
-            console.log('app load error: ', err);   
+            console.log('app load error: ', err);
+            this.loadingErrorMsg = err;
         }
         this._updateAvailableHeroes();
         return;
@@ -155,12 +161,26 @@ export class SqApp {
     }
 
     private isCatchUpTask(currentTask: Task): boolean {
+        if (!this.state.currentTask) {
+            return false;
+        }
         const catchUpCutoff = new Date().getTime() - 200;
         return currentTask.taskStartTime + currentTask.durationMs < catchUpCutoff;
     }
 
     render() {
-        if (!this.state || !!this.state.currentTask && this.isCatchUpTask(this.state.currentTask)) {
+        if (!!this.loadingErrorMsg) {
+            return (
+                <div class="appCenter">
+                    <div>{this.loadingErrorMsg}</div>
+                    <div class="buttonRow">
+                        <button class="selected" onClick={() => document.location.reload(true)}>Try refresh</button>
+                        <button class="selected" onClick={() => this.clearAllGameDataHandler()}>Clear All Data</button>
+                    </div>
+                </div>
+            )
+        }
+        else if (!this.state || this.isCatchUpTask(this.state.currentTask)) {
             return (
                 <div class="appLoading">
                     Loading...

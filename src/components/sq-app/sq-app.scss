@@ -1,8 +1,11 @@
 sq-app {
-    .appLoading {
+    .appLoading, .appCenter {
         height: 100%;
+        text-align: center;
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
+        padding: 1rem;
     }
 }
