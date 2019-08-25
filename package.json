@@ -23,9 +23,9 @@
     "@stencil/sass": "1.0.1",
     "@types/overlayscrollbars": "^1.8.0",
     "firebase": "6.4.1",
-    "localforage": "^1.7.3",
-    "localforage-cordovasqlitedriver": "^1.7.0",
-    "npm": "^6.9.0",
+    "localforage": "1.7.3",
+    "localforage-cordovasqlitedriver": "1.8.0",
+    "npm": "^6.11.2",
     "overlayscrollbars": "^1.8.0",
     "rxjs": "6.5.2"
   },
@@ -36,6 +36,6 @@
     "jest-cli": "23.6.0",
     "puppeteer": "1.11.0",
     "resize-observer-polyfill": "^1.5.1",
-    "workbox-build": "3.4.1"
+    "workbox-build": "4.3.1"
   }
 }

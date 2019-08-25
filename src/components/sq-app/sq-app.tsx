@@ -6,7 +6,7 @@ import { AppState, Task } from '../../models/models';
 import { Action, ChangeActiveTaskMode, SetActiveHero } from '../../global/actions';
 import { GameDataManager } from '../../services/game-data-manager';
 import { generateHeroHashFromHero } from '../../global/utils';
-import { PlayScreen } from '../play-screen/play-screen';
+// import { PlayScreen } from '../play-screen/play-screen';
 import { GameSettingsManager } from '../../services/game-settings-manager';
 import { HeroInitData } from '../../models/hero-models';
 import { HeroManager } from '../../services/hero-manager';
@@ -40,7 +40,7 @@ export class SqApp {
     private catchUpTaskGenerator: ITaskGenerator;
     private taskResultGenerator: PlayTaskResultGenerator;
 
-    private playScreen: PlayScreen;
+    // private playScreen: PlayScreen;
     
     @Listen('taskModeAction')
     taskModeActionHandler(event: CustomEvent) {
@@ -91,9 +91,9 @@ export class SqApp {
     private _updateAvailableHeroes() {
         this.gameDataMgr.getAvailableHeroHashToNameMapping().then(heroes => {
             this.availableHeroes = heroes;
-            if (!!this.playScreen) {
-                this.playScreen.availableHeroes = this.availableHeroes;
-            }
+            // if (!!this.playScreen) {
+            //     this.playScreen.availableHeroes = this.availableHeroes;
+            // }
         });
     }
 
@@ -172,7 +172,7 @@ export class SqApp {
                         appState={this.state}
                         gameSetting={this.gameSettingsMgr.getGameSettingById(this.state.hero.gameSettingId)}
                         availableHeroes={this.availableHeroes}
-                        ref={(el: any) => this.playScreen = el}
+                        // ref={(el: any) => this.playScreen = el as PlayScreen}
                     ></sq-play-screen>
                 : <sq-create-hero-screen gameSettingsMgr={this.gameSettingsMgr}></sq-create-hero-screen>
             );
