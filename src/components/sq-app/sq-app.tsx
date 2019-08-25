@@ -27,8 +27,8 @@ import '../../global/inobounce';
 export class SqApp {
     private actionSubject: Subject<Action> = new Subject<Action>();
     @State() state: AppState;
-    private availableHeroes: {hash: string, name: string}[];
-    
+    @State() availableHeroes: {hash: string, name: string}[];
+
     private datastoreMgr: NosqlDatastoreManager;
     private gameConfigMgr: GameConfigManager;
     private taskMgr: PlayTaskManager;
@@ -40,8 +40,6 @@ export class SqApp {
     private catchUpTaskGenerator: ITaskGenerator;
     private taskResultGenerator: PlayTaskResultGenerator;
 
-    // private playScreen: PlayScreen;
-    
     @Listen('taskModeAction')
     taskModeActionHandler(event: CustomEvent) {
         this._queueAction(new ChangeActiveTaskMode(event.detail));
@@ -91,9 +89,6 @@ export class SqApp {
     private _updateAvailableHeroes() {
         this.gameDataMgr.getAvailableHeroHashToNameMapping().then(heroes => {
             this.availableHeroes = heroes;
-            // if (!!this.playScreen) {
-            //     this.playScreen.availableHeroes = this.availableHeroes;
-            // }
         });
     }
 
@@ -172,7 +167,6 @@ export class SqApp {
                         appState={this.state}
                         gameSetting={this.gameSettingsMgr.getGameSettingById(this.state.hero.gameSettingId)}
                         availableHeroes={this.availableHeroes}
-                        // ref={(el: any) => this.playScreen = el as PlayScreen}
                     ></sq-play-screen>
                 : <sq-create-hero-screen gameSettingsMgr={this.gameSettingsMgr}></sq-create-hero-screen>
             );
