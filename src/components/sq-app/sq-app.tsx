@@ -5,7 +5,7 @@ import { stateFn } from '../../global/state-store';
 import { AppState, Task } from '../../models/models';
 import { Action, ChangeActiveTaskMode, SetActiveHero } from '../../global/actions';
 import { GameDataManager } from '../../services/game-data-manager';
-import { generateHeroHashFromHero } from '../../global/utils';
+import { generateHeroHashFromHero, promiseTimeout } from '../../global/utils';
 // import { PlayScreen } from '../play-screen/play-screen';
 import { GameSettingsManager } from '../../services/game-settings-manager';
 import { HeroInitData } from '../../models/hero-models';
@@ -93,49 +93,55 @@ export class SqApp {
     }
 
     async componentWillLoad() {
-        this.datastoreMgr = new NosqlDatastoreManager();
-        // todo: probably need to pull available Game Setting names from gameDataMgr eventually
-        this.gameSettingsMgr = new GameSettingsManager(this.datastoreMgr);
-        await this.gameSettingsMgr.init(['fantasy-setting']);
-        this.gameConfigMgr = new GameConfigManager(this.datastoreMgr);
+        try {
+            this.datastoreMgr = new NosqlDatastoreManager();
+            // todo: probably need to pull available Game Setting names from gameDataMgr eventually
+            this.gameSettingsMgr = new GameSettingsManager(this.datastoreMgr);
+            await this.gameSettingsMgr.init(['fantasy-setting']);
+            this.gameConfigMgr = new GameConfigManager(this.datastoreMgr);
 
-        this.gameDataMgr = new GameDataManager();
-        this.gameDataTransformMgr = new GameDataTransformManager();
-        this.heroMgr = new HeroManager(this.gameSettingsMgr, this.gameConfigMgr);
-        this.taskResultGenerator = new PlayTaskResultGenerator(this.gameSettingsMgr, this.gameConfigMgr);
-        this.playTaskGenerator = new PlayTaskGenerator(this.taskResultGenerator, this.heroMgr, this.gameSettingsMgr, this.gameConfigMgr);
-        this.catchUpTaskGenerator = new CatchUpTaskGenerator(this.taskResultGenerator, this.heroMgr, this.gameSettingsMgr, this.gameConfigMgr);
+            this.gameDataMgr = new GameDataManager();
+            this.gameDataTransformMgr = new GameDataTransformManager();
+            this.heroMgr = new HeroManager(this.gameSettingsMgr, this.gameConfigMgr);
+            this.taskResultGenerator = new PlayTaskResultGenerator(this.gameSettingsMgr, this.gameConfigMgr);
+            this.playTaskGenerator = new PlayTaskGenerator(this.taskResultGenerator, this.heroMgr, this.gameSettingsMgr, this.gameConfigMgr);
+            this.catchUpTaskGenerator = new CatchUpTaskGenerator(this.taskResultGenerator, this.heroMgr, this.gameSettingsMgr, this.gameConfigMgr);
 
-        this.gameDataMgr.getActiveHeroHash()
-            .then((heroHash: string) => {
-                if (!!heroHash) {
-                    return this.gameDataMgr.getGameData(heroHash)
-                        .then(state => {
-                            if (state == null) {
-                                return DEFAULT_APP_STATE;
-                            } else {
-                                state = this.gameDataTransformMgr.transformGameData(state, this.gameSettingsMgr, this.gameConfigMgr);
-                                return state;
-                            }
-                        });
-                } else {
-                    return DEFAULT_APP_STATE;
-                }
-            })
-            .then(state => {
-                const initialData = state || DEFAULT_APP_STATE;
-                let state$ = stateFn(initialData, this.actionSubject.asObservable());
-                state$ = this.gameDataMgr.persistAppData(state$);
-                this.taskMgr = new PlayTaskManager(state$, this.playTaskGenerator, this.catchUpTaskGenerator);
-                this.taskMgr.getTaskAction$().subscribe((taskAction: Action) => {
-                    this._queueAction(taskAction);
+            promiseTimeout(10000, this.gameDataMgr.getActiveHeroHash())
+                .then((heroHash: string) => {
+                    if (!!heroHash) {
+                        return this.gameDataMgr.getGameData(heroHash)
+                            .then(state => {
+                                if (state == null) {
+                                    return DEFAULT_APP_STATE;
+                                } else {
+                                    state = this.gameDataTransformMgr.transformGameData(state, this.gameSettingsMgr, this.gameConfigMgr);
+                                    return state;
+                                }
+                            });
+                    } else {
+                        return DEFAULT_APP_STATE;
+                    }
                 })
+                .then(state => {
+                    const initialData = state || DEFAULT_APP_STATE;
+                    let state$ = stateFn(initialData, this.actionSubject.asObservable());
+                    state$ = this.gameDataMgr.persistAppData(state$);
+                    this.taskMgr = new PlayTaskManager(state$, this.playTaskGenerator, this.catchUpTaskGenerator);
+                    this.taskMgr.getTaskAction$().subscribe((taskAction: Action) => {
+                        this._queueAction(taskAction);
+                    })
 
-                state$.subscribe(state => {
-                    this.state = state;
-                });
-            });
-
+                    state$.subscribe(state => {
+                        this.state = state;
+                    });
+                })
+                .catch(err => {
+                    console.log('hero data load error: ', err);
+                })
+        } catch (err) {
+            console.log('app load error: ', err);   
+        }
         this._updateAvailableHeroes();
         return;
     }
