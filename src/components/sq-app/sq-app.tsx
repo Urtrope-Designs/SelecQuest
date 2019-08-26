@@ -172,9 +172,10 @@ export class SqApp {
         if (!!this.loadingErrorMsg) {
             return (
                 <div class="appCenter">
-                    <div>{this.loadingErrorMsg}</div>
-                    <div class="buttonRow">
-                        <button class="selected" onClick={() => document.location.reload(true)}>Try refresh</button>
+                    <div class="textRow">We've run into some kind of issue:</div>
+                    <div class="textRow">{this.loadingErrorMsg}</div>
+                    <div class="buttonRow" style={{paddingTop: '1rem'}}>
+                        <button class="selected" onClick={() => document.location.reload(true)}>Reboot App</button>
                         <button class="selected" onClick={() => this.clearAllGameDataHandler()}>Clear All Data</button>
                     </div>
                 </div>
