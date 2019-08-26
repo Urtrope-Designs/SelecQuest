@@ -8,7 +8,6 @@ import { AppState as SqAppState, Task } from '../../models/models';
 import { Action, ChangeActiveTaskMode, SetActiveHero } from '../../global/actions';
 import { GameDataManager } from '../../services/game-data-manager';
 import { generateHeroHashFromHero, promiseTimeout } from '../../global/utils';
-// import { PlayScreen } from '../play-screen/play-screen';
 import { GameSettingsManager } from '../../services/game-settings-manager';
 import { HeroInitData } from '../../models/hero-models';
 import { HeroManager } from '../../services/hero-manager';

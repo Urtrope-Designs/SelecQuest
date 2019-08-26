@@ -155,7 +155,6 @@ export class PlayScreen {
                         <div sq-flex style={{alignItems: 'baseline'}} class="textRow">
                             <div style={{flexShrink: '0'}}>Lvl {this.appState.hero.level}&nbsp;</div>
                             <sq-progress-bar
-                                key="xp"
                                 totalValue={HeroManager.getXpRequiredForNextLevel(this.appState.hero.level)}
                                 currentValue={this.appState.hero.currentXp}
                                 tapOverlayText={`${HeroManager.getXpRequiredForNextLevel(this.appState.hero.level) - this.appState.hero.currentXp} xp needed`}
@@ -510,7 +509,6 @@ export class PlayScreen {
                                         <div class={this.findUpdate('currentAdventure') ? 'textRow textRow-highlight' : 'textRow'}>{this.appState.hero.currentAdventure.name}</div>
                                         <div class="indentRow">
                                             <sq-progress-bar 
-                                                key="advenProg"
                                                 totalValue={this.appState.hero.currentAdventure.progressRequired}
                                                 currentValue={this.appState.hero.adventureProgress}
                                                 tapOverlayText={PlayScreen._getAdventureTimeRemainingString(this.appState.hero)}
@@ -604,7 +602,6 @@ export class PlayScreen {
                                     </div>,
                                     <div class="indentRow">
                                         <sq-progress-bar
-                                            key="lootEL"
                                             totalValue={this.appState.hero.maxLootEnvironmentalLimit}
                                             currentValue={this.appState.hero.lootEnvironmentalLimit}
                                             tapOverlayText={`${Math.floor(100 * this.appState.hero.lootEnvironmentalLimit / this.appState.hero.maxLootEnvironmentalLimit)}%`}
@@ -622,7 +619,6 @@ export class PlayScreen {
                                     </div>,
                                     <div class="indentRow">
                                         <sq-progress-bar
-                                            key="trialEL"
                                             totalValue={this.appState.hero.maxTrialEnvironmentalLimit}
                                             currentValue={this.appState.hero.trialEnvironmentalLimit}
                                             tapOverlayText={`${Math.floor(100 * this.appState.hero.trialEnvironmentalLimit / this.appState.hero.maxTrialEnvironmentalLimit)}%`}
@@ -640,7 +636,6 @@ export class PlayScreen {
                                 </div>,
                                 <div class="indentRow">
                                     <sq-progress-bar
-                                        key="questEL"
                                         totalValue={this.appState.hero.maxQuestEnvironmentalLimit}
                                         currentValue={this.appState.hero.questEnvironmentalLimit}
                                         tapOverlayText={`${Math.floor(100 * this.appState.hero.questEnvironmentalLimit / this.appState.hero.maxQuestEnvironmentalLimit)}%`}
@@ -658,7 +653,6 @@ export class PlayScreen {
                                 >{this.appState.currentTask.description}&hellip;</div>,
                                 <div class="indentRow">
                                     <sq-progress-bar
-                                        key="task"
                                         totalValue={this.appState.currentTask.durationMs}
                                         currentValue={this.activeTaskProgressMs}
                                         tapOverlayText={`${Math.floor(100 * this.activeTaskProgressMs / this.appState.currentTask.durationMs)}%`}
@@ -666,7 +660,7 @@ export class PlayScreen {
                                 </div>
                             ]
                             : [<div class="textRow">Loading&hellip;</div>,
-                            <div class="indentRow"><sq-progress-bar key="load" totalValue={1} currentValue={0}></sq-progress-bar></div>]
+                            <div class="indentRow"><sq-progress-bar totalValue={1} currentValue={0}></sq-progress-bar></div>]
                         }
                     </div>
                 </div>
