@@ -1,8 +1,10 @@
 import { h, Component, Listen, State } from '@stencil/core';
 import { Subject } from 'rxjs';
+import { Plugins, AppState } from '@capacitor/core';
+const { App } = Plugins;
 
 import { stateFn } from '../../global/state-store';
-import { AppState, Task } from '../../models/models';
+import { AppState as SqAppState, Task } from '../../models/models';
 import { Action, ChangeActiveTaskMode, SetActiveHero } from '../../global/actions';
 import { GameDataManager } from '../../services/game-data-manager';
 import { generateHeroHashFromHero, promiseTimeout } from '../../global/utils';
@@ -26,9 +28,10 @@ import '../../global/inobounce';
 })
 export class SqApp {
     private actionSubject: Subject<Action> = new Subject<Action>();
-    @State() state: AppState;
+    @State() state: SqAppState;
     @State() availableHeroes: {hash: string, name: string}[];
     @State() loadingErrorMsg = '';
+    @State() nativeAppState: AppState;
 
     private datastoreMgr: NosqlDatastoreManager;
     private gameConfigMgr: GameConfigManager;
@@ -88,6 +91,10 @@ export class SqApp {
             this.gameDataMgr.deleteGameData(event.detail);
             this._updateAvailableHeroes();
         }, 100);
+    }
+
+    constructor() {
+        App.addListener('appStateChange', (state: AppState) => {this.nativeAppState = state});
     }
 
     private _updateAvailableHeroes() {
@@ -201,7 +208,7 @@ export class SqApp {
     }
 }
 
-const DEFAULT_APP_STATE: AppState = {
+const DEFAULT_APP_STATE: SqAppState = {
     hero: null,
     currentTask: null,
     hasActiveTask: false,
