@@ -91,6 +91,8 @@ h1 {
 }
 
 hr {
+    height: 1px;
+    border-width: 0;
     border-bottom: 2px solid var(--sq-color-primary);
     box-shadow: 0 0 .3rem var(--sq-color-primary);
     margin-bottom: 4px;
