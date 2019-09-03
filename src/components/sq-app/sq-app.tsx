@@ -103,6 +103,12 @@ export class SqApp {
     }
 
     async componentWillLoad() {
+        let pResolve: (value?: unknown) => void;
+        let pReject: (reason?: unknown) => void;
+        const prom = new Promise<boolean>((resolve, reject) => {
+            pResolve = resolve;
+            pReject = reject;
+        })
         try {
             this.datastoreMgr = new NosqlDatastoreManager();
             // todo: probably need to pull available Game Setting names from gameDataMgr eventually
@@ -149,13 +155,17 @@ export class SqApp {
                 .catch(err => {
                     console.log('hero data load error: ', err);
                     this.loadingErrorMsg = err;
+                    pReject(err);
                 })
         } catch (err) {
             console.log('app load error: ', err);
             this.loadingErrorMsg = err;
+            pReject(err);
         }
         this._updateAvailableHeroes();
-        return;
+        pResolve(true);
+
+        return promiseTimeout(5000, prom);
     }
 
     private _queueAction(newAction: Action) {

@@ -52,6 +52,16 @@ body {
     min-width: 2rem;
 } */
 
+.appLoading {
+    height: 100vh;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: .5rem;
+}
+
 sq-app {
     max-width: 900px;
     margin-left: auto;
