@@ -14,7 +14,7 @@ export default class Storage {
             let config = {
                 name: '_selecqueststorage',
                 storeName: '_selecquestkv',
-                driverOrder: ['sqlite', /*'indexeddb', 'websql',*/ 'localstorage']
+                driverOrder: ['sqlite', 'indexeddb', 'websql', 'localstorage']
             }
  
             LocalForage.defineDriver(CordovaSQLiteDriver).then(() => {

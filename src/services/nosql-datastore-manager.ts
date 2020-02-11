@@ -15,10 +15,10 @@ export class NosqlDatastoreManager {
         };
         firebase.initializeApp(firebaseConfig);
         this.db = firebase.firestore();
-        // this.db.enablePersistence({synchronizeTabs: true})
-        //     .catch((err) => {
-        //         console.log(err);
-        //     });
+        this.db.enablePersistence({synchronizeTabs: true})
+            .catch((err) => {
+                console.log(err);
+            });
     }
 
     async getDocument(collectionName, docName) {

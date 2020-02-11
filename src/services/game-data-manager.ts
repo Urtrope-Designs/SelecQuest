@@ -12,7 +12,7 @@ export class GameDataManager {
         //todo: return an observable that emits each time datastore.set completes successfully?
         return appData$.pipe(
             tap((data) => {
-                if (!!data && !!data.hero) {
+                if (!!data && !!data.hero && document.visibilityState === 'visible') {
                     this.dataStore.set(`${GAME_SAVE_PREFIX}${generateHeroHashFromHero(data.hero)}`, data);
                 }
             })
