@@ -1,8 +1,8 @@
-import firebase from 'firebase/app';
-import 'firebase/firestore';
+import { initializeApp, setLogLevel } from 'firebase/app';
+import { doc, Firestore, getDoc, getFirestore, onSnapshot } from 'firebase/firestore';
 
 export class NosqlDatastoreManager {
-    private db: firebase.firestore.Firestore;
+    private db: Firestore;
 
     constructor() {
         const firebaseConfig = {
@@ -13,25 +13,25 @@ export class NosqlDatastoreManager {
             storageBucket: "selecquest.appspot.com",
             messagingSenderId: "434339253679"
         };
-        firebase.initializeApp(firebaseConfig);
-        this.db = firebase.firestore();
-        this.db.enablePersistence({synchronizeTabs: true})
-            .catch((err) => {
-                console.log(err);
-            });
+        setLogLevel('verbose');
+        const app = initializeApp(firebaseConfig);
+        this.db = getFirestore(app);
+        // enableIndexedDbPersistence(this.db)
+        //     .catch((err) => {
+        //         console.log(err);
+        //     });
     }
 
-    async getDocument(collectionName, docName) {
-        const doc = this.db.collection(collectionName).doc(docName).get()
-            .then(result => {
-                return result.exists ? result.data() : null;
-            })
-        return doc;
+    async getDocument(collectionName: string, docName: string) {
+        const docRef = doc(this.db, collectionName, docName);
+        const docSnap = await getDoc(docRef);
+
+        return docSnap?.data();
     }
 
-    watchDocument(collectionName, docName, callback) {
-        return this.db.collection(collectionName).doc(docName).onSnapshot(result => {
-            result.exists ? callback(result.data()) : callback(null);
-        });
+    watchDocument(collectionName: string, docName: string, callback: any) {
+        return onSnapshot(doc(this.db, collectionName, docName), (result => {
+            callback(result?.data());
+        }));
     }
 }

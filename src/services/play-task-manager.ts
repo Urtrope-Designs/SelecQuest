@@ -12,7 +12,7 @@ export class PlayTaskManager {
         private playTaskGenerator: ITaskGenerator,
         private catchUpTaskGenerator: ITaskGenerator,
     ) {
-        combineLatest(timer(1, 100), this.stateStore)
+        combineLatest([timer(1, 100), this.stateStore])
             .subscribe(([_timer, state]) => {
                 if (!!state && !!state.hero && !state.hasActiveTask) {
                     let nextTask = this.constructNextTask(state);

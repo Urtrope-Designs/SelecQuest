@@ -186,9 +186,6 @@ export class CatchUpTaskGenerator implements ITaskGenerator{
         const xpGainedPerCycle = this.determineXpGainedPerCycle(buildUpLimit, averageAdvancementTaskLength, isEnvironmentalLimitBroken);
         const totalXpEarned = cyclesToNextMilestone * xpGainedPerCycle;
 
-        const apGainedPerCycle = this.determineApGainedPerCycle(buildUpLimit, averageAdvancementTaskLength, isEnvironmentalLimitBroken);
-        const totalApEarned = cyclesToNextMilestone * apGainedPerCycle;
-
         const environmentalLimitGainedPerCycle = buildUpLimit;
         const totalEnvironmentalLimitGained = cyclesToNextMilestone * environmentalLimitGainedPerCycle;
         const totalOffModeEnvironmentalLimitReduced = cyclesToNextMilestone * environmentalLimitGainedPerCycle * -2;
@@ -214,11 +211,6 @@ export class CatchUpTaskGenerator implements ITaskGenerator{
                 type: HeroModificationType.INCREASE,
                 attributeName: 'currentXp',
                 data: totalXpEarned,
-            },
-            {
-                type: HeroModificationType.INCREASE,
-                attributeName: 'adventureProgress',
-                data: totalApEarned,
             },
             {
                 type: HeroModificationType.INCREASE,
@@ -251,6 +243,20 @@ export class CatchUpTaskGenerator implements ITaskGenerator{
                 data: [{index: state.activeTaskMode, value: true}],
             },
         ];
+
+        if (nearestMilestone === CatchUpMilestones.COMPLETE_ADVENTURE) {
+            const newAdventureResults = this.taskResultGenerator.generateNewAdventureResults(state.hero);
+            modifications.push(...newAdventureResults);
+        } else {
+            const apGainedPerCycle = this.determineApGainedPerCycle(buildUpLimit, averageAdvancementTaskLength, isEnvironmentalLimitBroken);
+            const totalApEarned = cyclesToNextMilestone * apGainedPerCycle;
+    
+            modifications.push({
+                type: HeroModificationType.INCREASE,
+                attributeName: 'adventureProgress',
+                data: totalApEarned,
+            });
+        }
 
         let resultingHero = this.generateResultingHero(state.hero, modifications);
 

@@ -1,7 +1,7 @@
 {
-  "appId": "com.urtropedesigns.selecquest",
-  "appName": "SelecQuest",
-  "bundledWebRuntime": false,
-  "npmClient": "npm",
-  "webDir": "www"
+	"appId": "com.urtropedesigns.selecquest",
+	"appName": "SelecQuest",
+	"bundledWebRuntime": false,
+	"npmClient": "npm",
+	"webDir": "www"
 }

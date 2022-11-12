@@ -1,7 +1,6 @@
 import { h, Component, Listen, State } from '@stencil/core';
 import { Subject } from 'rxjs';
-import { Plugins, AppState } from '@capacitor/core';
-const { App } = Plugins;
+import { App, AppState } from '@capacitor/app';
 
 import { stateFn } from '../../global/state-store';
 import { AppState as SqAppState, Task } from '../../models/models';
@@ -17,8 +16,8 @@ import { TaskMode, ITaskGenerator } from '../../models/task-models';
 import { PlayTaskManager } from '../../services/play-task-manager';
 import { CatchUpTaskGenerator } from '../../services/catch-up-task-generator';
 import { GameDataTransformManager } from '../../services/game-data-transform-manager';
-import { NosqlDatastoreManager } from '../../services/nosql-datastore-manager';
 import { GameConfigManager } from '../../services/game-config-manager';
+import { NosqlDatastoreManager } from '../../services/nosql-datastore-manager';
 import '../../global/inobounce';
 
 @Component({
@@ -99,6 +98,9 @@ export class SqApp {
     private _updateAvailableHeroes() {
         this.gameDataMgr.getAvailableHeroHashToNameMapping().then(heroes => {
             this.availableHeroes = heroes;
+        })
+        .catch(reason => {
+            console.log('error loading available heroes: ', reason);
         });
     }
 
@@ -191,7 +193,7 @@ export class SqApp {
                     <div class="textRow">We've run into some kind of issue:</div>
                     <div class="textRow">{this.loadingErrorMsg}</div>
                     <div class="buttonRow" style={{paddingTop: '1rem'}}>
-                        <button class="selected" onClick={() => document.location.reload(true)}>Reboot App</button>
+                        <button class="selected" onClick={() => (document.location.reload as any)(true)}>Reboot App</button>
                         <button class="selected" onClick={() => this.clearAllGameDataHandler()}>Clear All Data</button>
                     </div>
                 </div>

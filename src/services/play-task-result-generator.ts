@@ -321,30 +321,38 @@ export class PlayTaskResultGenerator {
     private generateRandomEpithetDescription(exclusions: string, gameSetting: GameSetting) {
         let epithetDescriptor: string;
         let epithetBeing: string;
+        let epithetDescription: string;
+        let breakoutCounter = 0;
+        const breakoutLimit = 10;
     
         do {
             epithetDescriptor = randFromList(gameSetting.epithetDescriptors);
-        } while (exclusions.toLocaleLowerCase().includes(epithetDescriptor.toLocaleLowerCase()));
-        do {
             epithetBeing = randFromList(gameSetting.epithetBeingAll);
-        } while (exclusions.toLocaleLowerCase().includes(epithetBeing.toLocaleLowerCase()));
+            epithetDescription = `${epithetDescriptor} ${epithetBeing}`;
+        } while (exclusions.toLocaleLowerCase().includes(epithetDescription.toLocaleLowerCase()) && breakoutCounter++ < breakoutLimit);
     
-        let epithetDescription = `${epithetDescriptor} ${epithetBeing}`;
         return epithetDescription;
     };
     private generateRandomSobriquetDescription(exclusions: string, gameSetting: GameSetting) {
-        let modifier = ''
+        let breakoutCounter: number;
+        let breakoutLimit: number;
+
+        let modifier = '';
+        breakoutCounter = 0;
+        breakoutLimit = 10;
         do {
             modifier = randFromList(gameSetting.sobriquetModifiers);
-        } while (exclusions.toLocaleLowerCase().includes(modifier.toLocaleLowerCase()));
+        } while (exclusions.toLocaleLowerCase().includes(modifier.toLocaleLowerCase()) && breakoutCounter++ < breakoutLimit);
     
         // one or two (twice as likely) SOBRIQUET_NOUN_PORTIONs
         let noun = '';
+        breakoutCounter = 0;
+        breakoutLimit = 10;
         for (let i = 0; i < (randRange(0, 2) || 2); i++) {
             let nounPortion = '';
             do {
                 nounPortion = randFromList(gameSetting.sobriquetNounPortions);
-            } while (exclusions.toLocaleLowerCase().includes(nounPortion.toLocaleLowerCase()) || noun.toLocaleLowerCase().includes(nounPortion.toLocaleLowerCase()));
+            } while ((exclusions.toLocaleLowerCase().includes(nounPortion.toLocaleLowerCase()) || noun.toLocaleLowerCase().includes(nounPortion.toLocaleLowerCase())) && breakoutCounter++ < breakoutLimit);
             noun += nounPortion;
         }
     
