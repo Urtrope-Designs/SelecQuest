@@ -27,6 +27,10 @@ export default class Storage {
                 .catch(reason => {
                     reject(reason)
                 });
+        });
+        
+        this.dbPromise.catch(reason => {
+            console.error('local db connection error: ', reason);
         }); 
     }
  

@@ -17,6 +17,8 @@ export class GameSettingsManager {
             if (nextGameSettingConfig != null) {
                 const nextGameSetting = new GameSetting((nextGameSettingConfig as GameSettingConfig));
                 this.availableGameSettings.set(nextGameSetting.gameSettingId, nextGameSetting);
+            } else {
+                throw new Error(`Failed to load settings for "${file}"`);
             }
         }
 
