@@ -24,6 +24,10 @@ body {
     background-color: var(--sq-color-primary-contrast);
 }
 
+a {
+    color: var(--sq-color-primary);
+}
+
 /* *::-webkit-scrollbar-track {
     background-color: rgba(0,0,0,0);
 }
@@ -157,6 +161,7 @@ button {
     line-height: initial;
     background-color: transparent;
     color: var(--sq-color-primary);
+    cursor: pointer;
 }
 
 button:active, button:focus {

@@ -535,7 +535,7 @@ export class PlayScreen {
                                 </section>
                                 : <section>
                                     <p class="niceText">
-                                        Welcome to SelecQuest, with three adventuring modes! Choose between {this.gameSetting.taskModeData[0].taskModeActionName} mode, {this.gameSetting.taskModeData[1].taskModeActionName} mode, and {this.gameSetting.taskModeData[2].taskModeActionName} mode to earn different rewards and advance your hero. Download in the app store or save to your device's desktop for a fully immersive mobile experience!
+                                        Welcome to SelecQuest, with three adventuring modes! Choose between {this.gameSetting.taskModeData[0].taskModeActionName} mode, {this.gameSetting.taskModeData[1].taskModeActionName} mode, and {this.gameSetting.taskModeData[2].taskModeActionName} mode to earn different rewards and advance your hero. Download in your local app store today! Feel free to read my <a href="https://urtropedesigns.com/about/privacy-policy-selecquest" target="_blank" rel="noreferrer noopener">privacy policy</a>. 
                                     </p>
                                     <p>
                                         <button class="selected" onClick={() => this.newHeroButtonClicked()}>New Hero</button>
