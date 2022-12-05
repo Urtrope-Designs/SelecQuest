@@ -52,6 +52,6 @@
       "purpose": "any maskable"
     }
   ],
-  "background_color": "'#222922'",
+  "background_color": "#222922",
   "theme_color": "#222922"
 }
