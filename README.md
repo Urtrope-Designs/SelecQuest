@@ -1,7 +1,7 @@
 # SelecQuest
 Crack open your phone, roll up your hero, and conquer the Omniverse. You’ll soon find yourself on a tireless quest for loot, renown, and social leverage. But the game does all the work for you!
 
-Your hero’s tasks proceed infinitely, wih the type of task - and the fruits of your labor - determined by your only input: the current Adventuring Mode!
+Your hero’s tasks proceed infinitely, with the type of task - and the fruits of your labor - determined by your only input: the current Adventuring Mode!
 
 ### Loot Mode
 Tasks will involve fighting monsters or crawling dungeons, and will net you some baller loot. You can only carry so mich loot at a time though, before your encumbrance maxes out and you have to head back to civilization to capitalize all that loot into gold. Acquire enough sweet monies, and you’ll find yourself with upgraded gear! Stick with this Adventuring Mode too long and you’ll saturate the market, decimating not only the return you get for your loot, but also your XP and Story progress.
