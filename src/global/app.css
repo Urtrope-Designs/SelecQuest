@@ -17,7 +17,7 @@ html {
 
 body {
     margin: 0px;
-    padding: 0px;
+    padding: env(safe-area-inset-top, 0) env(safe-area-inset-right, 0) env(safe-area-inset-bottom, 0) env(safe-area-inset-left, 0);
     font-family: '7_12', monospace;
     color: var(--sq-color-primary);
     text-shadow: 0 0 .5rem;
